@@ -1,0 +1,100 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="com.example.bluetooth.le.WeightActivity" >
+
+    <TextView
+        android:id="@+id/txtWgt"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:gravity="center_horizontal"
+        android:text="0"
+        android:background="@drawable/bg"
+        android:textSize="72dp" />
+	<LinearLayout
+	    android:id="@+id/llstate"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="3dp"
+		android:gravity="center_horizontal"
+		android:orientation="horizontal">
+		
+	    <TextView
+	        android:id="@+id/txtStable"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:background="@drawable/setbar_bg"
+	        android:textSize="24dp" 
+	        android:text="稳定" />  
+	     <TextView
+	        android:id="@+id/txtZero"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:background="@drawable/setbar_bg"
+	        android:textSize="24dp" 
+	        android:text="零点" />  
+	     <TextView
+	        android:id="@+id/txtNet"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:background="@drawable/setbar_bg"
+	        android:textSize="24dp" 
+	        android:text="净重" />  
+	     <TextView
+	        android:id="@+id/txtGross"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:background="@drawable/setbar_bg"
+	        android:textSize="24dp" 
+	        android:text="毛重" />  
+	</LinearLayout>
+	
+	<LinearLayout
+	    android:id="@+id/llbutton"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		
+		android:orientation="horizontal">
+	    <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@layout/image_btn_press"
+            android:layout_gravity="bottom"
+            android:text="存重" /> 
+        <Button
+            android:id="@+id/btn_kg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@layout/image_btn_press"
+            android:layout_gravity="bottom"
+            android:text="毛重" /> 
+        <Button
+            android:id="@+id/btn_zero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@layout/image_btn_press"
+            android:layout_gravity="bottom"
+            android:text="置零" /> 
+        <Button
+            android:id="@+id/btn_tare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@layout/image_btn_press"
+            android:layout_gravity="bottom"
+            android:text="去皮" /> 
+	</LinearLayout>  
+	
+	<ListView  
+      android:id="@+id/list"     
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+     /> 
+</LinearLayout>
