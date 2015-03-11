@@ -81,15 +81,15 @@ public class WeightActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle extras = intent.getExtras();
-			if (!mDeviceAddress.equals(extras.getString(BleService.EXTRA_ADDR))) {
-				return;
-			}
+			//if (!mDeviceAddress.equals(extras.getString(BleService.EXTRA_ADDR))) {
+			//	return;
+			//}
 
-			String uuid = extras.getString(BleService.EXTRA_UUID);
-			if (uuid != null
-					&& !mCharacteristic.getUuid().toString().equals(uuid)) {
-				return;
-			}
+			//String uuid = extras.getString(BleService.EXTRA_UUID);
+			//if (uuid != null
+			//		&& !mCharacteristic.getUuid().toString().equals(uuid)) {
+				//return;
+			//}
 
 			String action = intent.getAction();
 			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
@@ -100,11 +100,17 @@ public class WeightActivity extends Activity {
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 				//recv data	
-				int sz = val[0];
-				byte[] val2 = new byte[sz+1];
-				 System.arraycopy(val,1,val2,0,sz);
 				
-				txtWgt.setText(new String(val2));
+				final int v = val[0];
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+					// refresh ui 的操作代码
+						
+						txtWgt.setText(String.valueOf(v));
+					}
+				});
+				
 			} else if (BleService.BLE_CHARACTERISTIC_NOTIFICATION
 					.equals(action)) {
 				Toast.makeText(WeightActivity.this,
@@ -122,7 +128,17 @@ public class WeightActivity extends Activity {
 			} else if (BleService.BLE_CHARACTERISTIC_WRITE.equals(action)) {
 				Toast.makeText(WeightActivity.this, "Write success!",
 						Toast.LENGTH_SHORT).show();
+			} else if (BleService.BLE_GATT_CONNECTED.equals(action)) {
+				
+				Toast.makeText(WeightActivity.this,
+						"Connect ok!" + extras.getString(BleService.EXTRA_ADDR), Toast.LENGTH_SHORT).show();
+			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
+				
+			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
+				Toast.makeText(WeightActivity.this,
+						"service discovery!" + extras.getString(BleService.EXTRA_ADDR), Toast.LENGTH_SHORT).show();
 			}
+			
 		}
 	};
 	@Override
@@ -134,10 +150,15 @@ public class WeightActivity extends Activity {
 		
 		adapter = new MyAdapter(this); 
 		listData.setAdapter(adapter); 
-        
+		
 		btnZero = (Button)findViewById(R.id.btn_zero);
 		final Button btnSave = (Button)findViewById(R.id.btn_save);
 		final Button btnGross = (Button)findViewById(R.id.btn_kg);
+		final Button btnConn1 = (Button)findViewById(R.id.btn_connect1);
+		final Button btnConn2 = (Button)findViewById(R.id.btn_connect2);
+		final Button btnDis1 = (Button)findViewById(R.id.btn_dis1);
+		final Button btnDis2 = (Button)findViewById(R.id.btn_dis2);
+		
 		btnSave.setOnClickListener(new OnClickListener() { 
              @Override 
              public void onClick(View arg0) { 
@@ -172,6 +193,48 @@ public class WeightActivity extends Activity {
                 adapter.notifyDataSetChanged();
             }
         }); 
+		btnConn1.setOnClickListener(new OnClickListener() { 
+            @Override 
+            public void onClick(View arg0) { 
+                // TODO Auto-generated method stub 
+            	BleApplication app = (BleApplication) getApplication();
+        		mBle = app.getIBle();
+            	mBle.requestConnect("D0:39:72:A5:EE:71");
+            }
+        }); 
+		btnConn2.setOnClickListener(new OnClickListener() { 
+            @Override 
+            public void onClick(View arg0) { 
+                // TODO Auto-generated method stub 
+            	BleApplication app = (BleApplication) getApplication();
+        		mBle = app.getIBle();
+            	mBle.requestConnect("D0:39:72:A5:F0:4D");
+            }
+        }); 
+		btnDis1.setOnClickListener(new OnClickListener() { 
+            @Override 
+            public void onClick(View arg0) { 
+                // TODO Auto-generated method stub 
+            	BleApplication app = (BleApplication) getApplication();
+        		mBle = app.getIBle();
+        		String Addr = "D0:39:72:A5:EE:71"; 
+        		final BleGattCharacteristic characteristic = mBle.getServices(Addr).get(3).getCharacteristics().get(0);
+        		mBle.requestReadCharacteristic(Addr, characteristic);
+            	//mBle.requestConnect("D0:39:72:A5:F0:4D");
+            }
+        }); 
+		btnDis2.setOnClickListener(new OnClickListener() { 
+            @Override 
+            public void onClick(View arg0) { 
+                // TODO Auto-generated method stub 
+            	BleApplication app = (BleApplication) getApplication();
+        		mBle = app.getIBle();
+        		String Addr = "D0:39:72:A5:F0:4D"; 
+        		final BleGattCharacteristic characteristic = mBle.getServices(Addr).get(3).getCharacteristics().get(0);
+        		mBle.requestReadCharacteristic(Addr, characteristic);
+            	//mBle.requestConnect("D0:39:72:A5:F0:4D");
+            }
+        }); 
 		final Handler myHandler = new Handler()
 		{
 			public void handleMessage(Message msg)
@@ -199,7 +262,7 @@ public class WeightActivity extends Activity {
 				//bundle.putString("text1","大明的消息传递参数的例子！");   
 				myHandler.sendMessage(msg);
 			}
-		},0,1000);
+		},0,5000);
 		
 		//mDeviceAddress = getIntent().getStringExtra("address");
 		//String service = getIntent().getStringExtra("service");
@@ -245,13 +308,13 @@ public class WeightActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//registerReceiver(mBleReceiver, BleService.getIntentFilter());
+		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 	}
 
 	@Override
 	public void onPanelClosed(int featureId, Menu menu) {
 		super.onPanelClosed(featureId, menu);
-		//unregisterReceiver(mBleReceiver);
+		unregisterReceiver(mBleReceiver);
 	}
 	
 	private class MyAdapter extends BaseAdapter { 

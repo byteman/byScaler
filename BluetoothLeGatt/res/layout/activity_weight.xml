@@ -92,6 +92,37 @@
             android:text="去皮" /> 
 	</LinearLayout>  
 	
+	<LinearLayout
+	    android:id="@+id/llble"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		
+		android:orientation="horizontal">
+	    <Button
+            android:id="@+id/btn_connect1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="conn1" /> 
+        <Button
+            android:id="@+id/btn_connect2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="conn2" />     
+        <Button
+            android:id="@+id/btn_dis1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="discory1" /> 
+        <Button
+            android:id="@+id/btn_dis2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="discory2" />  
+	</LinearLayout> 
 	<ListView  
       android:id="@+id/list"     
       android:layout_width="fill_parent" 
