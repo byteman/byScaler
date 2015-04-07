@@ -168,7 +168,7 @@ public class WeightActivity extends Activity {
 		adapter = new MyAdapter(this); 
 		listData.setAdapter(adapter); 
 		
-		btnZero = (Button)findViewById(R.id.btn_zero);
+		
 		final Button btnSave = (Button)findViewById(R.id.btn_save);
 			
 		btnSave.setOnClickListener(new OnClickListener() { 
