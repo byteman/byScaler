@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -70,6 +71,7 @@ public class WeightActivity extends Activity {
 	private Button button,add,btnZero; 
     private TextView text; 
     private ListView listview; 
+    
     public MyAdapter adapter; 
     public static String getCurrentTime(long date) 
     {
@@ -77,19 +79,32 @@ public class WeightActivity extends Activity {
     	String str = format.format(new Date(date));
     	return str;
     }
+    /**
+     * 4位字节数组转换为整型
+     * @param b
+     * @return
+     */
+    public static int byte2Int(byte[] b) {
+        int intValue = 0;
+       
+         
+        intValue =  ((b[3] & 0xFF) << 24) + ((b[2] & 0xFF) << 16) + ((b[1] & 0xFF) << 8) + ((b[3] & 0xFF)); 
+        return intValue;
+       
+    }
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle extras = intent.getExtras();
-			//if (!mDeviceAddress.equals(extras.getString(BleService.EXTRA_ADDR))) {
-			//	return;
-			//}
+			if (!mDeviceAddress.equals(extras.getString(BleService.EXTRA_ADDR))) {
+				return;
+			}
 
-			//String uuid = extras.getString(BleService.EXTRA_UUID);
-			//if (uuid != null
-			//		&& !mCharacteristic.getUuid().toString().equals(uuid)) {
-				//return;
-			//}
+			String uuid = extras.getString(BleService.EXTRA_UUID);
+			if (uuid != null
+					&& !mCharacteristic.getUuid().toString().equals(uuid)) {
+				return;
+			}
 
 			String action = intent.getAction();
 			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
@@ -99,15 +114,17 @@ public class WeightActivity extends Activity {
 			} else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
+				//weight = extras.getInt(BleService.EXTRA_VALUE);
 				//recv data	
 				
-				final int v = val[0];
+				weight = byte2Int(val);
+				
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 					// refresh ui 的操作代码
 						
-						txtWgt.setText(String.valueOf(v));
+						txtWgt.setText(String.valueOf(weight));
 					}
 				});
 				
@@ -153,12 +170,7 @@ public class WeightActivity extends Activity {
 		
 		btnZero = (Button)findViewById(R.id.btn_zero);
 		final Button btnSave = (Button)findViewById(R.id.btn_save);
-		final Button btnGross = (Button)findViewById(R.id.btn_kg);
-		final Button btnConn1 = (Button)findViewById(R.id.btn_connect1);
-		final Button btnConn2 = (Button)findViewById(R.id.btn_connect2);
-		final Button btnDis1 = (Button)findViewById(R.id.btn_dis1);
-		final Button btnDis2 = (Button)findViewById(R.id.btn_dis2);
-		
+			
 		btnSave.setOnClickListener(new OnClickListener() { 
              @Override 
              public void onClick(View arg0) { 
@@ -170,108 +182,27 @@ public class WeightActivity extends Activity {
                  adapter.notifyDataSetChanged(); 
              } 
          }); 
-		btnGross.setOnClickListener(new OnClickListener() { 
-            @Override 
-            public void onClick(View arg0) { 
-                // TODO Auto-generated method stub 
-            	if(btnGross.getText().toString()=="毛重")
-            	{
-            		btnGross.setText("净重");
-            	}
-            	else
-            	{
-            		btnGross.setText("毛重");
-            	}
-            }
-        }); 
-		btnZero.setOnClickListener(new OnClickListener() { 
-            @Override 
-            public void onClick(View arg0) { 
-                // TODO Auto-generated method stub 
-            	weight = 0;
-            	adapter.arr.clear();
-                adapter.notifyDataSetChanged();
-            }
-        }); 
-		btnConn1.setOnClickListener(new OnClickListener() { 
-            @Override 
-            public void onClick(View arg0) { 
-                // TODO Auto-generated method stub 
-            	BleApplication app = (BleApplication) getApplication();
-        		mBle = app.getIBle();
-            	mBle.requestConnect("D0:39:72:A5:EE:71");
-            }
-        }); 
-		btnConn2.setOnClickListener(new OnClickListener() { 
-            @Override 
-            public void onClick(View arg0) { 
-                // TODO Auto-generated method stub 
-            	BleApplication app = (BleApplication) getApplication();
-        		mBle = app.getIBle();
-            	mBle.requestConnect("D0:39:72:A5:F0:4D");
-            }
-        }); 
-		btnDis1.setOnClickListener(new OnClickListener() { 
-            @Override 
-            public void onClick(View arg0) { 
-                // TODO Auto-generated method stub 
-            	BleApplication app = (BleApplication) getApplication();
-        		mBle = app.getIBle();
-        		String Addr = "D0:39:72:A5:EE:71"; 
-        		final BleGattCharacteristic characteristic = mBle.getServices(Addr).get(3).getCharacteristics().get(0);
-        		mBle.requestReadCharacteristic(Addr, characteristic);
-            	//mBle.requestConnect("D0:39:72:A5:F0:4D");
-            }
-        }); 
-		btnDis2.setOnClickListener(new OnClickListener() { 
-            @Override 
-            public void onClick(View arg0) { 
-                // TODO Auto-generated method stub 
-            	BleApplication app = (BleApplication) getApplication();
-        		mBle = app.getIBle();
-        		String Addr = "D0:39:72:A5:F0:4D"; 
-        		final BleGattCharacteristic characteristic = mBle.getServices(Addr).get(3).getCharacteristics().get(0);
-        		mBle.requestReadCharacteristic(Addr, characteristic);
-            	//mBle.requestConnect("D0:39:72:A5:F0:4D");
-            }
-        }); 
-		final Handler myHandler = new Handler()
-		{
-			public void handleMessage(Message msg)
-			{
-				if(msg.what == 0x1000)
-				{
-					int wgt = msg.getData().getInt("kg");
-					//weight++;
-					txtWgt.setText(String.valueOf(weight));
-				}
-			}
-		};
+
+		
+
+		mDeviceAddress = getIntent().getStringExtra("address");
+		String service = getIntent().getStringExtra("service");
+		String characteristic = getIntent().getStringExtra("characteristic");
+		BleApplication app = (BleApplication) getApplication();
+		mBle = app.getIBle();
+		mCharacteristic = mBle.getService(mDeviceAddress,
+				UUID.fromString(service)).getCharacteristic(
+				UUID.fromString(characteristic));
+		
 		new Timer().schedule(new TimerTask()
 		{
 			public void run()
 			{
 				
-				Message msg  = new Message();
-				msg.what = 0x1000;
-				
-
-				Bundle bundle = new Bundle(); 
-				weight++;
-				bundle.putInt("kg", weight);
-				//bundle.putString("text1","大明的消息传递参数的例子！");   
-				myHandler.sendMessage(msg);
+				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
 			}
-		},0,5000);
+		},0,100);
 		
-		//mDeviceAddress = getIntent().getStringExtra("address");
-		//String service = getIntent().getStringExtra("service");
-		//String characteristic = getIntent().getStringExtra("characteristic");
-		//BleApplication app = (BleApplication) getApplication();
-		//mBle = app.getIBle();
-		//mCharacteristic = mBle.getService(mDeviceAddress,
-		//		UUID.fromString(service)).getCharacteristic(
-		//		UUID.fromString(characteristic));
 		//mNotifyStarted = true;
 		//mBle.requestCharacteristicNotification(mDeviceAddress,
 		//		mCharacteristic);

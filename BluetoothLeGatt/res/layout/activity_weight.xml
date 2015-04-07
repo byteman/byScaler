@@ -10,119 +10,21 @@
         android:id="@+id/txtWgt"
         android:layout_width="fill_parent"
         android:layout_height="100dp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:text="0"
         android:background="@drawable/bg"
-        android:textSize="72dp" />
-	<LinearLayout
-	    android:id="@+id/llstate"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="3dp"
-		android:gravity="center_horizontal"
-		android:orientation="horizontal">
-		
-	    <TextView
-	        android:id="@+id/txtStable"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:background="@drawable/setbar_bg"
-	        android:textSize="24dp" 
-	        android:text="稳定" />  
-	     <TextView
-	        android:id="@+id/txtZero"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:background="@drawable/setbar_bg"
-	        android:textSize="24dp" 
-	        android:text="零点" />  
-	     <TextView
-	        android:id="@+id/txtNet"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:background="@drawable/setbar_bg"
-	        android:textSize="24dp" 
-	        android:text="净重" />  
-	     <TextView
-	        android:id="@+id/txtGross"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:background="@drawable/setbar_bg"
-	        android:textSize="24dp" 
-	        android:text="毛重" />  
-	</LinearLayout>
+        android:textSize="24sp" />
+
 	
-	<LinearLayout
-	    android:id="@+id/llbutton"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		
-		android:orientation="horizontal">
-	    <Button
-            android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@layout/image_btn_press"
-            android:layout_gravity="bottom"
-            android:text="存重" /> 
-        <Button
-            android:id="@+id/btn_kg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@layout/image_btn_press"
-            android:layout_gravity="bottom"
-            android:text="毛重" /> 
-        <Button
-            android:id="@+id/btn_zero"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@layout/image_btn_press"
-            android:layout_gravity="bottom"
-            android:text="置零" /> 
-        <Button
-            android:id="@+id/btn_tare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@layout/image_btn_press"
-            android:layout_gravity="bottom"
-            android:text="去皮" /> 
-	</LinearLayout>  
+
+	 <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@layout/image_btn_press"
+        android:layout_gravity="right"
+        android:text="存重" /> 
 	
-	<LinearLayout
-	    android:id="@+id/llble"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		
-		android:orientation="horizontal">
-	    <Button
-            android:id="@+id/btn_connect1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="conn1" /> 
-        <Button
-            android:id="@+id/btn_connect2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="conn2" />     
-        <Button
-            android:id="@+id/btn_dis1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="discory1" /> 
-        <Button
-            android:id="@+id/btn_dis2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="discory2" />  
-	</LinearLayout> 
 	<ListView  
       android:id="@+id/list"     
       android:layout_width="fill_parent" 
