@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
+    android:background="@color/white"
     tools:context="com.example.bluetooth.le.WeightActivity" >
 
     <TextView
@@ -14,7 +15,7 @@
         android:text="0"
         android:textColor="@color/red"
         android:background="@drawable/bg"
-        android:textSize="24sp" />
+        android:textSize="48sp" />
 
 	
 
@@ -24,8 +25,8 @@
         android:layout_height="wrap_content"
         android:background="@layout/image_btn_press"
         android:layout_gravity="right"
-        android:text="存重" /> 
-	
+        android:text="@string/save" /> 
+        
 	<ListView  
       android:id="@+id/list"     
       android:layout_width="fill_parent" 
