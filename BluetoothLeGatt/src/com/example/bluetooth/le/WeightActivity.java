@@ -1,40 +1,29 @@
 package com.example.bluetooth.le;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Handler;  
-import android.os.Message;
 
-import java.lang.reflect.Array;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.Arrays;
-
-import org.apache.commons.codec.binary.Hex;
 
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.IBle;
@@ -51,7 +40,7 @@ public class WeightActivity extends Activity {
 		{
 			sid = String.valueOf(id);
 			//Date date = new Date();
-		//   System.out.println("ÈÕÆÚ×ª×Ö·û´®£º" + HelloTest.DateToStr(date));
+		//   System.out.println("ï¿½ï¿½ï¿½ï¿½×ªï¿½Ö·ï¿½" + HelloTest.DateToStr(date));
 			long time =System.currentTimeMillis();
 			
 			stime = getCurrentTime(time);
@@ -68,11 +57,8 @@ public class WeightActivity extends Activity {
 	private BleGattCharacteristic mCharacteristic;
 	private TextView txtWgt ;
 	private ListView listData;
-	private Button button,add,btnZero; 
-    private TextView text; 
-    private ListView listview; 
-    
-    public MyAdapter adapter; 
+	public MyAdapter adapter; 
+	protected static final String TAG = "weight";
     public static String getCurrentTime(long date) 
     {
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -80,22 +66,16 @@ public class WeightActivity extends Activity {
     	return str;
     }
     /**
-     * 4Î»×Ö½ÚÊý×é×ª»»ÎªÕûÐÍ
+     * 4Î»ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
      * @param b
      * @return
      */
-    public static int byte2Int(byte[] b) {
-        int intValue = 0;
-       
-         
-        intValue =  ((b[3] & 0xFF) << 24) + ((b[2] & 0xFF) << 16) + ((b[1] & 0xFF) << 8) + ((b[3] & 0xFF)); 
-        return intValue;
-       
-    }
+
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle extras = intent.getExtras();
+			
 			if (!mDeviceAddress.equals(extras.getString(BleService.EXTRA_ADDR))) {
 				return;
 			}
@@ -107,6 +87,7 @@ public class WeightActivity extends Activity {
 			}
 
 			String action = intent.getAction();
+			Log.e(TAG,action);
 			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
 				Toast.makeText(WeightActivity.this,
 						"Device disconnected...", Toast.LENGTH_SHORT).show();
@@ -114,16 +95,13 @@ public class WeightActivity extends Activity {
 			} else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
-				//weight = extras.getInt(BleService.EXTRA_VALUE);
-				//recv data	
-				
-				weight = byte2Int(val);
+							
+				weight = Utils.byte2Int(val);
 				
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-					// refresh ui µÄ²Ù×÷´úÂë
-						
+
 						txtWgt.setText(String.valueOf(weight));
 					}
 				});
@@ -193,7 +171,10 @@ public class WeightActivity extends Activity {
 		mCharacteristic = mBle.getService(mDeviceAddress,
 				UUID.fromString(service)).getCharacteristic(
 				UUID.fromString(characteristic));
-		
+		if(mCharacteristic == null)
+		{
+			return;
+		}
 		new Timer().schedule(new TimerTask()
 		{
 			public void run()
@@ -250,15 +231,13 @@ public class WeightActivity extends Activity {
 	
 	private class MyAdapter extends BaseAdapter { 
 	    
-        private Context context; 
         private LayoutInflater inflater; 
         public ArrayList<WeightData> arr; 
         public MyAdapter(Context context) { 
             super(); 
-            this.context = context; 
             inflater = LayoutInflater.from(context); 
             arr = new ArrayList<WeightData>(); 
-            for(int i=0;i<3;i++){    //listview³õÊ¼»¯3¸ö×ÓÏî 
+            for(int i=0;i<3;i++){    //listviewï¿½ï¿½Ê¼ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
                 //arr.add(""); 
             } 
         } 
@@ -284,11 +263,11 @@ public class WeightActivity extends Activity {
                 view = inflater.inflate(R.layout.listview_item, null); 
             } 
             final TextView edit = (TextView) view.findViewById(R.id.index); 
-            edit.setText(arr.get(position).sid);    //ÔÚÖØ¹¹adapterµÄÊ±ºò²»ÖÁÓÚÊý¾Ý´íÂÒ 
+            edit.setText(arr.get(position).sid);    //ï¿½ï¿½ï¿½Ø¹ï¿½adapterï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ 
             final TextView time = (TextView) view.findViewById(R.id.time); 
-            time.setText(arr.get(position).stime);    //ÔÚÖØ¹¹adapterµÄÊ±ºò²»ÖÁÓÚÊý¾Ý´íÂÒ 
+            time.setText(arr.get(position).stime);    //ï¿½ï¿½ï¿½Ø¹ï¿½adapterï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ 
             final TextView kg = (TextView) view.findViewById(R.id.kg); 
-            kg.setText(arr.get(position).skg);    //ÔÚÖØ¹¹adapterµÄÊ±ºò²»ÖÁÓÚÊý¾Ý´íÂÒ 
+            kg.setText(arr.get(position).skg);    //ï¿½ï¿½ï¿½Ø¹ï¿½adapterï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ 
             
             return view; 
         } 

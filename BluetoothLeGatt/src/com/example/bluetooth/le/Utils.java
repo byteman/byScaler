@@ -124,4 +124,12 @@ public class Utils {
 		}
 		return INSTANCE;
 	}
+    public static int byte2Int(byte[] b) {
+        int intValue = 0;
+       
+         
+        intValue =  ((b[3] & 0xFF) << 24) + ((b[2] & 0xFF) << 16) + ((b[1] & 0xFF) << 8) + ((b[3] & 0xFF)); 
+        return intValue;
+       
+    }
 }

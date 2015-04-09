@@ -12,6 +12,7 @@
         android:layout_height="100dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/red"
         android:background="@drawable/bg"
         android:textSize="24sp" />
 

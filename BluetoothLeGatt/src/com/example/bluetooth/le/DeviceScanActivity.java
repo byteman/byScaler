@@ -17,7 +17,7 @@
  * This XPG software is supplied to you by Xtreme Programming Group, Inc.
  * ("XPG") in consideration of your agreement to the following terms, and your
  * use, installation, modification or redistribution of this XPG software
- * constitutes acceptance of these terms.� If you do not agree with these terms,
+ * constitutes acceptance of these terms.锟�If you do not agree with these terms,
  * please do not use, install, modify or redistribute this XPG software.
  * 
  * In consideration of your agreement to abide by the following terms, and
@@ -28,13 +28,13 @@
  * retain this notice and the following text and disclaimers in all such
  * redistributions of the XPG Software. Neither the name, trademarks, service
  * marks or logos of XPG Inc. may be used to endorse or promote products derived
- * from the XPG Software without specific prior written permission from XPG.�
+ * from the XPG Software without specific prior written permission from XPG.锟�
  * Except as expressly stated in this notice, no other rights or licenses,
  * express or implied, are granted by XPG herein, including but not limited to
  * any patent rights that may be infringed by your derivative works or by other
  * works in which the XPG Software may be incorporated.
  * 
- * The XPG Software is provided by XPG on an "AS IS" basis.� XPG MAKES NO
+ * The XPG Software is provided by XPG on an "AS IS" basis.锟�XPG MAKES NO
  * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
  * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE, REGARDING THE XPG SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
@@ -72,6 +72,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,6 +83,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
@@ -93,7 +95,7 @@ public class DeviceScanActivity extends ListActivity {
 	private boolean mScanning;
 	private Handler mHandler;
 	private IBle mBle;
-
+	private String mAddress;
 	private static final int REQUEST_ENABLE_BT = 1;
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
@@ -103,7 +105,20 @@ public class DeviceScanActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
+
+			if (BleService.BLE_GATT_CONNECTED.equals(action)) {
+				Log.e("DeviceScan", "server connect");
+			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
+				Log.e("DeviceScan", "server disconnect");
+				onDeviceDisconnected();
+
+			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
+				// displayGattServices(mBle.getServices(mDeviceAddress));
+				Log.e("DeviceScan", "server discovered");
+				createWeightActivity();
+			}
+
+			else if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
@@ -135,6 +150,27 @@ public class DeviceScanActivity extends ListActivity {
 					}
 				});
 			}
+
+		}
+
+		private void onDeviceDisconnected() {
+			// TODO Auto-generated method stub
+
+		}
+
+		private void createWeightActivity() {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+
+					Intent intent = new Intent(DeviceScanActivity.this,
+							WeightActivity.class);
+					intent.putExtra("address", mAddress);
+					intent.putExtra("service", "0000fff0-0000-1000-8000-00805F9B34FB");
+					intent.putExtra("characteristic", "0000fff2-0000-1000-8000-00805F9B34FB");
+					startActivity(intent);				
+				}
+			});
 		}
 	};
 
@@ -143,6 +179,9 @@ public class DeviceScanActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		getActionBar().setTitle(R.string.title_devices);
 		mHandler = new Handler();
+		// Initializes list view adapter.
+		mLeDeviceListAdapter = new LeDeviceListAdapter();
+		setListAdapter(mLeDeviceListAdapter);
 	}
 
 	@Override
@@ -166,6 +205,8 @@ public class DeviceScanActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_scan:
 			mLeDeviceListAdapter.clear();
+			mLeDeviceListAdapter.notifyDataSetChanged();
+			Log.e("DeviceScan", "scan");
 			scanLeDevice(true);
 			break;
 		case R.id.menu_stop:
@@ -184,15 +225,16 @@ public class DeviceScanActivity extends ListActivity {
 		// currently enabled,
 		// fire an intent to display a dialog asking the user to grant
 		// permission to enable it.
+		Log.e("DeviceScan", "OnResume");
+		BleApplication app = (BleApplication) getApplication();
+		mBle = app.getIBle();
 		if (mBle != null && !mBle.adapterEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 
-		// Initializes list view adapter.
-		mLeDeviceListAdapter = new LeDeviceListAdapter();
-		setListAdapter(mLeDeviceListAdapter);
+		
 		scanLeDevice(true);
 	}
 
@@ -210,6 +252,7 @@ public class DeviceScanActivity extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		Log.e("DeviceScan", "onPause");
 		unregisterReceiver(mBleReceiver);
 		scanLeDevice(false);
 		mLeDeviceListAdapter.clear();
@@ -220,15 +263,13 @@ public class DeviceScanActivity extends ListActivity {
 		final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
 		if (device == null)
 			return;
-		final Intent intent = new Intent(this, DeviceControlActivity.class);
-		intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME,
-				device.getName());
-		intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS,
-				device.getAddress());
+
 		if (mBle != null) {
 			mBle.stopScan();
 		}
-		startActivity(intent);
+		mAddress = device.getAddress();
+		mBle.requestConnect(mAddress);
+
 	}
 
 	private void scanLeDevice(final boolean enable) {
