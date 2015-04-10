@@ -1,29 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent">
     
 	<TextView 
         android:id = "@+id/tvAD"
-        android:text="0000"
         android:gravity="center"
+        android:text="12345"
+        android:textSize="72sp" 
+        android:textColor="@color/red"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-    />
-	<EditText 
-        android:id = "@+id/evWgt"
-        android:text="10"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#00f"
-        android:textSize="20dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/setbar_bg"
     />
-	<Button 
-	    android:id="@+id/btCalbZero"
-	    android:layout_width="wrap_content"
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:text="@string/calibzero"
-	    />
-</LinearLayout>
+	    android:layout_above ="@+id/layWgt"
+	    android:orientation="horizontal" >
+	    
+	    <Button 
+		    android:id="@+id/btCalbZero"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/calibzero"
+		/>
+	    <EditText 
+	        android:id = "@+id/etZero"
+	        android:inputType="number"
+	        android:focusable="false"  
+	        android:layout_width="0dp"
+	        android:gravity="center"
+	        android:layout_height="wrap_content"
+	        android:textColor="#00f"
+	        android:textSize="20sp"
+	        android:layout_weight="1"
+	        android:labelFor="@id/etZero"
+   		 />		
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:id="@+id/layWgt"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="bottom"
+	    android:layout_above ="@+id/layOper"
+	    android:orientation="horizontal" >
+	    <Button 
+		    android:id="@+id/btCalbWgt"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/calibwgt"
+		/>
+	    <EditText 
+	        android:id = "@+id/etWgt"
+	        android:inputType="number"
+	        android:layout_width="0dp"
+	        android:gravity="center"
+	        android:layout_height="wrap_content"
+	        android:textColor="#00f"
+	        android:textSize="20sp"
+	        android:layout_weight="1"
+	        android:labelFor="@id/etWgt"
+	        android:hint="@string/fama"
+   		 />		
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:id="@+id/layOper"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_marginTop="30dp"
+	    android:orientation="horizontal" >
+	    <Button 
+		    android:id="@id/btn_save"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:text="@string/save"
+		/>
+
+	</LinearLayout>
+	
+</RelativeLayout>

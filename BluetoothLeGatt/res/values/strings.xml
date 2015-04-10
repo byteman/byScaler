@@ -31,7 +31,10 @@
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
 	<string name="calibzero">标定零点</string>
-	<string name="save">记录重量</string>
+	<string name="calibwgt">标定重量</string>
+	<string name="save">保存</string>
+	<string name="cancle">取消</string>
+	<string name="fama">请输入标定砝码的重量</string>
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
@@ -39,6 +42,11 @@
     <string name="menu_stop">Stop</string>
     <string name="title_activity_characteristic">CharacteristicActivity</string>
     <string name="action_settings">Settings</string>
+    
+    <string name="device_settings">设备管理</string>
+    <string name="user_settings">用户管理</string>
+    <string name="data_settings">数据管理</string>
+    
     <string name="hello_world">Hello world!</string>
     
 
