@@ -49,5 +49,7 @@
     
     <string name="hello_world">Hello world!</string>
     
+    <string name="calibK">标定系数</string>
+    
 
 </resources>
