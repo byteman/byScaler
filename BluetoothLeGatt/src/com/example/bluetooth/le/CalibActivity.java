@@ -26,9 +26,11 @@ public class CalibActivity extends Activity {
 	private String mDeviceAddress;
 	private int ad = 0;
 	private IBle mBle;
-	private BleGattCharacteristic mCharacteristic;
+	private BleGattCharacteristic mCharacteristicAD;
+	private BleGattCharacteristic mCharacteristicK;
+	private BleGattCharacteristic mCharacteristicZero;
 	private final String TAG = "CalibActivity";
-	private TextView m_tvAD;
+	private TextView m_tvAD,m_tvK;
 	private Button m_btCalibZero, m_btCalibWgt;
 	private EditText m_etZero, m_etWgt;
 
@@ -37,18 +39,34 @@ public class CalibActivity extends Activity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if (v.getId() == R.id.btCalbZero) {
+				int ad 	  = Integer.valueOf((String) m_tvAD.getText());
 				m_etZero.setText(m_tvAD.getText());
+				mCharacteristicZero.setValue(Utils.intToByteArray(ad));
+				mBle.requestWriteCharacteristic(mDeviceAddress, mCharacteristicK,"");
+				
 			} else if (v.getId() == R.id.btCalbWgt) {
 				if (m_etWgt.getText().length() <= 0) {
 					Toast.makeText(CalibActivity.this, "请先输入内容",
 							Toast.LENGTH_LONG).show();
+					return;
 				}
+				float ad 	  = Float.valueOf((String) m_tvAD.getText());
+				float zero  = Float.valueOf((String) m_etZero.getText().toString());
+				float wgt   = Float.valueOf((String) m_etWgt.getText().toString());
+				float k = (float)( wgt / (ad-zero) );
+				
+				mCharacteristicK.setValue(Utils.float2byte(k));
+				mBle.requestWriteCharacteristic(mDeviceAddress, mCharacteristicK,"");
+				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicK);
+				
 			}
 
 		}
 	}
 
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
+		private float k;
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle extras = intent.getExtras();
@@ -60,19 +78,56 @@ public class CalibActivity extends Activity {
 				finish();
 			} else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
-				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
+				
+				String uuid = extras.getString(BleService.EXTRA_UUID).toUpperCase();
+				if(uuid.equals(Utils.UUID_AD))
+				{
+					//if(BleService.EXTRA_VALUE)
+					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-				ad = Utils.byte2Int(val);
+					ad = Utils.byte2Int(val);
 
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
 
-						m_tvAD.setText(String.valueOf(ad));
-					}
-				});
+							m_tvAD.setText(String.valueOf(ad));
+						}
+					});
+				}
+				else if(uuid.equals(Utils.UUID_K))
+				{
+					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-			} else if (BleService.BLE_CHARACTERISTIC_WRITE.equals(action)) {
+					k = Utils.byte2float(val,0);
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+
+							m_tvK.setText(String.valueOf(k));
+						}
+					});
+				}
+				
+					
+				
+				else if(uuid.equals(Utils.UUID_ZERO))
+				{
+					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
+
+					ad = Utils.byte2Int(val);
+
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+
+							m_etZero.setText(String.valueOf(ad));
+						}
+					});
+				}
+		
+			}	
+			 else if (BleService.BLE_CHARACTERISTIC_WRITE.equals(action)) {
 				Toast.makeText(CalibActivity.this, "Write success!",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -110,6 +165,7 @@ public class CalibActivity extends Activity {
 		m_btCalibWgt = (Button) findViewById(R.id.btCalbWgt);
 		m_etZero = (EditText) findViewById(R.id.etZero);
 		m_etWgt = (EditText) findViewById(R.id.etWgt);
+		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
 		final View.OnClickListener pClickListener = new ButtonListener();
 
 		m_btCalibZero.setOnClickListener(pClickListener);
@@ -117,18 +173,28 @@ public class CalibActivity extends Activity {
 
 		mDeviceAddress = getIntent().getStringExtra("address");
 		String service = getIntent().getStringExtra("service");
-		String characteristic = getIntent().getStringExtra("characteristic");
+		//String characteristic = getIntent().getStringExtra("characteristic");
 		BleApplication app = (BleApplication) getApplication();
 		mBle = app.getIBle();
 		if (mBle == null) {
 			Toast.makeText(this, "BLE not find", Toast.LENGTH_LONG).show();
 			return;
 		}
-		mCharacteristic = mBle.getService(mDeviceAddress,
+		mCharacteristicAD = mBle.getService(mDeviceAddress,
 				UUID.fromString(service)).getCharacteristic(
-				UUID.fromString(characteristic));
+				UUID.fromString(Utils.UUID_AD));
 
-		if (mCharacteristic == null) {
+		mCharacteristicZero = mBle.getService(mDeviceAddress,
+				UUID.fromString(service)).getCharacteristic(
+				UUID.fromString(Utils.UUID_ZERO));
+		mCharacteristicK = mBle.getService(mDeviceAddress,
+				UUID.fromString(service)).getCharacteristic(
+				UUID.fromString(Utils.UUID_K));
+		
+		mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicZero);
+		mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicK);
+		
+		if (mCharacteristicAD == null) {
 			Toast.makeText(this, "Characteristic not find", Toast.LENGTH_LONG)
 					.show();
 			return;
@@ -136,7 +202,7 @@ public class CalibActivity extends Activity {
 		new Timer().schedule(new TimerTask() {
 			public void run() {
 
-				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
+				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicAD);
 			}
 		}, 0, 100);
 

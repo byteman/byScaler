@@ -6,7 +6,11 @@ import java.util.Map;
 public class Utils {
 	public static Map<String, String> BLE_SERVICES = new HashMap<String, String>();
 	public static Map<String, String> BLE_CHARACTERISTICS = new HashMap<String, String>();
-	
+	public static String UUID_SRV="0000FFF0-0000-1000-8000-00805F9B34FB";
+	public static String UUID_AD="0000FFF4-0000-1000-8000-00805F9B34FB";
+	public static String UUID_ZERO="0000FFF1-0000-1000-8000-00805F9B34FB";
+	public static String UUID_WGT="0000FFF3-0000-1000-8000-00805F9B34FB";
+	public static String UUID_K="0000FFF2-0000-1000-8000-00805F9B34FB";
 	static {
 		BLE_SERVICES.put("00001811-0000-1000-8000-00805F9B34FB", "Alert Notification Service");
 		BLE_SERVICES.put("0000180F-0000-1000-8000-00805F9B34FB", "Battery Service");
@@ -132,4 +136,66 @@ public class Utils {
         return intValue;
        
     }
+    public static byte[] intToByteArray(int i) {   
+        byte[] result = new byte[4];   
+        //由高位到低位
+        result[3] = (byte)((i >> 24) & 0xFF);
+        result[2] = (byte)((i >> 16) & 0xFF);
+        result[1] = (byte)((i >> 8) & 0xFF); 
+        result[0] = (byte)(i & 0xFF);
+        return result;
+      }
+	/**
+	 * 浮点转换为字节
+	 * 
+	 * @param f
+	 * @return
+	 */
+	public static byte[] float2byte(float f) {
+		
+		// 把float转换为byte[]
+		int fbit = Float.floatToIntBits(f);
+		
+		byte[] b = new byte[4];  
+	    for (int i = 0; i < 4; i++) {  
+	        b[i] = (byte) (fbit >> (24 - i * 8));  
+	    } 
+	    
+	    // 翻转数组
+		int len = b.length;
+		// 建立一个与源数组元素类型相同的数组
+		byte[] dest = new byte[len];
+		// 为了防止修改源数组，将源数组拷贝一份副本
+		System.arraycopy(b, 0, dest, 0, len);
+		byte temp;
+		// 将顺位第i个与倒数第i个交换
+		for (int i = 0; i < len / 2; ++i) {
+			temp = dest[i];
+			dest[i] = dest[len - i - 1];
+			dest[len - i - 1] = temp;
+		}
+	    
+	    return dest;
+	    
+	}
+	
+	/**
+	 * 字节转换为浮点
+	 * 
+	 * @param b 字节（至少4个字节）
+	 * @param index 开始位置
+	 * @return
+	 */
+	public static float byte2float(byte[] b, int index) {  
+	    int l;                                           
+	    l = b[index + 0];                                
+	    l &= 0xff;                                       
+	    l |= ((long) b[index + 1] << 8);                 
+	    l &= 0xffff;                                     
+	    l |= ((long) b[index + 2] << 16);                
+	    l &= 0xffffff;                                   
+	    l |= ((long) b[index + 3] << 24);                
+	    return Float.intBitsToFloat(l);                  
+	}
+
 }

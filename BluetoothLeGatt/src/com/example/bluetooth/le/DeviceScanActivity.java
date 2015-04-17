@@ -166,8 +166,8 @@ public class DeviceScanActivity extends ListActivity {
 					Intent intent = new Intent(DeviceScanActivity.this,
 							WeightActivity.class);
 					intent.putExtra("address", mAddress);
-					intent.putExtra("service", "0000fff0-0000-1000-8000-00805F9B34FB");
-					intent.putExtra("characteristic", "0000fff2-0000-1000-8000-00805F9B34FB");
+					intent.putExtra("service", Utils.UUID_SRV);
+					intent.putExtra("characteristic", Utils.UUID_AD);
 					startActivity(intent);				
 				}
 			});
