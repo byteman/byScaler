@@ -94,7 +94,7 @@ public class WeightActivity extends Activity {
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-				weight = Utils.byte2Int(val);
+				weight = Utils.bytesToInt(val);
 
 				runOnUiThread(new Runnable() {
 					@Override
@@ -171,7 +171,7 @@ public class WeightActivity extends Activity {
 		mBle = app.getIBle();
 		mCharacteristic = mBle.getService(mDeviceAddress,
 				UUID.fromString(mService)).getCharacteristic(
-				UUID.fromString(mCharacteristics));
+				UUID.fromString(Utils.UUID_WGT));
 		if (mCharacteristic == null) {
 			return;
 		}
@@ -180,7 +180,7 @@ public class WeightActivity extends Activity {
 
 				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
 			}
-		}, 0, 100);
+		}, 0, 1000);
 
 		// mNotifyStarted = true;
 		// mBle.requestCharacteristicNotification(mDeviceAddress,

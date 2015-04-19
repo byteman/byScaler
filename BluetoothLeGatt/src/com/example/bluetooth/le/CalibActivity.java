@@ -41,8 +41,8 @@ public class CalibActivity extends Activity {
 			if (v.getId() == R.id.btCalbZero) {
 				int ad 	  = Integer.valueOf((String) m_tvAD.getText());
 				m_etZero.setText(m_tvAD.getText());
-				mCharacteristicZero.setValue(Utils.intToByteArray(ad));
-				mBle.requestWriteCharacteristic(mDeviceAddress, mCharacteristicK,"");
+				mCharacteristicZero.setValue(Utils.intToByte(ad));
+				mBle.requestWriteCharacteristic(mDeviceAddress, mCharacteristicZero,"");
 				
 			} else if (v.getId() == R.id.btCalbWgt) {
 				if (m_etWgt.getText().length() <= 0) {
@@ -50,7 +50,7 @@ public class CalibActivity extends Activity {
 							Toast.LENGTH_LONG).show();
 					return;
 				}
-				float ad 	  = Float.valueOf((String) m_tvAD.getText());
+				float ad 	 = Float.valueOf((String) m_tvAD.getText());
 				float zero  = Float.valueOf((String) m_etZero.getText().toString());
 				float wgt   = Float.valueOf((String) m_etWgt.getText().toString());
 				float k = (float)( wgt / (ad-zero) );
@@ -72,7 +72,7 @@ public class CalibActivity extends Activity {
 			Bundle extras = intent.getExtras();
 
 			String action = intent.getAction();
-			Log.e(TAG, action);
+			//Log.e(TAG, action);
 			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
 
 				finish();
@@ -85,7 +85,7 @@ public class CalibActivity extends Activity {
 					//if(BleService.EXTRA_VALUE)
 					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-					ad = Utils.byte2Int(val);
+					ad = Utils.bytesToInt(val);
 
 					runOnUiThread(new Runnable() {
 						@Override
@@ -115,7 +115,7 @@ public class CalibActivity extends Activity {
 				{
 					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-					ad = Utils.byte2Int(val);
+					ad = Utils.bytesToInt(val);
 
 					runOnUiThread(new Runnable() {
 						@Override
@@ -125,6 +125,21 @@ public class CalibActivity extends Activity {
 						}
 					});
 				}
+				else if(uuid.equals(Utils.UUID_WGT))
+				{
+					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
+
+					ad = Utils.bytesToInt(val);
+
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+
+							m_tvWgt.setText(String.valueOf(ad));
+						}
+					});
+				}
+				
 		
 			}	
 			 else if (BleService.BLE_CHARACTERISTIC_WRITE.equals(action)) {
@@ -135,6 +150,9 @@ public class CalibActivity extends Activity {
 		}
 	};
 	private ActionBar mActionBar;
+	private BleGattCharacteristic mCharacteristicWgt;
+	private TextView m_tvWgt;
+	private Timer pTimer;
 
 	/*
 	 * (non-Javadoc)
@@ -160,7 +178,8 @@ public class CalibActivity extends Activity {
 		// 将应用程序图标设置为可点击的按钮,并且在图标上添加向左的箭头
 		// 该句代码起到了决定性作用
 		mActionBar.setDisplayHomeAsUpEnabled(true);
-		m_tvAD = (TextView) findViewById(R.id.tvAD);
+		m_tvAD  = (TextView) findViewById(R.id.tvAD);
+		m_tvWgt = (TextView) findViewById(R.id.tvWgt);
 		m_btCalibZero = (Button) findViewById(R.id.btCalbZero);
 		m_btCalibWgt = (Button) findViewById(R.id.btCalbWgt);
 		m_etZero = (EditText) findViewById(R.id.etZero);
@@ -190,6 +209,9 @@ public class CalibActivity extends Activity {
 		mCharacteristicK = mBle.getService(mDeviceAddress,
 				UUID.fromString(service)).getCharacteristic(
 				UUID.fromString(Utils.UUID_K));
+		mCharacteristicWgt = mBle.getService(mDeviceAddress,
+				UUID.fromString(service)).getCharacteristic(
+				UUID.fromString(Utils.UUID_WGT));
 		
 		mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicZero);
 		mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicK);
@@ -199,12 +221,15 @@ public class CalibActivity extends Activity {
 					.show();
 			return;
 		}
-		new Timer().schedule(new TimerTask() {
+		pTimer = new Timer();
+		pTimer.schedule(new TimerTask() {
 			public void run() {
 
 				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicAD);
+				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicWgt);
+				
 			}
-		}, 0, 100);
+		}, 1000, 1000);
 
 	}
 
@@ -226,6 +251,7 @@ public class CalibActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStop();
 		unregisterReceiver(mBleReceiver);
+		pTimer.cancel();
 	}
 
 }

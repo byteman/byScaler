@@ -3,6 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+   <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+        
     <TextView
         android:id="@+id/tvAD"
         android:layout_width="match_parent"
@@ -13,7 +19,17 @@
         android:text="12345"
         android:textColor="@color/red"
         android:textSize="72sp" />
-
+    <TextView
+        android:id="@+id/tvWgt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/setbar_bg"
+        android:gravity="center"
+        android:text="12345"
+        android:textColor="@color/red"
+        android:textSize="72sp" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

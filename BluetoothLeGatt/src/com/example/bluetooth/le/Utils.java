@@ -128,23 +128,31 @@ public class Utils {
 		}
 		return INSTANCE;
 	}
-    public static int byte2Int(byte[] b) {
-        int intValue = 0;
-       
-         
-        intValue =  ((b[3] & 0xFF) << 24) + ((b[2] & 0xFF) << 16) + ((b[1] & 0xFF) << 8) + ((b[3] & 0xFF)); 
-        return intValue;
-       
-    }
-    public static byte[] intToByteArray(int i) {   
-        byte[] result = new byte[4];   
-        //由高位到低位
-        result[3] = (byte)((i >> 24) & 0xFF);
-        result[2] = (byte)((i >> 16) & 0xFF);
-        result[1] = (byte)((i >> 8) & 0xFF); 
-        result[0] = (byte)(i & 0xFF);
-        return result;
-      }
+	public static byte[] intToByte(int number) {
+		byte[] abyte = new byte[4];
+		// "&" 与（AND），对两个整型操作数中对应位执行布尔代数，两个位都为1时输出1，否则0。
+		abyte[0] = (byte) (0xff & number);
+		// ">>"右移位，若为正数则高位补0，若为负数则高位补1
+		abyte[1] = (byte) ((0xff00 & number) >> 8);
+		abyte[2] = (byte) ((0xff0000 & number) >> 16);
+		abyte[3] = (byte) ((0xff000000 & number) >> 24);
+		return abyte;
+	}
+
+	/**
+	 *基于位移的 byte[]转化成int
+	 * @param byte[] bytes
+	 * @return int  number
+	 */
+
+	public static int bytesToInt(byte[] bytes) {
+		int number = bytes[0] & 0xFF;
+		// "|="按位或赋值。
+		number |= ((bytes[1] << 8) & 0xFF00);
+		number |= ((bytes[2] << 16) & 0xFF0000);
+		number |= ((bytes[3] << 24) & 0xFF000000);
+		return number;
+	}
 	/**
 	 * 浮点转换为字节
 	 * 
