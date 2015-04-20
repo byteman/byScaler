@@ -199,13 +199,16 @@ public class DeviceScanActivity extends ListActivity {
 		}
 		return true;
 	}
-
+	private void refreshList()
+	{
+		mLeDeviceListAdapter.clear();
+		mLeDeviceListAdapter.notifyDataSetChanged();
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_scan:
-			mLeDeviceListAdapter.clear();
-			mLeDeviceListAdapter.notifyDataSetChanged();
+			refreshList();
 			Log.e("DeviceScan", "scan");
 			scanLeDevice(true);
 			break;
@@ -234,7 +237,7 @@ public class DeviceScanActivity extends ListActivity {
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 
-		
+		refreshList();
 		scanLeDevice(true);
 	}
 

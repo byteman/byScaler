@@ -24,7 +24,7 @@ import com.xtremeprog.sdk.ble.IBle;
 public class CalibActivity extends Activity {
 
 	private String mDeviceAddress;
-	private int ad = 0;
+	
 	private IBle mBle;
 	private BleGattCharacteristic mCharacteristicAD;
 	private BleGattCharacteristic mCharacteristicK;
@@ -66,7 +66,9 @@ public class CalibActivity extends Activity {
 
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 		private float k;
-
+		private int zero;
+		private int wgt;
+		private int ad = 0;
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle extras = intent.getExtras();
@@ -74,7 +76,7 @@ public class CalibActivity extends Activity {
 			String action = intent.getAction();
 			//Log.e(TAG, action);
 			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-
+				Toast.makeText(context, "Disconnect", Toast.LENGTH_LONG).show();
 				finish();
 			} else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
@@ -115,13 +117,13 @@ public class CalibActivity extends Activity {
 				{
 					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-					ad = Utils.bytesToInt(val);
+					zero = Utils.bytesToInt(val);
 
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
 
-							m_etZero.setText(String.valueOf(ad));
+							m_etZero.setText(String.valueOf(zero));
 						}
 					});
 				}
@@ -129,13 +131,13 @@ public class CalibActivity extends Activity {
 				{
 					byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 
-					ad = Utils.bytesToInt(val);
+					wgt = Utils.bytesToInt(val);
 
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
 
-							m_tvWgt.setText(String.valueOf(ad));
+							m_tvWgt.setText(String.valueOf(wgt));
 						}
 					});
 				}

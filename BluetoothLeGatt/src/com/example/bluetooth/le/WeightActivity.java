@@ -31,6 +31,16 @@ import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
 public class WeightActivity extends Activity {
+	private final class ReadWgtTimer extends TimerTask {
+		public void run() {
+			if(mSuspend)
+			{
+				return;
+			}
+			mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
+		}
+	}
+
 	private class WeightData {
 
 		public String sid;
@@ -51,12 +61,13 @@ public class WeightActivity extends Activity {
 
 	// final int weight = 0;
 	private int index = 0;
-	private int weight = 0;
+	
 	private String mDeviceAddress;
 	private String mService;
 	private String mCharacteristics;
 	private IBle mBle;
 	private boolean mNotifyStarted;
+	private boolean mSuspend;
 	private BleGattCharacteristic mCharacteristic;
 	private TextView txtWgt;
 	private ListView listData;
@@ -70,6 +81,8 @@ public class WeightActivity extends Activity {
 	}
 
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
+		private int weight;
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle extras = intent.getExtras();
@@ -128,7 +141,11 @@ public class WeightActivity extends Activity {
 						"Connect ok!" + extras.getString(BleService.EXTRA_ADDR),
 						Toast.LENGTH_SHORT).show();
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-
+				Toast.makeText(
+						WeightActivity.this,
+						"Disconnect!" + extras.getString(BleService.EXTRA_ADDR),
+						Toast.LENGTH_SHORT).show();
+						finish();
 			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
 				Toast.makeText(
 						WeightActivity.this,
@@ -139,6 +156,8 @@ public class WeightActivity extends Activity {
 
 		}
 	};
+
+	private Timer pTimer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -175,12 +194,9 @@ public class WeightActivity extends Activity {
 		if (mCharacteristic == null) {
 			return;
 		}
-		new Timer().schedule(new TimerTask() {
-			public void run() {
-
-				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
-			}
-		}, 0, 1000);
+		mSuspend = false;
+		pTimer = new Timer();
+		pTimer.schedule(new ReadWgtTimer(), 0, 1000);
 
 		// mNotifyStarted = true;
 		// mBle.requestCharacteristicNotification(mDeviceAddress,
@@ -220,6 +236,7 @@ public class WeightActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
+		
 	}
 
 	@Override
@@ -227,7 +244,15 @@ public class WeightActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStop();
 		Log.e(TAG, "onStop");
+		
 		unregisterReceiver(mBleReceiver);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		Log.e(TAG, "OnDestory");
 	}
 
 	@Override
