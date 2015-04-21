@@ -74,7 +74,7 @@ public class CalibActivity extends Activity {
 			Bundle extras = intent.getExtras();
 
 			String action = intent.getAction();
-			//Log.e(TAG, action);
+			Log.e(TAG, action);
 			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
 				Toast.makeText(context, "Disconnect", Toast.LENGTH_LONG).show();
 				finish();
@@ -226,7 +226,7 @@ public class CalibActivity extends Activity {
 		pTimer = new Timer();
 		pTimer.schedule(new TimerTask() {
 			public void run() {
-
+				Log.e(TAG,"calib timer");	
 				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicAD);
 				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicWgt);
 				
@@ -239,12 +239,14 @@ public class CalibActivity extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		Log.e(TAG, "onDestroy");
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		Log.e(TAG, "OnResume");
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 	}
 
@@ -252,6 +254,7 @@ public class CalibActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
+		Log.e(TAG, "onStop");
 		unregisterReceiver(mBleReceiver);
 		pTimer.cancel();
 	}

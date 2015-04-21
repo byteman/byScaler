@@ -35,7 +35,7 @@ public class WeightActivity extends Activity {
 		public void run() {
 			if(mSuspend)
 			{
-				return;
+				//return;
 			}
 			mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
 		}
@@ -153,7 +153,14 @@ public class WeightActivity extends Activity {
 								+ extras.getString(BleService.EXTRA_ADDR),
 						Toast.LENGTH_SHORT).show();
 			}
-
+			else if (BleService.BLE_REQUEST_FAILED .equals(action)) {
+				Toast.makeText(
+						WeightActivity.this,
+						"request failed"
+								+ extras.getString(BleService.EXTRA_ADDR),
+						Toast.LENGTH_SHORT).show();
+				finish();
+			}
 		}
 	};
 
@@ -225,7 +232,7 @@ public class WeightActivity extends Activity {
 			intent.putExtra("address", mDeviceAddress);
 			intent.putExtra("service", mService);
 			intent.putExtra("characteristic", mCharacteristics);
-
+			mSuspend = true;
 			startActivity(intent);
 			return true;
 		}
@@ -235,6 +242,7 @@ public class WeightActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		mSuspend = false;
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 		
 	}
@@ -244,14 +252,17 @@ public class WeightActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStop();
 		Log.e(TAG, "onStop");
-		
+		mSuspend = true;
+	
 		unregisterReceiver(mBleReceiver);
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		super.onDestroy();
+		super.onDestroy();		
+		pTimer.cancel();
+		mBle.disconnect(mDeviceAddress);
 		Log.e(TAG, "OnDestory");
 	}
 

@@ -62,9 +62,12 @@
 package com.example.bluetooth.le;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -97,6 +100,9 @@ public class DeviceScanActivity extends ListActivity {
 	private IBle mBle;
 	private String mAddress;
 	private static final int REQUEST_ENABLE_BT = 1;
+	private ProgressDialog progressDialog = null;
+	private String TAG = "DeviceScan";
+	private Timer pTimer = null;
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
 
@@ -105,9 +111,10 @@ public class DeviceScanActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-
+			Log.e(TAG, action);
 			if (BleService.BLE_GATT_CONNECTED.equals(action)) {
 				Log.e("DeviceScan", "server connect");
+
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
 				Log.e("DeviceScan", "server disconnect");
 				onDeviceDisconnected();
@@ -115,6 +122,7 @@ public class DeviceScanActivity extends ListActivity {
 			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
 				// displayGattServices(mBle.getServices(mDeviceAddress));
 				Log.e("DeviceScan", "server discovered");
+				progressDialog.dismiss(); // 关闭进度条
 				createWeightActivity();
 			}
 
@@ -168,7 +176,7 @@ public class DeviceScanActivity extends ListActivity {
 					intent.putExtra("address", mAddress);
 					intent.putExtra("service", Utils.UUID_SRV);
 					intent.putExtra("characteristic", Utils.UUID_AD);
-					startActivity(intent);				
+					startActivity(intent);
 				}
 			});
 		}
@@ -199,11 +207,12 @@ public class DeviceScanActivity extends ListActivity {
 		}
 		return true;
 	}
-	private void refreshList()
-	{
+
+	private void refreshList() {
 		mLeDeviceListAdapter.clear();
 		mLeDeviceListAdapter.notifyDataSetChanged();
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -228,7 +237,7 @@ public class DeviceScanActivity extends ListActivity {
 		// currently enabled,
 		// fire an intent to display a dialog asking the user to grant
 		// permission to enable it.
-		Log.e("DeviceScan", "OnResume");
+		Log.e(TAG, "OnResume");
 		BleApplication app = (BleApplication) getApplication();
 		mBle = app.getIBle();
 		if (mBle != null && !mBle.adapterEnabled()) {
@@ -255,7 +264,8 @@ public class DeviceScanActivity extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.e("DeviceScan", "onPause");
+		Log.e(TAG, "onPause");
+
 		unregisterReceiver(mBleReceiver);
 		scanLeDevice(false);
 		mLeDeviceListAdapter.clear();
@@ -272,7 +282,31 @@ public class DeviceScanActivity extends ListActivity {
 		}
 		mAddress = device.getAddress();
 		mBle.requestConnect(mAddress);
+		progressDialog = ProgressDialog.show(DeviceScanActivity.this, "蓝牙称",
+				"蓝牙称正在连接中....！");
 
+		/*
+		 * pTimer = new Timer();
+		 * 
+		 * pTimer.schedule(new TimerTask() {
+		 * 
+		 * @Override public void run() { // TODO Auto-generated method stub
+		 * progressDialog.dismiss(); Toast.makeText(DeviceScanActivity.this,
+		 * "蓝牙称连接失败", Toast.LENGTH_SHORT).show(); pTimer.cancel(); } }, 0,5000);
+		 */
+		mHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+					Toast.makeText(DeviceScanActivity.this, "蓝牙称连接失败",
+							Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		}, 5000);
 	}
 
 	private void scanLeDevice(final boolean enable) {
