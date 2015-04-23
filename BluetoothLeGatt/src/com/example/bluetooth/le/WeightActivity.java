@@ -1,6 +1,5 @@
 package com.example.bluetooth.le;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,19 +24,31 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SimpleAdapter.ViewBinder;
 
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
-public class WeightActivity extends Activity {
+public class WeightActivity extends Activity implements View.OnClickListener {
+
+	private int index = 0;
+
+	private String mDeviceAddress;
+
+	private IBle mBle;
+	private BleGattCharacteristic mCharacteristicWgt;
+	private TextView txtWgt;
+	private Button btnSave;
+	private ListView listData;
+	private MyAdapter adapter;
+	private Timer pTimer;
+	protected static final String TAG = "weight";
+
 	private final class ReadWgtTimer extends TimerTask {
 		public void run() {
-			if(mSuspend)
-			{
-				//return;
-			}
-			mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristic);
+			
+			mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicWgt);
 		}
 	}
 
@@ -49,8 +60,6 @@ public class WeightActivity extends Activity {
 
 		public WeightData(int id, String kg) {
 			sid = String.valueOf(id);
-			// Date date = new Date();
-			// System.out.println("����ת�ַ�" + HelloTest.DateToStr(date));
 			long time = System.currentTimeMillis();
 
 			stime = getCurrentTime(time);
@@ -58,21 +67,6 @@ public class WeightActivity extends Activity {
 		}
 
 	};
-
-	// final int weight = 0;
-	private int index = 0;
-	
-	private String mDeviceAddress;
-	private String mService;
-	private String mCharacteristics;
-	private IBle mBle;
-	private boolean mNotifyStarted;
-	private boolean mSuspend;
-	private BleGattCharacteristic mCharacteristic;
-	private TextView txtWgt;
-	private ListView listData;
-	public MyAdapter adapter;
-	protected static final String TAG = "weight";
 
 	public static String getCurrentTime(long date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -82,6 +76,7 @@ public class WeightActivity extends Activity {
 
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 		private int weight;
+		private boolean mNotifyStarted;
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -93,7 +88,7 @@ public class WeightActivity extends Activity {
 
 			String uuid = extras.getString(BleService.EXTRA_UUID);
 			if (uuid != null
-					&& !mCharacteristic.getUuid().toString().equals(uuid)) {
+					&& !mCharacteristicWgt.getUuid().toString().equals(uuid)) {
 				return;
 			}
 
@@ -145,15 +140,14 @@ public class WeightActivity extends Activity {
 						WeightActivity.this,
 						"Disconnect!" + extras.getString(BleService.EXTRA_ADDR),
 						Toast.LENGTH_SHORT).show();
-						finish();
+				finish();
 			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
 				Toast.makeText(
 						WeightActivity.this,
 						"service discovery!"
 								+ extras.getString(BleService.EXTRA_ADDR),
 						Toast.LENGTH_SHORT).show();
-			}
-			else if (BleService.BLE_REQUEST_FAILED .equals(action)) {
+			} else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
 				Toast.makeText(
 						WeightActivity.this,
 						"request failed"
@@ -164,44 +158,29 @@ public class WeightActivity extends Activity {
 		}
 	};
 
-	private Timer pTimer;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_weight);
-		txtWgt = (TextView) findViewById(R.id.txtWgt);
-		listData = (ListView) findViewById(R.id.list);
 
-		adapter = new MyAdapter(this);
-		listData.setAdapter(adapter);
+		initResource();
 
-		final Button btnSave = (Button) findViewById(R.id.btn_save);
-
-		btnSave.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				String kgs = txtWgt.getText().toString();
-				WeightData data = new WeightData(index++, kgs);
-
-				adapter.arr.add(data);
-				adapter.notifyDataSetChanged();
-			}
-		});
+		btnSave.setOnClickListener(this);
 
 		mDeviceAddress = getIntent().getStringExtra("address");
-		mService = getIntent().getStringExtra("service");
-		mCharacteristics = getIntent().getStringExtra("characteristic");
+		
 		BleApplication app = (BleApplication) getApplication();
 		mBle = app.getIBle();
-		mCharacteristic = mBle.getService(mDeviceAddress,
-				UUID.fromString(mService)).getCharacteristic(
+		if (mBle != null) {
+
+		}
+		mCharacteristicWgt = mBle.getService(mDeviceAddress,
+				UUID.fromString(Utils.UUID_SRV)).getCharacteristic(
 				UUID.fromString(Utils.UUID_WGT));
-		if (mCharacteristic == null) {
+		if (mCharacteristicWgt == null) {
 			return;
 		}
-		mSuspend = false;
+	
 		pTimer = new Timer();
 		pTimer.schedule(new ReadWgtTimer(), 0, 1000);
 
@@ -209,6 +188,16 @@ public class WeightActivity extends Activity {
 		// mBle.requestCharacteristicNotification(mDeviceAddress,
 		// mCharacteristic);
 
+	}
+
+	private void initResource() {
+		// TODO Auto-generated method stub
+		txtWgt = (TextView) findViewById(R.id.txtWgt);
+		listData = (ListView) findViewById(R.id.list);
+
+		adapter = new MyAdapter(this);
+		listData.setAdapter(adapter);
+		btnSave = (Button) findViewById(R.id.btn_save);
 	}
 
 	@Override
@@ -226,13 +215,10 @@ public class WeightActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
-	
-			Intent intent = new Intent(WeightActivity.this, CalibActivity.class); 
-			
+
+			Intent intent = new Intent(WeightActivity.this, CalibActivity.class);
 			intent.putExtra("address", mDeviceAddress);
-			intent.putExtra("service", mService);
-			intent.putExtra("characteristic", mCharacteristics);
-			mSuspend = true;
+
 			startActivity(intent);
 			return true;
 		}
@@ -242,9 +228,9 @@ public class WeightActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mSuspend = false;
+
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
-		
+
 	}
 
 	@Override
@@ -252,25 +238,16 @@ public class WeightActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStop();
 		Log.e(TAG, "onStop");
-		mSuspend = true;
-	
 		unregisterReceiver(mBleReceiver);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();		
-		pTimer.cancel();
-		mBle.disconnect(mDeviceAddress);
-		Log.e(TAG, "OnDestory");
 	}
 
 	@Override
-	public void onPanelClosed(int featureId, Menu menu) {
-		super.onPanelClosed(featureId, menu);
-		Log.e(TAG, "onPanelClosed");
-	
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		pTimer.cancel();
+		mBle.disconnect(mDeviceAddress);
+		Log.e(TAG, "OnDestory");
 	}
 
 	private class MyAdapter extends BaseAdapter {
@@ -282,9 +259,7 @@ public class WeightActivity extends Activity {
 			super();
 			inflater = LayoutInflater.from(context);
 			arr = new ArrayList<WeightData>();
-			for (int i = 0; i < 3; i++) {
-				// arr.add("");
-			}
+
 		}
 
 		@Override
@@ -320,6 +295,29 @@ public class WeightActivity extends Activity {
 
 			return view;
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.btn_save:
+			saveWeight();
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+
+	private void saveWeight() {
+		// TODO Auto-generated method stub
+		String kgs = txtWgt.getText().toString();
+		WeightData data = new WeightData(index++, kgs);
+
+		adapter.arr.add(data);
+		adapter.notifyDataSetChanged();
 	}
 
 }
