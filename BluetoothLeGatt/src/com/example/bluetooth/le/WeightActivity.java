@@ -47,8 +47,15 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private final class ReadWgtTimer extends TimerTask {
 		public void run() {
+			if(mBle.hasConnected(mDeviceAddress))
+			{
+				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicWgt);
+			}
+			else 
+			{
+				mBle.requestConnect(mDeviceAddress);
+			}
 			
-			mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicWgt);
 		}
 	}
 
@@ -130,7 +137,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				Toast.makeText(WeightActivity.this, "Write success!",
 						Toast.LENGTH_SHORT).show();
 			} else if (BleService.BLE_GATT_CONNECTED.equals(action)) {
-
+				Config.getInstance(WeightActivity.this).setDevAddress(mDeviceAddress);
 				Toast.makeText(
 						WeightActivity.this,
 						"Connect ok!" + extras.getString(BleService.EXTRA_ADDR),

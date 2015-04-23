@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
+encoding//src/com/xtremeprog/sdk/ble/AndroidBle.java=UTF-8
 encoding//src/com/xtremeprog/sdk/ble/BleService.java=UTF-8
+encoding//src/com/xtremeprog/sdk/ble/BroadcomBle.java=UTF-8
+encoding//src/com/xtremeprog/sdk/ble/IBle.java=UTF-8
+encoding//src/com/xtremeprog/sdk/ble/SamsungBle.java=UTF-8
