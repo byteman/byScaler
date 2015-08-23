@@ -1,5 +1,7 @@
 package com.example.bluetooth.le;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -205,5 +207,12 @@ public class Utils {
 	    l |= ((long) b[index + 3] << 24);                
 	    return Float.intBitsToFloat(l);                  
 	}
+	
+	public static String getNormalTime(long value)  
+	{  
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;  
+	    String time = format.format(new Date(value)) ;  
+	    return time;  
+	}  
 
 }

@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -36,6 +37,8 @@ import com.example.worker.Global;
 import com.example.worker.WorkService;
 import com.example.bluetooth.le.ConnectBTPairedActivity;
 import com.example.bluetooth.le.SearchBTActivity;
+import com.example.db.WeightDao;
+import com.example.db.WeightRecord;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
@@ -70,7 +73,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			
 		}
 	}
-
+/*
 	private class WeightData {
 
 		public String sid;
@@ -86,7 +89,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 
 	};
-
+*/
 	public static String getCurrentTime(long date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String str = format.format(new Date(date));
@@ -160,7 +163,16 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		
-
+		WeightDao wDao = new WeightDao(this);
+		List<WeightRecord> items = new ArrayList<WeightRecord>();
+		
+		items = wDao.getWeightList();
+		
+		for(WeightRecord item : items)
+		{
+			adapter.arr.add(item);		
+		}
+		adapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -186,12 +198,12 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private class MyAdapter extends BaseAdapter {
 
 		private LayoutInflater inflater;
-		public ArrayList<WeightData> arr;
+		public ArrayList<WeightRecord> arr;
 
 		public MyAdapter(Context context) {
 			super();
 			inflater = LayoutInflater.from(context);
-			arr = new ArrayList<WeightData>();
+			arr = new ArrayList<WeightRecord>();
 
 		}
 
@@ -220,11 +232,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				view = inflater.inflate(R.layout.listview_item, null);
 			}
 			final TextView edit = (TextView) view.findViewById(R.id.index);
-			edit.setText(arr.get(position).sid);
+			//String index = String.valueOf(arr.size()+1);
+			edit.setText(arr.get(position).getID());
 			final TextView time = (TextView) view.findViewById(R.id.time);
-			time.setText(arr.get(position).stime);
+			String timeString = Utils.getNormalTime(arr.get(position).getTime());
+			time.setText(timeString);
 			final TextView kg = (TextView) view.findViewById(R.id.kg);
-			kg.setText(arr.get(position).skg);
+			kg.setText(arr.get(position).getGross());
 
 			return view;
 		}
@@ -250,9 +264,16 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private void saveWeight() {
 		// TODO Auto-generated method stub
 		String kgs = txtWgt.getText().toString();
-		WeightData data = new WeightData(index++, kgs);
-
-		adapter.arr.add(data);
+		
+		WeightRecord item = new WeightRecord();
+		item.setGross(kgs);
+		item.setTare("0");
+		item.setNet(kgs);
+		item.setID(String.valueOf(adapter.getCount()+1));
+		WeightDao wDao = new WeightDao(this);
+		wDao.saveWeight(item);
+		
+		adapter.arr.add(item);
 		adapter.notifyDataSetChanged();
 	}
 
