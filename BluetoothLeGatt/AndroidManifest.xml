@@ -52,6 +52,9 @@ limitations under the License.
             android:name="com.xtremeprog.sdk.ble.BleService"
             android:enabled="true" />
 
+        <service
+            android:name="com.example.worker.WorkService"
+            android:enabled="true" />
         <activity
             android:name="com.example.bluetooth.le.CharacteristicActivity"
             android:label="@string/title_activity_characteristic" >
@@ -69,6 +72,20 @@ limitations under the License.
             android:name=".CalibActivity"
             android:label="@string/calibwgt" >
         </activity>
+         <activity
+            android:name=".ConnectBTPairedActivity"
+            android:label="@string/search" >
+        </activity>
+         <activity
+            android:name=".SearchBTActivity"
+            android:label="@string/calibwgt" >
+        </activity>
+         <activity
+            android:name=".FormActivity"
+            android:label="@string/calibwgt" >
+        </activity>
+
+        
         <activity
             android:name=".StartActivity"
             android:configChanges="orientation|keyboardHidden"

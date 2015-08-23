@@ -418,4 +418,9 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public void disconnectAll()
+	{
+		
+	}
 }

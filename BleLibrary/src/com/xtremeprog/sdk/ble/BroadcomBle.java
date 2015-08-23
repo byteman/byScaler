@@ -394,4 +394,8 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	public void disconnectAll()
+	{
+		
+	}
 }

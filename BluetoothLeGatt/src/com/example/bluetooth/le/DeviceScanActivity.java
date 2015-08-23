@@ -61,6 +61,7 @@
 
 package com.example.bluetooth.le;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,6 +76,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -86,6 +88,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bluetooth.le.StartActivity.MHandler;
+import com.example.worker.Global;
+import com.example.worker.WorkService;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
@@ -97,7 +102,7 @@ public class DeviceScanActivity extends ListActivity {
 	private LeDeviceListAdapter mLeDeviceListAdapter;
 	private boolean mScanning;
 	private Handler mHandler;
-	private IBle mBle;
+	private Handler mHandler2;
 	private String mAddress;
 	private static final int REQUEST_ENABLE_BT = 1;
 	private ProgressDialog progressDialog = null;
@@ -106,80 +111,25 @@ public class DeviceScanActivity extends ListActivity {
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
 
-	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
+	
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			Log.e(TAG, action);
-			if (BleService.BLE_GATT_CONNECTED.equals(action)) {
-				Log.e("DeviceScan", "server connect");
+	private void onDeviceDisconnected() {
+		// TODO Auto-generated method stub
 
-			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-				Log.e("DeviceScan", "server disconnect");
-				onDeviceDisconnected();
+	}
 
-			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
-				// displayGattServices(mBle.getServices(mDeviceAddress));
-				Log.e("DeviceScan", "server discovered");
-				progressDialog.dismiss(); // 关闭进度条
-				createWeightActivity();
+	private void createWeightActivity() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+
+				Intent intent = new Intent(DeviceScanActivity.this,
+						WeightActivity.class);
+				
+				startActivity(intent);
 			}
-
-			else if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(DeviceScanActivity.this,
-								"Ble not support", Toast.LENGTH_SHORT).show();
-						finish();
-					}
-				});
-			} else if (BleService.BLE_DEVICE_FOUND.equals(action)) {
-				// device found
-				Bundle extras = intent.getExtras();
-				final BluetoothDevice device = extras
-						.getParcelable(BleService.EXTRA_DEVICE);
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						mLeDeviceListAdapter.addDevice(device);
-						mLeDeviceListAdapter.notifyDataSetChanged();
-					}
-				});
-			} else if (BleService.BLE_NO_BT_ADAPTER.equals(action)) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(DeviceScanActivity.this,
-								"No bluetooth adapter", Toast.LENGTH_SHORT)
-								.show();
-						finish();
-					}
-				});
-			}
-
-		}
-
-		private void onDeviceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-
-		private void createWeightActivity() {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-
-					Intent intent = new Intent(DeviceScanActivity.this,
-							WeightActivity.class);
-					intent.putExtra("address", mAddress);
-					intent.putExtra("service", Utils.UUID_SRV);
-					intent.putExtra("characteristic", Utils.UUID_AD);
-					startActivity(intent);
-				}
-			});
-		}
+		});
+	
 	};
 
 	@Override
@@ -187,6 +137,10 @@ public class DeviceScanActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		getActionBar().setTitle(R.string.title_devices);
 		mHandler = new Handler();
+		
+		mHandler2 = new MHandler(this);
+		WorkService.addHandler(mHandler2);
+		
 		// Initializes list view adapter.
 		mLeDeviceListAdapter = new LeDeviceListAdapter();
 		setListAdapter(mLeDeviceListAdapter);
@@ -231,16 +185,16 @@ public class DeviceScanActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		registerReceiver(mBleReceiver, BleService.getIntentFilter());
+	
 
 		// Ensures Bluetooth is enabled on the device. If Bluetooth is not
 		// currently enabled,
 		// fire an intent to display a dialog asking the user to grant
 		// permission to enable it.
 		Log.e(TAG, "OnResume");
-		BleApplication app = (BleApplication) getApplication();
-		mBle = app.getIBle();
-		if (mBle != null && !mBle.adapterEnabled()) {
+		
+		
+		if (!WorkService.adapterEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -266,7 +220,7 @@ public class DeviceScanActivity extends ListActivity {
 		super.onPause();
 		Log.e(TAG, "onPause");
 
-		unregisterReceiver(mBleReceiver);
+
 		scanLeDevice(false);
 		mLeDeviceListAdapter.clear();
 	}
@@ -277,11 +231,8 @@ public class DeviceScanActivity extends ListActivity {
 		if (device == null)
 			return;
 
-		if (mBle != null) {
-			mBle.stopScan();
-		}
 		mAddress = device.getAddress();
-		mBle.requestConnect(mAddress);
+		WorkService.requestConnect(mAddress);
 		progressDialog = ProgressDialog.show(DeviceScanActivity.this, "蓝牙称",
 				"蓝牙称正在连接中....！");
 
@@ -310,33 +261,23 @@ public class DeviceScanActivity extends ListActivity {
 	}
 
 	private void scanLeDevice(final boolean enable) {
-		BleApplication app = (BleApplication) getApplication();
-		mBle = app.getIBle();
-		if (mBle == null) {
-			return;
-		}
+		
 		if (enable) {
 			// Stops scanning after a pre-defined scan period.
 			mHandler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					mScanning = false;
-					if (mBle != null) {
-						mBle.stopScan();
-					}
+					WorkService.stopScan();
 					invalidateOptionsMenu();
 				}
 			}, SCAN_PERIOD);
 
 			mScanning = true;
-			if (mBle != null) {
-				mBle.startScan();
-			}
+			WorkService.startScan();
 		} else {
 			mScanning = false;
-			if (mBle != null) {
-				mBle.stopScan();
-			}
+			WorkService.stopScan();
 		}
 		invalidateOptionsMenu();
 	}
@@ -413,4 +354,40 @@ public class DeviceScanActivity extends ListActivity {
 		TextView deviceName;
 		TextView deviceAddress;
 	}
+	
+	static class MHandler extends Handler {
+
+		WeakReference<DeviceScanActivity> mActivity;
+
+		MHandler(DeviceScanActivity activity) {
+			mActivity = new WeakReference<DeviceScanActivity>(activity);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			DeviceScanActivity theActivity = mActivity.get();
+			switch (msg.what) {
+
+				case Global.MSG_BLE_SCANRESULT: 
+				{
+					Log.e("scan", "scan");
+					BluetoothDevice device = (BluetoothDevice) msg.obj;
+					theActivity.mLeDeviceListAdapter.addDevice(device);
+					theActivity.mLeDeviceListAdapter.notifyDataSetChanged();
+					break;
+				}
+				case Global.MSG_BLE_SERVICEDISRESULT: 
+				{
+					theActivity.progressDialog.dismiss();
+					
+					Intent intent = new Intent(theActivity,
+							WeightActivity.class);
+					
+					theActivity.startActivity(intent);
+					break;
+				}
+			}
+			
+		}
+		}
 }

@@ -1,16 +1,27 @@
 package com.example.bluetooth.le;
 
+import java.lang.ref.WeakReference;
+
+import com.example.worker.WorkService;
+import com.example.worker.Global;
+
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class StartActivity extends Activity {
 
+	
 
+	private static Handler mHandler = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -23,36 +34,58 @@ public class StartActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setContentView(R.layout.start);
+		
+		mHandler = new MHandler(this);
+		WorkService.addHandler(mHandler);
 
-		new Handler().postDelayed(new Runnable() {
+	}
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		WorkService.delHandler(mHandler);
+		mHandler = null;
+	}
+	static class MHandler extends Handler {
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
+		WeakReference<StartActivity> mActivity;
 
-				//BluetoothAdapter adpter=BluetoothAdapter.getDefaultAdapter();
-				//adpter.enable();
-				
-				Intent intent ;
-				if(Config.getInstance(StartActivity.this).getDevAddress() == "")
+		MHandler(StartActivity activity) {
+			mActivity = new WeakReference<StartActivity>(activity);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			StartActivity theActivity = mActivity.get();
+			switch (msg.what) {
+
+				case Global.MSG_ALLTHREAD_READY: 
 				{
-					intent = new Intent(getApplication(),
-							DeviceScanActivity.class);
-
-				}
-				else 
-				{
+					Intent intent ;
+					if(Config.getInstance(theActivity).getDevAddress() == "")
+					{
+						intent = new Intent(theActivity,
+								DeviceScanActivity.class);
+	
+					}
+					else 
+					{
+						
+						intent = new Intent(theActivity,
+								WeightActivity.class);
+					}
 					
-					intent = new Intent(getApplication(),
-							WeightActivity.class);
-				}
+					theActivity.startActivity(intent);
+	
+					theActivity.finish();
 				
-				startActivity(intent);
+					break;
+				}
 
-				StartActivity.this.finish();
 			}
-
-		}, 1000);
-
+		}
 	}
 }

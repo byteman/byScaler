@@ -80,7 +80,7 @@ public interface IBle {
 	 *            BLE device address.
 	 */
 	public void disconnect(String address);
-
+	public void disconnectAll();
 	/**
 	 * Discover BLE services. Will receive
 	 * {@link BleService#BLE_SERVICE_DISCOVERED} broadcast if device service

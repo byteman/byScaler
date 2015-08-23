@@ -1,5 +1,6 @@
 package com.example.bluetooth.le;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,11 +8,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import android.R.integer;
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils.StringSplitter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +32,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.example.worker.Global;
+import com.example.worker.WorkService;
+import com.example.bluetooth.le.ConnectBTPairedActivity;
+import com.example.bluetooth.le.SearchBTActivity;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
@@ -36,24 +46,26 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private String mDeviceAddress;
 
-	private IBle mBle;
+	
 	private BleGattCharacteristic mCharacteristicWgt;
 	private TextView txtWgt;
 	private Button btnSave;
 	private ListView listData;
 	private MyAdapter adapter;
 	private Timer pTimer;
+	private static Handler mHandler = null;
 	protected static final String TAG = "weight";
 
 	private final class ReadWgtTimer extends TimerTask {
 		public void run() {
-			if(mBle.hasConnected(mDeviceAddress))
+			
+			if(WorkService.hasConnected(mDeviceAddress))
 			{
-				mBle.requestReadCharacteristic(mDeviceAddress, mCharacteristicWgt);
+				WorkService.requestReadWgt(mDeviceAddress);
 			}
 			else 
 			{
-				mBle.requestConnect(mDeviceAddress);
+				WorkService.requestConnect(mDeviceAddress);
 			}
 			
 		}
@@ -81,89 +93,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		return str;
 	}
 
-	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
-		private int weight;
-		private boolean mNotifyStarted;
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Bundle extras = intent.getExtras();
-
-			if (!mDeviceAddress.equals(extras.getString(BleService.EXTRA_ADDR))) {
-				return;
-			}
-
-			String uuid = extras.getString(BleService.EXTRA_UUID);
-			if (uuid != null
-					&& !mCharacteristicWgt.getUuid().toString().equals(uuid)) {
-				return;
-			}
-
-			String action = intent.getAction();
-			Log.e(TAG, action);
-			if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-				Toast.makeText(WeightActivity.this, "Device disconnected...",
-						Toast.LENGTH_SHORT).show();
-				finish();
-			} else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
-					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action)) {
-				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
-
-				weight = Utils.bytesToInt(val);
-
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-
-						txtWgt.setText(String.valueOf(weight));
-					}
-				});
-
-			} else if (BleService.BLE_CHARACTERISTIC_NOTIFICATION
-					.equals(action)) {
-				Toast.makeText(WeightActivity.this,
-						"Notification state changed!", Toast.LENGTH_SHORT)
-						.show();
-				mNotifyStarted = extras.getBoolean(BleService.EXTRA_VALUE);
-				if (mNotifyStarted) {
-
-				} else {
-
-				}
-			} else if (BleService.BLE_CHARACTERISTIC_INDICATION.equals(action)) {
-				Toast.makeText(WeightActivity.this,
-						"Indication state changed!", Toast.LENGTH_SHORT).show();
-			} else if (BleService.BLE_CHARACTERISTIC_WRITE.equals(action)) {
-				Toast.makeText(WeightActivity.this, "Write success!",
-						Toast.LENGTH_SHORT).show();
-			} else if (BleService.BLE_GATT_CONNECTED.equals(action)) {
-				Config.getInstance(WeightActivity.this).setDevAddress(mDeviceAddress);
-				Toast.makeText(
-						WeightActivity.this,
-						"Connect ok!" + extras.getString(BleService.EXTRA_ADDR),
-						Toast.LENGTH_SHORT).show();
-			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-				Toast.makeText(
-						WeightActivity.this,
-						"Disconnect!" + extras.getString(BleService.EXTRA_ADDR),
-						Toast.LENGTH_SHORT).show();
-				finish();
-			} else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
-				Toast.makeText(
-						WeightActivity.this,
-						"service discovery!"
-								+ extras.getString(BleService.EXTRA_ADDR),
-						Toast.LENGTH_SHORT).show();
-			} else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
-				Toast.makeText(
-						WeightActivity.this,
-						"request failed"
-								+ extras.getString(BleService.EXTRA_ADDR),
-						Toast.LENGTH_SHORT).show();
-				finish();
-			}
-		}
-	};
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -174,26 +104,12 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 		btnSave.setOnClickListener(this);
 
-		mDeviceAddress = getIntent().getStringExtra("address");
+		mDeviceAddress ="C4:BE:84:22:8F:C8";
 		
-		BleApplication app = (BleApplication) getApplication();
-		mBle = app.getIBle();
-		if (mBle != null) {
-
-		}
-		mCharacteristicWgt = mBle.getService(mDeviceAddress,
-				UUID.fromString(Utils.UUID_SRV)).getCharacteristic(
-				UUID.fromString(Utils.UUID_WGT));
-		if (mCharacteristicWgt == null) {
-			return;
-		}
-	
+		mHandler = new MHandler(this);
+		WorkService.addHandler(mHandler);
 		pTimer = new Timer();
 		pTimer.schedule(new ReadWgtTimer(), 0, 1000);
-
-		// mNotifyStarted = true;
-		// mBle.requestCharacteristicNotification(mDeviceAddress,
-		// mCharacteristic);
 
 	}
 
@@ -205,6 +121,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		adapter = new MyAdapter(this);
 		listData.setAdapter(adapter);
 		btnSave = (Button) findViewById(R.id.btn_save);
+		
+		findViewById(R.id.btn_print).setOnClickListener(this);
 	}
 
 	@Override
@@ -223,11 +141,17 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
 
-			Intent intent = new Intent(WeightActivity.this, CalibActivity.class);
-			intent.putExtra("address", mDeviceAddress);
-
-			startActivity(intent);
+			
 			return true;
+		}
+		else if(id == R.id.connect_printer)
+		{
+	
+			startActivity(new Intent(this, SearchBTActivity.class));
+		}
+		else if(id == R.id.connect_paired)
+		{
+			startActivity(new Intent(this, ConnectBTPairedActivity.class));
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -235,8 +159,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		registerReceiver(mBleReceiver, BleService.getIntentFilter());
+		
 
 	}
 
@@ -245,15 +168,18 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// TODO Auto-generated method stub
 		super.onStop();
 		Log.e(TAG, "onStop");
-		unregisterReceiver(mBleReceiver);
+		
 	}
 
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		pTimer.cancel();
-		mBle.disconnect(mDeviceAddress);
+		if(pTimer != null)
+			pTimer.cancel();
+		WorkService.requestDisConnectAll();
+		WorkService.delHandler(mHandler);
+		mHandler = null;
 		Log.e(TAG, "OnDestory");
 	}
 
@@ -311,7 +237,10 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		case R.id.btn_save:
 			saveWeight();
 			break;
-
+	
+		case R.id.btn_print:
+			startActivity(new Intent(this, FormActivity.class));
+			break;
 		default:
 			break;
 		}
@@ -327,4 +256,30 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		adapter.notifyDataSetChanged();
 	}
 
+	static class MHandler extends Handler {
+
+			WeakReference<WeightActivity> mActivity;
+	
+			MHandler(WeightActivity activity) {
+				mActivity = new WeakReference<WeightActivity>(activity);
+				
+			}
+	
+			@Override
+			public void handleMessage(Message msg) {
+				WeightActivity theActivity = mActivity.get();
+				switch (msg.what) {
+	
+					case Global.MSG_BLE_WGTRESULT:
+					{
+						//BluetoothDevice device = (BluetoothDevice) msg.obj;
+						int weight = msg.arg1;
+						theActivity.txtWgt.setText(String.valueOf(weight));
+						break;
+					}
+					
+				}
+				
+			}
+		}
 }

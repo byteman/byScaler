@@ -33,6 +33,8 @@
 	<string name="calibzero">标定零点</string>
 	<string name="calibwgt">标定重量</string>
 	<string name="save">保存</string>
+	<string name="connprt">连接打印机</string>
+	<string name="connoldprt">配对打印机</string>
 	<string name="cancle">取消</string>
 	<string name="fama">请输入标定砝码的重量</string>
     <!-- Menu items -->
@@ -50,6 +52,12 @@
     <string name="hello_world">Hello world!</string>
     
     <string name="calibK">标定系数</string>
+    <string name="search">搜索</string>
+    <string name="inputbtmachint">输入mac</string>
+    <string name="connectbtmacaddress">连接蓝牙地址</string>
+    <string name="contentdescription">内容描述</string>
+    <string name="printform">打印表格</string>
+    <string name="print">打印</string>
     
 
 </resources>

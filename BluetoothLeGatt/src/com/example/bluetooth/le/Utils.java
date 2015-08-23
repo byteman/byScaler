@@ -8,7 +8,7 @@ public class Utils {
 	public static Map<String, String> BLE_CHARACTERISTICS = new HashMap<String, String>();
 	public static String UUID_SRV="0000FFF0-0000-1000-8000-00805F9B34FB";
 	public static String UUID_AD="0000FFF4-0000-1000-8000-00805F9B34FB";
-	public static String UUID_ZERO="0000FFF1-0000-1000-8000-00805F9B34FB";
+	public static String UUID_DATA="0000FFF1-0000-1000-8000-00805F9B34FB";
 	public static String UUID_WGT="0000FFF3-0000-1000-8000-00805F9B34FB";
 	public static String UUID_K="0000FFF2-0000-1000-8000-00805F9B34FB";
 	static {
