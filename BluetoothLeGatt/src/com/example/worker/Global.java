@@ -54,6 +54,7 @@ public class Global {
 	public static final int MSG_BLE_SERVICEDISRESULT=100034;
 	public static final int MSG_BLE_WGTRESULT=100035;
 	public static final int MSG_BLE_FAILERESULT=100036;
+	public static final int MSG_BLE_NOT_SUPPORT=100037;
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
 	public static final String BYTESPARA2 = "bytespara2";

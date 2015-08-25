@@ -8,10 +8,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.example.bluetooth.le.BleApplication;
+import com.example.bluetooth.le.Config;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 import com.example.bluetooth.le.Utils;
+import com.example.db.WeightRecord;
 import com.example.worker.Global;
 import com.lvrenyang.utils.DataUtils;
 
@@ -42,13 +44,73 @@ public class WorkService extends Service {
 	public static WorkThread workThread = null;
 	private static Handler mHandler = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5);
+	public static Map<String,Scaler> scalers;
 	private static IBle mBle;
 	private static final int REQUEST_ENABLE_BT = 1;
 	private String TAG = "WorkSrv";
-	
+	private static String strUnit = "kg";
 	
 	private static Map<String, BleGattCharacteristic> mChars;
-	
+	class ReadThread implements Runnable{
+		private boolean _quit = false;
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while(!_quit)
+			{
+				boolean need_connect = false;
+				if(WorkService.scalers.size() < 4)
+				{
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					continue;
+				}
+				for(Scaler dev : WorkService.scalers.values())
+				{
+					if(!dev.isConnected())
+					{
+						WorkService.requestConnect(dev.getAddress());
+						need_connect = true;
+					}
+				}
+				if(need_connect) 
+				{
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					continue;
+				}
+				for(Scaler dev : WorkService.scalers.values())
+				{
+					if(dev.isConnected())
+					{
+						WorkService.requestReadWgt(dev.getAddress());
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	private Thread _threadRead;
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -72,14 +134,21 @@ public class WorkService extends Service {
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_DISCONNECTRESULT);
 				final BluetoothDevice device = intent.getExtras()
 						.getParcelable(BleService.EXTRA_DEVICE);
-			
-				
+				String addr = device.getAddress();
+				mChars.remove(addr);
 				msg.obj = device;
+				Scaler s = scalers.get(addr);
+				if(s != null)
+				{
+					s.setConnected(false);
+				}
+				
 				mHandler.sendMessage(msg);	
 			} 
 
 			else if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
-				
+				Message msg = mHandler.obtainMessage(Global.MSG_BLE_NOT_SUPPORT);
+				mHandler.sendMessage(msg);	
 			} 
 			else if (BleService.BLE_DEVICE_FOUND.equals(action)) {
 					// device found
@@ -107,7 +176,11 @@ public class WorkService extends Service {
 				{
 					mChars.remove(address);
 					mChars.put(address, chars);
-					
+					Scaler s = scalers.get(address);
+					if(s != null)
+					{
+						s.setConnected(true);
+					}
 					mBle.requestCharacteristicNotification(address, chars);
 				}
 				
@@ -160,7 +233,7 @@ public class WorkService extends Service {
 			return WorkService.this;
 		}
 	}
-
+	
 	@Override
 	public void onCreate() {
 		BleApplication app = (BleApplication) getApplication();
@@ -169,14 +242,25 @@ public class WorkService extends Service {
 			Log.e("WorkService", "getBLE failed");
 			
 		} 
-		mChars = new HashMap<String, BleGattCharacteristic>();
+		mChars  = new HashMap<String, BleGattCharacteristic>();
+		scalers = new HashMap<String, Scaler>();
 		
+		for(int i = 0 ; i < 4; i++)
+		{
+			String addr = WorkService.getDeviceAddress(this, i);
+			if(addr != null)
+			{
+				scalers.put(addr, new Scaler(addr));
+				
+			}
+		}
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 
 		mHandler = new MHandler(this);
 		workThread = new WorkThread(mHandler);
 		workThread.start();
-		
+		_threadRead = new Thread(new ReadThread());
+		_threadRead.start();
 		Message msg = Message.obtain();
 		msg.what = Global.MSG_ALLTHREAD_READY;
 		notifyHandlers(msg);
@@ -259,6 +343,10 @@ public class WorkService extends Service {
 		if(mBle != null)
 			mBle.stopScan();
 	}
+	public static String formatUnit(String kg)
+	{
+		return kg + WorkService.strUnit;
+	}
 	public static  boolean requestConnect(String address)
 	{
 		if(mBle == null) return false;
@@ -333,28 +421,25 @@ public class WorkService extends Service {
 	{
 		return requestValue(address, "RSN?;");
 	}
-	public static boolean requestPrint()
+	public static boolean requestPrint(WeightRecord data)
 	{
 		byte[] setHT = {0x1b,0x44,0x18,0x00};
 		byte[] HT = {0x09};
 		byte[] LF = {0x0d,0x0a};
 		byte[][] allbuf = new byte[][]{
-				setHT,"FOOD".getBytes(),HT,"PRICE".getBytes(),LF,LF,
-				setHT,"DECAF16".getBytes(),HT,"30".getBytes(),LF,
-				setHT,"ISLAND BLEND".getBytes(),HT,"180".getBytes(),LF,
-				setHT,"FLAVOR SMALL".getBytes(),HT,"30".getBytes(),LF,
-				setHT,"Kenya AA".getBytes(),HT,"90".getBytes(),LF,
-				setHT,"CHAI".getBytes(),HT,"15.5".getBytes(),LF,
-				setHT,"MOCHA".getBytes(),HT,"20".getBytes(),LF,
-				setHT,"BREVE".getBytes(),HT,"1000".getBytes(),LF,LF,LF
+				setHT,"流水号".getBytes(),HT,WorkService.formatUnit(data.getID()).getBytes(),LF,LF,
+				setHT,"毛重".getBytes(),HT,WorkService.formatUnit(data.getGross()).getBytes(),LF,
+				setHT,"皮重".getBytes(),HT,WorkService.formatUnit(data.getTare()).getBytes(),LF,
+				setHT,"净重".getBytes(),HT,WorkService.formatUnit(data.getNet()).getBytes(),LF,
+				setHT,"时间".getBytes(),HT,data.getFormatTime().getBytes(),LF,LF,			
 				};
 		byte[] buf = DataUtils.byteArraysToBytes(allbuf);
 		if (WorkService.workThread.isConnected()) {
-			Bundle data = new Bundle();
-			data.putByteArray(Global.BYTESPARA1, buf);
-			data.putInt(Global.INTPARA1, 0);
-			data.putInt(Global.INTPARA2, buf.length);
-			WorkService.workThread.handleCmd(Global.CMD_POS_WRITE, data);
+			Bundle d = new Bundle();
+			d.putByteArray(Global.BYTESPARA1, buf);
+			d.putInt(Global.INTPARA1, 0);
+			d.putInt(Global.INTPARA2, buf.length);
+			WorkService.workThread.handleCmd(Global.CMD_POS_WRITE, d);
 		} else {
 			//打印机未连接
 			return false;
@@ -362,6 +447,16 @@ public class WorkService extends Service {
 		return true;
 		
 	}
-	
+	public static String getDeviceAddress(Context pCtx,int index)
+	{
+		
+		return Config.getInstance(pCtx).getDevAddress(index);
+	}
+	public static void setDeviceAddress(Context pCtx, int index,String address)
+	{
+		 Config.getInstance(pCtx).setDevAddress(index,address);
+		 if(!scalers.containsKey(address)) //不包含这个地址才创建新的称台设备.
+			 scalers.put(address, new Scaler(address));
+	}
 }
 

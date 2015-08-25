@@ -1,6 +1,8 @@
  
 package com.example.db;
 
+import com.example.bluetooth.le.Utils;
+
 
 public class WeightRecord {
 
@@ -22,7 +24,10 @@ public class WeightRecord {
 	public void setTare(String _tare) {
 		this.tare = _tare;
 	}
-	
+	public String getFormatTime()
+	{
+		return Utils.getNormalTime(this.time);
+	}
 	public String getNet() {
 		return net;
 	}

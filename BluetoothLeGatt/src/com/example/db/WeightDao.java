@@ -87,7 +87,32 @@ public class WeightDao {
 		}
 		return items;
 	}
-	
+	public  boolean getWeightRecord(WeightRecord item) {
+		boolean ok = false;
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		if (db.isOpen()) {
+			Cursor cursor = db.rawQuery("select top(1) from " + TABLE_NAME /* + " desc" */, null);
+			
+			if(cursor != null && cursor.getCount() > 0){
+				String gross = cursor.getString(cursor.getColumnIndex(COLUMN_GROSS));
+				String tare = cursor.getString(cursor.getColumnIndex(COLUMN_TARE));
+				String net = cursor.getString(cursor.getColumnIndex(COLUMN_NET));
+				long   times = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME));
+				String wetid = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+		        
+				
+				item.setGross(gross);
+				item.setTare(tare);
+				item.setNet(net);
+				item.setTime(times);
+				item.setID(wetid);
+				ok = true;
+			}
+			cursor.close();	
+		}
+		return ok;
+	}
 	/**
 	 * 删除一个联系人
 	 * @param username

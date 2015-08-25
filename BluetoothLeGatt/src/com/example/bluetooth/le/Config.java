@@ -39,7 +39,16 @@ public class Config
 		mEditor.putString("address", pDevAddress);
 		mEditor.commit();
 	}
-
+	//获取第n个设备的蓝牙地址
+	public String getDevAddress(int index) {
+		return mSharedPre.getString("address"+index, "");
+	}
+	//设置第n个设备的蓝牙地址
+	public void setDevAddress(int index,String pDevAddress) {
+		//this.mDevAddress = pDevAddress;
+		mEditor.putString("address"+index, pDevAddress);
+		mEditor.commit();
+	}
 	public String getDevName() {
 		return mSharedPre.getString("devname", "");
 	}

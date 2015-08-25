@@ -56,20 +56,17 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private ListView listData;
 	private MyAdapter adapter;
 	private Timer pTimer;
+	private String[] mDevicesAddr;
 	private static Handler mHandler = null;
+	private WeightDao wDao;
 	protected static final String TAG = "weight";
 
 	private final class ReadWgtTimer extends TimerTask {
+		
+		
 		public void run() {
 			
-			if(WorkService.hasConnected(mDeviceAddress))
-			{
-				WorkService.requestReadWgt(mDeviceAddress);
-			}
-			else 
-			{
-				WorkService.requestConnect(mDeviceAddress);
-			}
+			
 			
 		}
 	}
@@ -95,7 +92,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		String str = format.format(new Date(date));
 		return str;
 	}
-
+	private void updateDeviceAddress()
+	{
+		for(int i = 0; i < 4; i++)
+		{
+			mDevicesAddr[i] = WorkService.getDeviceAddress(this, i);
+		}
+	}
 	
 
 	@Override
@@ -111,6 +114,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		
 		mHandler = new MHandler(this);
 		WorkService.addHandler(mHandler);
+		mDevicesAddr = new String[4];
+		wDao = new WeightDao(this);
 		pTimer = new Timer();
 		pTimer.schedule(new ReadWgtTimer(), 0, 1000);
 
@@ -163,7 +168,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		
-		WeightDao wDao = new WeightDao(this);
+		updateDeviceAddress();
+		
 		List<WeightRecord> items = new ArrayList<WeightRecord>();
 		
 		items = wDao.getWeightList();
@@ -253,7 +259,10 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			break;
 	
 		case R.id.btn_print:
-			startActivity(new Intent(this, FormActivity.class));
+			//startActivity(new Intent(this, FormActivity.class));
+			WeightRecord data = new WeightRecord();
+			if(wDao.getWeightRecord(data))
+				WorkService.requestPrint(data);
 			break;
 		default:
 			break;
@@ -270,7 +279,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		item.setTare("0");
 		item.setNet(kgs);
 		item.setID(String.valueOf(adapter.getCount()+1));
-		WeightDao wDao = new WeightDao(this);
+		
 		wDao.saveWeight(item);
 		
 		adapter.arr.add(item);
