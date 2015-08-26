@@ -65,19 +65,11 @@ public class StartActivity extends Activity {
 				case Global.MSG_ALLTHREAD_READY: 
 				{
 					Intent intent ;
-					if(Config.getInstance(theActivity).getDevAddress() == "")
-					{
-						intent = new Intent(theActivity,
-								DeviceScanActivity.class);
-	
-					}
-					else 
-					{
+
 						
-						intent = new Intent(theActivity,
+					intent = new Intent(theActivity,
 								WeightActivity.class);
-					}
-					
+				
 					theActivity.startActivity(intent);
 	
 					theActivity.finish();

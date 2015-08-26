@@ -49,7 +49,7 @@ public class WorkService extends Service {
 	private static final int REQUEST_ENABLE_BT = 1;
 	private String TAG = "WorkSrv";
 	private static String strUnit = "kg";
-	
+	private static int max_count = 1;
 	private static Map<String, BleGattCharacteristic> mChars;
 	class ReadThread implements Runnable{
 		private boolean _quit = false;
@@ -59,7 +59,7 @@ public class WorkService extends Service {
 			while(!_quit)
 			{
 				boolean need_connect = false;
-				if(WorkService.scalers.size() < 4)
+				if(WorkService.scalers.size() < max_count)
 				{
 					try {
 						Thread.sleep(3000);
@@ -197,11 +197,18 @@ public class WorkService extends Service {
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action))
 			{
 				Bundle extras = intent.getExtras();
+				String addr = extras.getString(BleService.EXTRA_ADDR);
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 				
 				int weight = Utils.bytesToInt(val);
 
-			
+				WorkService.scalers.get(addr).setWeight(weight);
+				weight = 0;
+				for(Scaler s : WorkService.scalers.values())
+				{
+					weight+= s.getWeight();
+				}
+				
 				final BluetoothDevice device = extras
 						.getParcelable(BleService.EXTRA_DEVICE);
 			
@@ -244,11 +251,13 @@ public class WorkService extends Service {
 		} 
 		mChars  = new HashMap<String, BleGattCharacteristic>();
 		scalers = new HashMap<String, Scaler>();
-		
-		for(int i = 0 ; i < 4; i++)
+		WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:8F:B0");
+		WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:91:E2");
+		for(int i = 0 ; i < max_count; i++)
 		{
 			String addr = WorkService.getDeviceAddress(this, i);
-			if(addr != null)
+			
+			if(addr != null && addr != "")
 			{
 				scalers.put(addr, new Scaler(addr));
 				
