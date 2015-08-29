@@ -47,16 +47,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private int index = 0;
 
-	private String mDeviceAddress;
-
-	
 	private BleGattCharacteristic mCharacteristicWgt;
 	private TextView txtWgt;
 	private Button btnSave;
 	private ListView listData;
 	private MyAdapter adapter;
 	private Timer pTimer;
-	private String[] mDevicesAddr;
+	private boolean pasue = false;
 	private static Handler mHandler = null;
 	private WeightDao wDao;
 	protected static final String TAG = "weight";
@@ -65,41 +62,17 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		
 		
 		public void run() {
-			
-			
+			if(pasue)
+			{
+				return;
+			}
+			if(WorkService.hasConnectAll())
+			{
+				WorkService.readAllWgt();
+			}
 			
 		}
 	}
-/*
-	private class WeightData {
-
-		public String sid;
-		public String stime;
-		public String skg;
-
-		public WeightData(int id, String kg) {
-			sid = String.valueOf(id);
-			long time = System.currentTimeMillis();
-
-			stime = getCurrentTime(time);
-			skg = kg + "kg";
-		}
-
-	};
-*/
-	public static String getCurrentTime(long date) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String str = format.format(new Date(date));
-		return str;
-	}
-	private void updateDeviceAddress()
-	{
-		for(int i = 0; i < 4; i++)
-		{
-			mDevicesAddr[i] = WorkService.getDeviceAddress(this, i);
-		}
-	}
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,12 +83,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 		btnSave.setOnClickListener(this);
 
-		mDeviceAddress ="C4:BE:84:22:8F:C8";
-		
+
 		mHandler = new MHandler(this);
-		WorkService.addHandler(mHandler);
-		mDevicesAddr = new String[4];
+		//WorkService.addHandler(mHandler);
+		
+	
 		wDao = new WeightDao(this);
+		loadDBData();
 		pTimer = new Timer();
 		pTimer.schedule(new ReadWgtTimer(), 0, 1000);
 
@@ -131,6 +105,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		btnSave = (Button) findViewById(R.id.btn_save);
 		
 		findViewById(R.id.btn_print).setOnClickListener(this);
+		
 	}
 
 	@Override
@@ -161,15 +136,16 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		{
 			startActivity(new Intent(this, ConnectBTPairedActivity.class));
 		}
+		else if(id == R.id.calib)
+		{
+			Intent intent = new Intent(this, CalibActivity.class);
+			intent.putExtra("address", "C4:BE:84:22:8F:B0");
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		updateDeviceAddress();
-		
+	private void loadDBData()
+	{
 		List<WeightRecord> items = new ArrayList<WeightRecord>();
 		
 		items = wDao.getWeightList();
@@ -180,11 +156,28 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 		adapter.notifyDataSetChanged();
 	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		WorkService.addHandler(mHandler);
+		
+		//WorkService.connectPrinter(null);
+		if(!WorkService.hasConnectAll())
+		{
+			WorkService.connectAll();
+		}
+		pasue = false;
+		
+		
+	}
 
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
+		pasue = true;
+		
+		WorkService.delHandler(mHandler);
 		Log.e(TAG, "onStop");
 		
 	}
@@ -193,11 +186,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		if(pTimer != null)
-			pTimer.cancel();
-		WorkService.requestDisConnectAll();
-		WorkService.delHandler(mHandler);
-		mHandler = null;
+		//if(pTimer != null)
+		//	pTimer.cancel();
+		//WorkService.requestDisConnectAll();
+		//WorkService.delHandler(mHandler);
+		//mHandler = null;
+		//wDao = null;
+		System.exit(0);
 		Log.e(TAG, "OnDestory");
 	}
 
@@ -260,9 +255,17 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	
 		case R.id.btn_print:
 			//startActivity(new Intent(this, FormActivity.class));
+			if(!WorkService.hasConnectPrinter())
+			{
+				Toast.makeText(this, "请先连接打印机", Toast.LENGTH_SHORT).show();
+				
+				return;			
+			}
 			WeightRecord data = new WeightRecord();
-			if(wDao.getWeightRecord(data))
-				WorkService.requestPrint(data);
+			if(wDao != null)
+				if(wDao.getWeightRecord(data))
+					WorkService.requestPrint(data);
+			data = null;
 			break;
 		default:
 			break;

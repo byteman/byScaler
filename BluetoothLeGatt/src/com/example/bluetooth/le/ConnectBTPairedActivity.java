@@ -132,6 +132,9 @@ public class ConnectBTPairedActivity extends Activity implements
 								: Global.toast_fail, Toast.LENGTH_SHORT).show();
 				Log.v(TAG, "Connect Result: " + result);
 				theActivity.dialog.cancel();
+				theActivity.finish();
+				String addr = (String)(msg.obj);
+				WorkService.setPrinterAddress(theActivity,addr);
 				break;
 			}
 

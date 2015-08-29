@@ -16,4 +16,9 @@
         android:orderInCategory="102"
         android:showAsAction="never"
         android:title="@string/connoldprt"/>
+     <item
+        android:id="@+id/calib"
+        android:orderInCategory="103"
+        android:showAsAction="never"
+        android:title="@string/calibK"/>
 </menu>

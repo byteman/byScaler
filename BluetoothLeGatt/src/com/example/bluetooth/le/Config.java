@@ -30,13 +30,13 @@ public class Config
 		return mConfig;
 	}
 
-	public String getDevAddress() {
-		return mSharedPre.getString("address", "");
+	public String getPrinterAddress() {
+		return mSharedPre.getString("printer_address", "");
 	}
 
-	public void setDevAddress(String pDevAddress) {
+	public void setPrinterAddress(String pDevAddress) {
 		//this.mDevAddress = pDevAddress;
-		mEditor.putString("address", pDevAddress);
+		mEditor.putString("printer_address", pDevAddress);
 		mEditor.commit();
 	}
 	//获取第n个设备的蓝牙地址

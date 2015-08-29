@@ -28,6 +28,10 @@ public class WeightRecord {
 	{
 		return Utils.getNormalTime(this.time);
 	}
+	public String getFormatDate()
+	{
+		return Utils.getNormalDate(this.time);
+	}
 	public String getNet() {
 		return net;
 	}

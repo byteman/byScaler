@@ -208,11 +208,16 @@ public class Utils {
 	    return Float.intBitsToFloat(l);                  
 	}
 	
-	public static String getNormalTime(long value)  
+	public static String getNormalDate(long value)  
 	{  
-	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;  
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd") ;  
 	    String time = format.format(new Date(value)) ;  
 	    return time;  
 	}  
-
+	public static String getNormalTime(long value)  
+	{  
+	    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss") ;  
+	    String time = format.format(new Date(value)) ;  
+	    return time;  
+	}  
 }
