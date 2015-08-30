@@ -1,9 +1,12 @@
 package com.example.bluetooth.le;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import android.bluetooth.BluetoothAdapter;
 
 public class Utils {
 	public static Map<String, String> BLE_SERVICES = new HashMap<String, String>();
@@ -220,4 +223,32 @@ public class Utils {
 	    String time = format.format(new Date(value)) ;  
 	    return time;  
 	}  
+	public static void setDiscoverableTimeout(int timeout) {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+             
+            setDiscoverableTimeout.invoke(adapter, timeout);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE,timeout);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	public static  void closeDiscoverableTimeout() {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+             
+            setDiscoverableTimeout.invoke(adapter, 1);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

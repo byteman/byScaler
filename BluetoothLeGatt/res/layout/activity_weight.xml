@@ -37,6 +37,14 @@
         android:background="@layout/image_btn_press"
         android:layout_gravity="right"
         android:text="@string/print" /> 
+        
+      <Button
+        android:id="@+id/btn_con_all2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@layout/image_btn_press"
+        android:layout_gravity="right"
+        android:text="@string/conn_all" /> 
 	</LinearLayout>
 
 	   

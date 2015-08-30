@@ -21,7 +21,9 @@ import com.lvrenyang.utils.DataUtils;
 
 
 
+
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,13 +49,14 @@ public class WorkService extends Service {
 	private static Handler mHandler = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5);
 	public static Map<String,Scaler> scalers;
+	private static Map<Integer,Scaler> scalers2;
 	private static IBle mBle;
 	private static final int REQUEST_ENABLE_BT = 1;
 	private String TAG = "WorkSrv";
 	private static String strUnit = "kg";
 	private static int max_count = 2;
 	private static String mPrinterAddress;
-	private static Map<String, BleGattCharacteristic> mChars;
+	
 	
 	//private Thread _threadRead;
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
@@ -76,22 +79,21 @@ public class WorkService extends Service {
 				
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
 				Log.e( TAG, "server disconnect");
-				Message msg = mHandler.obtainMessage(Global.MSG_BLE_DISCONNECTRESULT);
-				final BluetoothDevice device = intent.getExtras()
-						.getParcelable(BleService.EXTRA_DEVICE);
-				if(device != null)
+				Bundle extras = intent.getExtras();
+				if(extras == null) return;
+								
+				String addr = extras.getString(BleService.EXTRA_ADDR);
+
+						
+				Scaler s = scalers.get(addr);
+				if(s != null)
 				{
-					String addr = device.getAddress();
-					mChars.remove(addr);
-					msg.obj = device;
-					Scaler s = scalers.get(addr);
-					if(s != null)
-					{
-						s.setConnected(false);
-					}
-					
+					s.setConnected(false,null);
+					Message msg = mHandler.obtainMessage(Global.MSG_BLE_DISCONNECTRESULT);
+					msg.obj = addr;
 					mHandler.sendMessage(msg);	
 				}
+							
 				
 			} 
 
@@ -123,12 +125,11 @@ public class WorkService extends Service {
 						UUID.fromString(Utils.UUID_DATA));
 				if(chars != null)
 				{
-					mChars.remove(address);
-					mChars.put(address, chars);
+					
 					Scaler s = scalers.get(address);
 					if(s != null)
 					{
-						s.setConnected(true);
+						s.setConnected(true,chars);
 					}
 					mBle.requestCharacteristicNotification(address, chars);
 				}
@@ -198,10 +199,16 @@ public class WorkService extends Service {
 			Log.e("WorkService", "getBLE failed");
 			
 		} 
-		mChars  = new HashMap<String, BleGattCharacteristic>();
+		BluetoothAdapter adpter=BluetoothAdapter.getDefaultAdapter();
+		adpter.enable();
 		scalers = new HashMap<String, Scaler>();
-		
+		scalers2 = new HashMap<Integer, Scaler>();
 		mPrinterAddress = WorkService.getPrinterAddress(this);
+		if(mPrinterAddress == null || mPrinterAddress=="")
+		{
+			mPrinterAddress = "00:02:0A:03:C3:BC";
+			WorkService.setPrinterAddress(this, mPrinterAddress);
+		}
 		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:8F:B0");
 		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:91:E2");
 		for(int i = 0 ; i < max_count; i++)
@@ -211,7 +218,11 @@ public class WorkService extends Service {
 			if(addr != null && addr != "")
 			{
 				 if(!scalers.containsKey(addr)) //不包含这个地址才创建新的称台设备.
-					 scalers.put(addr, new Scaler(addr));
+				 {
+					 Scaler scaler =  new Scaler(addr);
+					 scalers.put(addr,scaler);
+					 scalers2.put(i, scaler);
+				 }
 								
 			}
 		}
@@ -338,7 +349,8 @@ public class WorkService extends Service {
 	{
 		if(mBle == null) return false;
 
-		BleGattCharacteristic chars = mChars.get(address);
+		BleGattCharacteristic chars = scalers.get(address).GetBleChar();
+		//BleGattCharacteristic chars = mChars.get(address);
 		if(chars == null) return false;
 		
 		chars.setValue(cmd);
@@ -438,7 +450,11 @@ public class WorkService extends Service {
 	{
 		 Config.getInstance(pCtx).setDevAddress(index,address);
 		 if(!scalers.containsKey(address)) //不包含这个地址才创建新的称台设备.
-			 scalers.put(address, new Scaler(address));
+		 {
+			 Scaler scaler = new Scaler(address);
+			 scalers.put(address, scaler);
+			 scalers2.put(index, scaler);
+		 }
 	}
 	/*
 	 * for(Scaler dev : WorkService.scalers.values())
@@ -513,6 +529,31 @@ public class WorkService extends Service {
 	public static String getPrinterAddress()
 	{
 		return mPrinterAddress;
+	}
+	public static int getScalerCount()
+	{
+		return scalers.size();
+	}
+	public static String getScalerAddress(int index)
+	{
+		if(index >= getScalerCount()) return null;
+		
+		
+		Scaler s = scalers2.get(index);
+		if(s == null) return null;
+		
+		return s.getAddress();
+	}
+	public static boolean getScalerConnectState(int index)
+	{
+		if(index >= getScalerCount()) return false;
+		
+		
+		Scaler s = scalers2.get(index);
+		if(s == null) return false;
+		
+		return s.isConnected(); 
+		
 	}
 }
 

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import android.R.integer;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -54,6 +55,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private MyAdapter adapter;
 	private Timer pTimer;
 	private boolean pasue = false;
+	private static final int REQUEST_ENABLE_BT = 1;
 	private static Handler mHandler = null;
 	private WeightDao wDao;
 	protected static final String TAG = "weight";
@@ -91,7 +93,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		wDao = new WeightDao(this);
 		loadDBData();
 		pTimer = new Timer();
-		pTimer.schedule(new ReadWgtTimer(), 0, 1000);
+		pTimer.schedule(new ReadWgtTimer(), 0, 100);
 
 	}
 
@@ -103,7 +105,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		adapter = new MyAdapter(this);
 		listData.setAdapter(adapter);
 		btnSave = (Button) findViewById(R.id.btn_save);
-		
+		findViewById(R.id.btn_con_all2).setOnClickListener(this);
 		findViewById(R.id.btn_print).setOnClickListener(this);
 		
 	}
@@ -156,9 +158,25 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 		adapter.notifyDataSetChanged();
 	}
+/*	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// User chose not to enable Bluetooth.
+		if (requestCode == REQUEST_ENABLE_BT
+				&& resultCode == Activity.RESULT_CANCELED) {
+			finish();
+			return;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}*/
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+	/*	if (!WorkService.adapterEnabled()) {
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}*/
 		WorkService.addHandler(mHandler);
 		
 		//WorkService.connectPrinter(null);
@@ -259,13 +277,17 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			{
 				Toast.makeText(this, "请先连接打印机", Toast.LENGTH_SHORT).show();
 				
-				return;			
+				break;		
 			}
 			WeightRecord data = new WeightRecord();
 			if(wDao != null)
 				if(wDao.getWeightRecord(data))
 					WorkService.requestPrint(data);
 			data = null;
+			break;
+		case R.id.btn_con_all2:
+			WorkService.connectPrinter(null);
+			WorkService.connectAll();
 			break;
 		default:
 			break;
@@ -308,6 +330,33 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						//BluetoothDevice device = (BluetoothDevice) msg.obj;
 						int weight = msg.arg1;
 						theActivity.txtWgt.setText(String.valueOf(weight));
+						break;
+					}
+					case Global.MSG_BLE_DISCONNECTRESULT:
+					{
+						String addr =(String)msg.obj;
+						Toast.makeText(theActivity, addr + " has disconnect!!", Toast.LENGTH_SHORT).show();
+						WorkService.connectAll();
+						//mHandler.postDelayed(r, delayMillis)
+						break;
+					}
+					case Global.MSG_WORKTHREAD_SEND_CONNECTBTRESULT:
+					{
+						int result = msg.arg1;
+						Toast.makeText(
+								theActivity,
+								(result == 1) ? Global.toast_success
+										: Global.toast_fail, Toast.LENGTH_SHORT).show();
+						Log.v(TAG, "Connect Result: " + result);
+						
+						String addr = (String)(msg.obj);
+						WorkService.setPrinterAddress(theActivity,addr);
+						break;
+						
+					}
+					case Global.MSG_BLE_FAILERESULT:
+					{
+						Toast.makeText(theActivity, "failed", Toast.LENGTH_SHORT).show();
 						break;
 					}
 					

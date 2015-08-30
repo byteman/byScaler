@@ -58,6 +58,8 @@
     <string name="contentdescription">内容描述</string>
     <string name="printform">打印表格</string>
     <string name="print">打印</string>
+    <string name="conn_all">连接</string>
+    
     
 
 </resources>
