@@ -91,7 +91,6 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	public boolean hasConnected(String address)
 	{
 		return (mBluetoothGatts.get(address)!=null)?true:false;
-		//return true;
 	}
 	private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
 		@Override

@@ -54,7 +54,7 @@ public class WorkService extends Service {
 	private static final int REQUEST_ENABLE_BT = 1;
 	private String TAG = "WorkSrv";
 	private static String strUnit = "kg";
-	private static int max_count = 2;
+	private static int max_count = 1;
 	private static String mPrinterAddress;
 	
 	
@@ -149,23 +149,97 @@ public class WorkService extends Service {
 				Bundle extras = intent.getExtras();
 				String addr = extras.getString(BleService.EXTRA_ADDR);
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
-				
-				int weight = Utils.bytesToInt(val);
-
-				WorkService.scalers.get(addr).setWeight(weight);
-				weight = 0;
-				for(Scaler s : WorkService.scalers.values())
+				if(val.length < 4)
 				{
-					weight+= s.getWeight();
+					return;
+				}
+				if((val[0] == 'A') && (val[1] == 'D') && (val[2] == 'V'))
+				{
+					
+					if(val[3] == ':')
+					{
+						if(val.length < 8) return;
+						byte w[] = {0,0,0,0};
+						System.arraycopy(val,4,w,0, 4);
+						
+						int weight = Utils.bytesToWeight(w);
+						Scaler d = WorkService.scalers.get(addr);
+						if(d==null) return;
+						d.setWeight(weight);
+						weight = 0;
+						for(int i = 0 ; i < max_count; i++)
+						{
+							
+							 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
+							 {
+								Scaler dev = scalers2.get(i);
+								
+								if(dev!=null && dev.isConnected())
+								{
+									weight += dev.getWeight();
+								}
+							 }
+												
+						
+						}
+						final BluetoothDevice device = extras
+								.getParcelable(BleService.EXTRA_DEVICE);
+					
+						Message msg = mHandler.obtainMessage(Global.MSG_BLE_WGTRESULT);
+						msg.arg1 = weight;
+						msg.obj  = device;
+						mHandler.sendMessage(msg);
+					}
+					
+				}
+				else if((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R'))
+				{
+					
+						
+					if(val[3] == '?') //参数读取的返回值.
+					{
+						
+						if(val.length < 13) return;
+						byte w[] = {0,0,0,0};
+						System.arraycopy(val,4,w,0, 4);
+						int nov = Utils.bytesToInt(w);
+						
+						Scaler d = WorkService.scalers.get(addr);
+						if(d==null) return;
+						d.setNov(String.valueOf(nov));
+						d.setMtd(val[7]);
+						d.setMtd(val[8]);
+						final BluetoothDevice device = extras
+								.getParcelable(BleService.EXTRA_DEVICE);
+					
+						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_GET_RESULT);
+						msg.arg1 = 0;
+						msg.obj  = device;
+						mHandler.sendMessage(msg);
+					}
+					else if(val[3] == ':') //参数设置的返回值.
+					{
+						
+						final BluetoothDevice device = extras
+								.getParcelable(BleService.EXTRA_DEVICE);
+					
+						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_SET_RESULT);
+						msg.arg1 = 0;
+						msg.obj  = device;
+						mHandler.sendMessage(msg);
+					}
 				}
 				
-				final BluetoothDevice device = extras
-						.getParcelable(BleService.EXTRA_DEVICE);
-			
-				Message msg = mHandler.obtainMessage(Global.MSG_BLE_WGTRESULT);
-				msg.arg1 = weight;
-				msg.obj  = device;
-				mHandler.sendMessage(msg);
+
+				
+				
+				
+			/*	for(Scaler s : WorkService.scalers.values())
+				{
+					weight+= s.getWeight();
+				}*/
+				
+				
 
 			}else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
 				
@@ -209,8 +283,9 @@ public class WorkService extends Service {
 			mPrinterAddress = "00:02:0A:03:C3:BC";
 			WorkService.setPrinterAddress(this, mPrinterAddress);
 		}
-		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:8F:B0");
-		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:91:E2");
+		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:8F:B0");
+		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
+		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
 		for(int i = 0 ; i < max_count; i++)
 		{
 			String addr = WorkService.getDeviceAddress(this, i);
@@ -365,7 +440,7 @@ public class WorkService extends Service {
 	public static boolean requestReadWgt(String address)
 	{
 		
-		return requestValue(address, "MSV?;");
+		return requestValue(address, "ADV?;");
 
 	}
 	public static boolean requestReadNov(String address)
@@ -397,6 +472,15 @@ public class WorkService extends Service {
 	public static boolean requestReadRSN(String address)
 	{
 		return requestValue(address, "RSN?;");
+	}
+	public static boolean requestReadPar(String address)
+	{
+		return requestValue(address, "PAR?;");
+	}
+	public static boolean requestWritePar(String address)
+	{
+		//return requestValue(address, "PAR?;");
+		return true;
 	}
 	public static boolean hasConnectPrinter()
 	{
@@ -479,14 +563,31 @@ public class WorkService extends Service {
 		{
 			return false;
 		}
-		for(Scaler dev : WorkService.scalers.values())
+		for(int i = 0 ; i < max_count; i++)
+		{
+			
+			 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
+			 {
+				 Scaler dev = scalers2.get(i);
+				 if(dev!=null)
+				 {
+					 WorkService.requestConnect(dev.getAddress());
+					 need_connect = true;
+				 }
+				
+			 }
+								
+		
+		}
+		
+	/*	for(Scaler dev : WorkService.scalers.values())
 		{
 			if(!dev.isConnected())
 			{
 				WorkService.requestConnect(dev.getAddress());
 				need_connect = true;
 			}
-		}
+		}*/
 				
 		return !need_connect;
 	}
@@ -497,14 +598,30 @@ public class WorkService extends Service {
 		{
 			return false;
 		}
-		for(Scaler dev : WorkService.scalers.values())
+		for(int i = 0 ; i < max_count; i++)
+		{
+			
+			 if(scalers2.containsKey(i)) //包含这个地址才获取称台设备.
+			 {
+				 Scaler dev = scalers2.get(i);
+				 
+				if(dev!=null && !dev.isConnected())
+				{
+					need_connect = true;
+					break;
+				}
+			 }
+								
+		
+		}
+		/*for(Scaler dev : WorkService.scalers.values())
 		{
 			if(!dev.isConnected())
 			{
 				need_connect = true;
 				break;
 			}
-		}
+		}*/
 		return !need_connect;
 	}
 	public static boolean readAllWgt()

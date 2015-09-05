@@ -126,7 +126,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
 
-			
+			WorkService.requestReadPar("C4:BE:84:22:91:E2");
 			return true;
 		}
 		else if(id == R.id.connect_printer)
@@ -286,7 +286,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			data = null;
 			break;
 		case R.id.btn_con_all2:
-			WorkService.connectPrinter(null);
+			//WorkService.connectPrinter(null);
 			WorkService.connectAll();
 			break;
 		default:
