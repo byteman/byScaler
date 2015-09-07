@@ -15,6 +15,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,7 +35,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.aiven.alert.util.MineAlert;
 import com.example.worker.Global;
+import com.example.worker.Scaler;
+import com.example.worker.ScalerParam;
 import com.example.worker.WorkService;
 import com.example.bluetooth.le.ConnectBTPairedActivity;
 import com.example.bluetooth.le.SearchBTActivity;
@@ -262,13 +266,24 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			return view;
 		}
 	}
-
+	private void testWriteParam()
+	{
+		//int nov, byte mtd, byte zt,byte pzt,byte dig, byte res, String unit
+		
+		ScalerParam s = new ScalerParam(5000,(byte)2,(byte)3,(byte)1,(byte)2,(byte)2,"t");
+	
+		
+		WorkService.requestWriteParamValue("C4:BE:84:22:91:E2",s);
+		
+	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_save:
 			saveWeight();
+			testWriteParam();
+			
 			break;
 	
 		case R.id.btn_print:
@@ -359,7 +374,37 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						Toast.makeText(theActivity, "failed", Toast.LENGTH_SHORT).show();
 						break;
 					}
-					
+					case Global.MSG_SCALER_PAR_GET_RESULT:
+					{
+						Scaler s = (Scaler)msg.obj;
+						if(s!=null)
+						{
+							MineAlert diag = new MineAlert(theActivity);
+							DialogInterface.OnClickListener lister = new DialogInterface.OnClickListener(){
+
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								
+								
+							};
+							
+							diag.createAlert(s.para.toString(), lister, lister);
+							diag.show();
+							
+						}
+						
+						break;
+					}
+					case Global.MSG_SCALER_PAR_SET_RESULT:
+					{
+						Toast.makeText(theActivity, "write param ok", Toast.LENGTH_SHORT).show();
+						break;
+					}
 				}
 				
 			}

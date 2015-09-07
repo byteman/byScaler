@@ -199,22 +199,16 @@ public class WorkService extends Service {
 					if(val[3] == '?') //参数读取的返回值.
 					{
 						
-						if(val.length < 13) return;
-						byte w[] = {0,0,0,0};
-						System.arraycopy(val,4,w,0, 4);
-						int nov = Utils.bytesToInt(w);
 						
 						Scaler d = WorkService.scalers.get(addr);
 						if(d==null) return;
-						d.setNov(String.valueOf(nov));
-						d.setMtd(val[7]);
-						d.setMtd(val[8]);
+						int ret = d.para.parseParaBuffer(val)?1:0;
 						final BluetoothDevice device = extras
 								.getParcelable(BleService.EXTRA_DEVICE);
 					
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_GET_RESULT);
-						msg.arg1 = 0;
-						msg.obj  = device;
+						msg.arg1 = ret;
+						msg.obj  = d;
 						mHandler.sendMessage(msg);
 					}
 					else if(val[3] == ':') //参数设置的返回值.
@@ -224,7 +218,7 @@ public class WorkService extends Service {
 								.getParcelable(BleService.EXTRA_DEVICE);
 					
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_SET_RESULT);
-						msg.arg1 = 0;
+						msg.arg1 = val[4];
 						msg.obj  = device;
 						mHandler.sendMessage(msg);
 					}
@@ -429,6 +423,19 @@ public class WorkService extends Service {
 		if(chars == null) return false;
 		
 		chars.setValue(cmd);
+		
+		return mBle.requestWriteCharacteristic(address, chars, "false");
+
+	}
+	public static boolean requestWriteParamValue(String address,ScalerParam s)
+	{
+		if(mBle == null) return false;
+
+		BleGattCharacteristic chars = scalers.get(address).GetBleChar();
+		//BleGattCharacteristic chars = mChars.get(address);
+		if(chars == null) return false;
+		if(s == null) return false;
+		chars.setValue(s.getSetCmdBuffer());
 		
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
