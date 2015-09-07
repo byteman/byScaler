@@ -278,7 +278,7 @@ public class WorkService extends Service {
 			WorkService.setPrinterAddress(this, mPrinterAddress);
 		}
 		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:8F:B0");
-		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
+		WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
 		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
 		for(int i = 0 ; i < max_count; i++)
 		{

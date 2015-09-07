@@ -97,7 +97,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		wDao = new WeightDao(this);
 		loadDBData();
 		pTimer = new Timer();
-		pTimer.schedule(new ReadWgtTimer(), 0, 100);
+		//pTimer.schedule(new ReadWgtTimer(), 0, 100);
 
 	}
 
