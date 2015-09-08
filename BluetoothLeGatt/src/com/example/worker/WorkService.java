@@ -258,7 +258,7 @@ public class WorkService extends Service {
 						if(val[4] == '0')
 						{
 							try {
-								int zero = Utils.bytesToString(val, 4, val.length);
+								int zero = Utils.bytesToString(val, 6, val.length);
 								d.setZeroValue(zero);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -307,7 +307,7 @@ public class WorkService extends Service {
 					if(val[4] == '0')
 					{
 						try {
-							int w = Utils.bytesToString(val, 4, val.length);
+							int w = Utils.bytesToString(val, 6, val.length);
 							d.setLoadValue(w);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block

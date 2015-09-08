@@ -145,7 +145,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		else if(id == R.id.calib)
 		{
 			Intent intent = new Intent(this, CalibActivity.class);
-			intent.putExtra("address", "C4:BE:84:22:8F:B0");
+			intent.putExtra("address", "C4:BE:84:22:91:E2");
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);

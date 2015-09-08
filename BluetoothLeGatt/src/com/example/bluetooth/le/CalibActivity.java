@@ -101,13 +101,13 @@ public class CalibActivity extends Activity {
 		//String characteristic = getIntent().getStringExtra("characteristic");
 	
 		mHandler = new MHandler(this);
-		pTimer = new Timer();
-		pTimer.schedule(new TimerTask() {
-			public void run() {
+		//pTimer = new Timer();
+		//pTimer.schedule(new TimerTask() {
+		//	public void run() {
 				//Log.e(TAG,"calib timer");	
 				
-			}
-		}, 1000, 1000);
+		//	}
+		///}, 1000, 1000);
 
 	}
 
@@ -133,7 +133,7 @@ public class CalibActivity extends Activity {
 		super.onStop();
 		Log.e(TAG, "onStop");
 		WorkService.delHandler(mHandler);
-		pTimer.cancel();
+		//pTimer.cancel();
 	}
 	static class MHandler extends Handler {
 
@@ -160,15 +160,21 @@ public class CalibActivity extends Activity {
 				{
 					int result = msg.arg1;
 					Scaler s = (Scaler)msg.obj;
-					
-					theActivity.m_etZero.setText(String.valueOf(s.getZeroValue()));
+					if(msg.arg1 != '0')
+					{
+						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
+					}
+					else theActivity.m_etZero.setText(String.valueOf(s.getZeroValue()));
 					break;
 				}
 				case Global.MSG_SCALER_K_CALIB_RESULT:
 				{
 					Scaler s = (Scaler)msg.obj;
-					
-					theActivity.m_tvK.setText(String.valueOf(s.getLoadValue()));
+					if(msg.arg1 != '0')
+					{
+						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
+					}
+					else theActivity.m_tvK.setText(String.valueOf(s.getLoadValue()));
 					break;
 				}
 			}
