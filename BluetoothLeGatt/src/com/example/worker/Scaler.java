@@ -14,8 +14,29 @@ public class Scaler {
 	private String address;
 	private boolean connected;
 	private int weight;
+	private int zeroValue;
+	private int weightVlaue;
+	private int loadValue;
 	private BleGattCharacteristic characteristic;
 	
+	public int getZeroValue() {
+		return zeroValue;
+	}
+	public void setZeroValue(int zeroValue) {
+		this.zeroValue = zeroValue;
+	}
+	public int getWeightVlaue() {
+		return weightVlaue;
+	}
+	public void setWeightVlaue(int weightVlaue) {
+		this.weightVlaue = weightVlaue;
+	}
+	public int getLoadValue() {
+		return loadValue;
+	}
+	public void setLoadValue(int loadValue) {
+		this.loadValue = loadValue;
+	}
 	private void init()
 	{
 		this.address = "";

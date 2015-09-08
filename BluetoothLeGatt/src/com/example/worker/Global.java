@@ -57,6 +57,10 @@ public class Global {
 	public static final int MSG_BLE_NOT_SUPPORT=100037;
 	public static final int MSG_SCALER_PAR_SET_RESULT=100038;
 	public static final int MSG_SCALER_PAR_GET_RESULT=100039;
+	public static final int MSG_SCALER_ZERO_QUERY_RESULT=100040;
+	public static final int MSG_SCALER_ZERO_CALIB_RESULT=100041;
+	public static final int MSG_SCALER_K_QUERY_RESULT=100042;
+	public static final int MSG_SCALER_K_CALIB_RESULT=100043;
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
 	public static final String BYTESPARA2 = "bytespara2";

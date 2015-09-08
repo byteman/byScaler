@@ -148,6 +148,7 @@ public class ScalerParam {
 	public byte[] getSetCmdBuffer()
 	{
 		byte[] send = new byte[15] ; //最多只能发生15个字符.
+		Arrays.fill(send, (byte) 0); //清零
 		byte[] nov_arr = intToByte(this.nov);
 		send[0] = 'P';
 		send[1] = 'A';
@@ -161,8 +162,9 @@ public class ScalerParam {
 		send[9] = tmp;
 
 		send[10] = this.dignum;
-		
-		System.arraycopy(this.unit.getBytes(), 0, send, 11, this.unit.length()); 
+		int len = this.unit.length();
+		if(len > 3 ) len = 3;
+		System.arraycopy(this.unit.getBytes(), 0, send, 11, len); //最多复制3个字节 的unit.
 		send[14] = ';';
 		return send;
 		

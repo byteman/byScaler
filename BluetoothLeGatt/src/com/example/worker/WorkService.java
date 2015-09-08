@@ -2,6 +2,7 @@ package com.example.worker;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,19 +224,107 @@ public class WorkService extends Service {
 						mHandler.sendMessage(msg);
 					}
 				}
-				
-
-				
-				
-				
-			/*	for(Scaler s : WorkService.scalers.values())
+				else if((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z'))
 				{
-					weight+= s.getWeight();
-				}*/
-				
-				
+					Scaler d = WorkService.scalers.get(addr);
+					if(d==null) return;
+					
+					if(val[3] == '?') //参数读取的返回值.
+					{
+						
+						int ret = 0;
+					
+						
+						try {
+							int zero = Utils.bytesToString(val, 4, val.length);
+							d.setZeroValue(zero);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							ret = 1;
+							e.printStackTrace();
+						}
+					
+						
+						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_ZERO_QUERY_RESULT);
+						msg.arg1 = ret;
+						msg.obj  = d;
+						mHandler.sendMessage(msg);
+					
+						
+					}
+					else if(val[3] == ':') //参数设置的返回值.
+					{
+						
+						if(val[4] == '0')
+						{
+							try {
+								int zero = Utils.bytesToString(val, 4, val.length);
+								d.setZeroValue(zero);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						
+						}
+						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_ZERO_CALIB_RESULT);
+						msg.arg1 = val[4];
+						msg.obj  = d;
+						mHandler.sendMessage(msg);
+					}
+					
+			}
 
-			}else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
+			else if((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K'))
+			{
+				Scaler d = WorkService.scalers.get(addr);
+				if(d==null) return;
+				
+				if(val[3] == '?') //参数读取的返回值.
+				{
+					
+					int ret = 0;
+
+					try {
+						int w = Utils.bytesToString(val, 4, val.length);
+						d.setLoadValue(w);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						ret = 1;
+						e.printStackTrace();
+					}
+					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_K_QUERY_RESULT);
+					
+					msg.obj  = d;
+					msg.arg1 = ret;
+			
+					mHandler.sendMessage(msg);
+				
+					
+				}
+				else if(val[3] == ':') //参数设置的返回值.
+				{
+					
+					if(val[4] == '0')
+					{
+						try {
+							int w = Utils.bytesToString(val, 4, val.length);
+							d.setLoadValue(w);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
+					}
+					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_K_CALIB_RESULT);
+					
+					msg.obj  = d;
+					msg.arg1 = val[4];
+					mHandler.sendMessage(msg);
+				}
+				
+			}
+		}		
+		else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
 				
 				Log.e( TAG, "ble request failed");
 				String address = intent.getExtras().getString(BleService.EXTRA_ADDR);
@@ -427,6 +516,23 @@ public class WorkService extends Service {
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
 	}
+	//标定零点
+	//address 设备地址  
+	public static boolean requestCalibZero(String address) 
+	{
+		return requestValue(address, "CLZ;");
+	}
+	//标定重量.calibWet 标定重量值
+	public static boolean requestCalibK(String address,int calibWet,int nov) 
+	{
+		Scaler s = scalers.get(address);
+		if(s==null) return false;
+		int w = (calibWet*1000000)/nov;
+		
+		String cmd = "CLK;" +w + ";";
+		
+		return requestValue(address, cmd);
+	}
 	public static boolean requestWriteParamValue(String address,ScalerParam s)
 	{
 		if(mBle == null) return false;
@@ -440,10 +546,7 @@ public class WorkService extends Service {
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
 	}
-	public static boolean requestCalibZero(String address)
-	{
-		return requestValue(address, "MSV?;");
-	}
+
 	public static boolean requestReadWgt(String address)
 	{
 		
@@ -522,6 +625,10 @@ public class WorkService extends Service {
 		}
 		return true;
 		
+	}
+	public static Scaler getScaler(String addr)
+	{
+		return scalers.get(addr);
 	}
 	public static String getPrinterAddress(Context pCtx)
 	{

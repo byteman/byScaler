@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.bluetooth.le.WeightActivity.MHandler;
 import com.example.worker.Global;
+import com.example.worker.Scaler;
 import com.example.worker.WorkService;
 
 public class CalibActivity extends Activity {
@@ -43,9 +44,12 @@ public class CalibActivity extends Activity {
 							Toast.LENGTH_LONG).show();
 					return;
 				}
-			
-				float wgt   = Float.valueOf((String) m_etWgt.getText().toString());
 				
+				int wgt   = Integer.valueOf((String) m_etWgt.getText().toString());
+				Scaler s = WorkService.getScaler(mDeviceAddress);
+				if(s == null) return;
+				int nov   = s.para.getNov();
+				WorkService.requestCalibK(mDeviceAddress, wgt, nov);
 			}
 
 		}
@@ -148,11 +152,25 @@ public class CalibActivity extends Activity {
 				case Global.MSG_BLE_WGTRESULT:
 				{
 					//BluetoothDevice device = (BluetoothDevice) msg.obj;
-					int weight = msg.arg1;
-					theActivity.m_tvAD.setText(String.valueOf(weight));
+					//int weight = msg.arg1;
+					//theActivity.m_tvAD.setText(String.valueOf(weight));
 					break;
 				}
-				
+				case Global.MSG_SCALER_ZERO_CALIB_RESULT:
+				{
+					int result = msg.arg1;
+					Scaler s = (Scaler)msg.obj;
+					
+					theActivity.m_etZero.setText(String.valueOf(s.getZeroValue()));
+					break;
+				}
+				case Global.MSG_SCALER_K_CALIB_RESULT:
+				{
+					Scaler s = (Scaler)msg.obj;
+					
+					theActivity.m_tvK.setText(String.valueOf(s.getLoadValue()));
+					break;
+				}
 			}
 			
 		}

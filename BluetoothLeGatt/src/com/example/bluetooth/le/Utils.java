@@ -161,6 +161,16 @@ public class Utils {
 			number |= ((0 << 24) & 0xFF000000);
 		return number;
 	}
+	public static int bytesToString(byte[] bytes,int from, int to) throws Exception
+	{
+		int size = to - from;
+		if(size < 1) throw new Exception("长度不正确");
+		byte[] tmp = new byte[size];
+		System.arraycopy(bytes, from, tmp, 0, size);
+		String s = new String(tmp);
+		return Integer.parseInt(s);
+	
+	}
 	public static int bytesToInt(byte[] bytes) {
 		int number = bytes[0] & 0xFF;
 		// "|="按位或赋值。
