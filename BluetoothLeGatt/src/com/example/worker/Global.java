@@ -47,20 +47,20 @@ public class Global {
 	
 	
 	//add for BLE 
-	public static final int MSG_SCLAER_CONNECTRESULT=100030;
-	public static final int MSG_BLE_SCANRESULT=100031;
-	public static final int MSG_BLE_CONNECTRESULT=100032;
-	public static final int MSG_BLE_DISCONNECTRESULT=100033;
-	public static final int MSG_BLE_SERVICEDISRESULT=100034;
-	public static final int MSG_BLE_WGTRESULT=100035;
-	public static final int MSG_BLE_FAILERESULT=100036;
-	public static final int MSG_BLE_NOT_SUPPORT=100037;
-	public static final int MSG_SCALER_PAR_SET_RESULT=100038;
-	public static final int MSG_SCALER_PAR_GET_RESULT=100039;
-	public static final int MSG_SCALER_ZERO_QUERY_RESULT=100040;
-	public static final int MSG_SCALER_ZERO_CALIB_RESULT=100041;
-	public static final int MSG_SCALER_K_QUERY_RESULT=100042;
-	public static final int MSG_SCALER_K_CALIB_RESULT=100043;
+	public static final int MSG_BLE_SCANRESULT=100031;	//扫描蓝牙设备的结果
+	public static final int MSG_BLE_CONNECTRESULT=100032;	//连接设备的响应消息
+	public static final int MSG_BLE_DISCONNECTRESULT=100033;	//设备断开命令的响应
+	public static final int MSG_BLE_SERVICEDISRESULT=100034;	//设备服务列举的响应
+	public static final int MSG_BLE_WGTRESULT=100035;	//读取重量的响应
+	public static final int MSG_BLE_FAILERESULT=100036;	//命令响应失败的消息
+	public static final int MSG_BLE_NOT_SUPPORT=100037;	//手机不支持蓝牙BLE
+	public static final int MSG_SCALER_PAR_SET_RESULT=100038;	//设置秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_RESULT=100039;	//读取秤参数的响应
+	public static final int MSG_SCALER_ZERO_QUERY_RESULT=100040;	//读取零点ad值
+	public static final int MSG_SCALER_ZERO_CALIB_RESULT=100041;	//标定零点ad值
+	public static final int MSG_SCALER_K_QUERY_RESULT=100042;	//读取重量系数
+	public static final int MSG_SCALER_K_CALIB_RESULT=100043;	//标定重量系数
+	public static final int MSG_BLE_NO_BT_ADAPTER=10044; 	//手机不支持蓝牙
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
 	public static final String BYTESPARA2 = "bytespara2";

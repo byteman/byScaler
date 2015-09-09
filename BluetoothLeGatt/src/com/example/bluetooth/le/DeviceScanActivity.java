@@ -64,15 +64,12 @@ package com.example.bluetooth.le;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,12 +85,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bluetooth.le.StartActivity.MHandler;
 import com.example.worker.Global;
 import com.example.worker.WorkService;
-import com.xtremeprog.sdk.ble.BleGattCharacteristic;
-import com.xtremeprog.sdk.ble.BleService;
-import com.xtremeprog.sdk.ble.IBle;
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.

@@ -1,11 +1,5 @@
 package com.example.worker;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import android.R.integer;
-import android.text.GetChars;
-
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 
 public class Scaler {

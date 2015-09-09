@@ -2,26 +2,10 @@ package com.example.worker;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.example.bluetooth.le.BleApplication;
-import com.example.bluetooth.le.Config;
-import com.xtremeprog.sdk.ble.BleGattCharacteristic;
-import com.xtremeprog.sdk.ble.BleService;
-import com.xtremeprog.sdk.ble.IBle;
-import com.example.bluetooth.le.Utils;
-import com.example.db.WeightRecord;
-import com.example.worker.Global;
-import com.lvrenyang.utils.DataUtils;
-
-
-
-
-
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -37,6 +21,17 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.bluetooth.le.BleApplication;
+import com.example.bluetooth.le.Config;
+import com.example.bluetooth.le.Utils;
+import com.example.db.WeightRecord;
+import com.lvrenyang.utils.DataUtils;
+import com.xtremeprog.sdk.ble.BleGattCharacteristic;
+import com.xtremeprog.sdk.ble.BleRequest.FailReason;
+import com.xtremeprog.sdk.ble.BleRequest.RequestType;
+import com.xtremeprog.sdk.ble.BleService;
+import com.xtremeprog.sdk.ble.IBle;
+
 /**
  * 观察者模式
  * 
@@ -46,40 +41,38 @@ import android.widget.Toast;
 public class WorkService extends Service {
 
 	// Service和workThread通信用mHandler
-	public static WorkThread workThread = null;
+	public static WorkThread workThread = null; //打印服务工作线程
 	private static Handler mHandler = null;
-	private static List<Handler> targetsHandler = new ArrayList<Handler>(5);
+	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
 	public static Map<String,Scaler> scalers;
 	private static Map<Integer,Scaler> scalers2;
 	private static IBle mBle;
-	private static final int REQUEST_ENABLE_BT = 1;
 	private String TAG = "WorkSrv";
 	private static String strUnit = "kg";
-	private static int max_count = 1;
-	private static String mPrinterAddress;
+	private static int max_count = 1;	//蓝牙秤设备个数.
+	private static String mPrinterAddress; //打印机蓝牙地址
 	
 	
-	//private Thread _threadRead;
+	//蓝牙秤消息接收器.
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
-			//Log.e(TAG, action);
+			
 			if (BleService.BLE_GATT_CONNECTED.equals(action)) {
-				Log.e( TAG, "server connect");
-
+				//蓝牙连接成功.
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_CONNECTRESULT);
 				final BluetoothDevice device = intent.getExtras()
 						.getParcelable(BleService.EXTRA_DEVICE);
 			
 				
-				msg.obj = device;
+				msg.obj = device;	//连接成功的蓝牙设备
 				mHandler.sendMessage(msg);
 				
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-				Log.e( TAG, "server disconnect");
+				//蓝牙断开.
 				Bundle extras = intent.getExtras();
 				if(extras == null) return;
 								
@@ -99,12 +92,12 @@ public class WorkService extends Service {
 			} 
 
 			else if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
+				//手机不支持蓝牙4.0
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_NOT_SUPPORT);
 				mHandler.sendMessage(msg);	
 			} 
 			else if (BleService.BLE_DEVICE_FOUND.equals(action)) {
-					// device found
-				Log.e( TAG, "server BLE_DEVICE_FOUND");
+				//扫描到一个ble设备.
 					Bundle extras = intent.getExtras();
 					final BluetoothDevice device = extras
 							.getParcelable(BleService.EXTRA_DEVICE);
@@ -113,14 +106,16 @@ public class WorkService extends Service {
 					msg.obj = device;
 					mHandler.sendMessage(msg);
 			} else if (BleService.BLE_NO_BT_ADAPTER.equals(action)) {
-					
+				//手机不支持蓝牙
+				Message msg = mHandler.obtainMessage(Global.MSG_BLE_NO_BT_ADAPTER);
+				mHandler.sendMessage(msg);	
 			}else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
-				// displayGattServices(mBle.getServices(mDeviceAddress));
-				Log.e( TAG, "server discovered");
+				//ble设备的服务枚举完毕.
 				String address = intent.getExtras().getString(BleService.EXTRA_ADDR);
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_SERVICEDISRESULT);
 				msg.obj = address;
 				mHandler.sendMessage(msg);
+				//获取对方蓝牙模块[数据通讯]特征描述符
 				BleGattCharacteristic chars = mBle.getService(address,
 						UUID.fromString(Utils.UUID_SRV)).getCharacteristic(
 						UUID.fromString(Utils.UUID_DATA));
@@ -132,23 +127,30 @@ public class WorkService extends Service {
 					{
 						s.setConnected(true,chars);
 					}
-					mBle.requestCharacteristicNotification(address, chars);
+					//启动数据接收通知.
+					if(!mBle.requestCharacteristicNotification(address, chars))
+					{
+						Toast.makeText(getApplicationContext(), "通知失败!",Toast.LENGTH_SHORT).show();
+					}
+					
 				}
 				
 				
-			} else if (BleService.BLE_CHARACTERISTIC_NOTIFICATION.equals(action)) {
-				
+			}else if (BleService.BLE_CHARACTERISTIC_NOTIFICATION.equals(action)) {
+				//启用通知成功.
 				Bundle extras = intent.getExtras();
 				boolean mNotifyStarted = extras.getBoolean(BleService.EXTRA_VALUE);
 				if(mNotifyStarted)
 				{
-					Toast.makeText(getApplicationContext(), "notify"+extras.getString(BleService.EXTRA_ADDR), Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "enable notify"+extras.getString(BleService.EXTRA_ADDR), Toast.LENGTH_SHORT).show();
 				}
-			}  else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
+			}else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action))
 			{
+				//有对方通知数据返回.
 				Bundle extras = intent.getExtras();
 				String addr = extras.getString(BleService.EXTRA_ADDR);
+				Scaler d = WorkService.scalers.get(addr);
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 				if(val.length < 4)
 				{
@@ -164,48 +166,22 @@ public class WorkService extends Service {
 						System.arraycopy(val,4,w,0, 4);
 						
 						int weight = Utils.bytesToWeight(w);
-						Scaler d = WorkService.scalers.get(addr);
-						if(d==null) return;
 						d.setWeight(weight);
-						weight = 0;
-						for(int i = 0 ; i < max_count; i++)
-						{
-							
-							 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
-							 {
-								Scaler dev = scalers2.get(i);
-								
-								if(dev!=null && dev.isConnected())
-								{
-									weight += dev.getWeight();
-								}
-							 }
-												
-						
-						}
-						final BluetoothDevice device = extras
-								.getParcelable(BleService.EXTRA_DEVICE);
-					
+
 						Message msg = mHandler.obtainMessage(Global.MSG_BLE_WGTRESULT);
-						msg.arg1 = weight;
-						msg.obj  = device;
+						msg.arg1  = weight;
+						msg.obj   = d;
 						mHandler.sendMessage(msg);
 					}
 					
 				}
 				else if((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R'))
 				{
-					
-						
+
 					if(val[3] == '?') //参数读取的返回值.
 					{
-						
-						
-						Scaler d = WorkService.scalers.get(addr);
-						if(d==null) return;
+
 						int ret = d.para.parseParaBuffer(val)?1:0;
-						final BluetoothDevice device = extras
-								.getParcelable(BleService.EXTRA_DEVICE);
 					
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_GET_RESULT);
 						msg.arg1 = ret;
@@ -214,20 +190,15 @@ public class WorkService extends Service {
 					}
 					else if(val[3] == ':') //参数设置的返回值.
 					{
-						
-						final BluetoothDevice device = extras
-								.getParcelable(BleService.EXTRA_DEVICE);
-					
+									
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_SET_RESULT);
 						msg.arg1 = val[4];
-						msg.obj  = device;
+						msg.obj  = d;
 						mHandler.sendMessage(msg);
 					}
 				}
 				else if((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z'))
 				{
-					Scaler d = WorkService.scalers.get(addr);
-					if(d==null) return;
 					
 					if(val[3] == '?') //参数读取的返回值.
 					{
@@ -276,8 +247,6 @@ public class WorkService extends Service {
 
 			else if((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K'))
 			{
-				Scaler d = WorkService.scalers.get(addr);
-				if(d==null) return;
 				
 				if(val[3] == '?') //参数读取的返回值.
 				{
@@ -325,11 +294,35 @@ public class WorkService extends Service {
 			}
 		}		
 		else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
-				
-				Log.e( TAG, "ble request failed");
-				String address = intent.getExtras().getString(BleService.EXTRA_ADDR);
+				//命令请求失败,分析是那个命令，决定是否重新发送.
+				Bundle b = intent.getExtras();
+				if(b == null) return;
+				String address 	 = b.getString(BleService.EXTRA_ADDR);
+				RequestType type = (RequestType) b.getSerializable(BleService.EXTRA_REQUEST);
+				FailReason  reason =  (FailReason) b.getSerializable(BleService.EXTRA_REASON);
+			
+				if(type == RequestType.CHARACTERISTIC_NOTIFICATION)
+				{
+					Scaler s = scalers.get(address);
+					if(s == null)
+					{
+						return;
+					}
+					BleGattCharacteristic chars = mBle.getService(address,
+							UUID.fromString(Utils.UUID_SRV)).getCharacteristic(
+							UUID.fromString(Utils.UUID_DATA));
+					if(chars==null) return;
+					//启动数据接收通知.
+					if(!mBle.requestCharacteristicNotification(address,chars))
+					{
+						Toast.makeText(getApplicationContext(), "通知失败!",Toast.LENGTH_SHORT).show();
+					}
+					
+				}
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_FAILERESULT);
 				msg.obj = address;
+				msg.arg1 = type.ordinal();
+				msg.arg2 = reason.ordinal();
 				mHandler.sendMessage(msg);
 				
 			}
@@ -347,7 +340,27 @@ public class WorkService extends Service {
 			return WorkService.this;
 		}
 	}
-	
+	private void loadScalerConfig()
+	{
+		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:8F:B0");
+		WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
+		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
+		for(int i = 0 ; i < max_count; i++)
+		{
+			String addr = WorkService.getDeviceAddress(this, i);
+			
+			if(addr != null && addr != "")
+			{
+				 if(!scalers.containsKey(addr)) //不包含这个地址才创建新的称台设备.
+				 {
+					 Scaler scaler =  new Scaler(addr);
+					 scalers.put(addr,scaler);
+					 scalers2.put(i, scaler);
+				 }
+								
+			}
+		}	
+	}
 	@Override
 	public void onCreate() {
 		BleApplication app = (BleApplication) getApplication();
@@ -366,24 +379,7 @@ public class WorkService extends Service {
 			mPrinterAddress = "00:02:0A:03:C3:BC";
 			WorkService.setPrinterAddress(this, mPrinterAddress);
 		}
-		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:8F:B0");
-		WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
-		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
-		for(int i = 0 ; i < max_count; i++)
-		{
-			String addr = WorkService.getDeviceAddress(this, i);
-			
-			if(addr != null && addr != "")
-			{
-				 if(!scalers.containsKey(addr)) //不包含这个地址才创建新的称台设备.
-				 {
-					 Scaler scaler =  new Scaler(addr);
-					 scalers.put(addr,scaler);
-					 scalers2.put(i, scaler);
-				 }
-								
-			}
-		}
+		loadScalerConfig();
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 
 		mHandler = new MHandler(this);
@@ -462,12 +458,14 @@ public class WorkService extends Service {
 			targetsHandler.get(i).sendMessage(message);
 		}
 	}
+	//启动扫描ble蓝牙设备
 	public static void startScan()
 	{
 		
 		if(mBle != null)
 		mBle.startScan();
 	}
+	//停止扫描ble蓝牙设备
 	public static  void stopScan()
 	{
 		if(mBle != null)
@@ -477,33 +475,39 @@ public class WorkService extends Service {
 	{
 		return kg + WorkService.strUnit;
 	}
+	//请求连接某个秤的蓝牙地址
 	public static  boolean requestConnect(String address)
 	{
 		if(mBle == null) return false;
 		return mBle.requestConnect(address);
 	}
+	//请求断开某个秤的蓝牙地址
 	public static  void requestDisConnect(String address)
 	{
 		if(mBle == null) return ;
 		mBle.disconnect(address);
 	}
+	//请求断开所有秤的蓝牙地址
 	public static  void requestDisConnectAll()
 	{
 		if(mBle == null) return ;
 	
 		 mBle.disconnectAll();
 	}
+	//判断手机蓝牙是否启用
 	public static boolean adapterEnabled()
 	{
 		if(mBle == null) return false;
 		return mBle.adapterEnabled();
 	}
+	//判断某个蓝牙地址是否已经连接
 	public static boolean hasConnected(String address)
 	{
 		if(mBle == null) return false;
 		return mBle.hasConnected(address);
 	}
-	public static boolean requestValue(String address,String cmd)
+	
+	private static boolean requestValue(String address,String cmd)
 	{
 		if(mBle == null) return false;
 
@@ -522,7 +526,7 @@ public class WorkService extends Service {
 	{
 		return requestValue(address, "CLZ;");
 	}
-	//标定重量.calibWet 标定重量值
+	//标定重量.calibWet 标定重量值 nov 满量程
 	public static boolean requestCalibK(String address,int calibWet,int nov) 
 	{
 		Scaler s = scalers.get(address);
@@ -533,6 +537,12 @@ public class WorkService extends Service {
 		
 		return requestValue(address, cmd);
 	}
+	//请求读取参数
+	public static boolean requestReadPar(String address)
+	{
+		return requestValue(address, "PAR?;");
+	}
+	//请求修改参数,修改后的参数未保存
 	public static boolean requestWriteParamValue(String address,ScalerParam s)
 	{
 		if(mBle == null) return false;
@@ -546,56 +556,35 @@ public class WorkService extends Service {
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
 	}
-
+	//通知秤将参数写入内部eeprom
+	public static boolean requestSaveParam(String address)
+	{
+		return requestValue(address, "SAV;");
+	}
+	//读取某个秤的重量值
 	public static boolean requestReadWgt(String address)
 	{
 		
 		return requestValue(address, "ADV?;");
 
 	}
-	public static boolean requestReadNov(String address)
-	{
-		
-		return requestValue(address, "NOV?;");
-
-	}
-	public static boolean requestReadStillMonitor(String address)
-	{
-		return requestValue(address, "MTD?;");
-	}
-	public static boolean requestReadZTE(String address)
-	{
-		return requestValue(address, "ZTE?;");
-	}
-	public static boolean requestReadZSE(String address)
-	{
-		return requestValue(address, "ZSE?;");
-	}
-	public static boolean requestReadENU(String address)
-	{
-		return requestValue(address, "ENU?;");
-	}
-	public static boolean requestReadDPT(String address)
-	{
-		return requestValue(address, "DTP?;");
-	}
-	public static boolean requestReadRSN(String address)
-	{
-		return requestValue(address, "RSN?;");
-	}
-	public static boolean requestReadPar(String address)
-	{
-		return requestValue(address, "PAR?;");
-	}
-	public static boolean requestWritePar(String address)
-	{
-		//return requestValue(address, "PAR?;");
-		return true;
-	}
+	//判断打印机是否已经连接
 	public static boolean hasConnectPrinter()
 	{
 		return WorkService.workThread.isConnected();
 	}
+	//获取打印机的蓝牙地址
+	public static String getPrinterAddress(Context pCtx)
+	{
+		
+		return Config.getInstance(pCtx).getPrinterAddress();
+	}
+	//修改打印机的蓝牙地址.
+	public static void setPrinterAddress(Context pCtx,String address)
+	{	
+		 Config.getInstance(pCtx).setPrinterAddress(address);
+	}
+	//打印榜单
 	public static boolean requestPrint(WeightRecord data)
 	{
 		byte[] header =  { 0x1b, 0x40, 0x1c, 0x26, 0x1b, 0x39,0x01 };
@@ -626,24 +615,34 @@ public class WorkService extends Service {
 		return true;
 		
 	}
+	//连接指定地址的打印机
+	public static void connectPrinter(String address)
+	{
+		if(WorkService.workThread.isConnected()) return;
+		if(address == null)
+		{
+			WorkService.workThread.connectBt(mPrinterAddress);
+			return;
+		}
+		WorkService.workThread.connectBt(address);
+	}
+	//获取打印机地址
+	public static String getPrinterAddress()
+	{
+		return mPrinterAddress;
+	}
+	//获取指定地址的称台设备.
 	public static Scaler getScaler(String addr)
 	{
 		return scalers.get(addr);
 	}
-	public static String getPrinterAddress(Context pCtx)
-	{
-		
-		return Config.getInstance(pCtx).getPrinterAddress();
-	}
-	public static void setPrinterAddress(Context pCtx,String address)
-	{	
-		 Config.getInstance(pCtx).setPrinterAddress(address);
-	}
+	//获取地址序号的称的蓝牙地址
 	public static String getDeviceAddress(Context pCtx,int index)
 	{
 		
 		return Config.getInstance(pCtx).getDevAddress(index);
 	}
+	//修改地址序号的称的蓝牙地址
 	public static void setDeviceAddress(Context pCtx, int index,String address)
 	{
 		 Config.getInstance(pCtx).setDevAddress(index,address);
@@ -654,21 +653,7 @@ public class WorkService extends Service {
 			 scalers2.put(index, scaler);
 		 }
 	}
-	/*
-	 * for(Scaler dev : WorkService.scalers.values())
-		{
-			if(dev.isConnected())
-			{
-				WorkService.requestReadWgt(dev.getAddress());
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	 * */
+	//连接所有蓝牙秤
 	public static boolean connectAll()
 	{
 		boolean need_connect = false;
@@ -693,18 +678,9 @@ public class WorkService extends Service {
 								
 		
 		}
-		
-	/*	for(Scaler dev : WorkService.scalers.values())
-		{
-			if(!dev.isConnected())
-			{
-				WorkService.requestConnect(dev.getAddress());
-				need_connect = true;
-			}
-		}*/
-				
 		return !need_connect;
 	}
+	//所有称都已经连接否
 	public static boolean hasConnectAll()
 	{
 		boolean need_connect = false;
@@ -728,16 +704,10 @@ public class WorkService extends Service {
 								
 		
 		}
-		/*for(Scaler dev : WorkService.scalers.values())
-		{
-			if(!dev.isConnected())
-			{
-				need_connect = true;
-				break;
-			}
-		}*/
+		
 		return !need_connect;
 	}
+	//读取所有称的重量.
 	public static boolean readAllWgt()
 	{
 		if(!hasConnectAll()) return false;
@@ -747,24 +717,13 @@ public class WorkService extends Service {
 		}
 		return true;
 	}
-	public static void connectPrinter(String address)
-	{
-		if(WorkService.workThread.isConnected()) return;
-		if(address == null)
-		{
-			WorkService.workThread.connectBt(mPrinterAddress);
-			return;
-		}
-		WorkService.workThread.connectBt(address);
-	}
-	public static String getPrinterAddress()
-	{
-		return mPrinterAddress;
-	}
+	
+	//获取秤的个数
 	public static int getScalerCount()
 	{
 		return scalers.size();
 	}
+	//获取指定序号秤的蓝牙地址
 	public static String getScalerAddress(int index)
 	{
 		if(index >= getScalerCount()) return null;
@@ -775,6 +734,7 @@ public class WorkService extends Service {
 		
 		return s.getAddress();
 	}
+	//获取指定序号秤的连接状态.
 	public static boolean getScalerConnectState(int index)
 	{
 		if(index >= getScalerCount()) return false;
@@ -786,5 +746,25 @@ public class WorkService extends Service {
 		return s.isConnected(); 
 		
 	}
+	//获取所有秤加起来的重量.
+	public static int getTotalWeight()
+	{
+		int totalweight = 0;
+		for(int i = 0 ; i < max_count; i++)
+		{
+			
+			 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
+			 {
+				Scaler dev = scalers2.get(i);
+				
+				if(dev!=null && dev.isConnected())
+				{
+					totalweight += dev.getWeight();
+				}
+			 }							
+		}
+		return totalweight;
+	}
+	
 }
 

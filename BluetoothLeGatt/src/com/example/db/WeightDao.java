@@ -35,7 +35,7 @@ public class WeightDao {
 	}
 
 	/**
-	 * 保存好友list
+	 * 保存称重记录列表
 	 * 
 	 * @param contactList
 	 */
@@ -56,7 +56,7 @@ public class WeightDao {
 	}
 
 	/**
-	 * 获取好友list
+	 * 获取所有的称重记录
 	 * 
 	 * @return
 	 */
@@ -87,6 +87,7 @@ public class WeightDao {
 		}
 		return items;
 	}
+	//获取最近一条过磅记录
 	public  boolean getWeightRecord(WeightRecord item) {
 		boolean ok = false;
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -121,7 +122,7 @@ public class WeightDao {
 		return ok;
 	}
 	/**
-	 * 删除一个联系人
+	 * 删除一条过磅记录
 	 * @param username
 	 */
 	public void deleteWeight(String wt_id){
@@ -142,7 +143,7 @@ public class WeightDao {
 		return -1;
 	}
 	/**
-	 * 保存一个联系人
+	 * 保存一条过磅记录
 	 * @param user
 	 */
 	public void saveWeight(WeightRecord item){

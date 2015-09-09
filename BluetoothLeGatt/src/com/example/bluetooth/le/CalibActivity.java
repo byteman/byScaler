@@ -2,7 +2,6 @@ package com.example.bluetooth.le;
 
 import java.lang.ref.WeakReference;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -16,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bluetooth.le.WeightActivity.MHandler;
 import com.example.worker.Global;
 import com.example.worker.Scaler;
 import com.example.worker.WorkService;
