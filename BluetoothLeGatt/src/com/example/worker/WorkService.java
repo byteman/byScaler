@@ -297,9 +297,10 @@ public class WorkService extends Service {
 				//命令请求失败,分析是那个命令，决定是否重新发送.
 				Bundle b = intent.getExtras();
 				if(b == null) return;
+				
 				String address 	 = b.getString(BleService.EXTRA_ADDR);
 				RequestType type = (RequestType) b.getSerializable(BleService.EXTRA_REQUEST);
-				FailReason  reason =  (FailReason) b.getSerializable(BleService.EXTRA_REASON);
+				//FailReason  reason =  (FailReason) b.getSerializable(BleService.EXTRA_REASON);
 			
 				if(type == RequestType.CHARACTERISTIC_NOTIFICATION)
 				{
@@ -322,13 +323,63 @@ public class WorkService extends Service {
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_FAILERESULT);
 				msg.obj = address;
 				msg.arg1 = type.ordinal();
-				msg.arg2 = reason.ordinal();
+				//msg.arg2 = reason.ordinal();
 				mHandler.sendMessage(msg);
 				
 			}
 		}
 		
 	};
+	public static String getFailReason(int reason)
+	{
+		String type = "未知原因";
+		if(reason ==  RequestType.CHARACTERISTIC_NOTIFICATION.ordinal())
+		{
+			type = "启动通知请求失败";
+		}
+		else if(reason ==  RequestType.CONNECT_GATT.ordinal())
+		{
+			type = "连接服务失败";
+		}
+		else if(reason ==  RequestType.DISCOVER_SERVICE.ordinal())
+		{
+			type = "枚举服务失败";
+		}
+		else if(reason ==  RequestType.CONNECT_GATT.ordinal())
+		{
+			type = "连接服务失败";
+		}
+		else if(reason ==  RequestType.CHARACTERISTIC_INDICATION.ordinal())
+		{
+			type = "特征指示失败";
+		}
+		else if(reason ==  RequestType.READ_CHARACTERISTIC.ordinal())
+		{
+			type = "读取特征失败";
+		}
+		else if(reason ==  RequestType.READ_DESCRIPTOR.ordinal())
+		{
+			type = "读取特征失败";
+		}
+		else if(reason ==  RequestType.READ_RSSI.ordinal())
+		{
+			type = "读取特征失败";
+		}
+		else if(reason ==  RequestType.WRITE_CHARACTERISTIC.ordinal())
+		{
+			type = "读取特征失败";
+		}
+		else if(reason ==  RequestType.CHARACTERISTIC_STOP_NOTIFICATION.ordinal())
+		{
+			type = "停止通知失败";
+		}
+		else if(reason ==  RequestType.WRITE_DESCRIPTOR.ordinal())
+		{
+			type = "写描述符失败";
+		}
+		return type;
+		 
+	}
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub

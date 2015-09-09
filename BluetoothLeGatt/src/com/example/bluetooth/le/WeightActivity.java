@@ -47,6 +47,7 @@ import com.example.db.WeightRecord;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
+import com.xtremeprog.sdk.ble.BleRequest.RequestType;
 
 public class WeightActivity extends Activity implements View.OnClickListener {
 
@@ -371,7 +372,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					}
 					case Global.MSG_BLE_FAILERESULT:
 					{
-						Toast.makeText(theActivity, "failed", Toast.LENGTH_SHORT).show();
+
+						Toast.makeText(theActivity, WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
 						break;
 					}
 					case Global.MSG_SCALER_PAR_GET_RESULT:
