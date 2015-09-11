@@ -3,24 +3,102 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Spinner
-        android:id="@+id/sp_zerotrack"     
+    <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+         <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"      
+        android:text="@string/zerotrack" />
+       <Spinner
+        android:prompt="@string/zerotrack"
+        android:entries="@array/zerotrack"
+        android:id="@+id/sp_zerotrack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <Spinner
+         
+    </LinearLayout>
+  
+      <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+         <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"      
+        android:text="@string/zeroinit" />
+           <Spinner
         android:id="@+id/sp_zeroinit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:entries="@array/zeroinit"
+        android:prompt="@string/zeroinit" />
+         
+    </LinearLayout>
+    
 
+   
+  <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+       <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"      
+        android:text="@string/mtd" />
     <Spinner
+        android:prompt="@string/mtd"
+        android:entries="@array/mtd"
         android:id="@+id/sp_mtd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+ </LinearLayout>
+ 
+    <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+      <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"      
+        android:text="@string/dignum" />
     <Spinner
+        android:prompt="@string/dignum"
+        android:entries="@array/dignum"
         android:id="@+id/sp_dignum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+	 </LinearLayout>
+	 
+      <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+      <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"      
+        android:text="@string/div" />
+    <Spinner
+        android:prompt="@string/div"
+        android:entries="@array/div"
+        android:id="@+id/sp_div"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+	 </LinearLayout>
 </LinearLayout>

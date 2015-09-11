@@ -12,6 +12,7 @@ public class TestActivity extends Activity {
 	private Spinner sp_zeroinit;
 	private Spinner sp_mtd;
 	private Spinner sp_dignum;
+	private Spinner sp_div;
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -24,7 +25,7 @@ public class TestActivity extends Activity {
 		sp_zeroinit = (Spinner) findViewById(R.id.sp_zeroinit);
 		sp_mtd = (Spinner) findViewById(R.id.sp_mtd);
 		sp_dignum = (Spinner) findViewById(R.id.sp_dignum);
-		
+		sp_div= (Spinner) findViewById(R.id.sp_div);
 	}
 
 }

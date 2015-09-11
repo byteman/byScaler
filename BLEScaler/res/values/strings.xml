@@ -59,7 +59,11 @@
     <string name="printform">打印表格</string>
     <string name="print">打印</string>
     <string name="conn_all">连接</string>
-    
+    <string name="zerotrack">零点跟踪</string>
+    <string name="zeroinit">初始零点</string>
+    <string name="mtd">稳定系数</string>
+    <string name="dignum">小数点数</string>
+    <string name="div">分辨率  </string>
     
 
 </resources>
