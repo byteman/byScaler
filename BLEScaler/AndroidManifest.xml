@@ -38,7 +38,7 @@ limitations under the License.
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
 
     <application
-        android:name=".BleApplication"
+        android:name="com.blescaler.ui.BleApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo.Light" >
@@ -46,14 +46,9 @@ limitations under the License.
             android:name=".DeviceScanActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity 
-            android:name=".DeviceControlActivity" >
-        </activity>
-
         <service
-            android:name=".BleService"
+            android:name="com.xtremeprog.sdk.ble.BleService"
             android:enabled="true" />
-
         <service
             android:name="com.blescaler.worker.WorkService"
             android:enabled="true" />

@@ -129,8 +129,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
-
-			WorkService.requestReadPar("C4:BE:84:22:91:E2");
+			startActivity(new Intent(this, TestActivity.class));
+			//WorkService.requestReadPar("C4:BE:84:22:91:E2");
 			return true;
 		}
 		else if(id == R.id.connect_printer)

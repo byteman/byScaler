@@ -4,22 +4,22 @@
     android:orientation="vertical" >
 
     <Spinner
-        android:id="@+id/spinner1"     
+        android:id="@+id/sp_zerotrack"     
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/sp_zeroinit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Spinner
-        android:id="@+id/spinner3"
+        android:id="@+id/sp_mtd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Spinner
-        android:id="@+id/spinner4"
+        android:id="@+id/sp_dignum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
