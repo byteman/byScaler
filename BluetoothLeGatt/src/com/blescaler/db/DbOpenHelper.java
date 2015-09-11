@@ -11,12 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.db;
+package com.blescaler.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.db.WeightRecord;
+
+import com.blescaler.db.WeightRecord;
  
 
 public class DbOpenHelper extends SQLiteOpenHelper{

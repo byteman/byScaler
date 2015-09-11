@@ -1,4 +1,6 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
+
+import com.blescaler.ui.R;
 
 import android.app.Activity;
 import android.os.Bundle;

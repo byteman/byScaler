@@ -1,7 +1,8 @@
  
-package com.example.db;
+package com.blescaler.db;
 
-import com.example.bluetooth.le.Utils;
+import com.blescaler.utils.Utils;
+import com.blescaler.worker.WeightData;
 
 
 public class WeightRecord {
@@ -11,7 +12,14 @@ public class WeightRecord {
     private String net;
     private String gross;
     private long time;
- 	 
+    public WeightRecord()
+    {
+    	WeightData w = new WeightData();
+    	setGross(w.getGross()+"");
+    	setTare(w.getTare()+"");
+    	setNet(w.getNet()+"");
+    }
+   
     public String getID()
     {
 		return this.wet_id;

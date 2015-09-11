@@ -1,9 +1,11 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 
-import com.example.worker.WorkService;
-import com.example.worker.Global;
+import com.blescaler.utils.Utils;
+import com.blescaler.ui.R;
+import com.blescaler.worker.WorkService;
+import com.blescaler.worker.Global;
 
 
 import android.app.Activity;

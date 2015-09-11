@@ -1,4 +1,4 @@
-package com.example.worker;
+package com.blescaler.worker;
 
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 

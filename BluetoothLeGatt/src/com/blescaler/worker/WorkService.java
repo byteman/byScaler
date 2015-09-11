@@ -1,4 +1,4 @@
-package com.example.worker;
+package com.blescaler.worker;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,10 +21,10 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.bluetooth.le.BleApplication;
-import com.example.bluetooth.le.Config;
-import com.example.bluetooth.le.Utils;
-import com.example.db.WeightRecord;
+import com.blescaler.db.Config;
+import com.blescaler.db.WeightRecord;
+import com.blescaler.ui.BleApplication;
+import com.blescaler.utils.Utils;
 import com.lvrenyang.utils.DataUtils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleRequest.FailReason;
@@ -41,6 +41,7 @@ import com.xtremeprog.sdk.ble.IBle;
 public class WorkService extends Service {
 
 	// Service和workThread通信用mHandler
+	
 	public static WorkThread workThread = null; //打印服务工作线程
 	private static Handler mHandler = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
@@ -51,7 +52,14 @@ public class WorkService extends Service {
 	private static String strUnit = "kg";
 	private static int max_count = 1;	//蓝牙秤设备个数.
 	private static String mPrinterAddress; //打印机蓝牙地址
-	
+	////////////////////称重变量////////////////////////////////
+	private static int zero = 0; //零点重量
+	private static int tare = 0; //皮重
+	private static int tmp_tare = 0; //临时皮重
+	private static int gross= 0; //毛重,从秤上直接读取的重量
+	private static int net  = 0; //净重 = 毛重-皮重-零点重量.
+	private static boolean is_net_state = false; // 是否是净重状态,默认是毛重状态
+	/////////////////////////////////////////////////
 	
 	//蓝牙秤消息接收器.
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
@@ -816,6 +824,67 @@ public class WorkService extends Service {
 		}
 		return totalweight;
 	}
+	//获取预置和去皮时保存的皮重
+	public static int getSavedTareWeight()
+	{
+		return tmp_tare;
+	}
+	//获取当前的皮重.净重状态下才有皮重，毛重状态下皮重为0
+	public static int getTareWeight()
+	{
+		if(is_net_state) return tare;
+		return 0;
+	}
+	//获取毛重
+	public static int getGrossWeight()
+	{
+		return getTotalWeight() - zero;
+	}
+	//获取净重,毛重状态下皮重为0，净重=毛重  净重状态下净重才是上次设置的值，净重=毛重-净重 .  实时显示的也是这个重量.
+	public static int getNetWeight()
+	{
+		return getGrossWeight() - getTareWeight();
+	}
 	
+	//置零当前重量
+	public static boolean setZero()
+	{
+		if(is_net_state) return false; //净重状态不允许置零
+		zero = getTotalWeight(); //毛重状态下，取所有称台总重为零点重量.
+		return true;
+	}
+	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
+	public static boolean setPreTare(int preTare)
+	{
+		tare = preTare;
+		tmp_tare = tare;
+		is_net_state = true;
+		return true;
+	}
+	//去皮，取当前的重量为皮重,去皮后更改为净重状态.
+	public static boolean discardTare()
+	{
+		tare = getTotalWeight();
+		tmp_tare = tare;
+		is_net_state = true;
+		return true;
+	}
+	//毛重和净重状态切换.
+	public static boolean switchNetGross()
+	{
+		is_net_state=!is_net_state;
+		if(is_net_state)
+		{
+			//如果手工切换到净重状态.
+			tare = tmp_tare; //恢复上次保存的皮重.
+		}
+		else
+		{
+			//如果手工切换到了毛重状态.
+			tare = 0; //将皮重设置为0，
+		}
+		return is_net_state;
+	}
+
 }
 

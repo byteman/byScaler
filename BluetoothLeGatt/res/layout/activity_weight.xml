@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="10dp"
     android:background="@color/white"
-    tools:context="com.example.bluetooth.le.WeightActivity" >
+    tools:context="com.blescaler.ui.WeightActivity" >
 
     <TextView
         android:id="@+id/txtWgt"

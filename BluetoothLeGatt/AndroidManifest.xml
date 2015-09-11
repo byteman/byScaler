@@ -12,10 +12,10 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.
+limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.bluetooth.le"
+    package="com.blescaler.ui"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -26,7 +26,7 @@ limitations under the License.
     Declare this required feature if you want to make the app available to BLE-capable
     devices only.  If you want to make your app available to devices that don't support BLE,
     you should omit this in the manifest.  Instead, determine BLE capability by using
-    PackageManager.hasSystemFeature(FEATURE_BLUETOOTH_LE)
+    PackageManager.hasSystemFeature(FEATURE_BLUETOOTH_LE)
     -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -38,39 +38,40 @@ limitations under the License.
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
 
     <application
-        android:name="com.example.bluetooth.le.BleApplication"
+        android:name=".BleApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo.Light" >
         <activity
-            android:name="com.example.bluetooth.le.DeviceScanActivity"
+            android:name=".DeviceScanActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name="com.example.bluetooth.le.DeviceControlActivity" >
+        <activity 
+            android:name=".DeviceControlActivity" >
         </activity>
 
         <service
-            android:name="com.xtremeprog.sdk.ble.BleService"
+            android:name=".BleService"
             android:enabled="true" />
 
         <service
-            android:name="com.example.worker.WorkService"
+            android:name="com.blescaler.worker.WorkService"
             android:enabled="true" />
         <activity
-            android:name="com.example.bluetooth.le.CharacteristicActivity"
+            android:name=".CharacteristicActivity"
             android:label="@string/title_activity_characteristic" >
         </activity>
         <activity
-            android:name="com.example.bluetooth.le.WeightActivity"
+            android:name=".WeightActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_weight" >
         </activity>
         <activity
-            android:name=".TestActivity"
+            android:name=".TestActivity"            
             android:label="@string/title_activity_weight" >
         </activity>
         <activity
-            android:name=".CalibActivity"
+            android:name=".CalibActivity"      
             android:label="@string/calibwgt" >
         </activity>
          <activity

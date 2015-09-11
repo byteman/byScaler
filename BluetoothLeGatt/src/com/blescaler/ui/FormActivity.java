@@ -1,4 +1,4 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 
@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.example.worker.WorkService;
-import com.example.worker.Global;
-import com.example.bluetooth.le.R;
+import com.blescaler.worker.WorkService;
+import com.blescaler.worker.Global;
+import com.blescaler.ui.R;
 import com.lvrenyang.utils.DataUtils;
 
 public class FormActivity extends Activity implements OnClickListener {

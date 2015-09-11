@@ -1,5 +1,5 @@
  
-package com.example.db;
+package com.blescaler.db;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.example.db.WeightRecord;
+import com.blescaler.db.WeightRecord;
 
 @SuppressLint("DefaultLocale")
 public class WeightDao {

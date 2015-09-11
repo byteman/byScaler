@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context="com.example.bluetooth.le.CharacteristicActivity" >
+    tools:context="com.blescaler.utils.CharacteristicActivity" >
 
     <TextView
         android:id="@+id/tv_name"

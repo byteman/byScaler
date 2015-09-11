@@ -1,4 +1,4 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -36,14 +36,16 @@ import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.aiven.alert.util.MineAlert;
-import com.example.worker.Global;
-import com.example.worker.Scaler;
-import com.example.worker.ScalerParam;
-import com.example.worker.WorkService;
-import com.example.bluetooth.le.ConnectBTPairedActivity;
-import com.example.bluetooth.le.SearchBTActivity;
-import com.example.db.WeightDao;
-import com.example.db.WeightRecord;
+import com.blescaler.db.WeightDao;
+import com.blescaler.db.WeightRecord;
+import com.blescaler.ui.ConnectBTPairedActivity;
+import com.blescaler.ui.SearchBTActivity;
+import com.blescaler.utils.Utils;
+import com.blescaler.worker.Global;
+import com.blescaler.worker.Scaler;
+import com.blescaler.worker.ScalerParam;
+import com.blescaler.worker.WorkService;
+import com.blescaler.ui.R;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
@@ -51,16 +53,13 @@ import com.xtremeprog.sdk.ble.BleRequest.RequestType;
 
 public class WeightActivity extends Activity implements View.OnClickListener {
 
-	private int index = 0;
 
-	private BleGattCharacteristic mCharacteristicWgt;
 	private TextView txtWgt;
 	private Button btnSave;
 	private ListView listData;
 	private MyAdapter adapter;
 	private Timer pTimer;
 	private boolean pasue = false;
-	private static final int REQUEST_ENABLE_BT = 1;
 	private static Handler mHandler = null;
 	private WeightDao wDao;
 	protected static final String TAG = "weight";
@@ -163,25 +162,12 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 		adapter.notifyDataSetChanged();
 	}
-/*	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// User chose not to enable Bluetooth.
-		if (requestCode == REQUEST_ENABLE_BT
-				&& resultCode == Activity.RESULT_CANCELED) {
-			finish();
-			return;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}*/
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		
-	/*	if (!WorkService.adapterEnabled()) {
-			Intent enableBtIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-		}*/
+
 		WorkService.addHandler(mHandler);
 		
 		//WorkService.connectPrinter(null);
@@ -315,16 +301,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// TODO Auto-generated method stub
 		String kgs = txtWgt.getText().toString();
 		
-		WeightRecord item = new WeightRecord();
-		item.setGross(kgs);
-		item.setTare("0");
-		item.setNet(kgs);
-		item.setID(String.valueOf(adapter.getCount()+1));
-		
+		WeightRecord item = new WeightRecord(); //这里会自动读取重量并填充.
+	
 		wDao.saveWeight(item);
 		
 		adapter.arr.add(item);
 		adapter.notifyDataSetChanged();
+		item = null;
 	}
 
 	static class MHandler extends Handler {

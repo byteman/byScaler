@@ -1,4 +1,4 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.Timer;
@@ -15,9 +15,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.worker.Global;
-import com.example.worker.Scaler;
-import com.example.worker.WorkService;
+import com.blescaler.ui.R;
+import com.blescaler.worker.Global;
+import com.blescaler.worker.Scaler;
+import com.blescaler.worker.WorkService;
 
 public class CalibActivity extends Activity {
 

@@ -2,12 +2,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-	<TextView 
-        android:id = "@+id/tvHello"
-        android:text="@string/hello_world"
+
+    <Spinner
+        android:id="@+id/spinner1"     
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-    />
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/spinner4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

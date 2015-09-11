@@ -1,4 +1,4 @@
-package com.example.worker;
+package com.blescaler.worker;
 
 /**
  * 全局皆可访问的变量放在这里，例如服务和线程通讯的msg

@@ -1,4 +1,4 @@
-package com.example.bluetooth.le;
+package com.blescaler.db;
 
 import android.app.Activity;
 import android.content.Context;

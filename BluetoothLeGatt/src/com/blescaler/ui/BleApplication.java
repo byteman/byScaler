@@ -1,4 +1,4 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -9,7 +9,8 @@ import android.os.IBinder;
 
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
-import com.example.worker.WorkService;
+import com.blescaler.utils.CrashHandler;
+import com.blescaler.worker.WorkService;
 
 
 public class BleApplication extends Application {

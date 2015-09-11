@@ -59,7 +59,7 @@
  * Copyright (C) 2013 Xtreme Programming Group, Inc. All Rights Reserved.
  */
 
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -85,8 +85,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.worker.Global;
-import com.example.worker.WorkService;
+import com.blescaler.ui.R;
+import com.blescaler.worker.Global;
+import com.blescaler.worker.WorkService;
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
