@@ -65,6 +65,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
 
+import com.example.worker.Global;
+import com.example.worker.WorkService;
+
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -85,8 +88,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.worker.Global;
-import com.example.worker.WorkService;
+
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.

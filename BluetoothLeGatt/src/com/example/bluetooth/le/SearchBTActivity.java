@@ -22,9 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.worker.WorkService;
 import com.example.worker.Global;
-import com.example.bluetooth.le.R;
+import com.example.worker.WorkService;
 import com.lvrenyang.utils.DataUtils;
 
 public class SearchBTActivity extends Activity implements OnClickListener {

@@ -7,9 +7,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
+import com.example.worker.WorkService;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
-import com.example.worker.WorkService;
+
 
 
 public class BleApplication extends Application {

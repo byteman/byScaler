@@ -1,7 +1,8 @@
  
 package com.example.db;
 
-import com.example.bluetooth.le.Utils;
+
+import com.example.worker.WeightData;
 
 
 public class WeightRecord {
@@ -11,7 +12,14 @@ public class WeightRecord {
     private String net;
     private String gross;
     private long time;
- 	 
+    public WeightRecord()
+    {
+    	WeightData w = new WeightData();
+    	setGross(w.getGross()+"");
+    	setTare(w.getTare()+"");
+    	setNet(w.getNet()+"");
+    }
+   
     public String getID()
     {
 		return this.wet_id;
@@ -26,11 +34,11 @@ public class WeightRecord {
 	}
 	public String getFormatTime()
 	{
-		return Utils.getNormalTime(this.time);
+		return "";//Utils.getNormalTime(this.time);
 	}
 	public String getFormatDate()
 	{
-		return Utils.getNormalDate(this.time);
+		return  "";//Utils.getNormalDate(this.time);
 	}
 	public String getNet() {
 		return net;

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.example.worker.Global;
+import com.example.worker.WorkService;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -22,9 +25,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.example.worker.WorkService;
-import com.example.worker.Global;
-import com.example.bluetooth.le.R;
+
 
 public class ConnectBTPairedActivity extends Activity implements
 		OnItemClickListener {

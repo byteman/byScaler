@@ -1,5 +1,4 @@
 package com.example.bluetooth.le;
-
 import java.lang.ref.WeakReference;
 
 import android.app.Activity;
@@ -11,9 +10,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.example.worker.WorkService;
+
 import com.example.worker.Global;
-import com.example.bluetooth.le.R;
+import com.example.worker.WorkService;
 import com.lvrenyang.utils.DataUtils;
 
 public class FormActivity extends Activity implements OnClickListener {

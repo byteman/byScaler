@@ -3,6 +3,9 @@ package com.example.bluetooth.le;
 import java.lang.ref.WeakReference;
 import java.util.Timer;
 
+import com.example.worker.Scaler;
+import com.example.worker.WorkService;
+import com.example.worker.Global;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,9 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.worker.Global;
-import com.example.worker.Scaler;
-import com.example.worker.WorkService;
+
 
 public class CalibActivity extends Activity {
 
