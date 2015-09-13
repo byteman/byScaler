@@ -2,51 +2,172 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="10dp"
-    android:background="@color/white"
     tools:context="com.blescaler.ui.WeightActivity" >
 
     <TextView
         android:id="@+id/txtWgt"
         android:layout_width="fill_parent"
         android:layout_height="100dp"
+        android:background="@drawable/bg"
         android:gravity="center"
         android:text="0"
         android:textColor="@color/red"
-        android:background="@drawable/bg"
         android:textSize="48sp" />
 
-	<LinearLayout 
-	      android:layout_width="match_parent"
-		  android:layout_height="wrap_content"
-		  android:orientation="horizontal"
-	    >
-	     <Button
-        android:id="@+id/btn_save"
-        android:layout_width="wrap_content"
+     
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@layout/image_btn_press"
-        android:layout_gravity="right"
-        android:text="@string/save" /> 
-    
-      <Button
-        android:id="@+id/btn_print"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@layout/image_btn_press"
-        android:layout_gravity="right"
-        android:text="@string/print" /> 
+        android:orientation="horizontal" >
+      
+         <TextView
+	        android:id="@+id/tv_ng"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	       
+	        android:text="毛重"
+	        android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
+           <TextView
+	        android:id="@+id/tv_stable"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	        
+	        android:text="稳定"
+	        android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
+         
+           <TextView
+	        android:id="@+id/tv_stable"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	       
+	        android:text="零点"
+	        android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
+              
+          <TextView
+	        android:id="@+id/tv_conn"
+	        android:paddingLeft="10dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	       
+	        android:text="未连接"
+	        android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
         
-      <Button
-        android:id="@+id/btn_con_all2"
-        android:layout_width="wrap_content"
+          
+    </LinearLayout>
+    
+       
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@layout/image_btn_press"
-        android:layout_gravity="right"
-        android:text="@string/conn_all" /> 
-	</LinearLayout>
+        android:layout_marginTop="20dp"
+        android:orientation="vertical" >
+      
+           <TextView
+	        android:id="@+id/tv_tare"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	        
+	        android:text="毛重:0"
+	        android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
+             <TextView
+	        android:id="@+id/tv_tare"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	        
+	        android:text="皮重:0"
+	         android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
+               <TextView
+	        android:id="@+id/tv_tare"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/state_bg"
+	        
+	        android:text="净重:0"
+	         android:layout_weight="1"
+	        android:textColor="@color/red"
+	        android:textSize="24sp" />
+         
+      </LinearLayout>    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         android:layout_marginTop="20dp"
+        android:orientation="horizontal" >
 
-	   
-	
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@layout/image_btn_press"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/btn_print"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@layout/image_btn_press"
+            android:text="@string/print" />
+
+        <Button
+            android:id="@+id/btn_preset_tare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@layout/image_btn_press"
+            android:text="@string/preset_tare" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_clearzero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@layout/image_btn_press"
+            android:text="@string/clearzero" />
+
+        <Button
+            android:id="@+id/btn_tare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@layout/image_btn_press"
+            android:text="@string/discard_tare"/>
+         <Button
+            android:id="@+id/btn_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@layout/image_btn_press"
+            android:text="@string/switch_ng"/>
+    </LinearLayout>
+
 </LinearLayout>

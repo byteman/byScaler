@@ -59,6 +59,7 @@
     <string name="printform">打印榜单</string>
     <string name="print">打印</string>
     <string name="conn_all">连接</string>
+    <string name="preset_tare">预置皮重</string>
     <string name="zerotrack">零点跟踪</string>
     <string name="zeroinit">初始零点</string>
     <string name="mtd">稳定系数</string>
@@ -68,4 +69,7 @@
 	<string name="unit">显示单位 </string>
 	<string name="write">写入</string>
 	<string name="read">读取</string>
+	<string name="clearzero">清零</string>
+	<string name="discard_tare">去皮</string>
+	<string name="switch_ng">净重/毛重</string>
 </resources>

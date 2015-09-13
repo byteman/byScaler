@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import android.R.integer;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -31,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +59,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private TextView txtWgt;
 	private Button btnSave;
-	
+	private TextView tv_ng;
 	private WeightDao wDao;
 	private Timer pTimer;
 	private boolean pasue = false;
@@ -103,10 +105,10 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// TODO Auto-generated method stub
 		txtWgt = (TextView) findViewById(R.id.txtWgt);
 		
-
+		tv_ng  = (TextView) findViewById(R.id.tv_ng);
 	
 		btnSave = (Button) findViewById(R.id.btn_save);
-		findViewById(R.id.btn_con_all2).setOnClickListener(this);
+		findViewById(R.id.btn_tare).setOnClickListener(this);
 		findViewById(R.id.btn_print).setOnClickListener(this);
 		
 	}
@@ -198,6 +200,25 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		Log.e(TAG, "OnDestory");
 	}
 
+	 private void inputTitleDialog() {
+
+	        final EditText inputServer = new EditText(this);
+	        inputServer.setFocusable(true);
+
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setTitle("请输入").setIcon(
+	        		android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(
+	                "取消", null);
+	        builder.setPositiveButton("确定",
+	                new DialogInterface.OnClickListener() {
+
+	                    public void onClick(DialogInterface dialog, int which) {
+	                        String inputValue = inputServer.getText().toString();
+	                        	WorkService.setPreTare(Integer.parseInt(inputValue));
+	                    }
+	                });
+	        builder.show();
+	    }
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -221,9 +242,36 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					WorkService.requestPrint(data);
 			
 			break;
-		case R.id.btn_con_all2:
+		case R.id.btn_tare:
+			//去皮操作
+			WorkService.discardTare();
 			//WorkService.connectPrinter(null);
-			WorkService.connectAll();
+			//WorkService.connectAll();
+			break;
+		case R.id.btn_clearzero:
+			//清零
+			if(!WorkService.setZero())
+			{
+				Utils.Msgbox(this, "清零失败，净重状态不允许清零");
+			}
+			break;
+		case R.id.btn_switch:
+			//净重和毛重切换
+			boolean is_net = WorkService.switchNetGross();
+			if(is_net)
+			{
+				tv_ng.setText("净重");
+				
+			}
+			else
+			{
+				tv_ng.setText("毛重");
+			}
+			break;
+		case R.id.btn_preset_tare:
+			//输入预置皮重
+			inputTitleDialog();
+				
 			break;
 		default:
 			break;
@@ -271,7 +319,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				mActivity = new WeakReference<WeightActivity>(activity);
 				
 			}
-	
+			
 			@Override
 			public void handleMessage(Message msg) {
 				WeightActivity theActivity = mActivity.get();
@@ -281,6 +329,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					{
 						//BluetoothDevice device = (BluetoothDevice) msg.obj;
 						int weight = msg.arg1;
+						weight = WorkService.getNetWeight();
 						theActivity.txtWgt.setText(String.valueOf(weight));
 						break;
 					}
