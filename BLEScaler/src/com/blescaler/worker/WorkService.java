@@ -189,7 +189,7 @@ public class WorkService extends Service {
 					if(val[3] == '?') //参数读取的返回值.
 					{
 
-						int ret = d.para.parseParaBuffer(val)?1:0;
+						int ret = d.para.parseParaBuffer(val)?0:1;
 					
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_GET_RESULT);
 						msg.arg1 = ret;
@@ -200,7 +200,7 @@ public class WorkService extends Service {
 					{
 									
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_SET_RESULT);
-						msg.arg1 = val[4];
+						msg.arg1 = val[4]-'0';
 						msg.obj  = d;
 						mHandler.sendMessage(msg);
 					}
@@ -246,7 +246,7 @@ public class WorkService extends Service {
 						
 						}
 						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_ZERO_CALIB_RESULT);
-						msg.arg1 = val[4];
+						msg.arg1 = val[4]-'0';
 						msg.obj  = d;
 						mHandler.sendMessage(msg);
 					}
@@ -295,10 +295,21 @@ public class WorkService extends Service {
 					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_K_CALIB_RESULT);
 					
 					msg.obj  = d;
-					msg.arg1 = val[4];
+					msg.arg1 = val[4]-'0';
 					mHandler.sendMessage(msg);
 				}
 				
+			}
+			else if((val[0] == 'S') && (val[1] == 'A') && (val[2] == 'V'))
+			{
+				if(val[3] == ':')
+				{
+					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_SAVE_EEPROM);
+					
+					msg.obj  = d;
+					msg.arg1 = val[4]-'0';
+					mHandler.sendMessage(msg);
+				}
 			}
 		}		
 		else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
@@ -399,14 +410,18 @@ public class WorkService extends Service {
 			return WorkService.this;
 		}
 	}
-	private void loadScalerConfig()
+	
+	private static void loadScalerConfig(Context ctx)
 	{
 		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:8F:B0");
-		WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
+		scalers.clear();
+		scalers2.clear();
+		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
 		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
+		max_count = Config.getInstance(ctx).getScalerCount();
 		for(int i = 0 ; i < max_count; i++)
 		{
-			String addr = WorkService.getDeviceAddress(this, i);
+			String addr = WorkService.getDeviceAddress(ctx, i);
 			
 			if(addr != null && addr != "")
 			{
@@ -438,7 +453,7 @@ public class WorkService extends Service {
 			mPrinterAddress = "00:02:0A:03:C3:BC";
 			WorkService.setPrinterAddress(this, mPrinterAddress);
 		}
-		loadScalerConfig();
+		loadScalerConfig(this);
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 
 		mHandler = new MHandler(this);
@@ -592,7 +607,7 @@ public class WorkService extends Service {
 		if(s==null) return false;
 		int w = (calibWet*1000000)/nov;
 		
-		String cmd = "CLK;" +w + ";";
+		String cmd = "CLK:" +w + ";";
 		
 		return requestValue(address, cmd);
 	}
@@ -618,7 +633,7 @@ public class WorkService extends Service {
 	//通知秤将参数写入内部eeprom
 	public static boolean requestSaveParam(String address)
 	{
-		return requestValue(address, "SAV;");
+		return requestValue(address, "SAV1;");
 	}
 	//读取某个秤的重量值
 	public static boolean requestReadWgt(String address)
@@ -705,12 +720,30 @@ public class WorkService extends Service {
 	public static void setDeviceAddress(Context pCtx, int index,String address)
 	{
 		 Config.getInstance(pCtx).setDevAddress(index,address);
-		 if(!scalers.containsKey(address)) //不包含这个地址才创建新的称台设备.
+		
+		/* if(!scalers.containsKey(address)) //不包含这个地址才创建新的称台设备.
 		 {
 			 Scaler scaler = new Scaler(address);
 			 scalers.put(address, scaler);
 			 scalers2.put(index, scaler);
-		 }
+		 }*/
+		 
+	}
+	public static void saveDevicesAddress(Context pCtx, List<String> devs)
+	{
+		if(devs.size() == 0) 
+		{
+			return;
+		}
+		for(int i = 0 ; i   < devs.size(); i++)
+		{
+			setDeviceAddress(pCtx, i , devs.get(i));
+		}
+		
+		max_count = devs.size();
+		Config.getInstance(pCtx).setScalerCount(max_count);
+		//修改地址后，重新加载地址列表.
+		loadScalerConfig(pCtx);
 	}
 	//连接所有蓝牙秤
 	public static boolean connectAll()

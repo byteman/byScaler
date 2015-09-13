@@ -62,7 +62,7 @@ limitations under the License.
             android:label="@string/title_activity_weight" >
         </activity>
         <activity
-            android:name=".TestActivity"            
+            android:name=".ParamActivity"            
             android:label="@string/title_activity_weight" >
         </activity>
         <activity
@@ -78,7 +78,7 @@ limitations under the License.
             android:label="@string/calibwgt" >
         </activity>
          <activity
-            android:name=".FormActivity"
+            android:name=".DBActivity"
             android:label="@string/calibwgt" >
         </activity>
 

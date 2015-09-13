@@ -21,4 +21,10 @@
         android:orderInCategory="103"
         android:showAsAction="never"
         android:title="@string/calibK"/>
+     <item
+        android:id="@+id/menu_data"
+        android:orderInCategory="104"
+        android:showAsAction="never"
+        android:title="@string/data_settings"/>
+     
 </menu>

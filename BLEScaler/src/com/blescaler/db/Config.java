@@ -12,6 +12,7 @@ public class Config
 	private Context mContext;
 	private SharedPreferences mSharedPre;
 	private Editor mEditor;
+	private int ScalerCount = 0;
 	//private String mUser;
 	static private Config mConfig;
 	private Config(Context pContext) 
@@ -49,6 +50,7 @@ public class Config
 		mEditor.putString("address"+index, pDevAddress);
 		mEditor.commit();
 	}
+	
 	public String getDevName() {
 		return mSharedPre.getString("devname", "");
 	}
@@ -63,6 +65,19 @@ public class Config
 	}
 	public void setUser(String pUser) {
 		mEditor.putString("user", pUser);
+		mEditor.commit();
+	}
+	/**
+	 * @return the scalerCount
+	 */
+	public int getScalerCount() {
+		return mSharedPre.getInt("maxcount", 1);
+	}
+	/**
+	 * @param scalerCount the scalerCount to set
+	 */
+	public void setScalerCount(int scalerCount) {
+		mEditor.putInt("maxcount", scalerCount);
 		mEditor.commit();
 	}
 }

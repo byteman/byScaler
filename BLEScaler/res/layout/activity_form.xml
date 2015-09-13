@@ -4,12 +4,17 @@
     android:layout_height="match_parent"
     android:padding="10dp" >
 
+    <ListView  
+      android:id="@+id/list"     
+      android:layout_above="@+id/buttonPrintForm"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+     /> 
     <Button
         android:id="@+id/buttonPrintForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:gravity="left|center"
         android:paddingLeft="70dp"
         android:text="@string/printform" />

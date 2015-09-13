@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils.StringSplitter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,12 +57,12 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private TextView txtWgt;
 	private Button btnSave;
-	private ListView listData;
-	private MyAdapter adapter;
+	
+	private WeightDao wDao;
 	private Timer pTimer;
 	private boolean pasue = false;
 	private static Handler mHandler = null;
-	private WeightDao wDao;
+	
 	protected static final String TAG = "weight";
 
 	private final class ReadWgtTimer extends TimerTask {
@@ -91,23 +92,19 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 
 		mHandler = new MHandler(this);
-		//WorkService.addHandler(mHandler);
-		
 	
 		wDao = new WeightDao(this);
-		loadDBData();
 		pTimer = new Timer();
-		//pTimer.schedule(new ReadWgtTimer(), 0, 100);
+		pTimer.schedule(new ReadWgtTimer(), 0, 100);
 
 	}
 
 	private void initResource() {
 		// TODO Auto-generated method stub
 		txtWgt = (TextView) findViewById(R.id.txtWgt);
-		listData = (ListView) findViewById(R.id.list);
+		
 
-		adapter = new MyAdapter(this);
-		listData.setAdapter(adapter);
+	
 		btnSave = (Button) findViewById(R.id.btn_save);
 		findViewById(R.id.btn_con_all2).setOnClickListener(this);
 		findViewById(R.id.btn_print).setOnClickListener(this);
@@ -129,7 +126,9 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
-			startActivity(new Intent(this, TestActivity.class));
+			Intent intent = new Intent(this, DeviceScanActivity.class);
+			intent.putExtra("address", "C4:BE:84:22:91:E2");
+			startActivity(intent);
 			//WorkService.requestReadPar("C4:BE:84:22:91:E2");
 			return true;
 		}
@@ -148,20 +147,14 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			intent.putExtra("address", "C4:BE:84:22:91:E2");
 			startActivity(intent);
 		}
+		else if(id == R.id.menu_data) //过磅数据管理.
+		{
+			Intent intent = new Intent(this, DBActivity.class);
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
 	}
-	private void loadDBData()
-	{
-		List<WeightRecord> items = new ArrayList<WeightRecord>();
-		
-		items = wDao.getWeightList();
-		
-		for(WeightRecord item : items)
-		{
-			adapter.arr.add(item);		
-		}
-		adapter.notifyDataSetChanged();
-	}
+	
 
 	@Override
 	protected void onResume() {
@@ -205,72 +198,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		Log.e(TAG, "OnDestory");
 	}
 
-	private class MyAdapter extends BaseAdapter {
-
-		private LayoutInflater inflater;
-		public ArrayList<WeightRecord> arr;
-
-		public MyAdapter(Context context) {
-			super();
-			inflater = LayoutInflater.from(context);
-			arr = new ArrayList<WeightRecord>();
-
-		}
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return arr.size();
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return arg0;
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
-			return arg0;
-		}
-
-		@Override
-		public View getView(final int position, View view, ViewGroup arg2) {
-			// TODO Auto-generated method stub
-			if (view == null) {
-				view = inflater.inflate(R.layout.listview_item, null);
-			}
-			final TextView edit = (TextView) view.findViewById(R.id.index);
-			//String index = String.valueOf(arr.size()+1);
-			edit.setText(arr.get(position).getID());
-			final TextView time = (TextView) view.findViewById(R.id.time);
-			String timeString = Utils.getNormalTime(arr.get(position).getTime());
-			time.setText(timeString);
-			final TextView kg = (TextView) view.findViewById(R.id.kg);
-			kg.setText(arr.get(position).getGross());
-
-			return view;
-		}
-	}
-	private void testWriteParam()
-	{
-		//int nov, byte mtd, byte zt,byte pzt,byte dig, byte res, String unit
-		
-		ScalerParam s = new ScalerParam(5000,(byte)2,(byte)3,(byte)1,(byte)2,(byte)2,"t");
-	
-		
-		WorkService.requestWriteParamValue("C4:BE:84:22:91:E2",s);
-		
-	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_save:
 			saveWeight();
-			testWriteParam();
-			
+
 			break;
 	
 		case R.id.btn_print:
@@ -285,7 +219,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			if(wDao != null)
 				if(wDao.getWeightRecord(data))
 					WorkService.requestPrint(data);
-			data = null;
+			
 			break;
 		case R.id.btn_con_all2:
 			//WorkService.connectPrinter(null);
@@ -305,11 +239,30 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	
 		wDao.saveWeight(item);
 		
-		adapter.arr.add(item);
-		adapter.notifyDataSetChanged();
+		//adapter.arr.add(item);
+		//adapter.notifyDataSetChanged();
 		item = null;
 	}
+	private long exitTime = 0;
 
+	    @Override
+	    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	        if (keyCode == KeyEvent.KEYCODE_BACK
+	                && event.getAction() == KeyEvent.ACTION_DOWN) {
+	            if ((System.currentTimeMillis() - exitTime) > 2000) {
+	                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+	                        Toast.LENGTH_SHORT).show();
+	                exitTime = System.currentTimeMillis();
+	            } else {
+	            	WorkService.requestDisConnectAll();
+	                moveTaskToBack(false);
+	                finish();
+
+	            }
+	            return true;
+	        }
+	        return super.onKeyDown(keyCode, event);
+	}
 	static class MHandler extends Handler {
 
 			WeakReference<WeightActivity> mActivity;
@@ -394,4 +347,5 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				
 			}
 		}
+	  
 }

@@ -45,7 +45,7 @@
     <string name="title_activity_characteristic">CharacteristicActivity</string>
     <string name="action_settings">Settings</string>
     
-    <string name="device_settings">设备管理</string>
+    <string name="device_settings">参数管理</string>
     <string name="user_settings">用户管理</string>
     <string name="data_settings">数据管理</string>
     
@@ -56,7 +56,7 @@
     <string name="inputbtmachint">输入mac</string>
     <string name="connectbtmacaddress">连接蓝牙地址</string>
     <string name="contentdescription">内容描述</string>
-    <string name="printform">打印表格</string>
+    <string name="printform">打印榜单</string>
     <string name="print">打印</string>
     <string name="conn_all">连接</string>
     <string name="zerotrack">零点跟踪</string>
@@ -64,6 +64,8 @@
     <string name="mtd">稳定系数</string>
     <string name="dignum">小数点数</string>
     <string name="div">分辨率  </string>
-    
-
+    <string name="nov">额定重量  </string>
+	<string name="unit">显示单位 </string>
+	<string name="write">写入</string>
+	<string name="read">读取</string>
 </resources>

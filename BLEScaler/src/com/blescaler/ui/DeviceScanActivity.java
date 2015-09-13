@@ -63,6 +63,8 @@ package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 
 import android.app.Activity;
@@ -79,8 +81,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,16 +98,18 @@ import com.blescaler.worker.WorkService;
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
-public class DeviceScanActivity extends ListActivity {
+public class DeviceScanActivity extends Activity {
 	private LeDeviceListAdapter mLeDeviceListAdapter;
 	private boolean mScanning;
 	private Handler mHandler;
 	private Handler mHandler2;
 	private String mAddress;
+	private ListView lv_Devices;
 	private static final int REQUEST_ENABLE_BT = 1;
 	private ProgressDialog progressDialog = null;
 	private String TAG = "DeviceScan";
 	private Timer pTimer = null;
+	private int checkNum = 0;
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
 
@@ -129,7 +137,9 @@ public class DeviceScanActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.device_scan);
 		getActionBar().setTitle(R.string.title_devices);
+		lv_Devices = (ListView) findViewById(R.id.lv_scan);
 		mHandler = new Handler();
 		
 		mHandler2 = new MHandler(this);
@@ -137,7 +147,44 @@ public class DeviceScanActivity extends ListActivity {
 		
 		// Initializes list view adapter.
 		mLeDeviceListAdapter = new LeDeviceListAdapter();
-		setListAdapter(mLeDeviceListAdapter);
+		//lv_Devices.setListAdapter(mLeDeviceListAdapter);
+		lv_Devices.setAdapter(mLeDeviceListAdapter);
+		lv_Devices.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				ViewHolder holder = (ViewHolder) view.getTag();
+				holder.cb.toggle();
+				
+				mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
+				
+				 if (holder.cb.isChecked() == true) {  
+		             checkNum++;  
+		         } else {  
+		             checkNum--;  
+		         }  
+			}
+		});
+		
+		findViewById(R.id.btn_save).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(v.getId() == R.id.btn_save)
+				{
+					//保存选中的设备
+					List<String> devs =  mLeDeviceListAdapter.getSelectAddress();
+					WorkService.saveDevicesAddress(DeviceScanActivity.this, devs);
+				}
+				else if(v.getId() == R.id.btn_cancel)
+				{
+					
+				}
+			}
+		});
 	}
 
 	@Override
@@ -187,12 +234,12 @@ public class DeviceScanActivity extends ListActivity {
 		// permission to enable it.
 		Log.e(TAG, "OnResume");
 		
-		
-		if (!WorkService.adapterEnabled()) {
+		WorkService.requestDisConnectAll();
+		/*if (!WorkService.adapterEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-		}
+		}*/
 
 		refreshList();
 		scanLeDevice(true);
@@ -218,27 +265,32 @@ public class DeviceScanActivity extends ListActivity {
 		scanLeDevice(false);
 		mLeDeviceListAdapter.clear();
 	}
-
+/*
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
-		if (device == null)
-			return;
-
+		
+		ViewHolder holder = (ViewHolder) v.getTag();
+		holder.cb.toggle();
+		
+		mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
+		
+		 if (holder.cb.isChecked() == true) {  
+             checkNum++;  
+         } else {  
+             checkNum--;  
+         }  
+		 return;
+		 
+		 final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
+			if (device == null)
+				return;
+			
 		mAddress = device.getAddress();
 		WorkService.requestConnect(mAddress);
 		progressDialog = ProgressDialog.show(DeviceScanActivity.this, "蓝牙称",
 				"蓝牙称正在连接中....！");
 
-		/*
-		 * pTimer = new Timer();
-		 * 
-		 * pTimer.schedule(new TimerTask() {
-		 * 
-		 * @Override public void run() { // TODO Auto-generated method stub
-		 * progressDialog.dismiss(); Toast.makeText(DeviceScanActivity.this,
-		 * "蓝牙称连接失败", Toast.LENGTH_SHORT).show(); pTimer.cancel(); } }, 0,5000);
-		 */
+	
 		mHandler.postDelayed(new Runnable() {
 
 			@Override
@@ -252,7 +304,7 @@ public class DeviceScanActivity extends ListActivity {
 
 			}
 		}, 5000);
-	}
+	}*/
 
 	private void scanLeDevice(final boolean enable) {
 		
@@ -280,13 +332,35 @@ public class DeviceScanActivity extends ListActivity {
 	private class LeDeviceListAdapter extends BaseAdapter {
 		private ArrayList<BluetoothDevice> mLeDevices;
 		private LayoutInflater mInflator;
-
+		 // 用来控制CheckBox的选中状况  
+	    private HashMap<Integer, Boolean> isSelected;  
 		public LeDeviceListAdapter() {
 			super();
 			mLeDevices = new ArrayList<BluetoothDevice>();
 			mInflator = DeviceScanActivity.this.getLayoutInflater();
+			isSelected = new HashMap<Integer, Boolean>(); 
+			initDate();
 		}
-
+		 // 初始化isSelected的数据  
+	    private void initDate() {  
+	        for (int i = 0; i < mLeDevices.size(); i++) {  
+	            getIsSelected().put(i, false);  
+	        }  
+	    } 
+	    public List<String> getSelectAddress()
+	    {
+	    	
+	    	 
+	    	 List<String> devs = new ArrayList<String>();
+	    	 
+	    	 for (int i = 0; i < mLeDevices.size(); i++) {  
+		           if( getIsSelected().get(i))
+		           {
+		        	   devs.add(mLeDevices.get(i).getAddress());
+		           }
+		      }  
+	    	 return devs;
+	    }
 		public void addDevice(BluetoothDevice device) {
 			if (!mLeDevices.contains(device)) {
 				mLeDevices.add(device);
@@ -315,7 +389,9 @@ public class DeviceScanActivity extends ListActivity {
 		public long getItemId(int i) {
 			return i;
 		}
-
+		public  HashMap<Integer, Boolean> getIsSelected() {  
+	        return isSelected;  
+	    }  
 		@Override
 		public View getView(int i, View view, ViewGroup viewGroup) {
 			ViewHolder viewHolder;
@@ -327,6 +403,9 @@ public class DeviceScanActivity extends ListActivity {
 						.findViewById(R.id.device_address);
 				viewHolder.deviceName = (TextView) view
 						.findViewById(R.id.device_name);
+				
+				viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx); 
+				
 				view.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) view.getTag();
@@ -339,7 +418,15 @@ public class DeviceScanActivity extends ListActivity {
 			else
 				viewHolder.deviceName.setText(R.string.unknown_device);
 			viewHolder.deviceAddress.setText(device.getAddress());
-
+			if(getIsSelected().get(i) == null)	
+			{
+				viewHolder.cb.setChecked(false); 
+			}
+			else {
+			{
+				viewHolder.cb.setChecked(getIsSelected().get(i));
+			}
+			} 
 			return view;
 		}
 	}
@@ -347,6 +434,7 @@ public class DeviceScanActivity extends ListActivity {
 	static class ViewHolder {
 		TextView deviceName;
 		TextView deviceAddress;
+		CheckBox cb;
 	}
 	
 	static class MHandler extends Handler {

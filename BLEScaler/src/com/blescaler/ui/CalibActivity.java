@@ -26,10 +26,17 @@ public class CalibActivity extends Activity {
 	
 	
 	private final String TAG = "CalibActivity";
-	private TextView m_tvAD,m_tvK;
+	private TextView m_tvLoad,m_tvZero,m_tvK;
 	private Button m_btCalibZero, m_btCalibWgt;
-	private EditText m_etZero, m_etWgt;
+	private EditText m_etWgt;
 	private static Handler mHandler = null;
+
+
+	private ActionBar mActionBar;
+	private TextView m_tvWgt;
+	private Timer pTimer;
+	private Runnable runnable;
+	
 	private final class ButtonListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
@@ -54,11 +61,6 @@ public class CalibActivity extends Activity {
 		}
 	}
 
-
-	private ActionBar mActionBar;
-	private TextView m_tvWgt;
-	private Timer pTimer;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,7 +74,7 @@ public class CalibActivity extends Activity {
 		init();
 
 	}
-
+	
 	private void init() {
 		// TODO Auto-generated method stub
 		mActionBar = getActionBar();
@@ -83,12 +85,13 @@ public class CalibActivity extends Activity {
 		// 将应用程序图标设置为可点击的按钮,并且在图标上添加向左的箭头
 		// 该句代码起到了决定性作用
 		mActionBar.setDisplayHomeAsUpEnabled(true);
-		m_tvAD  = (TextView) findViewById(R.id.tvAD);
 		m_tvWgt = (TextView) findViewById(R.id.tvWgt);
 		m_btCalibZero = (Button) findViewById(R.id.btCalbZero);
 		m_btCalibWgt = (Button) findViewById(R.id.btCalbWgt);
-		m_etZero = (EditText) findViewById(R.id.etZero);
+		
 		m_etWgt = (EditText) findViewById(R.id.etWgt);
+		m_tvZero = (TextView) findViewById(R.id.tvZeros);
+		m_tvLoad = (TextView) findViewById(R.id.tvLoad);
 		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
 		final View.OnClickListener pClickListener = new ButtonListener();
 
@@ -100,12 +103,23 @@ public class CalibActivity extends Activity {
 		//String characteristic = getIntent().getStringExtra("characteristic");
 	
 		mHandler = new MHandler(this);
+		
+		runnable = new Runnable(){  
+			   @Override  
+			   public void run() {  
+			    // TODO Auto-generated method stub  
+			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
+				   WorkService.requestReadWgt(mDeviceAddress);
+				   mHandler.postDelayed(this, 200);  
+			   }   
+		};  
+		mHandler.postDelayed(runnable, 200);
 		//pTimer = new Timer();
 		//pTimer.schedule(new TimerTask() {
-		//	public void run() {
+			//public void run() {
 				//Log.e(TAG,"calib timer");	
 				
-		//	}
+			//}
 		///}, 1000, 1000);
 
 	}
@@ -114,6 +128,7 @@ public class CalibActivity extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		mHandler.removeCallbacks(runnable);
 		Log.e(TAG, "onDestroy");
 	}
 
@@ -132,6 +147,7 @@ public class CalibActivity extends Activity {
 		super.onStop();
 		Log.e(TAG, "onStop");
 		WorkService.delHandler(mHandler);
+		
 		//pTimer.cancel();
 	}
 	static class MHandler extends Handler {
@@ -151,29 +167,29 @@ public class CalibActivity extends Activity {
 				case Global.MSG_BLE_WGTRESULT:
 				{
 					//BluetoothDevice device = (BluetoothDevice) msg.obj;
-					//int weight = msg.arg1;
-					//theActivity.m_tvAD.setText(String.valueOf(weight));
+					int weight = msg.arg1;
+					theActivity.m_tvWgt.setText(String.valueOf(weight));
 					break;
 				}
 				case Global.MSG_SCALER_ZERO_CALIB_RESULT:
 				{
 					int result = msg.arg1;
 					Scaler s = (Scaler)msg.obj;
-					if(msg.arg1 != '0')
+					if(msg.arg1 != 0)
 					{
 						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
 					}
-					else theActivity.m_etZero.setText(String.valueOf(s.getZeroValue()));
+					else theActivity.m_tvZero.setText(String.valueOf(s.getZeroValue()));
 					break;
 				}
 				case Global.MSG_SCALER_K_CALIB_RESULT:
 				{
 					Scaler s = (Scaler)msg.obj;
-					if(msg.arg1 != '0')
+					if(msg.arg1 != 0)
 					{
 						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
 					}
-					else theActivity.m_tvK.setText(String.valueOf(s.getLoadValue()));
+					else theActivity.m_tvLoad.setText(String.valueOf(s.getLoadValue()));
 					break;
 				}
 			}

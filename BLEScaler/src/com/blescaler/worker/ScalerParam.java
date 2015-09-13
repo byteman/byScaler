@@ -86,7 +86,7 @@ public class ScalerParam {
 	public int getNov() {
 		return nov;
 	}
-	public void setNov(byte nov) {
+	public void setNov(int nov) {
 		this.nov = nov;
 	}
 	public byte getZerotrack() {
