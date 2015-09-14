@@ -255,6 +255,12 @@ public class Utils {
 	    String time = format.format(new Date(value)) ;  
 	    return time;  
 	}  
+	public static String getNormalDateTime(long value)  
+	{  
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;  
+	    String time = format.format(new Date(value)) ;  
+	    return time;  
+	}  
 	public static void setDiscoverableTimeout(int timeout) {
         BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
         try {

@@ -131,9 +131,16 @@ public class DBActivity extends Activity implements OnClickListener {
 			final TextView time = (TextView) view.findViewById(R.id.time);
 			String timeString = Utils.getNormalTime(arr.get(position).getTime());
 			time.setText(timeString);
-			final TextView kg = (TextView) view.findViewById(R.id.kg);
-			kg.setText(arr.get(position).getGross());
+			final TextView gross = (TextView) view.findViewById(R.id.gross);
+			gross.setText(arr.get(position).getGross());
 
+			final TextView tare = (TextView) view.findViewById(R.id.tare);
+			tare.setText(arr.get(position).getTare());
+
+			final TextView net = (TextView) view.findViewById(R.id.net);
+			net.setText(arr.get(position).getNet());
+
+			
 			return view;
 		}
 	}

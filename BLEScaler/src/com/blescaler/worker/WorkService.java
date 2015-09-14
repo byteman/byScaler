@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import android.R.bool;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -889,15 +890,21 @@ public class WorkService extends Service {
 	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
 	public static boolean setPreTare(int preTare)
 	{
+		if(is_net_state) return false; //净重状态不允许置零
 		tare = preTare;
 		tmp_tare = tare;
 		is_net_state = true;
 		return true;
 	}
-	//去皮，取当前的重量为皮重,去皮后更改为净重状态.
+	public static boolean isNetState()
+	{
+		return is_net_state;
+	}
+	//去皮，取当前的重量为皮重,去皮后更改为净重状态.净重状态不能去皮
 	public static boolean discardTare()
 	{
-		tare = getTotalWeight();
+		if(is_net_state) return false;
+		tare = getGrossWeight();
 		tmp_tare = tare;
 		is_net_state = true;
 		return true;

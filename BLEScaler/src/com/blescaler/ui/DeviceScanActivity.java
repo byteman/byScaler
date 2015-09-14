@@ -134,6 +134,16 @@ public class DeviceScanActivity extends Activity {
 	
 	};
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		WorkService.delHandler(mHandler);
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -178,6 +188,7 @@ public class DeviceScanActivity extends Activity {
 					//保存选中的设备
 					List<String> devs =  mLeDeviceListAdapter.getSelectAddress();
 					WorkService.saveDevicesAddress(DeviceScanActivity.this, devs);
+					finish();
 				}
 				else if(v.getId() == R.id.btn_cancel)
 				{
@@ -458,16 +469,7 @@ public class DeviceScanActivity extends Activity {
 					theActivity.mLeDeviceListAdapter.notifyDataSetChanged();
 					break;
 				}
-				case Global.MSG_BLE_SERVICEDISRESULT: 
-				{
-					theActivity.progressDialog.dismiss();
-					
-					Intent intent = new Intent(theActivity,
-							WeightActivity.class);
-					
-					theActivity.startActivity(intent);
-					break;
-				}
+				
 			}
 			
 		}

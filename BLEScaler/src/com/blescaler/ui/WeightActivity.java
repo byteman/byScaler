@@ -59,18 +59,21 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private TextView txtWgt;
 	private Button btnSave;
-	private TextView tv_ng;
+	private TextView tv_ng,tv_conn,tv_zero,tv_stable;
+	
+	//private TextView tv_tare;
 	private WeightDao wDao;
 	private Timer pTimer;
 	private boolean pasue = false;
 	private static Handler mHandler = null;
-	
+	private static int cout = 0;
 	protected static final String TAG = "weight";
 
 	private final class ReadWgtTimer extends TimerTask {
 		
 		
 		public void run() {
+			
 			if(pasue)
 			{
 				return;
@@ -80,6 +83,31 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				WorkService.readAllWgt();
 			}
 			
+			/*if(cout++ == 10)
+			{
+				cout = 0;
+				if(WorkService.isNetState())
+				{
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							tv_ng.setText("净重");
+						}
+					});
+				}
+				else {
+						runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							tv_ng.setText("净重");
+						}
+					});
+				}
+			}*/
 		}
 	}
 
@@ -106,11 +134,16 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		txtWgt = (TextView) findViewById(R.id.txtWgt);
 		
 		tv_ng  = (TextView) findViewById(R.id.tv_ng);
-	
+		tv_conn= (TextView) findViewById(R.id.tv_conn);
+		tv_zero= (TextView) findViewById(R.id.tv_zero2);
+		tv_stable= (TextView) findViewById(R.id.tv_stable);
+		//tv_tare  = (TextView) findViewById(R.id.tv_tare);
 		btnSave = (Button) findViewById(R.id.btn_save);
 		findViewById(R.id.btn_tare).setOnClickListener(this);
 		findViewById(R.id.btn_print).setOnClickListener(this);
-		
+		findViewById(R.id.btn_switch).setOnClickListener(this);
+		findViewById(R.id.btn_preset_tare).setOnClickListener(this);
+		findViewById(R.id.btn_clearzero).setOnClickListener(this);
 	}
 
 	@Override
@@ -128,8 +161,14 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
-			Intent intent = new Intent(this, DeviceScanActivity.class);
-			intent.putExtra("address", "C4:BE:84:22:91:E2");
+			Intent intent = new Intent(this, ParamActivity.class);
+			String addr = WorkService.getDeviceAddress(this, 0);
+			if(addr.equals(""))
+			{
+				 Utils.Msgbox(this, "请先连接");
+				 return true;
+			}
+			intent.putExtra("address", addr);
 			startActivity(intent);
 			//WorkService.requestReadPar("C4:BE:84:22:91:E2");
 			return true;
@@ -152,6 +191,11 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		else if(id == R.id.menu_data) //过磅数据管理.
 		{
 			Intent intent = new Intent(this, DBActivity.class);
+			startActivity(intent);
+		}
+		else if(id == R.id.menu_scan) //过磅数据管理.
+		{
+			Intent intent = new Intent(this, DeviceScanActivity.class);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -214,7 +258,10 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	                    public void onClick(DialogInterface dialog, int which) {
 	                        String inputValue = inputServer.getText().toString();
-	                        	WorkService.setPreTare(Integer.parseInt(inputValue));
+	                        if(WorkService.setPreTare(Integer.parseInt(inputValue)))
+	                        {
+	                        	tv_ng.setText("净重");
+	                        }
 	                    }
 	                });
 	        builder.show();
@@ -225,7 +272,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		switch (v.getId()) {
 		case R.id.btn_save:
 			saveWeight();
-
+			Utils.Msgbox(this, "保存成功");
 			break;
 	
 		case R.id.btn_print:
@@ -244,7 +291,11 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			break;
 		case R.id.btn_tare:
 			//去皮操作
-			WorkService.discardTare();
+			if(WorkService.discardTare())
+			{
+				tv_ng.setText("净重");
+			
+			}
 			//WorkService.connectPrinter(null);
 			//WorkService.connectAll();
 			break;
@@ -337,6 +388,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					{
 						String addr =(String)msg.obj;
 						Toast.makeText(theActivity, addr + " has disconnect!!", Toast.LENGTH_SHORT).show();
+						theActivity.tv_conn.setText("已断开");
 						WorkService.connectAll();
 						//mHandler.postDelayed(r, delayMillis)
 						break;
@@ -361,35 +413,11 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						Toast.makeText(theActivity, WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
 						break;
 					}
-					case Global.MSG_SCALER_PAR_GET_RESULT:
+					
+					case Global.MSG_BLE_SERVICEDISRESULT:
 					{
-						Scaler s = (Scaler)msg.obj;
-						if(s!=null)
-						{
-							MineAlert diag = new MineAlert(theActivity);
-							DialogInterface.OnClickListener lister = new DialogInterface.OnClickListener(){
-
-								@Override
-								public void onClick(DialogInterface arg0,
-										int arg1) {
-									// TODO Auto-generated method stub
-									
-								}
-
-								
-								
-							};
-							
-							diag.createAlert(s.para.toString(), lister, lister);
-							diag.show();
-							
-						}
-						
-						break;
-					}
-					case Global.MSG_SCALER_PAR_SET_RESULT:
-					{
-						Toast.makeText(theActivity, "write param ok", Toast.LENGTH_SHORT).show();
+						if(WorkService.hasConnectAll())
+							theActivity.tv_conn.setText("已连接");
 						break;
 					}
 				}
