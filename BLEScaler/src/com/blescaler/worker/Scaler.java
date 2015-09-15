@@ -4,14 +4,23 @@ import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 
 public class Scaler {
 
+	
 	public ScalerParam para;
 	private String address;
+	private String name;
 	private boolean connected;
 	private int weight;
 	private int zeroValue;
 	private int weightVlaue;
 	private int loadValue;
 	private BleGattCharacteristic characteristic;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public int getZeroValue() {
 		return zeroValue;

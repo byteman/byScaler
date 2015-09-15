@@ -48,16 +48,17 @@ public class Config
 	public void setDevAddress(int index,String pDevAddress) {
 		//this.mDevAddress = pDevAddress;
 		mEditor.putString("address"+index, pDevAddress);
+	
 		mEditor.commit();
 	}
 	
-	public String getDevName() {
-		return mSharedPre.getString("devname", "");
+	public String getDevName(int index) {
+		return mSharedPre.getString("name"+index,"unknown");
 	}
 
-	public void setDevName(String pDevName) {
+	public void setDevName(int index,String pDevName) {
 		//this.mDevName = pDevName;
-		mEditor.putString("address", pDevName);
+		mEditor.putString("name"+index, pDevName);
 		mEditor.commit();
 	}
 	public String getUser() {

@@ -50,7 +50,7 @@
     <string name="data_settings">数据管理</string>
     
     <string name="hello_world">Hello world!</string>
-    
+    <string name="select">选择设备</string>
     <string name="calibK">标定系数</string>
     <string name="search">搜索</string>
     <string name="inputbtmachint">输入mac</string>

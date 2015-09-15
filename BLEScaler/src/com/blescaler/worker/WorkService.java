@@ -423,12 +423,13 @@ public class WorkService extends Service {
 		for(int i = 0 ; i < max_count; i++)
 		{
 			String addr = WorkService.getDeviceAddress(ctx, i);
-			
+			String name = WorkService.getDeviceName(ctx, i);
 			if(addr != null && addr != "")
 			{
 				 if(!scalers.containsKey(addr)) //不包含这个地址才创建新的称台设备.
 				 {
 					 Scaler scaler =  new Scaler(addr);
+					 scaler.setName(name);
 					 scalers.put(addr,scaler);
 					 scalers2.put(i, scaler);
 				 }
@@ -711,6 +712,10 @@ public class WorkService extends Service {
 	{
 		return scalers.get(addr);
 	}
+	public static Scaler getScaler(int id)
+	{
+		return scalers2.get(id);
+	}
 	//获取地址序号的称的蓝牙地址
 	public static String getDeviceAddress(Context pCtx,int index)
 	{
@@ -729,6 +734,14 @@ public class WorkService extends Service {
 			 scalers2.put(index, scaler);
 		 }*/
 		 
+	}
+	public static void setDeviceName(Context pCtx, int index,String name)
+	{
+		 Config.getInstance(pCtx).setDevName(index,name);
+	}
+	public static String getDeviceName(Context pCtx, int index)
+	{
+		return Config.getInstance(pCtx).getDevName(index);
 	}
 	public static void saveDevicesAddress(Context pCtx, List<String> devs)
 	{
@@ -827,6 +840,7 @@ public class WorkService extends Service {
 		
 		return s.getAddress();
 	}
+	
 	//获取指定序号秤的连接状态.
 	public static boolean getScalerConnectState(int index)
 	{

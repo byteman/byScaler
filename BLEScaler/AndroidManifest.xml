@@ -74,6 +74,10 @@ limitations under the License.
             android:label="@string/search" >
         </activity>
          <activity
+            android:name=".PairedScalerActivity"
+            android:label="@string/search" >
+        </activity>
+         <activity
             android:name=".SearchBTActivity"
             android:label="@string/calibwgt" >
         </activity>

@@ -161,14 +161,9 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.device_settings) {
-			Intent intent = new Intent(this, ParamActivity.class);
-			String addr = WorkService.getDeviceAddress(this, 0);
-			if(addr.equals(""))
-			{
-				 Utils.Msgbox(this, "请先连接");
-				 return true;
-			}
-			intent.putExtra("address", addr);
+			Intent intent = new Intent(this, PairedScalerActivity.class);
+			
+			intent.putExtra("act", "param");
 			startActivity(intent);
 			//WorkService.requestReadPar("C4:BE:84:22:91:E2");
 			return true;
@@ -184,8 +179,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 		else if(id == R.id.calib)
 		{
-			Intent intent = new Intent(this, CalibActivity.class);
-			intent.putExtra("address", "C4:BE:84:22:91:E2");
+			Intent intent = new Intent(this, PairedScalerActivity.class);
+			intent.putExtra("act", "calib");
 			startActivity(intent);
 		}
 		else if(id == R.id.menu_data) //过磅数据管理.
@@ -197,6 +192,10 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		{
 			Intent intent = new Intent(this, DeviceScanActivity.class);
 			startActivity(intent);
+		}
+		else if(id == R.id.menu_connect)
+		{
+			WorkService.connectAll();
 		}
 		return super.onOptionsItemSelected(item);
 	}

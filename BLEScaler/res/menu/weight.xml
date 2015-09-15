@@ -31,4 +31,9 @@
         android:orderInCategory="104"
         android:showAsAction="never"
         android:title="@string/search"/>
+          <item
+        android:id="@+id/menu_connect"
+        android:orderInCategory="105"
+        android:showAsAction="never"
+        android:title="连接称台"/>
 </menu>

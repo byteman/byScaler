@@ -187,7 +187,13 @@ public class DeviceScanActivity extends Activity {
 				{
 					//保存选中的设备
 					List<String> devs =  mLeDeviceListAdapter.getSelectAddress();
+					
 					WorkService.saveDevicesAddress(DeviceScanActivity.this, devs);
+					for(int i = 0 ;i < devs.size();i++)
+					{
+						String name = mLeDeviceListAdapter.getDevice(i).getName();
+						WorkService.setDeviceName(DeviceScanActivity.this,i, name);
+					}
 					finish();
 				}
 				else if(v.getId() == R.id.btn_cancel)
