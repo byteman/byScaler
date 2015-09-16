@@ -67,49 +67,11 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private boolean pasue = false;
 	private static Handler mHandler = null;
 	private static int cout = 0;
+	private Runnable runnable = null;
+	private boolean disconnect=false;
 	protected static final String TAG = "weight";
 
-	private final class ReadWgtTimer extends TimerTask {
-		
-		
-		public void run() {
-			
-			if(pasue)
-			{
-				return;
-			}
-			if(WorkService.hasConnectAll())
-			{
-				WorkService.readAllWgt();
-			}
-			
-			/*if(cout++ == 10)
-			{
-				cout = 0;
-				if(WorkService.isNetState())
-				{
-					runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							tv_ng.setText("净重");
-						}
-					});
-				}
-				else {
-						runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							tv_ng.setText("净重");
-						}
-					});
-				}
-			}*/
-		}
-	}
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,9 +86,49 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		mHandler = new MHandler(this);
 	
 		wDao = new WeightDao(this);
-		pTimer = new Timer();
-		pTimer.schedule(new ReadWgtTimer(), 0, 100);
-
+		
+		runnable = new Runnable(){  
+			   @Override  
+			   public void run() {  
+			    // TODO Auto-generated method stub  
+			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
+				 
+				   if(!pasue)
+				   {
+					   if(WorkService.hasConnectAll())
+						{
+							WorkService.readAllWgt();
+						}
+					   else
+					   {
+						  /* if(disconnect)
+						   {
+							   Intent intent = new Intent(WeightActivity.this, DeviceScanActivity.class);
+							   startActivity(intent);
+							   disconnect = false;
+						   }*/
+					   }
+				   }
+				   else
+				   {
+					   if(disconnect)
+					   {
+						   
+						   WorkService.requestDisConnectAll();
+						   disconnect = false;
+						   Intent intent = new Intent(WeightActivity.this, DeviceScanActivity.class);
+						   startActivity(intent); 
+							
+						   
+					   }
+				   }
+				   
+				  
+				   mHandler.postDelayed(this, 200);  
+			   }   
+		};  
+		mHandler.postDelayed(runnable, 200);
+		
 	}
 
 	private void initResource() {
@@ -190,8 +192,10 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 		else if(id == R.id.menu_scan) //过磅数据管理.
 		{
-			Intent intent = new Intent(this, DeviceScanActivity.class);
-			startActivity(intent);
+			disconnect = true;
+			pasue = true;
+			
+			
 		}
 		else if(id == R.id.menu_connect)
 		{
@@ -205,13 +209,13 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		
-
-		WorkService.addHandler(mHandler);
 		
+		WorkService.addHandler(mHandler);
+		mHandler.postDelayed(runnable, 200);
 		//WorkService.connectPrinter(null);
 		if(!WorkService.hasConnectAll())
 		{
-			WorkService.connectAll();
+			//WorkService.connectAll();
 		}
 		pasue = false;
 		
@@ -222,7 +226,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		pasue = true;
+		mHandler.removeCallbacks(runnable);
 		
 		WorkService.delHandler(mHandler);
 		Log.e(TAG, "onStop");
@@ -388,7 +392,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						String addr =(String)msg.obj;
 						Toast.makeText(theActivity, addr + " has disconnect!!", Toast.LENGTH_SHORT).show();
 						theActivity.tv_conn.setText("已断开");
-						WorkService.connectAll();
+						//WorkService.connectAll();
 						//mHandler.postDelayed(r, delayMillis)
 						break;
 					}

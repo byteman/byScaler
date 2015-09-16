@@ -567,8 +567,12 @@ public class WorkService extends Service {
 	public static  void requestDisConnectAll()
 	{
 		if(mBle == null) return ;
-	
-		 mBle.disconnectAll();
+		for(Scaler dev : WorkService.scalers.values())
+		{
+			dev.setConnected(false, null);
+			mBle.disconnect(dev.getAddress());
+		}
+		// mBle.disconnectAll();
 	}
 	//判断手机蓝牙是否启用
 	public static boolean adapterEnabled()

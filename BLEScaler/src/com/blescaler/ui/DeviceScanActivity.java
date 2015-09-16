@@ -152,8 +152,7 @@ public class DeviceScanActivity extends Activity {
 		lv_Devices = (ListView) findViewById(R.id.lv_scan);
 		mHandler = new Handler();
 		
-		mHandler2 = new MHandler(this);
-		WorkService.addHandler(mHandler2);
+		
 		
 		// Initializes list view adapter.
 		mLeDeviceListAdapter = new LeDeviceListAdapter();
@@ -167,8 +166,8 @@ public class DeviceScanActivity extends Activity {
 				// TODO Auto-generated method stub
 				ViewHolder holder = (ViewHolder) view.getTag();
 				holder.cb.toggle();
-				
-				mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
+				if(mLeDeviceListAdapter.getIsSelected().size() > position)
+					mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
 				
 				 if (holder.cb.isChecked() == true) {  
 		             checkNum++;  
@@ -202,6 +201,8 @@ public class DeviceScanActivity extends Activity {
 				}
 			}
 		});
+		mHandler2 = new MHandler(this);
+		WorkService.addHandler(mHandler2);
 	}
 
 	@Override
@@ -251,7 +252,7 @@ public class DeviceScanActivity extends Activity {
 		// permission to enable it.
 		Log.e(TAG, "OnResume");
 		
-		WorkService.requestDisConnectAll();
+		//WorkService.requestDisConnectAll();
 		/*if (!WorkService.adapterEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -282,46 +283,7 @@ public class DeviceScanActivity extends Activity {
 		scanLeDevice(false);
 		mLeDeviceListAdapter.clear();
 	}
-/*
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		
-		ViewHolder holder = (ViewHolder) v.getTag();
-		holder.cb.toggle();
-		
-		mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
-		
-		 if (holder.cb.isChecked() == true) {  
-             checkNum++;  
-         } else {  
-             checkNum--;  
-         }  
-		 return;
-		 
-		 final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
-			if (device == null)
-				return;
-			
-		mAddress = device.getAddress();
-		WorkService.requestConnect(mAddress);
-		progressDialog = ProgressDialog.show(DeviceScanActivity.this, "蓝牙称",
-				"蓝牙称正在连接中....！");
 
-	
-		mHandler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				if (progressDialog.isShowing()) {
-					progressDialog.dismiss();
-					Toast.makeText(DeviceScanActivity.this, "蓝牙称连接失败",
-							Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		}, 5000);
-	}*/
 
 	private void scanLeDevice(final boolean enable) {
 		
@@ -360,6 +322,7 @@ public class DeviceScanActivity extends Activity {
 		}
 		 // 初始化isSelected的数据  
 	    private void initDate() {  
+	    	getIsSelected().clear();
 	        for (int i = 0; i < mLeDevices.size(); i++) {  
 	            getIsSelected().put(i, false);  
 	        }  
@@ -371,7 +334,9 @@ public class DeviceScanActivity extends Activity {
 	    	 List<String> devs = new ArrayList<String>();
 	    	 
 	    	 for (int i = 0; i < mLeDevices.size(); i++) {  
-		           if( getIsSelected().get(i))
+	    		 HashMap<Integer, Boolean> sel = getIsSelected();
+	    		 
+		           if( sel.get(i))
 		           {
 		        	   devs.add(mLeDevices.get(i).getAddress());
 		           }
@@ -381,6 +346,7 @@ public class DeviceScanActivity extends Activity {
 		public void addDevice(BluetoothDevice device) {
 			if (!mLeDevices.contains(device)) {
 				mLeDevices.add(device);
+				initDate();
 			}
 		}
 
@@ -390,6 +356,7 @@ public class DeviceScanActivity extends Activity {
 
 		public void clear() {
 			mLeDevices.clear();
+			getIsSelected().clear();
 		}
 
 		@Override
@@ -471,6 +438,12 @@ public class DeviceScanActivity extends Activity {
 				{
 					Log.e("scan", "scan");
 					BluetoothDevice device = (BluetoothDevice) msg.obj;
+					if(theActivity.mLeDeviceListAdapter==null) 
+					{
+						Log.e("scan","not setup");
+						return;
+						
+					}
 					theActivity.mLeDeviceListAdapter.addDevice(device);
 					theActivity.mLeDeviceListAdapter.notifyDataSetChanged();
 					break;

@@ -28,7 +28,6 @@ import com.blescaler.ui.R;
 
 public class ConnectBTPairedActivity extends Activity implements
 		OnItemClickListener {
-
 	private ProgressDialog dialog;
 	private static ListView listView;
 	public static final String ICON = "ICON";

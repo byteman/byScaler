@@ -48,6 +48,7 @@ package com.xtremeprog.sdk.ble;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -214,11 +215,9 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		}
 		mBluetoothGatts = new HashMap<String, BluetoothGatt>();
 	}
-	public void disconnectAll()
+	public  void disconnectAll()
 	{
-		for (String key : mBluetoothGatts.keySet()) {  
-		    disconnect(key); 
-		}  
+		
 	}
 	@Override
 	public void startScan() {
@@ -254,8 +253,9 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	}
 
 	@Override
-	public void disconnect(String address) {
+	public  void disconnect(String address) {
 		if (mBluetoothGatts.containsKey(address)) {
+			
 			BluetoothGatt gatt = mBluetoothGatts.remove(address);
 			if (gatt != null) {
 				gatt.disconnect();
