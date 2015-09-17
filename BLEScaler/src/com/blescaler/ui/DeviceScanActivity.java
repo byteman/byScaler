@@ -260,7 +260,7 @@ public class DeviceScanActivity extends Activity {
 		}*/
 
 		refreshList();
-		scanLeDevice(true);
+		//scanLeDevice(true);
 	}
 
 	@Override

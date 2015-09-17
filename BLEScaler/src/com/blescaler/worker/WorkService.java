@@ -794,6 +794,7 @@ public class WorkService extends Service {
 	public static boolean hasConnectAll()
 	{
 		boolean need_connect = false;
+		if(WorkService.scalers==null) return false;
 		if(WorkService.scalers.size() < max_count)
 		{
 			return false;
@@ -831,6 +832,7 @@ public class WorkService extends Service {
 	//获取秤的个数
 	public static int getScalerCount()
 	{
+		if(scalers==null) return 0;
 		return scalers.size();
 	}
 	//获取指定序号秤的蓝牙地址

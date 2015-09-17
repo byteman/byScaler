@@ -142,7 +142,7 @@ public class BleService extends Service {
 	private IBle mBle;
 	private Queue<BleRequest> mRequestQueue = new LinkedList<BleRequest>();
 	private BleRequest mCurrentRequest = null;
-	private static final int REQUEST_TIMEOUT = 10 ; // total timeout =
+	private static final int REQUEST_TIMEOUT = 30 ; // total timeout =
 														// REQUEST_TIMEOUT *
 														// 100ms
 	private boolean mCheckTimeout = false;
