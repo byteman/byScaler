@@ -423,4 +423,8 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 	{
 		
 	}
+	public int getQueueSize()
+	{
+		return 0;
+	}
 }

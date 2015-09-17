@@ -398,4 +398,8 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	{
 		
 	}
+	public int getQueueSize()
+	{
+		return 0;
+	}
 }

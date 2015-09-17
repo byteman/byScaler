@@ -736,6 +736,11 @@ public class WorkService extends Service {
 	{
 		return scalers2.get(id);
 	}
+	public static int getQueSize()
+	{
+		if(mBle==null) return 0;
+		return mBle.getQueueSize();
+	}
 	//获取地址序号的称的蓝牙地址
 	public static String getDeviceAddress(Context pCtx,int index)
 	{

@@ -89,6 +89,11 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 					BleService.DEVICE_SOURCE_SCAN);
 		}
 	};
+	public int getQueueSize()
+	{
+		if(mService==null) return 0;
+		return mService.getqueueSize();
+	}
 	public boolean hasConnected(String address)
 	{
 		return (mBluetoothGatts.get(address)!=null)?true:false;

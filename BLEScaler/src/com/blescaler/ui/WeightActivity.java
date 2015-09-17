@@ -60,7 +60,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private TextView txtWgt;
 	private Button btnSave;
 	private TextView tv_ng,tv_conn,tv_zero,tv_stable;
-	
+	private TextView[] tv_conns;
 	//private TextView tv_tare;
 	private WeightDao wDao;
 	private Timer pTimer;
@@ -84,7 +84,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 
 		mHandler = new MHandler(this);
-	
+		
 		wDao = new WeightDao(this);
 		
 		runnable = new Runnable(){  
@@ -111,6 +111,19 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						   
 					   }
 				   }
+				   if(cout++ > 5)
+				   {
+					   int count = WorkService.getScalerCount();
+					   for(int i = 0; i < count;i++)
+					   {
+						   Scaler s = WorkService.getScaler(i);
+						   if(s == null) tv_conns[i].setText("x");
+						   		tv_conns[i].setText(s.isConnected()?"已连接":"断开");
+					   }
+					   tv_conns[3].setText(WorkService.getQueSize()+"");
+					   cout = 0;
+				   }
+				  
 				   
 				  
 				   mHandler.postDelayed(this, 200);  
@@ -122,12 +135,17 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 
 	private void initResource() {
 		// TODO Auto-generated method stub
+		tv_conns = new TextView[4];
 		txtWgt = (TextView) findViewById(R.id.txtWgt);
 		
 		tv_ng  = (TextView) findViewById(R.id.tv_ng);
 		tv_conn= (TextView) findViewById(R.id.tv_conn);
 		tv_zero= (TextView) findViewById(R.id.tv_zero2);
 		tv_stable= (TextView) findViewById(R.id.tv_stable);
+		tv_conns[0] =  (TextView) findViewById(R.id.tv_con1);
+		tv_conns[1] =  (TextView) findViewById(R.id.tv_con2);
+		tv_conns[2] =  (TextView) findViewById(R.id.tv_con3);
+		tv_conns[3] =  (TextView) findViewById(R.id.tv_con4);
 		//tv_tare  = (TextView) findViewById(R.id.tv_tare);
 		btnSave = (Button) findViewById(R.id.btn_save);
 		findViewById(R.id.btn_tare).setOnClickListener(this);

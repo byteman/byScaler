@@ -181,4 +181,5 @@ public interface IBle {
 			BleGattCharacteristic characteristic, String remark);
 	
 	public boolean hasConnected(String address);
+	public int getQueueSize();
 }

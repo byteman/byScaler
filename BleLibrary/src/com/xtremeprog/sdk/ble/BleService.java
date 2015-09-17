@@ -208,7 +208,10 @@ public class BleService extends Service {
 		intentFilter.addAction(BLE_CHARACTERISTIC_CHANGED);
 		return intentFilter;
 	}
-
+	public  int getqueueSize()
+	{
+		return mRequestQueue.size();
+	}
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
