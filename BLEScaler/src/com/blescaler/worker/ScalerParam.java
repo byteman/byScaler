@@ -175,6 +175,7 @@ public class ScalerParam {
 		if( (buffer[0] != 'P')||  (buffer[1] != 'A') ||  (buffer[2] != 'R') ||  (buffer[3] != '?'))
 			return false;
 		this.nov = bytesToInt(Arrays.copyOfRange(buffer,4,8));
+		if(this.nov==0)this.nov=1000000;
 		this.mtd = buffer[8];
 		this.zerotrack = buffer[9];
 		this.pwr_zerotrack = buffer[10];

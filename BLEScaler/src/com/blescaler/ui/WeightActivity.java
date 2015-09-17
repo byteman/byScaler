@@ -63,7 +63,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private TextView[] tv_conns;
 	//private TextView tv_tare;
 	private WeightDao wDao;
-	private Timer pTimer;
+	//private Timer pTimer;
 	private boolean pasue = false;
 	private static Handler mHandler = null;
 	private static int cout = 0;
@@ -391,7 +391,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						//BluetoothDevice device = (BluetoothDevice) msg.obj;
 						int weight = msg.arg1;
 						weight = WorkService.getNetWeight();
-						theActivity.txtWgt.setText(String.valueOf(weight));
+						theActivity.txtWgt.setText(String.valueOf(weight)+"  kg ");
 						break;
 					}
 					case Global.MSG_BLE_DISCONNECTRESULT:

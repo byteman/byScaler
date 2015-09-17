@@ -29,6 +29,7 @@ import com.blescaler.ui.BleApplication;
 import com.blescaler.utils.Utils;
 import com.lvrenyang.utils.DataUtils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
+import com.xtremeprog.sdk.ble.BleGattService;
 import com.xtremeprog.sdk.ble.BleRequest.FailReason;
 import com.xtremeprog.sdk.ble.BleRequest.RequestType;
 import com.xtremeprog.sdk.ble.BleService;
@@ -331,8 +332,14 @@ public class WorkService extends Service {
 					{
 						return;
 					}
-					BleGattCharacteristic chars = mBle.getService(address,
-							UUID.fromString(Utils.UUID_SRV)).getCharacteristic(
+					BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
+					if(bgs == null)
+					{
+						Log.e("service",address+"lost");
+						return;
+					}
+					
+					BleGattCharacteristic chars = bgs.getCharacteristic(
 							UUID.fromString(Utils.UUID_DATA));
 					if(chars==null) return;
 					//启动数据接收通知.
@@ -627,6 +634,7 @@ public class WorkService extends Service {
 	{
 		Scaler s = scalers.get(address);
 		if(s==null) return false;
+		if(nov==0)nov = 1000000;
 		int w = (calibWet*1000000)/nov;
 		
 		String cmd = "CLK:" +w + ";";

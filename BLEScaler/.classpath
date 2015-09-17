@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="libs/MineAlert.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/blelibrary.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

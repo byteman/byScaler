@@ -110,7 +110,7 @@ public class CalibActivity extends Activity {
 			    // TODO Auto-generated method stub  
 			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
 				   WorkService.requestReadWgt(mDeviceAddress);
-				   mHandler.postDelayed(this, 200);  
+				   mHandler.postDelayed(this, 1000);  
 			   }   
 		};  
 		mHandler.postDelayed(runnable, 200);
