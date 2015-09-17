@@ -95,19 +95,8 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				 
 				   if(!pasue)
 				   {
-					   if(WorkService.hasConnectAll())
-						{
-							WorkService.readAllWgt();
-						}
-					   else
-					   {
-						  /* if(disconnect)
-						   {
-							   Intent intent = new Intent(WeightActivity.this, DeviceScanActivity.class);
-							   startActivity(intent);
-							   disconnect = false;
-						   }*/
-					   }
+					   
+						WorkService.readAllWgt();
 				   }
 				   else
 				   {

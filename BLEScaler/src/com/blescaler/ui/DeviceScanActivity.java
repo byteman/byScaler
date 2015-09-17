@@ -423,15 +423,17 @@ public class DeviceScanActivity extends Activity {
 	
 	static class MHandler extends Handler {
 
-		WeakReference<DeviceScanActivity> mActivity;
-
+		//WeakReference<DeviceScanActivity> mActivity;
+		DeviceScanActivity mActivity = null;
 		MHandler(DeviceScanActivity activity) {
-			mActivity = new WeakReference<DeviceScanActivity>(activity);
+			//mActivity = new WeakReference<DeviceScanActivity>(activity);
+			mActivity = activity;
 		}
 
 		@Override
 		public void handleMessage(Message msg) {
-			DeviceScanActivity theActivity = mActivity.get();
+			//DeviceScanActivity theActivity = mActivity.get();
+			DeviceScanActivity theActivity = mActivity;
 			switch (msg.what) {
 
 				case Global.MSG_BLE_SCANRESULT: 

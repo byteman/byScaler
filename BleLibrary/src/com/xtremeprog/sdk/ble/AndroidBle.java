@@ -404,6 +404,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 			BleGattCharacteristic characteristic) {
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null) {
+			Log.d("blelib","can not find " + address);
 			return false;
 		}
 

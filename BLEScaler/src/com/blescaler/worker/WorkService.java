@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.blescaler.db.Config;
@@ -48,6 +49,7 @@ public class WorkService extends Service {
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
 	public static Map<String,Scaler> scalers;
 	private static Map<Integer,Scaler> scalers2;
+	//private static SparseArray<Scaler> scalers2;
 	private static IBle mBle;
 	private String TAG = "WorkSrv";
 	private static String strUnit = "kg";
@@ -567,11 +569,23 @@ public class WorkService extends Service {
 	public static  void requestDisConnectAll()
 	{
 		if(mBle == null) return ;
-		for(Scaler dev : WorkService.scalers.values())
+		for(int i = 0 ; i < max_count; i++)
 		{
-			dev.setConnected(false, null);
-			mBle.disconnect(dev.getAddress());
+			
+			 if(scalers2.containsKey(i)) //包含这个地址才获取称台设备.
+			 {
+				Scaler dev = scalers2.get(i);
+				 
+				if(dev!=null)
+				{
+					dev.setConnected(false, null);
+					mBle.disconnect(dev.getAddress());
+				}
+			 }
+								
+		
 		}
+		
 		// mBle.disconnectAll();
 	}
 	//判断手机蓝牙是否启用
@@ -591,7 +605,9 @@ public class WorkService extends Service {
 	{
 		if(mBle == null) return false;
 
-		BleGattCharacteristic chars = scalers.get(address).GetBleChar();
+		Scaler s = scalers.get(address);
+		if(s==null) return false;
+		BleGattCharacteristic chars = s.GetBleChar();
 		//BleGattCharacteristic chars = mChars.get(address);
 		if(chars == null) return false;
 		
@@ -822,10 +838,23 @@ public class WorkService extends Service {
 	public static boolean readAllWgt()
 	{
 		if(!hasConnectAll()) return false;
-		for(Scaler dev : WorkService.scalers.values())
+		
+		for(int i = 0 ; i < max_count; i++)
 		{
-			WorkService.requestReadWgt(dev.getAddress());
+			
+			 if(scalers2.containsKey(i)) //包含这个地址才获取称台设备.
+			 {
+				 Scaler dev = scalers2.get(i);
+				 
+				 if(dev!=null && dev.isConnected())
+				 {
+					WorkService.requestReadWgt(dev.getAddress());
+				 }
+			 }
+								
+		
 		}
+		
 		return true;
 	}
 	

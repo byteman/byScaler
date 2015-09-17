@@ -176,7 +176,8 @@ public class BleService extends Service {
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								mCurrentRequest = null;
+								//mCurrentRequest = null;
+								setCurrentRequest(null);
 								processNextRequest();
 							}
 						}, "th-ble").start();
@@ -353,7 +354,8 @@ public class BleService extends Service {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					mCurrentRequest = null;
+					//mCurrentRequest = null;
+					setCurrentRequest(null);
 					processNextRequest();
 				}
 			}, "th-ble").start();
@@ -455,7 +457,8 @@ public class BleService extends Service {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					mCurrentRequest = null;
+					setCurrentRequest(null);
+					//mCurrentRequest = null;
 					processNextRequest();
 				}
 			}, "th-ble").start();
@@ -472,7 +475,7 @@ public class BleService extends Service {
 		return mCurrentRequest;
 	}
 
-	protected void setCurrentRequest(BleRequest mCurrentRequest) {
+	protected synchronized void setCurrentRequest(BleRequest mCurrentRequest) {
 		this.mCurrentRequest = mCurrentRequest;
 	}
 
