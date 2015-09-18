@@ -128,9 +128,17 @@ public class WorkService extends Service {
 				msg.obj = address;
 				mHandler.sendMessage(msg);
 				//获取对方蓝牙模块[数据通讯]特征描述符
-				BleGattCharacteristic chars = mBle.getService(address,
-						UUID.fromString(Utils.UUID_SRV)).getCharacteristic(
+				
+				BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
+				if(bgs == null)
+				{
+					Log.e("service",address+"lost");
+					return;
+				}
+				
+				BleGattCharacteristic chars = bgs.getCharacteristic(
 						UUID.fromString(Utils.UUID_DATA));
+				
 				if(chars != null)
 				{
 					
@@ -163,158 +171,27 @@ public class WorkService extends Service {
 				Bundle extras = intent.getExtras();
 				String addr = extras.getString(BleService.EXTRA_ADDR);
 				Scaler d = WorkService.scalers.get(addr);
+				if(d==null) 
+				{
+					Log.e(TAG,"get data but can not find address"+addr+"");
+					return;
+				}
 				byte[] val = extras.getByteArray(BleService.EXTRA_VALUE);
 				if(val.length < 4)
 				{
 					return;
 				}
-				if((val[0] == 'A') && (val[1] == 'D') && (val[2] == 'V'))
-				{
-					
-					if(val[3] == ':')
-					{
-						if(val.length < 8) return;
-						byte w[] = {0,0,0,0};
-						System.arraycopy(val,4,w,0, 4);
-						
-						int weight = Utils.bytesToWeight(w);
-						d.setWeight(weight);
-
-						Message msg = mHandler.obtainMessage(Global.MSG_BLE_WGTRESULT);
-						msg.arg1  = weight;
-						msg.obj   = d;
-						mHandler.sendMessage(msg);
-					}
-					
-				}
-				else if((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R'))
-				{
-
-					if(val[3] == '?') //参数读取的返回值.
-					{
-
-						int ret = d.para.parseParaBuffer(val)?0:1;
-					
-						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_GET_RESULT);
-						msg.arg1 = ret;
-						msg.obj  = d;
-						mHandler.sendMessage(msg);
-					}
-					else if(val[3] == ':') //参数设置的返回值.
-					{
-									
-						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_PAR_SET_RESULT);
-						msg.arg1 = val[4]-'0';
-						msg.obj  = d;
-						mHandler.sendMessage(msg);
-					}
-				}
-				else if((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z'))
-				{
-					
-					if(val[3] == '?') //参数读取的返回值.
-					{
-						
-						int ret = 0;
-					
-						
-						try {
-							int zero = Utils.bytesToString(val, 4, val.length);
-							d.setZeroValue(zero);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							ret = 1;
-							e.printStackTrace();
-						}
-					
-						
-						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_ZERO_QUERY_RESULT);
-						msg.arg1 = ret;
-						msg.obj  = d;
-						mHandler.sendMessage(msg);
-					
-						
-					}
-					else if(val[3] == ':') //参数设置的返回值.
-					{
-						
-						if(val[4] == '0')
-						{
-							try {
-								int zero = Utils.bytesToString(val, 6, val.length);
-								d.setZeroValue(zero);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						
-						}
-						Message msg = mHandler.obtainMessage(Global.MSG_SCALER_ZERO_CALIB_RESULT);
-						msg.arg1 = val[4]-'0';
-						msg.obj  = d;
-						mHandler.sendMessage(msg);
-					}
-					
-			}
-
-			else if((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K'))
-			{
+				Message msg = mHandler.obtainMessage(Global.MSG_BLE_FAILERESULT);
 				
-				if(val[3] == '?') //参数读取的返回值.
-				{
-					
-					int ret = 0;
-
-					try {
-						int w = Utils.bytesToString(val, 4, val.length);
-						d.setLoadValue(w);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						ret = 1;
-						e.printStackTrace();
-					}
-					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_K_QUERY_RESULT);
-					
-					msg.obj  = d;
-					msg.arg1 = ret;
-			
-					mHandler.sendMessage(msg);
 				
-					
-				}
-				else if(val[3] == ':') //参数设置的返回值.
+				int code = d.parseData(val, msg);
+				if(code == 0)
 				{
-					
-					if(val[4] == '0')
-					{
-						try {
-							int w = Utils.bytesToString(val, 6, val.length);
-							d.setLoadValue(w);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					
-					}
-					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_K_CALIB_RESULT);
-					
-					msg.obj  = d;
-					msg.arg1 = val[4]-'0';
-					mHandler.sendMessage(msg);
+					return;
 				}
+				msg.what = code;
+				mHandler.sendMessage(msg);
 				
-			}
-			else if((val[0] == 'S') && (val[1] == 'A') && (val[2] == 'V'))
-			{
-				if(val[3] == ':')
-				{
-					Message msg = mHandler.obtainMessage(Global.MSG_SCALER_SAVE_EEPROM);
-					
-					msg.obj  = d;
-					msg.arg1 = val[4]-'0';
-					mHandler.sendMessage(msg);
-				}
-			}
 		}		
 		else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
 				//命令请求失败,分析是那个命令，决定是否重新发送.
@@ -792,7 +669,7 @@ public class WorkService extends Service {
 		//修改地址后，重新加载地址列表.
 		loadScalerConfig(pCtx);
 	}
-	//连接所有蓝牙秤
+	//连接所有蓝牙秤,无论是否连接成功
 	public static boolean connectAll()
 	{
 		boolean need_connect = false;

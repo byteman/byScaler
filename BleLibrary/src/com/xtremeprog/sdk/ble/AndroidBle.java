@@ -315,9 +315,11 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		if (gatt == null) {
 			return false;
 		}
-
+	
 		boolean ret = gatt.discoverServices();
 		if (!ret) {
+			//发现服务失败，直接断开连接.
+			if(mService!=null)mService.bleGattDisConnected(address);
 			disconnect(address);
 		}
 		return ret;

@@ -171,6 +171,8 @@ public class BleService extends Service {
 								+ mCurrentRequest.type + " address "
 								+ mCurrentRequest.address + " [timeout]");
 						if (mBle != null) {
+							//超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
+							bleGattDisConnected(mCurrentRequest.address);
 							mBle.disconnect(mCurrentRequest.address);
 						}
 						new Thread(new Runnable() {
