@@ -169,13 +169,24 @@ public class ScalerParam {
 		return send;
 		
 	}
+	public boolean checkValid()
+	{
+		if(this.nov==0)this.nov=1000000;
+		if(this.mtd > mtdmaps.size() || this.mtd<0) this.mtd = 0;
+		if(this.zerotrack > zerotrackmaps.size() || this.zerotrack<0) this.zerotrack = 0;
+		if(this.pwr_zerotrack > pwrzeromaps.size() || this.pwr_zerotrack<0) this.pwr_zerotrack = 0;
+		if(this.resultion > resmaps.size() || this.resultion<0) this.resultion = 0;
+		if(this.dignum > digmaps.size() || this.dignum<0) this.dignum = 0;
+		
+		return true;
+	}
 	public boolean parseParaBuffer(byte[] buffer)
 	{
 		if(buffer.length < 17) return false;
 		if( (buffer[0] != 'P')||  (buffer[1] != 'A') ||  (buffer[2] != 'R') ||  (buffer[3] != '?'))
 			return false;
 		this.nov = bytesToInt(Arrays.copyOfRange(buffer,4,8));
-		if(this.nov==0)this.nov=1000000;
+		
 		this.mtd = buffer[8];
 		this.zerotrack = buffer[9];
 		this.pwr_zerotrack = buffer[10];
@@ -184,8 +195,7 @@ public class ScalerParam {
 		String ut = new String(Arrays.copyOfRange(buffer,13,17));
 		this.unit = ut;
 		//System.arraycopy(buffer, 0, send, 13, this.unit.length()); 
-		
-		
+		checkValid();
 		
 		return true;
 	}
