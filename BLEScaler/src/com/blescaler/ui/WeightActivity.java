@@ -218,6 +218,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		}
 		else if(id == R.id.menu_connect)
 		{
+			//WorkService.requestConnect("C4:BE:84:22:91:E2");
 			WorkService.connectAll();
 		}
 		return super.onOptionsItemSelected(item);

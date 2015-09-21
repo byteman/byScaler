@@ -319,6 +319,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		boolean ret = gatt.discoverServices();
 		if (!ret) {
 			//发现服务失败，直接断开连接.
+			Log.e(TAG,"discoverServices failed disconnect " + address);
 			if(mService!=null)mService.bleGattDisConnected(address);
 			disconnect(address);
 		}
@@ -424,9 +425,9 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	public boolean requestConnect(String address) {
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 	
-		if (gatt != null && gatt.getServices().size() == 0) {
-		//if (gatt != null ) {
-			//disconnect(address);
+		//if (gatt != null && gatt.getServices().size() == 0) {
+		if (gatt != null ) {
+			disconnect(address);
 			Log.d("blelib",address + " gatt has exist!!!");
 			//return false;
 		}

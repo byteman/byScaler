@@ -204,97 +204,100 @@ public class BleService extends Service {
 		}
 	}
 	
-	class TimeoutThread extends Thread
-	{
-		
+	class TimeoutThread extends Thread {
+
 		private boolean mCheckTimeout = true;
 		private int mElapsed = 0;
 		private boolean pause = true;
 		private boolean threadInitOK = false;
-		private long waitTime;
+		private long waitTime, timeout;
 		private int cont = 0;
-		public void start()
-		{
+		private String MyTag = "timeout";
+
+		public void start() {
 			super.start();
-			while (!threadInitOK )
+			while (!threadInitOK)
 				;
 		}
+
 		@Override
 		public void run() {
-			Log.d(TAG, "monitoring thread start");
+			Log.d(MyTag, "monitoring thread start");
 			mElapsed = 0;
 			threadInitOK = true;
-			try {
-				while (mCheckTimeout) {
-					// Log.d(TAG, "monitoring timeout seconds: " + mElapsed);
-					if(pause)
-					{
-						mElapsed = 0;
-						cont++;
-						Thread.sleep(100);
-						if(cont > 20)
-						{
-							//Log.e("time", "pause 2s" + mCurrentRequest);
-							if(getqueueSize() != 0)
-							{
-								_thread.processNext();
+			while (mCheckTimeout) {
+				try {
+					while (mCheckTimeout) {
+						// Log.d(TAG, "monitoring timeout seconds: " +
+						// mElapsed);
+						if (pause) {
+							mElapsed = 0;
+							cont++;
+							Thread.sleep(100);
+							if (cont > 20) {
+								// Log.e("time", "pause 2s" + mCurrentRequest);
+								if (getqueueSize() != 0) {
+									_thread.processNext();
+								}
 							}
+
+							continue;
 						}
-						
-						continue;
-					}
-					Thread.sleep(100);
-					mElapsed++;
-					cont = 0;	
-					if (mElapsed > REQUEST_TIMEOUT && mCurrentRequest != null) {
-						waitTime = System.currentTimeMillis() - waitTime;  
-			            Log.e("time","timeout wait time :" + waitTime);  
-						Log.d(TAG, "-processrequest type "
-								+ mCurrentRequest.type + " address "
-								+ mCurrentRequest.address + " [timeout]");
-						bleRequestFailed(mCurrentRequest.address,
-								mCurrentRequest.type, FailReason.TIMEOUT);
-						bleStatusAbnormal("-processrequest type "
-								+ mCurrentRequest.type + " address "
-								+ mCurrentRequest.address + " [timeout]");
-						if (mBle != null) {
-							//超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
-							bleGattDisConnected(mCurrentRequest.address);
-							mBle.disconnect(mCurrentRequest.address);
+						Thread.sleep(100);
+						mElapsed++;
+						cont = 0;
+						if (mElapsed > REQUEST_TIMEOUT
+								&& mCurrentRequest != null) {
+							timeout = System.currentTimeMillis() - waitTime;
+							Log.e(MyTag, "timeout wait time :" + waitTime);
+							Log.d(TAG, "-processrequest type "
+									+ mCurrentRequest.type + " address "
+									+ mCurrentRequest.address + " [timeout]");
+							bleRequestFailed(mCurrentRequest.address,
+									mCurrentRequest.type, FailReason.TIMEOUT);
+							bleStatusAbnormal("-processrequest type "
+									+ mCurrentRequest.type + " address "
+									+ mCurrentRequest.address + " [timeout]");
+							if (mBle != null) {
+								// 超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
+								// 这两句不能换位置，否则会出现空指针.
+								Log.e(MyTag, "timeout disconnect "
+										+ mCurrentRequest.address);
+								mBle.disconnect(mCurrentRequest.address);
+								bleGattDisConnected(mCurrentRequest.address);
+							}
+							mElapsed = 0;
+							_thread.processNext();
+
 						}
-						mElapsed = 0;
-						_thread.processNext();
-						
 					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Log.d(TAG, "monitoring thread exception");
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Log.d(TAG, "monitoring thread exception");
+				Log.d(TAG, "monitoring thread stop");
 			}
-			Log.d(TAG, "monitoring thread stop");
 		}
-		public synchronized void setFlag(boolean en)
-		{
+
+		public synchronized void setFlag(boolean en) {
 			pause = en;
 		}
-		public void start_timeout()
-		{
-			waitTime = System.currentTimeMillis(); 
+
+		public void start_timeout() {
+			waitTime = System.currentTimeMillis();
 			mElapsed = 0;
 			setFlag(false);
-			
+
 		}
-		public void stop_timeout()
-		{
-			waitTime = System.currentTimeMillis() - waitTime;  
-            Log.e("time","wait time :" + waitTime);  
+
+		public void stop_timeout() {
+			waitTime = System.currentTimeMillis() - waitTime;
+			Log.e("time", "wait time :" + waitTime);
 			mElapsed = 0;
 			setFlag(true);
-			
-			
+
 		}
-	
-		
+
 	};
 
 	//private boolean mCheckTimeout = false;
