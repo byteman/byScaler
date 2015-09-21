@@ -293,5 +293,14 @@
     <!-- 海军色 -->
     <color name="black">#000000</color>
     <!-- 黑色 -->
+    
+    <color name="common_bg">#cbdde6</color>
+    <color name="title_bg">#ddedf3</color>
+    <color name="weight_bg">#245a7d</color>
+      <color name="oval_shape_bg1">#dae2e7</color>
+       <color name="set_item_click">#a8e8ff</color>
+        <color name="set_item_unclick">#f0f8fe</color>
+   
+     <drawable name="main_login_normal">#ff6501</drawable>
 
 </resources>
