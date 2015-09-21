@@ -1,6 +1,7 @@
 package com.blescaler.worker;
 
 import android.os.Message;
+import android.util.Log;
 
 import com.blescaler.utils.Utils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
@@ -17,6 +18,18 @@ public class Scaler {
 	private int weightVlaue; //保存上次的砝码重量
 	private int loadValue; //保存上次砝码标定时的ad值 
 	private BleGattCharacteristic characteristic;
+	private int rx_cnt = 0;
+	private long waitTime = 0;
+	public int getRx_cnt() {
+		return rx_cnt;
+	}
+	public void dump_info()
+	{
+		Log.e("weight",address+" rx " + rx_cnt);
+	}
+	public void setRx_cnt(int rx_cnt) {
+		this.rx_cnt = rx_cnt;
+	}
 
 	public boolean isDiscovered() {
 		return discovered;
@@ -98,6 +111,11 @@ public class Scaler {
 	}
 
 	public void setWeight(int weight) {
+		
+		waitTime  = (System.currentTimeMillis() - waitTime);  
+		this.rx_cnt++;
+		Log.e("scaler",address+" wait="+waitTime);
+		waitTime = System.currentTimeMillis();
 		this.weight = weight;
 	}
 
@@ -115,7 +133,9 @@ public class Scaler {
 				byte w[] = { 0, 0, 0, 0 };
 				System.arraycopy(val, 4, w, 0, 4);
 
-				this.weight = Utils.bytesToWeight(w);
+
+				setWeight(Utils.bytesToWeight(w));
+				
 				msgType = Global.MSG_BLE_WGTRESULT;
 				msg.arg1 = weightVlaue;
 				

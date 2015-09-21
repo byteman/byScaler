@@ -67,10 +67,12 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 	private boolean pasue = false;
 	private static Handler mHandler = null;
 	private static int cout = 0;
+	private static int timeout = 0;
+	private static int timeout_cnt = 0;
 	private Runnable runnable = null;
 	private boolean disconnect=false;
 	protected static final String TAG = "weight";
-
+	private static int read_cnt = 0;
 	
 
 	@Override
@@ -88,7 +90,9 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 		wDao = new WeightDao(this);
 		
 		runnable = new Runnable(){  
-			   @Override  
+			   
+
+			@Override  
 			   public void run() {  
 			    // TODO Auto-generated method stub  
 			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
@@ -96,7 +100,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				   if(!pasue)
 				   {
 					   
-						WorkService.readAllWgt();
+						//WorkService.readAllWgt();
 				   }
 				   else
 				   {
@@ -122,8 +126,16 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					   }
 					   tv_conns[3].setText(WorkService.getQueSize()+"");
 					   cout = 0;
+					   Log.e(TAG,"read="+read_cnt);
+					   
 				   }
-				  
+				   if(timeout++ > 2)
+				   {
+					   WorkService.readNextWgt();
+					   timeout = 0;
+					   timeout_cnt++;
+					   Log.e(TAG,"timeout="+timeout_cnt);
+				   }
 				   
 				  
 				   mHandler.postDelayed(this, 200);  
@@ -390,8 +402,12 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					{
 						//BluetoothDevice device = (BluetoothDevice) msg.obj;
 						int weight = msg.arg1;
+						Scaler d = (Scaler) msg.obj;
 						weight = WorkService.getNetWeight();
 						theActivity.txtWgt.setText(String.valueOf(weight)+"  kg ");
+						timeout = 0;
+						if(d!=null)d.dump_info();
+						WorkService.readNextWgt();
 						break;
 					}
 					case Global.MSG_BLE_DISCONNECTRESULT:

@@ -423,8 +423,12 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	@Override
 	public boolean requestConnect(String address) {
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
+	
 		if (gatt != null && gatt.getServices().size() == 0) {
-			return false;
+		//if (gatt != null ) {
+			//disconnect(address);
+			Log.d("blelib",address + " gatt has exist!!!");
+			//return false;
 		}
 
 		mService.addBleRequest(new BleRequest(RequestType.CONNECT_GATT, address));

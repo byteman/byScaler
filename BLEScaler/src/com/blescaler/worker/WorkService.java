@@ -52,12 +52,13 @@ public class WorkService extends Service {
 	private static Map<Integer,Scaler> scalers2;
 	//private static SparseArray<Scaler> scalers2;
 	private static IBle mBle;
-	private String TAG = "WorkSrv";
+	private static String TAG = "WorkSrv";
 	private static String strUnit = "kg";
 	private static int max_count = 1;	//蓝牙秤设备个数.
 	private static String mPrinterAddress; //打印机蓝牙地址
 	////////////////////称重变量////////////////////////////////
 	private static int zero = 0; //零点重量
+	private static int next = 0;
 	private static int tare = 0; //皮重
 	private static int tmp_tare = 0; //临时皮重
 	private static int gross= 0; //毛重,从秤上直接读取的重量
@@ -190,6 +191,7 @@ public class WorkService extends Service {
 					return;
 				}
 				msg.what = code;
+				msg.arg1 = d.getWeight();
 				mHandler.sendMessage(msg);
 				
 		}		
@@ -545,7 +547,12 @@ public class WorkService extends Service {
 	//读取某个秤的重量值
 	public static boolean requestReadWgt(String address)
 	{
-		
+		int size = getQueSize() ;
+		if(size > 10) 
+		{
+			Log.e(TAG, "queue underflow " + size);
+			return false;
+		}
 		return requestValue(address, "ADV?;");
 
 	}
@@ -747,7 +754,23 @@ public class WorkService extends Service {
 		
 		return true;
 	}
+	public static boolean readNextWgt()
+	{
+		
+		if(!hasConnectAll()) return false;
 	
+		if(next >= scalers2.size()) next = 0;
+		Scaler dev = scalers2.get(next);
+		 
+		if(dev!=null && dev.isConnected())
+		{
+			WorkService.requestReadWgt(dev.getAddress());
+		}
+		next++;
+		
+		
+		return true;
+	}
 	//获取秤的个数
 	public static int getScalerCount()
 	{

@@ -58,7 +58,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import com.xtremeprog.sdk.ble.BleRequest.FailReason;
@@ -145,12 +148,160 @@ public class BleService extends Service {
 	private static final int REQUEST_TIMEOUT = 30 ; // total timeout =
 														// REQUEST_TIMEOUT *
 														// 100ms
-	private boolean mCheckTimeout = false;
-	private int mElapsed = 0;
-	private Thread mRequestTimeout;
+	
+	//private Thread mRequestTimeout;
 	private String mNotificationAddress;
+	private MyThread _thread = new MyThread();
+	private TimeoutThread _timeout = new TimeoutThread();
+	
+	class MyThread extends Thread{
+		private  Looper mLooper = null; 
+		private  boolean threadInitOK = false;
+		private WorkHandler workHandler;
+		private BleService _srv = null;
+		public void run()
+		{
+			Looper.prepare();
+			mLooper = Looper.myLooper();
+			if (null == mLooper)
+				Log.v(TAG, "mLooper is null pointer");
+			else
+				Log.v(TAG, "mLooper is valid");
+			workHandler = new WorkHandler();
+			workHandler.setTarget(_srv);
+			threadInitOK = true;
+			Looper.loop();
+		}
+		public void start() {
+			super.start();
+			while (!threadInitOK)
+				;
+		}
+		public void processNext()
+		{
+			workHandler.sendEmptyMessage(1);
+		}
+		public void setTarget(BleService srv)
+		{
+			_srv = srv;
+		}
+	};
+	private static class WorkHandler extends Handler {
+		private BleService _srv = null;
+		public void handleMessage(Message msg) {
+			if(msg.what == 1)
+			{
+				if(_srv==null) return;
+				_srv.setCurrentRequest(null);
+				_srv.processNextRequest();
+			}
+			
+		}
+		
+		public void setTarget(BleService srv)
+		{
+			_srv = srv;
+		}
+	}
+	
+	class TimeoutThread extends Thread
+	{
+		
+		private boolean mCheckTimeout = true;
+		private int mElapsed = 0;
+		private boolean pause = true;
+		private boolean threadInitOK = false;
+		private long waitTime;
+		private int cont = 0;
+		public void start()
+		{
+			super.start();
+			while (!threadInitOK )
+				;
+		}
+		@Override
+		public void run() {
+			Log.d(TAG, "monitoring thread start");
+			mElapsed = 0;
+			threadInitOK = true;
+			try {
+				while (mCheckTimeout) {
+					// Log.d(TAG, "monitoring timeout seconds: " + mElapsed);
+					if(pause)
+					{
+						mElapsed = 0;
+						cont++;
+						Thread.sleep(100);
+						if(cont > 20)
+						{
+							//Log.e("time", "pause 2s" + mCurrentRequest);
+							if(getqueueSize() != 0)
+							{
+								_thread.processNext();
+							}
+						}
+						
+						continue;
+					}
+					Thread.sleep(100);
+					mElapsed++;
+					cont = 0;	
+					if (mElapsed > REQUEST_TIMEOUT && mCurrentRequest != null) {
+						waitTime = System.currentTimeMillis() - waitTime;  
+			            Log.e("time","timeout wait time :" + waitTime);  
+						Log.d(TAG, "-processrequest type "
+								+ mCurrentRequest.type + " address "
+								+ mCurrentRequest.address + " [timeout]");
+						bleRequestFailed(mCurrentRequest.address,
+								mCurrentRequest.type, FailReason.TIMEOUT);
+						bleStatusAbnormal("-processrequest type "
+								+ mCurrentRequest.type + " address "
+								+ mCurrentRequest.address + " [timeout]");
+						if (mBle != null) {
+							//超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
+							bleGattDisConnected(mCurrentRequest.address);
+							mBle.disconnect(mCurrentRequest.address);
+						}
+						mElapsed = 0;
+						_thread.processNext();
+						
+					}
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Log.d(TAG, "monitoring thread exception");
+			}
+			Log.d(TAG, "monitoring thread stop");
+		}
+		public synchronized void setFlag(boolean en)
+		{
+			pause = en;
+		}
+		public void start_timeout()
+		{
+			waitTime = System.currentTimeMillis(); 
+			mElapsed = 0;
+			setFlag(false);
+			
+		}
+		public void stop_timeout()
+		{
+			waitTime = System.currentTimeMillis() - waitTime;  
+            Log.e("time","wait time :" + waitTime);  
+			mElapsed = 0;
+			setFlag(true);
+			
+			
+		}
+	
+		
+	};
 
-	private Runnable mTimeoutRunnable = new Runnable() {
+	//private boolean mCheckTimeout = false;
+	//private int mElapsed = 0;
+	//private Thread mRequestTimeout;
+	//private String mNotificationAddress;
+/*private Runnable mTimeoutRunnable = new Runnable() {
 		@Override
 		public void run() {
 			Log.d(TAG, "monitoring thread start");
@@ -183,6 +334,7 @@ public class BleService extends Service {
 								processNextRequest();
 							}
 						}, "th-ble").start();
+						_thread.processNext();
 						break;
 					}
 				}
@@ -193,6 +345,25 @@ public class BleService extends Service {
 			Log.d(TAG, "monitoring thread stop");
 		}
 	};
+*/
+
+/*	private void startTimeoutThread() {
+		mCheckTimeout = true;
+		mRequestTimeout = new Thread(mTimeoutRunnable);
+		mRequestTimeout.start();
+	}
+
+	private void clearTimeoutThread() {
+		if (mRequestTimeout.isAlive()) {
+			try {
+				mCheckTimeout = false;
+				mRequestTimeout.join();
+				mRequestTimeout = null;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}*/
 
 	public static IntentFilter getIntentFilter() {
 		IntentFilter intentFilter = new IntentFilter();
@@ -240,6 +411,16 @@ public class BleService extends Service {
 		} else if (mBleSDK == BLESDK.SAMSUNG) {
 			mBle = new SamsungBle(this);
 		}
+		if(_thread != null){
+			{
+				_thread.setTarget(this);
+				_thread.start();
+			}
+		}
+		if(_timeout != null){
+			_timeout.start();
+		}
+			
 	}
 
 	protected void bleNotSupported() {
@@ -356,27 +537,22 @@ public class BleService extends Service {
 				bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
 						FailReason.RESULT_FAILED);
 			}
-			new Thread(new Runnable() {
+			
+		/*	new Thread(new Runnable() {
 				@Override
 				public void run() {
 					//mCurrentRequest = null;
 					setCurrentRequest(null);
 					processNextRequest();
 				}
-			}, "th-ble").start();
+			}, "th-ble").start();*/
+		
+			_thread.processNext();
 		}
 	}
 
 	private void clearTimeoutThread() {
-		if (mRequestTimeout.isAlive()) {
-			try {
-				mCheckTimeout = false;
-				mRequestTimeout.join();
-				mRequestTimeout = null;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		if(_timeout!=null) _timeout.stop_timeout();
 	}
 
 	/**
@@ -459,21 +635,25 @@ public class BleService extends Service {
 					+ " address " + mCurrentRequest.address + " [fail start]");
 			bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
 					FailReason.START_FAILED);
-			new Thread(new Runnable() {
+			if (mBle != null) {
+				//超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
+				bleGattDisConnected(mCurrentRequest.address);
+				mBle.disconnect(mCurrentRequest.address);
+			}
+			/*new Thread(new Runnable() {
 				@Override
 				public void run() {
 					setCurrentRequest(null);
 					//mCurrentRequest = null;
 					processNextRequest();
 				}
-			}, "th-ble").start();
+			}, "th-ble").start();*/
+			_thread.processNext();
 		}
 	}
 
 	private void startTimeoutThread() {
-		mCheckTimeout = true;
-		mRequestTimeout = new Thread(mTimeoutRunnable);
-		mRequestTimeout.start();
+		if(_timeout!=null) _timeout.start_timeout();
 	}
 
 	protected BleRequest getCurrentRequest() {
