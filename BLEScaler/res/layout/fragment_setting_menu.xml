@@ -1,0 +1,178 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        
+         <TextView
+             android:id="@+id/set_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="校正"
+            android:background="@color/title_bg"
+            android:textSize="14sp" 
+            />
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+         <TextView
+            android:id="@+id/set_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="单位"
+             android:layout_weight="1"
+            android:background="@color/title_bg"
+            android:textSize="14sp" 
+            />
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_3"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="自动扣重"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_4"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="累计"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_5"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="量程精度"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_6"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="流水号"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_7"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="防震等级"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_8"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="稳定等级"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_9"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="零点显示"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_10"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="重量记忆"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_11"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="打印机设置"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+
+          <TextView
+              android:id="@+id/set_12"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:background="@color/title_bg"
+              android:text="外接设备"
+              android:textSize="14sp" />
+
+         <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccd9e2"/>
+         
+
+    </LinearLayout>
+   
+

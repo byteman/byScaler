@@ -1,4 +1,4 @@
-package com.example.bluetooth.le.fragment;
+package com.blescaler.ui.ble;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.example.bluetooth.le.R;
-import com.example.bluetooth.le.SettingActivity;
-import com.example.worker.Global;
-import com.example.worker.WorkService;
+
+import com.blescaler.ui.R;
+import com.blescaler.worker.Global;
+import com.blescaler.worker.WorkService;
 import com.lvrenyang.utils.DataUtils;
 
 import android.app.Activity;
@@ -51,7 +51,7 @@ public class SettingFragment11 extends BaseFragment implements OnClickListener {
 	private static Handler mHandler = null;
 
 	int pos;
-	SettingActivity theActivity;
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class SettingFragment11 extends BaseFragment implements OnClickListener {
 		super.onResume();
 		initBroadcast();
 		getBoundedPrinters();
-		mHandler = new MHandler(theActivity);
+		//mHandler = new MHandler(theActivity);
 		WorkService.addHandler(mHandler);
 	}
 
@@ -111,7 +111,7 @@ public class SettingFragment11 extends BaseFragment implements OnClickListener {
 
 	@Override
 	public void onAttach(Activity activity) {
-		theActivity = (SettingActivity) activity;
+		//theActivity = (SettingActivity) activity;
 		super.onAttach(activity);
 	}
 
@@ -240,52 +240,24 @@ public class SettingFragment11 extends BaseFragment implements OnClickListener {
 
 	static class MHandler extends Handler {
 
-		WeakReference<SettingActivity> mActivity;
-
-		MHandler(SettingActivity activity) {
-			mActivity = new WeakReference<SettingActivity>(activity);
-		}
+		
 
 		@Override
 		public void handleMessage(Message msg) {
-			SettingActivity theActivity = mActivity.get();
+		
 			switch (msg.what) {
 			/**
 			 * DrawerService 的 onStartCommand会发送这个消息
 			 */
 
 			case Global.MSG_WORKTHREAD_SEND_CONNECTBTRESULT: {
-				int result = msg.arg1;
-				Toast.makeText(theActivity, (result == 1) ? Global.toast_success : Global.toast_fail,
-						Toast.LENGTH_SHORT).show();
-
-				dialog.cancel();
-				if (1 == result) {
-					PrintTest();
-				}
+			
 				break;
 			}
 
 			}
 		}
 
-		void PrintTest() {
-			String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n";
-			byte[] tmp1 = { 0x1b, 0x40, (byte) 0xB2, (byte) 0xE2, (byte) 0xCA, (byte) 0xD4, (byte) 0xD2, (byte) 0xB3,
-					0x0A };
-			byte[] tmp2 = { 0x1b, 0x21, 0x01 };
-			byte[] tmp3 = { 0x0A, 0x0A, 0x0A, 0x0A };
-			byte[] buf = DataUtils.byteArraysToBytes(new byte[][] { tmp1, str.getBytes(), tmp2, str.getBytes(), tmp3 });
-			if (WorkService.workThread.isConnected()) {
-				Bundle data = new Bundle();
-				data.putByteArray(Global.BYTESPARA1, buf);
-				data.putInt(Global.INTPARA1, 0);
-				data.putInt(Global.INTPARA2, buf.length);
-				WorkService.workThread.handleCmd(Global.CMD_WRITE, data);
-			} else {
-				Toast.makeText(mActivity.get(), Global.toast_notconnect, Toast.LENGTH_SHORT).show();
-			}
-		}
 	}
 
 }

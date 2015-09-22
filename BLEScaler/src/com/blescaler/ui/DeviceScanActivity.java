@@ -245,7 +245,7 @@ public class DeviceScanActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 	
-
+		WorkService.requestDisConnectAll();
 		// Ensures Bluetooth is enabled on the device. If Bluetooth is not
 		// currently enabled,
 		// fire an intent to display a dialog asking the user to grant

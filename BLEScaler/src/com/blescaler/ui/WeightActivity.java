@@ -131,7 +131,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 				   }
 				   if(timeout++ > 2)
 				   {
-					   WorkService.readNextWgt();
+					   WorkService.readNextWgt(true);
 					   timeout = 0;
 					   timeout_cnt++;
 					   Log.e(TAG,"timeout="+timeout_cnt);
@@ -408,7 +408,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						theActivity.txtWgt.setText(String.valueOf(weight)+"  kg ");
 						timeout = 0;
 						if(d!=null)d.dump_info();
-						WorkService.readNextWgt();
+						WorkService.readNextWgt(true);
 						break;
 					}
 					case Global.MSG_BLE_DISCONNECTRESULT:

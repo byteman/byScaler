@@ -99,10 +99,36 @@ limitations under the License.
             </intent-filter>
         </activity>
         <activity
-            android:name=".DeviceMgrActivity"
-            android:label="@string/calibwgt" >
+            android:name="com.blescaler.ui.ble.MainActivity"
+            android:label="@string/calibwgt" 
+            android:screenOrientation="landscape">
             
         </activity>
+        
+        <activity
+            android:name="com.blescaler.ui.ble.FlourWeightFragment"
+            android:label="@string/calibwgt"
+            android:screenOrientation="landscape" >
+        </activity>
+      
+        <activity
+            android:name="com.blescaler.ui.ble.OneWeightFragment"
+            
+            android:label="@string/calibwgt"
+            android:screenOrientation="landscape" >
+        </activity>
+         <activity
+            android:name="com.blescaler.ui.ble.WeightCountFragment"
+            android:label="@string/calibwgt"
+            android:screenOrientation="landscape" >
+        </activity>
+          <activity
+            android:name="com.blescaler.ui.ble.SettingActivity"
+            android:label="@string/calibwgt"
+            android:screenOrientation="landscape" >
+        </activity>
+         
+        
     </application>
 
 </manifest>

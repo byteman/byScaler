@@ -1,6 +1,6 @@
-package com.example.bluetooth.le.fragment;
+package com.blescaler.ui.ble;
 
-import com.example.bluetooth.le.R;
+import com.blescaler.ui.R;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

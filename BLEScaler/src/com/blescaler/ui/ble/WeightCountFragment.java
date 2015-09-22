@@ -1,8 +1,8 @@
-package com.example.bluetooth.le.fragment;
+package com.blescaler.ui.ble;
 
-import com.example.bluetooth.le.R;
-import com.example.bluetooth.le.R.layout;
-import com.example.bluetooth.le.base.BaseActivity;
+
+
+import com.blescaler.ui.R;
 
 import android.app.Fragment;
 import android.os.Bundle;

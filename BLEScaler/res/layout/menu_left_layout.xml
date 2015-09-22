@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#233d50" >
+<View
+    android:id="@+id/line1" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+    />
+    <TextView
+        android:id="@+id/leftmenu1"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line1"
+        android:text="数据报表"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+    <View
+    android:id="@+id/line2" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+       
+        android:layout_below="@+id/leftmenu1"
+    />
+    <TextView
+        android:id="@+id/leftmenu2"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line2"
+        android:text="搜索蓝牙秤"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+     <View
+    android:id="@+id/line3" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+       
+        android:layout_below="@+id/leftmenu2"
+    />
+<!-- 底部 -->
+<View
+    android:id="@+id/line8" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+    />
+ <TextView
+        android:id="@+id/leftmenu7"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line8"
+        android:text="一台称"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+<View
+    android:id="@+id/line4" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+          android:layout_above="@+id/leftmenu7"
+        
+    />
+ <TextView
+        android:id="@+id/leftmenu3"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line4"
+        android:text="四台称"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+ <View
+    android:id="@+id/line5" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/leftmenu3"
+       
+    />
+ <TextView
+        android:id="@+id/leftmenu4"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line5"
+        android:text="参数设置"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+ <View
+    android:id="@+id/line6" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/leftmenu4"
+       
+    />
+ <TextView
+        android:id="@+id/leftmenu5"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line6"
+        android:text="设置"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+ <View
+    android:id="@+id/line7" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/leftmenu5"
+       
+    />
+ <TextView
+        android:id="@+id/leftmenu6"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line7"
+        android:text="打印设置"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+  <View
+    android:id="@+id/line9" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/leftmenu6"
+       
+    />
+</RelativeLayout>

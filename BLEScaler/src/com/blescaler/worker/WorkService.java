@@ -329,7 +329,7 @@ public class WorkService extends Service {
 	public void onCreate() {
 		BleApplication app = (BleApplication) getApplication();
 		mBle = app.getIBle();
-		if (mBle != null) {
+		if (mBle == null) {
 			Log.e("WorkService", "getBLE failed");
 			
 		} 
@@ -754,10 +754,9 @@ public class WorkService extends Service {
 		
 		return true;
 	}
-	public static boolean readNextWgt()
+	public static boolean readNextWgt(boolean needAllconnect)
 	{
-		
-		if(!hasConnectAll()) return false;
+		if(needAllconnect) if(!hasConnectAll()) return false;
 	
 		if(next >= scalers2.size()) next = 0;
 		Scaler dev = scalers2.get(next);
@@ -771,6 +770,7 @@ public class WorkService extends Service {
 		
 		return true;
 	}
+	
 	//获取秤的个数
 	public static int getScalerCount()
 	{

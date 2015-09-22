@@ -24,9 +24,9 @@
             android:text="称名:00546" />
 
         <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_print"
-            android:layout_width="40.5dp"
-            android:layout_height="40.5sp"
+            android:id="@+id/button2"
+            android:layout_width="33.5dp"
+            android:layout_height="33.5sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="50dp"
@@ -35,7 +35,7 @@
             android:textSize="14sp" />
 
         <com.blescaler.ui.ble.AutoBgButton
-             android:id="@+id/btn_ng"
+             android:id="@+id/button3"
             android:layout_width="66dp"
             android:layout_height="31sp"
             android:layout_alignParentLeft="true"
@@ -48,88 +48,61 @@
             android:textSize="14sp" />
 
         <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_zero"
+            android:id="@+id/button4"
             android:layout_width="66dp"
             android:layout_height="31sp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@drawable/bt_oval_shape"
-            android:text="清零"
+            android:text="N/G"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_tare"
+            android:id="@+id/button5"
             android:layout_width="66dp"
             android:layout_height="31sp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="120dp"
             android:background="@drawable/bt_oval_shape"
-            android:text="去皮"
+            android:text="0"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
-    
-         <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_save"
-            android:layout_width="66dp"
-            android:layout_height="31sp"
+        <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button6"
+            android:layout_width="28dp"
+            android:layout_height="14sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            
-            android:text="存重"
+              android:layout_marginRight="70dp"
             android:background="@drawable/bt_oval_shape"
             
             android:textSize="14sp" />
-         
-             <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_switch"
-            android:layout_width="80dp"
-            android:layout_height="31sp"
-            android:layout_toLeftOf="@id/btn_save"
-            android:layout_marginRight="100dp"
-            android:text="净重/毛重"
-            android:background="@drawable/bt_oval_shape"
-            
-            android:textSize="14sp" />
-             
-                <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_preset"
-            android:layout_width="66dp"
-            android:layout_height="31sp"
-            android:layout_below="@id/btn_tare"
-            android:text="预置"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="120dp"
-            android:background="@drawable/bt_oval_shape"
-            
-            android:textSize="14sp" />
-                
 
     </RelativeLayout>
 
  <LinearLayout
          android:background="@drawable/gray_oval_shape"
-           android:layout_weight="2"
-        android:layout_width="360.5dp"
-        android:layout_height="152dp"
+           
+        android:layout_width="183dp"
+        android:layout_height="55dp"
         android:layout_gravity="center_horizontal"
        android:layout_centerInParent="true" >
 
        <TextView
-           android:id="@+id/tv_weight"
-           android:layout_width="320dp"
-           android:layout_height="120dp"
+           android:id="@+id/textView1"
+           android:layout_width="158dp"
+           android:layout_height="40dp"
            android:layout_gravity="center_vertical"
            android:layout_marginLeft="5dp"
            android:background="@drawable/white_oval_shape"
            android:gravity="center"
            android:text="1000.00"
-           android:textSize="45sp"
+           android:textSize="15sp"
            android:textStyle="bold" />
 
        <TextView
@@ -137,9 +110,9 @@
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_gravity="center_vertical"
-           android:layout_marginTop="10dp"
+           android:layout_marginTop="5dp"
            android:text="kg"
-           android:textSize="25sp" />
+           android:textSize="15sp" />
 
     </LinearLayout>
     
@@ -147,28 +120,7 @@
      android:layout_alignParentBottom="true"
       
         android:layout_width="match_parent"
-        android:layout_height="80dp" >
-
-     <TextView
-         android:id="@+id/textView3"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentTop="true"
-         android:text="累计:12345"
-          android:layout_marginLeft="50dp"
-         android:textColor="@color/white"
-         android:textSize="18sp" />
-     <TextView
-         android:id="@+id/textView4"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_centerVertical="true"
-         android:text="皮重:254"
-          android:layout_marginLeft="90dp"
-         android:textColor="@color/white"
-         android:textSize="18sp" />
+        android:layout_height="120dp" >
      <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/button7"
             android:layout_width="66dp"
@@ -181,18 +133,66 @@
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
+     <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button8"
+            android:layout_width="66dp"
+            android:layout_height="31sp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="70dp"
+            android:background="@drawable/bt_oval_shape"
+            android:text="清除"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-     <EditText
-         android:id="@+id/editText1"
-         android:layout_width="104dp"
-         android:layout_height="32dp"
-       android:layout_centerInParent="true"
-       android:background="@drawable/black_rect_shape"
-       android:hint="物料/品名"
-       android:padding="3dp" >
+     <LinearLayout
+     
+         android:layout_width="200dp"
+         android:layout_height="fill_parent"
+         android:orientation="vertical"
+         android:layout_centerHorizontal="true"
+         android:weightSum="4"
+       >
 
-         <requestFocus />
-     </EditText>
+         <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="累计                  10kg(100)"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+          <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="数量                        100"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+           <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="单重                        200g"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+            <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="扣重                        10g"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+        
+     </LinearLayout>
 
     </RelativeLayout>
    

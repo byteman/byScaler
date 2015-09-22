@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 
 import com.blescaler.utils.Utils;
 import com.blescaler.ui.R;
+import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.worker.WorkService;
 import com.blescaler.worker.Global;
 
@@ -73,7 +74,7 @@ public class StartActivity extends Activity {
 
 						
 					intent = new Intent(theActivity,
-								WeightActivity.class);
+								MainActivity.class);
 				
 					theActivity.startActivity(intent);
 	

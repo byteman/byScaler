@@ -4,6 +4,11 @@ import com.blescaler.ui.ble.BaseActivity;
 import com.blescaler.ui.ble.FlourWeightFragment;
 import com.blescaler.ui.ble.OneWeightFragment;
 import com.blescaler.ui.ble.WeightCountFragment;
+import com.blescaler.ui.DeviceScanActivity;
+import com.blescaler.ui.ParamActivity;
+import com.blescaler.ui.R;
+import com.blescaler.ui.SearchBTActivity;
+import com.blescaler.worker.WorkService;
 
 import android.R.color;
 import android.app.ActionBar;
@@ -17,11 +22,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements OnTouchListener, OnClickListener {
 	private DrawerLayout mDrawerLayout;
@@ -38,6 +47,14 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
+		//requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+
+		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		//	WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+		
 		setContentView(R.layout.layout_content);
 		initView();
 
@@ -88,7 +105,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 				return false;
 			}
 		});
-		goToFragment(6);
+		goToFragment(7);
 		
 
 	}
@@ -118,8 +135,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	
 		ActionBar actionBar=getActionBar();
 		 actionBar.setDisplayShowHomeEnabled(true);
-		actionBar.setDisplayUseLogoEnabled(true);
-		
+	
 		
 
 	}
@@ -187,6 +203,29 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	private void goToFragment(int pos) {
 		// 璺宠浆涓嶅悓鐨勯〉闈?
 		Fragment newFragment = null;
+		if(pos ==  1)
+			newFragment = WeightDataFragment.newFragment();
+		if(pos == 2)
+		{
+		
+		   Intent intent = new Intent(this, DeviceScanActivity.class);
+		   startActivity(intent); 
+		   return;
+		}
+		if(pos == 3)
+		{
+		
+		   Intent intent = new Intent(this, SearchBTActivity.class);
+		   startActivity(intent); 
+		   return;
+		}
+		if(pos == 5)
+		{
+		
+		   Intent intent = new Intent(this, ParamActivity.class);
+		   startActivity(intent); 
+		   return;
+		}
 		if (pos == 7)
 			newFragment = OneWeightFragment.newFragment();
 		if (pos == 3)
@@ -207,5 +246,26 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	public boolean onTouch(View v, MotionEvent event) {
 		return simpleGestureListener.onTouchEvent(event);
 	}
+	
+	private long exitTime = 0;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+            	WorkService.requestDisConnectAll();
+                moveTaskToBack(false);
+                finish();
+
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+}
 
 }

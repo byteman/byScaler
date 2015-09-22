@@ -24,7 +24,7 @@
             android:text="称名:00546"
             android:textSize="14sp" />
 
-        <com.example.bluetooth.view.AutoBgButton
+        <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/button6"
             android:layout_width="28dp"
             android:layout_height="14sp"
