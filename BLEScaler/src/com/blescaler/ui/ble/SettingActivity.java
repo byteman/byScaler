@@ -19,10 +19,10 @@ public class SettingActivity extends BaseActivity implements FragmentCallback {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
 		
-		ActionBar actionBar=getActionBar();
+		/*ActionBar actionBar=getActionBar();
 		actionBar.setTitle("设置");
 		 actionBar.setDisplayShowHomeEnabled(true);
-		actionBar.setDisplayUseLogoEnabled(true);
+		actionBar.setDisplayUseLogoEnabled(true);*/
         int settingPos=getIntent().getIntExtra(Constant.INTENTKEY_SETTING_POS, 0);
         onItemSelected(settingPos);
 		mSettingListFragment = (SettingListFragment) getFragmentManager().findFragmentById(R.id.setting_menu_list);

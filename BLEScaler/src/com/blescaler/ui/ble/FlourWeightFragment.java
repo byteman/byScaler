@@ -34,6 +34,9 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 	private static Handler mHandler = null;
 	protected static final String TAG = "weight_activity";
 	private TextView[] tv_weight = {null,null,null,null}; 
+	private TextView[] tv_conns = {null,null,null,null}; 
+	private TextView[] tv_standstill = {null,null,null,null}; 
+	private TextView[] tv_name = {null,null,null,null}; 
 	private static Map<String,TextView> scalers = new HashMap<String,TextView>();
 	private Runnable watchdog = new Runnable()
 	{
@@ -47,7 +50,23 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 				   WorkService.readNextWgt(false);
 				   timeout = 0;
 			   }
-			   
+			   if(cout++ > 5)
+			   {
+				   int count = WorkService.getScalerCount();
+				   for(int i = 0; i < count;i++)
+				   {
+					   Scaler s = WorkService.getScaler(i);
+					   if(s == null) tv_conns[i].setText("x");
+					   {
+					   		tv_conns[i].setText(s.isConnected()?"已连接":"断开");
+					   		tv_standstill[i].setText(s.isStandstill()?"稳定":"不稳定");
+					   }
+				   }
+				   //tv_conns[3].setText(WorkService.getQueSize()+"");
+				   cout = 0;
+				   
+				   
+			   }
 			  
 			   mHandler.postDelayed(this, 200);  
 		}
@@ -89,12 +108,7 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 		super.onResume();
 		WorkService.addHandler(mHandler);
 		mHandler.postDelayed(watchdog, 200);
-		//WorkService.connectPrinter(null);
-		if(!WorkService.hasConnectAll())
-		{
-			//WorkService.connectAll();
-		}
-		pause = false;
+		
 	}
 	private void initRes()
 	{
@@ -102,6 +116,22 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 		tv_weight[1] = (TextView) root.findViewById(R.id.weight2_ll).findViewById(R.id.textView1);
 		tv_weight[2] = (TextView) root.findViewById(R.id.weight3_ll).findViewById(R.id.textView1);
 		tv_weight[3] = (TextView) root.findViewById(R.id.weight4_ll).findViewById(R.id.textView1);
+		
+		tv_conns[0] = (TextView) root.findViewById(R.id.weight1_ll).findViewById(R.id.textView5);
+		tv_conns[1] = (TextView) root.findViewById(R.id.weight2_ll).findViewById(R.id.textView5);
+		tv_conns[2] = (TextView) root.findViewById(R.id.weight3_ll).findViewById(R.id.textView5);
+		tv_conns[3] = (TextView) root.findViewById(R.id.weight4_ll).findViewById(R.id.textView5);
+		
+		tv_standstill[0] = (TextView) root.findViewById(R.id.weight1_ll).findViewById(R.id.textView6);
+		tv_standstill[1] = (TextView) root.findViewById(R.id.weight2_ll).findViewById(R.id.textView6);
+		tv_standstill[2] = (TextView) root.findViewById(R.id.weight3_ll).findViewById(R.id.textView6);
+		tv_standstill[3] = (TextView) root.findViewById(R.id.weight4_ll).findViewById(R.id.textView6);
+		
+		tv_name[0] = (TextView) root.findViewById(R.id.weight1_ll).findViewById(R.id.button1);
+		tv_name[1] = (TextView) root.findViewById(R.id.weight2_ll).findViewById(R.id.button1);
+		tv_name[2] = (TextView) root.findViewById(R.id.weight3_ll).findViewById(R.id.button1);
+		tv_name[3] = (TextView) root.findViewById(R.id.weight4_ll).findViewById(R.id.button1);
+		
 		
 		scaler_cout = WorkService.getScalerCount();
 		scalers.clear();
@@ -111,6 +141,7 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 			if(s!=null)
 			{
 				scalers.put(s.getAddress(), tv_weight[i]);
+				tv_name[i].setText(s.getAddress());
 			}
 		}
 		

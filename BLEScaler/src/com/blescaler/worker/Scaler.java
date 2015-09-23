@@ -20,6 +20,35 @@ public class Scaler {
 	private BleGattCharacteristic characteristic;
 	private int rx_cnt = 0;
 	private long waitTime = 0;
+	private boolean standstill = false; //重量稳定
+	private boolean net_overflow = false; //Tare value too high
+	private boolean gross_overflow = false; //Scaling too sensitive
+	private boolean ad_overflow = false; //ADC overflow 
+	
+	public boolean isStandstill() {
+		return standstill;
+	}
+	public void setStandstill(boolean standstill) {
+		this.standstill = standstill;
+	}
+	public boolean isNet_overflow() {
+		return net_overflow;
+	}
+	public void setNet_overflow(boolean net_overflow) {
+		this.net_overflow = net_overflow;
+	}
+	public boolean isGross_overflow() {
+		return gross_overflow;
+	}
+	public void setGross_overflow(boolean gross_overflow) {
+		this.gross_overflow = gross_overflow;
+	}
+	public boolean isAd_overflow() {
+		return ad_overflow;
+	}
+	public void setAd_overflow(boolean ad_overflow) {
+		this.ad_overflow = ad_overflow;
+	}
 	public int getRx_cnt() {
 		return rx_cnt;
 	}
@@ -118,7 +147,14 @@ public class Scaler {
 		waitTime = System.currentTimeMillis();
 		this.weight = weight;
 	}
-
+	private void parseState(byte st)
+	{
+		this.net_overflow = ((st&0x1)!=0)?true:false;
+		this.gross_overflow = ((st&0x2)!=0)?true:false;
+		this.ad_overflow = ((st&0x4)!=0)?true:false;
+		this.standstill = ((st&0x8)!=0)?true:false;
+		
+	}
 	//
 	public int parseData(byte[] val, Message msg) {
 		int msgType = 0;
@@ -133,7 +169,7 @@ public class Scaler {
 				byte w[] = { 0, 0, 0, 0 };
 				System.arraycopy(val, 4, w, 0, 4);
 
-
+				parseState(val[7]);
 				setWeight(Utils.bytesToWeight(w));
 				
 				msgType = Global.MSG_BLE_WGTRESULT;

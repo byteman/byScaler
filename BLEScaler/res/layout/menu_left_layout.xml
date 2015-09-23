@@ -49,6 +49,25 @@
        
         android:layout_below="@+id/leftmenu2"
     />
+      <TextView
+        android:id="@+id/leftmenu8"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line3"
+        android:text="标定参数"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+      
+       <View
+       android:id="@+id/line10" 
+     android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#1f3a4e"
+        android:layout_alignParentLeft="true"
+       
+        android:layout_below="@+id/leftmenu8"
+    />
 <!-- 底部 -->
 <View
     android:id="@+id/line8" 

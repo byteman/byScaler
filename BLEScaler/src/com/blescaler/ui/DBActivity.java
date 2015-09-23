@@ -40,7 +40,7 @@ public class DBActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_form);
 
 		findViewById(R.id.buttonPrintForm).setOnClickListener(this);
-
+		findViewById(R.id.btn_quit).setOnClickListener(this);
 		listData = (ListView) findViewById(R.id.list);
 		wDao = new WeightDao(this);
 		adapter = new MyAdapter(this);	
@@ -86,6 +86,9 @@ public class DBActivity extends Activity implements OnClickListener {
 				break;
 				
 			}
+			case R.id.btn_quit:
+				finish();
+				break;
 		}
 	}
 

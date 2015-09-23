@@ -4,7 +4,9 @@ import com.blescaler.ui.ble.BaseActivity;
 import com.blescaler.ui.ble.FlourWeightFragment;
 import com.blescaler.ui.ble.OneWeightFragment;
 import com.blescaler.ui.ble.WeightCountFragment;
+import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
+import com.blescaler.ui.PairedScalerActivity;
 import com.blescaler.ui.ParamActivity;
 import com.blescaler.ui.R;
 import com.blescaler.ui.SearchBTActivity;
@@ -35,7 +37,7 @@ import android.widget.Toast;
 public class MainActivity extends BaseActivity implements OnTouchListener, OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	TextView leftmenu1, leftmenu2, leftmenu3, //
-			leftmenu4, leftmenu5, leftmenu6, leftmenu7, prevLeftMenu;
+			leftmenu4, leftmenu5, leftmenu6, leftmenu7, leftmenu8, prevLeftMenu;
 	GestureDetector simpleGestureListener;
 	
 	/*
@@ -48,11 +50,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		//requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 
-		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-		//	WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+			WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		
 		setContentView(R.layout.layout_content);
@@ -125,6 +127,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		leftmenu5 = (TextView) findViewById(R.id.leftmenu5);
 		leftmenu6 = (TextView) findViewById(R.id.leftmenu6);
 		leftmenu7 = (TextView) findViewById(R.id.leftmenu7);
+		leftmenu8 = (TextView) findViewById(R.id.leftmenu8);
 		leftmenu1.setOnClickListener(this);
 		leftmenu2.setOnClickListener(this);
 		leftmenu3.setOnClickListener(this);
@@ -132,9 +135,10 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		leftmenu5.setOnClickListener(this);
 		leftmenu6.setOnClickListener(this);
 		leftmenu7.setOnClickListener(this);
+		leftmenu8.setOnClickListener(this);
 	
-		ActionBar actionBar=getActionBar();
-		 actionBar.setDisplayShowHomeEnabled(true);
+		//ActionBar actionBar=getActionBar();
+		 //actionBar.setDisplayShowHomeEnabled(true);
 	
 		
 
@@ -196,6 +200,13 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 			goToFragment(7);
 
 			break;
+		case R.id.leftmenu8:
+			if (prevLeftMenu != null)
+				prevLeftMenu.setBackgroundColor(color.transparent);
+			leftmenu8.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = leftmenu8;
+			goToFragment(8);
+			break;
 		}
 
 	}
@@ -204,7 +215,12 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		// 璺宠浆涓嶅悓鐨勯〉闈?
 		Fragment newFragment = null;
 		if(pos ==  1)
-			newFragment = WeightDataFragment.newFragment();
+		{
+			//newFragment = WeightDataFragment.newFragment();
+		   Intent intent = new Intent(this, DBActivity.class);
+		   startActivity(intent); 
+		   return;
+		}
 		if(pos == 2)
 		{
 		
@@ -212,10 +228,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		   startActivity(intent); 
 		   return;
 		}
-		if(pos == 3)
+		if(pos == 4)
 		{
 		
-		   Intent intent = new Intent(this, SearchBTActivity.class);
+		   Intent intent = new Intent(this, PairedScalerActivity.class);
+		   intent.putExtra("act", "param");
 		   startActivity(intent); 
 		   return;
 		}
@@ -231,9 +248,22 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		if (pos == 3)
 			newFragment = FlourWeightFragment.newFragment();
 		if (pos == 6)
-			newFragment = WeightCountFragment.newFragment();
+		{
+			 Intent intent = new Intent(this, SearchBTActivity.class);
+			
+			 startActivity(intent); 
+			 return;
+		}
+		if(pos == 8)
+		{
+			 Intent intent = new Intent(this, PairedScalerActivity.class);
+			 intent.putExtra("act", "calib");
+			 startActivity(intent); 
+			 return;
+		}
 		if (newFragment == null)
 			return;
+		
 		FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 		fragmentTransaction.replace(R.id.content_frame, newFragment);

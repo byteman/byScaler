@@ -2,21 +2,88 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/weight_bg"
     android:padding="10dp" >
 
+    <LinearLayout 
+        
+      android:id="@+id/listheader"     
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+      android:layout_alignParentTop="true"
+      android:orientation="horizontal"
+      android:background="@color/navajowhite"
+        >
+        
+        <TextView
+            
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:textSize="24sp"
+            android:text="序号" />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="fill_parent"
+               android:layout_weight="1"
+               android:textSize="24sp"
+               android:text="时间" />
+
+              <TextView 
+                  android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:text="毛重"
+                
+            />
+                 <TextView 
+                     android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:text="皮重"
+                
+            />
+                    <TextView 
+                        android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:text="净重"
+                
+            />
+    </LinearLayout>
+        
     <ListView  
       android:id="@+id/list"     
       android:layout_above="@+id/buttonPrintForm"
       android:layout_width="fill_parent" 
+      
       android:layout_height="fill_parent" 
+      android:layout_below="@id/listheader"
+      android:choiceMode="singleChoice"
+      android:listSelector="@drawable/list_selector_color"/>
      /> 
-    <Button
-        android:id="@+id/buttonPrintForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="left|center"
-        android:paddingLeft="70dp"
-        android:text="@string/printform" />
+     
+      <Button
+	        style="@style/bybutton"
+	        android:id="@+id/buttonPrintForm"	
+	        android:layout_marginLeft="10dp"
+	        android:layout_alignParentBottom="true"
+	         android:layout_alignParentLeft="true"
+	        android:text="@string/printform" />
+	     
+	    <Button
+	        style="@style/bybutton"
+	        android:id="@+id/btn_quit"	
+	        android:layout_alignParentRight="true"
+	        android:layout_marginRight="10dp"
+	        
+	        android:layout_alignParentBottom="true"
+	        android:text="  返 回  " />
+	    
+  
 
 </RelativeLayout>

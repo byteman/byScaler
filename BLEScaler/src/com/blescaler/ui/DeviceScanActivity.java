@@ -86,6 +86,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -98,12 +99,13 @@ import com.blescaler.worker.WorkService;
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
-public class DeviceScanActivity extends Activity {
+public class DeviceScanActivity extends Activity   {
 	private LeDeviceListAdapter mLeDeviceListAdapter;
 	private boolean mScanning;
 	private Handler mHandler;
 	private Handler mHandler2;
 	private String mAddress;
+	private Button btn_serach;
 	private ListView lv_Devices;
 	private static final int REQUEST_ENABLE_BT = 1;
 	private ProgressDialog progressDialog = null;
@@ -144,12 +146,51 @@ public class DeviceScanActivity extends Activity {
 		WorkService.delHandler(mHandler);
 	}
 
+	private OnClickListener listener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if(v.getId() == R.id.btn_save)
+			{
+				//保存选中的设备
+				List<String> devs =  mLeDeviceListAdapter.getSelectAddress();
+				
+				WorkService.saveDevicesAddress(DeviceScanActivity.this, devs);
+				for(int i = 0 ;i < devs.size();i++)
+				{
+					String name = mLeDeviceListAdapter.getDevice(i).getName();
+					WorkService.setDeviceName(DeviceScanActivity.this,i, name);
+				}
+				finish();
+			}
+			else if(v.getId() == R.id.btn_cancel)
+			{
+				finish();
+			}
+			else if(v.getId() == R.id.btn_serach)
+			{
+				if(!mScanning)
+				{
+					refreshList();
+					scanLeDevice(true);
+					//btn_serach.setText("停止搜索");
+				}
+				else
+				{
+					scanLeDevice(false);
+					//btn_serach.setText("启动搜索");
+				}
+			}
+		}
+	};
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.device_scan);
-		getActionBar().setTitle(R.string.title_devices);
+		//getActionBar().setTitle(R.string.title_devices);
 		lv_Devices = (ListView) findViewById(R.id.lv_scan);
+		btn_serach = (Button) findViewById(R.id.btn_serach);
 		mHandler = new Handler();
 		
 		
@@ -177,30 +218,10 @@ public class DeviceScanActivity extends Activity {
 			}
 		});
 		
-		findViewById(R.id.btn_save).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(v.getId() == R.id.btn_save)
-				{
-					//保存选中的设备
-					List<String> devs =  mLeDeviceListAdapter.getSelectAddress();
-					
-					WorkService.saveDevicesAddress(DeviceScanActivity.this, devs);
-					for(int i = 0 ;i < devs.size();i++)
-					{
-						String name = mLeDeviceListAdapter.getDevice(i).getName();
-						WorkService.setDeviceName(DeviceScanActivity.this,i, name);
-					}
-					finish();
-				}
-				else if(v.getId() == R.id.btn_cancel)
-				{
-					
-				}
-			}
-		});
+		findViewById(R.id.btn_save).setOnClickListener(listener);
+		btn_serach.setOnClickListener(listener);
+		findViewById(R.id.btn_cancel).setOnClickListener(listener);
+		
 		mHandler2 = new MHandler(this);
 		WorkService.addHandler(mHandler2);
 	}
@@ -294,6 +315,7 @@ public class DeviceScanActivity extends Activity {
 				public void run() {
 					mScanning = false;
 					WorkService.stopScan();
+					updateButton();
 					invalidateOptionsMenu();
 				}
 			}, SCAN_PERIOD);
@@ -305,6 +327,19 @@ public class DeviceScanActivity extends Activity {
 			WorkService.stopScan();
 		}
 		invalidateOptionsMenu();
+		updateButton();
+	}
+
+	protected void updateButton() {
+		// TODO Auto-generated method stub
+		if(mScanning)
+		{
+			btn_serach.setText("停止搜索");
+		}
+		else
+		{
+			btn_serach.setText("启动搜索");
+		}
 	}
 
 	// Adapter for holding devices found through scanning.
