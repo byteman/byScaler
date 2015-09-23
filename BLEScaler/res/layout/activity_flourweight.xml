@@ -2,78 +2,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-  
-    android:weightSum="2"
     android:background="@color/weight_bg"
+    android:orientation="vertical"
+    android:weightSum="2"
     tools:context="com.example.bluetooth.le.WeightActivity" >
 
     <LinearLayout
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:weightSum="2"
-        android:orientation="horizontal" >
-        <include
-        android:id="@+id/weight1_ll"
-        android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="fill_parent"
-       
-        layout="@layout/oneweight_layout"
-          />
-        <View 
-        android:layout_width="5dp"
-        android:layout_height="fill_parent"
-        android:background="@color/azure"
-       />
-    <include
-        android:id="@+id/weight1_ll"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="fill_parent"
-       
-        layout="@layout/oneweight_layout"
-          />
-        
+        android:orientation="horizontal"
+        android:weightSum="2" >
 
+        <include
+            android:id="@+id/weight1_ll"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            layout="@layout/oneweight_layout" />
+
+        <View
+            android:layout_width="5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/azure" />
+
+        <include
+            android:id="@+id/weight2_ll"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            layout="@layout/oneweight_layout" />
     </LinearLayout>
-    <View 
+
+    <View
         android:layout_width="fill_parent"
         android:layout_height="5dp"
-        android:background="@color/azure"
-       />
+        android:background="@color/azure" />
 
- <LinearLayout
-        android:layout_weight="1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:weightSum="2"
-        android:orientation="horizontal" >
-        <include
-        android:id="@+id/weight1_ll"
-        android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="fill_parent"
-       
-        layout="@layout/oneweight_layout"
-          />
-         <View 
-        android:layout_width="5dp"
-        android:layout_height="fill_parent"
-        android:background="@color/azure"
-       />
-    <include
-        android:id="@+id/weight1_ll"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="fill_parent"
-       
-        layout="@layout/oneweight_layout"
-          />
-        
+        android:orientation="horizontal"
+        android:weightSum="2" >
 
+        <include
+            android:id="@+id/weight3_ll"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            layout="@layout/oneweight_layout" />
+
+        <View
+            android:layout_width="5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/azure" />
+
+        <include
+            android:id="@+id/weight4_ll"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            layout="@layout/oneweight_layout" />
     </LinearLayout>
 
- 
 </LinearLayout>
