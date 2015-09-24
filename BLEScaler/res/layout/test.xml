@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:background="@color/lavenderblush"
+    android:background="@color/weight_bg"
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -26,9 +27,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layout_below="@id/ll1"
         android:orientation="horizontal" >
 
         <TextView
@@ -46,9 +49,12 @@
     </LinearLayout>
 
     <LinearLayout
+         android:id="@+id/ll3"
+         android:layout_below="@id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+         
         android:orientation="horizontal" >
 
         <TextView
@@ -66,6 +72,8 @@
     </LinearLayout>
 
     <LinearLayout
+             android:id="@+id/ll4"
+         android:layout_below="@id/ll3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -86,6 +94,8 @@
     </LinearLayout>
 
     <LinearLayout
+             android:id="@+id/ll5"
+         android:layout_below="@id/ll4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -106,6 +116,8 @@
     </LinearLayout>
 
     <LinearLayout
+          android:id="@+id/ll6"
+         android:layout_below="@id/ll5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -126,7 +138,9 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <LinearLayout
+ <!--    <LinearLayout
+          android:id="@+id/ll7"
+         android:layout_below="@id/ll6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -145,36 +159,46 @@
             android:hint="重量单位,不超过3个字符"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </LinearLayout> -->
 
      <LinearLayout
-        android:paddingTop="30dp"
+         android:id="@+id/ll7"
+   
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
         <Button
+            style="@style/bybutton"
             android:text="@string/read"
             android:layout_weight="1"
             android:id="@+id/btn_read"
             android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_height="wrap_content">
         </Button>
         <Button
+            style="@style/bybutton"
             android:text="@string/write"
             android:id="@+id/btn_save"
             android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>
          <Button
+            style="@style/bybutton"
             android:text="@string/save"
             android:id="@+id/btn_eeprom"
+             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>
+       
       
       </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

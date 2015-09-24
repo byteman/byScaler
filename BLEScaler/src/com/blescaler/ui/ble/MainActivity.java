@@ -7,9 +7,10 @@ import com.blescaler.ui.ble.WeightCountFragment;
 import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.PairedScalerActivity;
-import com.blescaler.ui.ParamActivity;
+import com.blescaler.ui.ScalerParamActivity;
 import com.blescaler.ui.R;
 import com.blescaler.ui.SearchBTActivity;
+import com.blescaler.ui.SysParamActivity;
 import com.blescaler.worker.WorkService;
 
 import android.R.color;
@@ -182,7 +183,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 				prevLeftMenu.setBackgroundColor(color.transparent);
 			leftmenu5.setBackgroundColor(getResources().getColor(R.color.set_item_click));
 			prevLeftMenu = leftmenu5;
-			StartActivity(SettingActivity.class, null);
+			StartActivity(SysParamActivity.class, null);
 
 			break;
 		case R.id.leftmenu6:
@@ -239,7 +240,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		if(pos == 5)
 		{
 		
-		   Intent intent = new Intent(this, ParamActivity.class);
+		   Intent intent = new Intent(this, ScalerParamActivity.class);
 		   startActivity(intent); 
 		   return;
 		}

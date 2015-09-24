@@ -34,8 +34,13 @@ limitations under the License.
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:name="com.blescaler.ui.BleApplication"
@@ -63,7 +68,7 @@ limitations under the License.
             android:label="@string/title_activity_weight" >
         </activity>
         <activity
-            android:name=".ParamActivity"            
+            android:name=".ScalerParamActivity"            
             android:label="@string/title_activity_weight" >
         </activity>
         <activity
@@ -87,6 +92,10 @@ limitations under the License.
             android:label="@string/calibwgt" >
         </activity>
 
+        <activity
+            android:name=".SysParamActivity"
+            android:label="@string/calibwgt" >
+        </activity>
         
         <activity
             android:name=".StartActivity"
@@ -114,9 +123,9 @@ limitations under the License.
       
         <activity
             android:name="com.blescaler.ui.ble.OneWeightFragment"
-            
+            android:screenOrientation="portrait" 
             android:label="@string/calibwgt"
-            android:screenOrientation="sensor" >
+            >
         </activity>
          <activity
             android:name="com.blescaler.ui.ble.WeightCountFragment"

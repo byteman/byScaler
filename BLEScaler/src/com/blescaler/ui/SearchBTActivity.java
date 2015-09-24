@@ -42,11 +42,14 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_searchbt);
 
 		findViewById(R.id.buttonSearch).setOnClickListener(this);
+		findViewById(R.id.btn_quit).setOnClickListener(this);
 		progressBarSearchStatus = (ProgressBar) findViewById(R.id.progressBarSearchStatus);
 		linearlayoutdevices = (LinearLayout) findViewById(R.id.linearlayoutdevices);
+		
 		dialog = new ProgressDialog(this);
 
 		initBroadcast();
@@ -89,6 +92,9 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 			adapter.startDiscovery();
 			break;
 		}
+		case R.id.btn_quit:
+			finish();
+			break;
 		}
 	}
 
@@ -179,6 +185,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 				theActivity.dialog.cancel();
 				if (1 == result) {
 					PrintTest();
+					theActivity.finish();
 				}
 				break;
 			}

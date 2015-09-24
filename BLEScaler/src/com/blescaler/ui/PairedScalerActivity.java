@@ -59,7 +59,7 @@ public class PairedScalerActivity extends Activity {
 				
 				if(myact.equals("param"))
 				{
-					Intent intent = new Intent(PairedScalerActivity.this, ParamActivity.class);
+					Intent intent = new Intent(PairedScalerActivity.this, ScalerParamActivity.class);
 					intent.putExtra("address",addr);
 					startActivity(intent);
 

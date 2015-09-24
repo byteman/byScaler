@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/weight_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout 
+            android:layout_width="match_parent"
+    		android:layout_height="wrap_content"
+    		android:orientation="horizontal"
+    		android:layout_marginTop="20dp"
+        >
+        
+         <TextView
+
+       android:id="@+id/tv1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:textSize="18sp" 
+       android:textColor="@color/white"
+       android:text="称重单位"
+       />
+ 
+    	<EditText
+    	    
+    	    android:id="@+id/ed_unit"
+    	    android:text=""
+    	    android:textSize="18sp" 
+       		android:textColor="@color/black"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="wrap_content"
+    	    >
+    	
+    	</EditText>
+     
+     
+        
+    </LinearLayout>
+  
+     
+       <LinearLayout
+        android:id="@+id/ll7"
+   
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+       <!--  <Button
+            style="@style/bybutton"
+            android:text="@string/read"
+            android:layout_weight="1"
+            android:id="@+id/btn_read"
+            android:layout_width="wrap_content"
+        	android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content">
+        </Button> -->
+        <Button
+            style="@style/bybutton"
+            android:text="保存"
+            android:id="@+id/btn_save"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+         <Button
+            style="@style/bybutton"
+            android:text="返回"
+            android:id="@+id/btn_quit"
+           android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+       
+      
+      </LinearLayout>
+</RelativeLayout>

@@ -64,7 +64,7 @@
     <string name="zeroinit">初始零点</string>
     <string name="mtd">稳定系数</string>
     <string name="dignum">小数点数</string>
-    <string name="div">分辨率  </string>
+    <string name="div">分辨率    </string>
     <string name="nov">额定重量  </string>
 	<string name="unit">显示单位 </string>
 	<string name="write">写入</string>

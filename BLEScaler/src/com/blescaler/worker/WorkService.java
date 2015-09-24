@@ -47,6 +47,7 @@ public class WorkService extends Service {
 	
 	public static WorkThread workThread = null; //打印服务工作线程
 	private static Handler mHandler = null;
+	private static Context  myCtx = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
 	public static Map<String,Scaler> scalers;
 	private static Map<Integer,Scaler> scalers2;
@@ -65,6 +66,7 @@ public class WorkService extends Service {
 	private static int net  = 0; //净重 = 毛重-皮重-零点重量.
 	private static boolean is_net_state = false; // 是否是净重状态,默认是毛重状态
 	/////////////////////////////////////////////////
+	
 	
 	//蓝牙秤消息接收器.
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
@@ -308,6 +310,7 @@ public class WorkService extends Service {
 		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
 		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
 		max_count = Config.getInstance(ctx).getScalerCount();
+		strUnit   = Config.getInstance(ctx).getUnit();
 		for(int i = 0 ; i < max_count; i++)
 		{
 			String addr = WorkService.getDeviceAddress(ctx, i);
@@ -356,6 +359,7 @@ public class WorkService extends Service {
 		notifyHandlers(msg);
 		
 		Log.v("DrawerService", "onCreate");
+		myCtx = this;
 	}
 
 	@Override
@@ -886,6 +890,17 @@ public class WorkService extends Service {
 			tare = 0; //将皮重设置为0，
 		}
 		return is_net_state;
+	}
+	public static String getUnit()
+	{
+		return strUnit;
+	}
+	public static boolean setUnit(String unit)
+	{
+		if(myCtx == null) return false;
+		Config.getInstance(myCtx).setUnit(unit);
+		strUnit = unit;
+		return true;
 	}
 
 }

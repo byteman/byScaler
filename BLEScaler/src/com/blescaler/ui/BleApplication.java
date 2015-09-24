@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 import com.blescaler.utils.CrashHandler;
@@ -57,9 +58,9 @@ public class BleApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-		CrashHandler catchHandler = CrashHandler.getInstance();  
-        catchHandler.init(getApplicationContext());  
-        
+		//CrashHandler catchHandler = CrashHandler.getInstance();  
+        //catchHandler.init(getApplicationContext());  
+        CrashReport.initCrashReport(this, "900009251", false);
 		Intent bindIntent = new Intent(this, BleService.class);
 		bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		

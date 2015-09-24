@@ -81,4 +81,12 @@ public class Config
 		mEditor.putInt("maxcount", scalerCount);
 		mEditor.commit();
 	}
+	public String getUnit()
+	{
+		return mSharedPre.getString("unit", "kg");
+	}
+	public void setUnit(String unit) {
+		mEditor.putString("unit", unit);
+		mEditor.commit();
+	}
 }

@@ -20,6 +20,7 @@ public class Scaler {
 	private BleGattCharacteristic characteristic;
 	private int rx_cnt = 0;
 	private long waitTime = 0;
+	private String unit = "kg";
 	private boolean standstill = false; //重量稳定
 	private boolean net_overflow = false; //Tare value too high
 	private boolean gross_overflow = false; //Scaling too sensitive
@@ -138,7 +139,7 @@ public class Scaler {
 	public int getWeight() {
 		return weight;
 	}
-
+	
 	public void setWeight(int weight) {
 		
 		waitTime  = (System.currentTimeMillis() - waitTime);  

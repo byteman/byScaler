@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class ParamActivity extends Activity implements OnClickListener {
+public class ScalerParamActivity extends Activity implements OnClickListener {
 
 	
 	
@@ -30,7 +30,7 @@ public class ParamActivity extends Activity implements OnClickListener {
 	private Spinner sp_dignum;
 	private Spinner sp_div;
 	private Button btn_read, btn_write,btn_eeprom;
-	private EditText edt_nov, edt_unit;
+	private EditText edt_nov;// edt_unit;
 	private String address = "C4:BE:84:22:91:E2";
 	private static Handler mHandler = null;
 	/* (non-Javadoc)
@@ -75,7 +75,7 @@ public class ParamActivity extends Activity implements OnClickListener {
 		btn_eeprom.setOnClickListener(this);
 		
 		edt_nov = (EditText) findViewById(R.id.ed_nov);
-		edt_unit = (EditText) findViewById(R.id.ed_unit);
+		//edt_unit = (EditText) findViewById(R.id.ed_unit);
 		address = getIntent().getStringExtra("address");
 		mHandler = new MHandler(this);
 	}
@@ -125,8 +125,8 @@ public class ParamActivity extends Activity implements OnClickListener {
 		case R.id.btn_save:
 			ScalerParam sp = new ScalerParam();
 
-			if (!checkunit(edt_unit.getText().toString(), sp))
-				return;
+			//if (!checkunit(edt_unit.getText().toString(), sp))
+			//	return;
 			if (!checknov(edt_nov.getText().toString(), sp))
 				return;
 			sp.setMtd((byte) sp_mtd.getSelectedItemId());
@@ -135,7 +135,7 @@ public class ParamActivity extends Activity implements OnClickListener {
 			sp.setDignum((byte) sp_dignum.getSelectedItemId());
 			sp.setResultion((byte)sp_div.getSelectedItemId());
 			edt_nov.setText(sp.getNov()+"");
-			edt_unit.setText(sp.getUnit()+"");
+			//edt_unit.setText(sp.getUnit()+"");
 			WorkService.requestWriteParamValue(address, sp);
 			break;
 		case R.id.btn_eeprom:
@@ -154,20 +154,20 @@ public class ParamActivity extends Activity implements OnClickListener {
 		sp_zeroinit.setSelection(sp.getPwr_zerotrack());
 		
 		edt_nov.setText(String.valueOf(sp.getNov()));
-		edt_unit.setText(String.valueOf(sp.getUnit()));
+		//edt_unit.setText(String.valueOf(sp.getUnit()));
 	}
 	static class MHandler extends Handler {
 
-		WeakReference<ParamActivity> mActivity;
+		WeakReference<ScalerParamActivity> mActivity;
 
-		MHandler(ParamActivity activity) {
-			mActivity = new WeakReference<ParamActivity>(activity);
+		MHandler(ScalerParamActivity activity) {
+			mActivity = new WeakReference<ScalerParamActivity>(activity);
 			
 		}
 
 		@Override
 		public void handleMessage(Message msg) {
-			ParamActivity theActivity = mActivity.get();
+			ScalerParamActivity theActivity = mActivity.get();
 			switch (msg.what) {
 
 				case Global.MSG_SCALER_PAR_GET_RESULT:

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/weight_bg"
     android:padding="10dp" >
 
     <ProgressBar
@@ -14,19 +15,31 @@
         android:layout_alignParentTop="true" />
 
     <Button
+        style="@style/bybutton"
         android:id="@+id/buttonSearch"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/progressBarSearchStatus"
         android:layout_marginTop="10dp"
         android:text="@string/search" />
+      <Button
+	        style="@style/bybutton"
+	        android:id="@+id/btn_quit"	
+	        android:layout_width="120dp"
+	        android:layout_height="60dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_alignParentRight="true"
+	         android:layout_below="@+id/progressBarSearchStatus"
+	        android:text="返回" />
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        
         android:layout_below="@+id/buttonSearch" >
 
         <LinearLayout

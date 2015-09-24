@@ -4,14 +4,26 @@
     android:layout_height="match_parent"
     android:background="@color/weight_bg"
     android:padding="10dp" >
-
+	
+     <TextView
+      android:id="@+id/tx_title"
+      android:layout_alignParentTop="true"
+      android:layout_width="match_parent"
+   	  android:layout_height="wrap_content"
+   	  android:gravity="center_vertical"
+      android:text="我的标题"
+      android:textSize="24sp"
+      android:textColor="@color/white"
+      android:background="@color/mediumvioletred"
+     />
     <LinearLayout 
         
       android:id="@+id/listheader"     
       android:layout_width="fill_parent" 
       android:layout_height="wrap_content" 
-      android:layout_alignParentTop="true"
+      android:layout_below="@id/tx_title"
       android:orientation="horizontal"
+      android:layout_marginTop="10dp"
       android:background="@color/navajowhite"
         >
         

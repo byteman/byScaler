@@ -36,12 +36,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	AutoBgButton btn_tare = null;
 	AutoBgButton btn_zero = null;
 	AutoBgButton btn_swtich = null;
-	TextView tv_weight = null;
+	TextView tv_weight = null,tv_unit=null;
+	
 	AutoBgButton btn_ng = null;
 	AutoBgButton btn_preset = null;
 	private WeightDao wDao;
 	
-	private int cout = 0,timeout=0;
+	private int timeout=0;
 	private boolean pause = false,disconnect=false;
 	
 	private static Handler mHandler = null;
@@ -68,20 +69,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					   
 				   }
 			   }
-			   if(cout++ > 5)
-			   {
-				  /* int count = WorkService.getScalerCount();
-				   for(int i = 0; i < count;i++)
-				   {
-					   Scaler s = WorkService.getScaler(i);
-					   if(s == null) tv_conns[i].setText("x");
-					   		tv_conns[i].setText(s.isConnected()?"已连接":"断开");
-				   }
-				   tv_conns[3].setText(WorkService.getQueSize()+"");
-				   cout = 0;
-				   Log.e(TAG,"read="+read_cnt);*/
-				   
-			   }
+			 
 			   if(timeout++ > 2)
 			   {
 				   WorkService.readNextWgt(true);
@@ -95,6 +83,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		}
 		
 	};
+	private String unit;
 	
 	
 	@Override
@@ -129,6 +118,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_zero = (AutoBgButton) root.findViewById(R.id.btn_zero);
 		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
 		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
+		tv_unit = (TextView) root.findViewById(R.id.textView2);
 		btn_save.setOnClickListener(this);
 		btn_print.setOnClickListener(this);
 		btn_tare.setOnClickListener(this);
@@ -136,6 +126,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_zero.setOnClickListener(this);
 		btn_swtich.setOnClickListener(this);
 		btn_preset.setOnClickListener(this);
+		unit = WorkService.getUnit();
+		tv_unit.setText(unit);
 	}
 	private void initRes()
 	{
@@ -264,6 +256,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	static class MHandler extends Handler {
 
 		WeakReference<OneWeightFragment> mActivity;
+		
 
 		MHandler(OneWeightFragment activity) {
 			mActivity = new WeakReference<OneWeightFragment>(activity);
@@ -281,7 +274,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					//int weight = msg.arg1;
 					Scaler d = (Scaler) msg.obj;
 					int totalweight = WorkService.getNetWeight();
-					theActivity.tv_weight.setText(String.valueOf(totalweight)+"  kg ");
+					theActivity.tv_weight.setText(String.valueOf(totalweight));
 					theActivity.timeout = 0;
 					if(d!=null)d.dump_info();
 					WorkService.readNextWgt(true);
