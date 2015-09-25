@@ -1,6 +1,7 @@
 package com.blescaler.ui;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,8 @@ public class BleApplication extends Application {
 		public void onServiceDisconnected(ComponentName classname) {
 			mService = null;
 		}
+		
+		
 	};
 	
 
@@ -66,7 +69,10 @@ public class BleApplication extends Application {
 		
 		
 	}
-	
+	public void quit()
+	{
+		mService.unbindService(mServiceConnection);
+	}
 	public IBle getIBle() {
 		return mBle;
 	}

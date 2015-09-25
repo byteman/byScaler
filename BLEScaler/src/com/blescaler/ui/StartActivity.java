@@ -72,7 +72,12 @@ public class StartActivity extends Activity {
 				{
 					Intent intent ;
 
-						
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}	
 					intent = new Intent(theActivity,
 								MainActivity.class);
 				

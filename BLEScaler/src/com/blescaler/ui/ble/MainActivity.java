@@ -4,6 +4,7 @@ import com.blescaler.ui.ble.BaseActivity;
 import com.blescaler.ui.ble.FlourWeightFragment;
 import com.blescaler.ui.ble.OneWeightFragment;
 import com.blescaler.ui.ble.WeightCountFragment;
+import com.blescaler.ui.BleApplication;
 import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.PairedScalerActivity;
@@ -71,7 +72,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 
 			@Override
 			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-				Log.e("1111", "onFling" + (e1.getX() - e2.getX()));
+				
 				if (e1.getX() - e2.getX() < -20) {
 
 					mDrawerLayout.openDrawer(Gravity.LEFT);
@@ -291,7 +292,9 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
             } else {
             	WorkService.requestDisConnectAll();
                 moveTaskToBack(false);
+                
                 finish();
+                System.exit(0);
 
             }
             return true;

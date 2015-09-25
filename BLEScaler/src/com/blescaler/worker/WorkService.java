@@ -902,6 +902,19 @@ public class WorkService extends Service {
 		strUnit = unit;
 		return true;
 	}
+	private class CommandReceiver extends BroadcastReceiver{
+
+		  @Override
+		  public void onReceive(Context context, Intent intent) {
+		   int cmd=intent.getIntExtra("cmd", -1);
+		   if(cmd==1){//如果等于0
+		 
+		     stopSelf();//停止服务
+		    
+		   }
+		  }
+		  
+	}
 
 }
 
