@@ -15,6 +15,7 @@ import com.blescaler.worker.Scaler;
 import com.blescaler.worker.WorkService;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -60,6 +61,15 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 					   {
 					   		tv_conns[i].setText(s.isConnected()?"已连接":"断开");
 					   		tv_standstill[i].setText(s.isStandstill()?"稳定":"不稳定");
+					   		if(s.isConnected())
+					   		{
+					   			tv_weight[i].setTextColor(Color.rgb(0xFF, 0x00, 0x00));
+					   			
+					   		}
+					   		else
+					   		{
+					   			tv_weight[i].setTextColor(Color.rgb(0x80, 0x80, 0x80));
+					   		}
 					   }
 				   }
 				   //tv_conns[3].setText(WorkService.getQueSize()+"");

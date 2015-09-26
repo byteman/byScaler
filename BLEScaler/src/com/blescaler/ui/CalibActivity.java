@@ -27,7 +27,7 @@ public class CalibActivity extends Activity {
 	
 	private final String TAG = "CalibActivity";
 	private TextView m_tvLoad,m_tvZero,m_tvK;
-	private Button m_btCalibZero, m_btCalibWgt;
+	private Button m_btCalibZero, m_btCalibWgt,m_btQuit=null;
 	private EditText m_etWgt;
 	private static Handler mHandler = null;
 
@@ -56,6 +56,9 @@ public class CalibActivity extends Activity {
 				if(s == null) return;
 				int nov   = s.para.getNov();
 				WorkService.requestCalibK(mDeviceAddress, wgt, nov);
+			}else if(v.getId() == R.id.btn_save)
+			{
+				finish();
 			}
 
 		}
@@ -77,27 +80,29 @@ public class CalibActivity extends Activity {
 	
 	private void init() {
 		// TODO Auto-generated method stub
-		mActionBar = getActionBar();
+		//mActionBar = getActionBar();
 		// 设置是否显示应用程序的图标
-		mActionBar.setDisplayShowHomeEnabled(true);
+		//mActionBar.setDisplayShowHomeEnabled(true);
 		// 将应用程序图标设置为可点击的按钮
-		mActionBar.setHomeButtonEnabled(true);
+		//mActionBar.setHomeButtonEnabled(true);
 		// 将应用程序图标设置为可点击的按钮,并且在图标上添加向左的箭头
 		// 该句代码起到了决定性作用
-		mActionBar.setDisplayHomeAsUpEnabled(true);
+		//mActionBar.setDisplayHomeAsUpEnabled(true);
 		m_tvWgt = (TextView) findViewById(R.id.tvWgt);
 		m_btCalibZero = (Button) findViewById(R.id.btCalbZero);
 		m_btCalibWgt = (Button) findViewById(R.id.btCalbWgt);
-		
+		m_btQuit= (Button) findViewById(R.id.btn_save);
 		m_etWgt = (EditText) findViewById(R.id.etWgt);
 		m_tvZero = (TextView) findViewById(R.id.tvZeros);
 		m_tvLoad = (TextView) findViewById(R.id.tvLoad);
 		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
+		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
+		
 		final View.OnClickListener pClickListener = new ButtonListener();
 
 		m_btCalibZero.setOnClickListener(pClickListener);
 		m_btCalibWgt.setOnClickListener(pClickListener);
-
+		m_btQuit.setOnClickListener(pClickListener);
 		mDeviceAddress = getIntent().getStringExtra("address");
 		
 		//String characteristic = getIntent().getStringExtra("characteristic");

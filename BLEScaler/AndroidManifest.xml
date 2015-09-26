@@ -111,31 +111,31 @@ limitations under the License.
         <activity
             android:name="com.blescaler.ui.ble.MainActivity"
             android:label="@string/calibwgt" 
-            android:screenOrientation="landscape">
+            android:screenOrientation="sensor">
             
         </activity>
         
         <activity
             android:name="com.blescaler.ui.ble.FlourWeightFragment"
             android:label="@string/calibwgt"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="sensor" >
         </activity>
       
         <activity
             android:name="com.blescaler.ui.ble.OneWeightFragment"
-            android:screenOrientation="portrait" 
+            android:screenOrientation="sensor" 
             android:label="@string/calibwgt"
             >
         </activity>
          <activity
             android:name="com.blescaler.ui.ble.WeightCountFragment"
             android:label="@string/calibwgt"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="sensor" >
         </activity>
           <activity
             android:name="com.blescaler.ui.ble.SettingActivity"
             android:label="@string/calibwgt"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="sensor" >
         </activity>
          
         

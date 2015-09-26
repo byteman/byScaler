@@ -66,7 +66,7 @@ public class SysParamActivity extends Activity implements OnClickListener {
 		btn_save.setOnClickListener(this);
 		
 		ed_unit.setText(WorkService.getUnit());
-		CrashReport.testJavaCrash();
+	
 	
 	}
 

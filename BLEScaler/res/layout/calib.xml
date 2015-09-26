@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-     android:background="@color/lavenderblush"
+      android:background="@color/weight_bg"
     android:layout_height="match_parent" >
 
     <LinearLayout
@@ -61,6 +61,7 @@
 
         <Button
             android:id="@+id/btCalbZero"
+            style="@style/bybutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/calibzero" />
@@ -87,6 +88,7 @@
 
         <Button
             android:id="@+id/btCalbWgt"
+            style="@style/bybutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/calibwgt" />
@@ -137,6 +139,7 @@
 
         <Button
             android:id="@id/btn_read"
+            style="@style/bybutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -144,10 +147,11 @@
 
         <Button
             android:id="@id/btn_save"
+            style="@style/bybutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="返回" />
     </LinearLayout>
 
 </RelativeLayout>

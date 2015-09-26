@@ -8,10 +8,14 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +47,27 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private WeightDao wDao;
 	
 	private int timeout=0;
+	private int cont=0;
 	private boolean pause = false,disconnect=false;
 	
 	private static Handler mHandler = null;
 	protected static final String TAG = "weight_activity";
+	private void updateState()
+	{
+		 if(!WorkService.hasConnectAll())
+		   {
+			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
+		   }
+		   else
+		   {
+			   //87CEEB
+			   tv_weight.setTextColor(Color.rgb(0xFF, 0x00, 0x00));
+			   
+			   
+		   }
+		   if(WorkService.isNetState()) btn_ng.setText("净重");
+		   else btn_ng.setText("毛重");
+	}
 	private Runnable watchdog = new Runnable()
 	{
 		
@@ -74,10 +95,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			   {
 				   WorkService.readNextWgt(true);
 				   timeout = 0;
-				   //timeout_cnt++;
-				  // Log.e(TAG,"timeout="+timeout_cnt);
 			   }
-			   
+			   if(cont++ >= 5)
+			   {
+				   updateState();
+				   cont = 0;
+			   }
 			  
 			   mHandler.postDelayed(this, 200);  
 		}
@@ -85,7 +108,16 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	};
 	private String unit;
 	
-	
+	private void ScreenDetect()
+	{
+		int t = this.getResources().getConfiguration().orientation ;
+         
+        if(t == Configuration.ORIENTATION_LANDSCAPE){
+            
+        } else if(t ==Configuration.ORIENTATION_PORTRAIT){
+           
+        }
+	}
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
@@ -106,6 +138,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 			//WorkService.connectAll();
 		}
+		updateState();
 		pause = false;
 	}
 	private void initUI()
