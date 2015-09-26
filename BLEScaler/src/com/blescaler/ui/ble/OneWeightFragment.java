@@ -52,8 +52,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	
 	private static Handler mHandler = null;
 	protected static final String TAG = "weight_activity";
+	private static String unit="g";
 	private void updateState()
 	{
+		unit = WorkService.getUnit();
 		 if(!WorkService.hasConnectAll())
 		   {
 			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
@@ -106,7 +108,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		}
 		
 	};
-	private String unit;
+	
 	
 	private void ScreenDetect()
 	{
@@ -139,7 +141,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			//WorkService.connectAll();
 		}
 		updateState();
+		tv_unit.setText(unit);
 		pause = false;
+		if(!WorkService.hasConnectPrinter())
+		{
+			WorkService.connectPrinter(null);
+		}
 	}
 	private void initUI()
 	{
@@ -266,7 +273,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 		if(!WorkService.hasConnectPrinter())
 		{
-			Toast.makeText(this.getActivity(), "请先连接打印机", Toast.LENGTH_SHORT).show();
+			WorkService.connectPrinter(null);
+			Toast.makeText(this.getActivity(), "正在连接打印机，请等待", Toast.LENGTH_SHORT).show();
 			
 			return false;		
 		}
@@ -326,14 +334,18 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				case Global.MSG_WORKTHREAD_SEND_CONNECTBTRESULT:
 				{
 					int result = msg.arg1;
-					Toast.makeText(
-							theActivity.getActivity(),
-							(result == 1) ? Global.toast_success
-									: Global.toast_fail, Toast.LENGTH_SHORT).show();
+				
+					if(result == 1)
+					{
+						String addr = (String)(msg.obj);
+						WorkService.setPrinterAddress(theActivity.getActivity(),addr);
+						theActivity.printWeight();
+					}
+					else
+					{
+						Utils.Msgbox(theActivity.getActivity(), "连接打印机失败");
+					}
 					
-					
-					String addr = (String)(msg.obj);
-					WorkService.setPrinterAddress(theActivity.getActivity(),addr);
 					break;
 					
 				}

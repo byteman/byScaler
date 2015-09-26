@@ -695,6 +695,32 @@ public class WorkService extends Service {
 			 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
 			 {
 				 Scaler dev = scalers2.get(i);
+				 if(dev!=null && dev.isConnected()!=true)
+				 {
+					 WorkService.requestConnect(dev.getAddress());
+					 need_connect = true;
+				 }
+				
+			 }
+								
+		
+		}
+		return !need_connect;
+	}
+	public static boolean connectNext()
+	{
+		boolean need_connect = false;
+		if(WorkService.hasConnectAll()) return true;
+		if(WorkService.scalers.size() < max_count)
+		{
+			return false;
+		}
+		for(int i = 0 ; i < max_count; i++)
+		{
+			
+			 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
+			 {
+				 Scaler dev = scalers2.get(i);
 				 if(dev!=null)
 				 {
 					 WorkService.requestConnect(dev.getAddress());

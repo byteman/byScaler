@@ -39,6 +39,45 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 	private TextView[] tv_standstill = {null,null,null,null}; 
 	private TextView[] tv_name = {null,null,null,null}; 
 	private static Map<String,TextView> scalers = new HashMap<String,TextView>();
+	private void connect(int index)
+	{
+		if(index >= WorkService.getScalerCount()) return;
+		String addr = WorkService.getDeviceAddress(this.getActivity(), index);
+		if(false == WorkService.hasConnected(addr))
+			WorkService.requestConnect(addr);
+	}
+	private View.OnClickListener listen1 = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			// TODO Auto-generated method stub
+			connect(0);
+		}
+	};
+private View.OnClickListener listen2 = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			// TODO Auto-generated method stub
+			connect(1);
+		}
+	};
+private View.OnClickListener listen3 = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			// TODO Auto-generated method stub
+			connect(2);
+		}
+	};
+private View.OnClickListener listen4 = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			// TODO Auto-generated method stub
+			connect(3);
+		}
+	};
 	private Runnable watchdog = new Runnable()
 	{
 		
@@ -82,6 +121,8 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 		}
 		
 	};
+
+	private static String unit="g";
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -91,7 +132,7 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 	}
 	@Override
 	public void onClick(View v) {
-
+		
 	}
 	public static Fragment newFragment() {
 		FlourWeightFragment f = new FlourWeightFragment();
@@ -117,6 +158,7 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
+		unit = WorkService.getUnit();
 		mHandler.postDelayed(watchdog, 200);
 		
 	}
@@ -126,6 +168,12 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 		tv_weight[1] = (TextView) root.findViewById(R.id.weight2_ll).findViewById(R.id.textView1);
 		tv_weight[2] = (TextView) root.findViewById(R.id.weight3_ll).findViewById(R.id.textView1);
 		tv_weight[3] = (TextView) root.findViewById(R.id.weight4_ll).findViewById(R.id.textView1);
+		
+		tv_weight[0].setOnClickListener(listen1);
+		tv_weight[1].setOnClickListener(listen2);
+		tv_weight[2].setOnClickListener(listen3);
+		tv_weight[3].setOnClickListener(listen4);
+		
 		
 		tv_conns[0] = (TextView) root.findViewById(R.id.weight1_ll).findViewById(R.id.textView5);
 		tv_conns[1] = (TextView) root.findViewById(R.id.weight2_ll).findViewById(R.id.textView5);
@@ -184,7 +232,7 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 					TextView v = scalers.get(d.getAddress());
 					if(v != null)
 					{
-						v.setText(d.getWeight()+" kg");
+						v.setText(d.getWeight()+" " + unit);
 					}
 					theActivity.timeout = 0;
 					
