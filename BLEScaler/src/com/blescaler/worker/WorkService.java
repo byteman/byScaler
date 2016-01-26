@@ -193,7 +193,7 @@ public class WorkService extends Service {
 					return;
 				}
 				msg.what = code;
-				msg.arg1 = d.getWeight();
+				//msg.arg1 = d.getWeight();
 				mHandler.sendMessage(msg);
 				
 		}		

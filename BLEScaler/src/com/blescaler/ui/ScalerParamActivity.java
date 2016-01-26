@@ -175,6 +175,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					Scaler scaler = (Scaler) msg.obj;
 					if(scaler==null)return;
 					theActivity.showParam(scaler.para);
+					Utils.Msgbox(theActivity, "读取成功");
 					break;
 				}
 				case Global.MSG_SCALER_PAR_SET_RESULT:
