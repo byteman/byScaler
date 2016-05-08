@@ -146,7 +146,11 @@ public class Scaler {
 		this.rx_cnt++;
 		Log.e("scaler",address+" wait="+waitTime);
 		waitTime = System.currentTimeMillis();
-		this.weight = weight;
+		if(Math.abs(weight-this.weight)< 1000)
+		{
+			this.weight = weight;
+		}
+		
 	}
 	private void parseState(byte st)
 	{
