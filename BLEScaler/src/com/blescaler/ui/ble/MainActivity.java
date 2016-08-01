@@ -72,7 +72,8 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 
 			@Override
 			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-				
+				if(e1==null) return false;
+				if(e2==null) return false;
 				if (e1.getX() - e2.getX() < -20) {
 
 					mDrawerLayout.openDrawer(Gravity.LEFT);

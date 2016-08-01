@@ -184,7 +184,11 @@ public class CalibActivity extends Activity {
 					{
 						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
 					}
-					else theActivity.m_tvZero.setText(String.valueOf(s.getZeroValue()));
+					else 
+					{
+						theActivity.m_tvZero.setText(String.valueOf(s.getZeroValue()));
+						Toast.makeText(theActivity, "标定成功", Toast.LENGTH_SHORT).show();
+					}
 					break;
 				}
 				case Global.MSG_SCALER_K_CALIB_RESULT:
@@ -194,7 +198,11 @@ public class CalibActivity extends Activity {
 					{
 						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
 					}
-					else theActivity.m_tvLoad.setText(String.valueOf(s.getLoadValue()));
+					else 
+					{
+						theActivity.m_tvLoad.setText(String.valueOf(s.getLoadValue()));
+						Toast.makeText(theActivity, "标定成功", Toast.LENGTH_SHORT).show();
+					}
 					break;
 				}
 			}

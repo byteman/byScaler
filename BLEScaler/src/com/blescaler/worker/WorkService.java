@@ -518,7 +518,11 @@ public class WorkService extends Service {
 		Scaler s = scalers.get(address);
 		if(s==null) return false;
 		if(nov==0)nov = 1000000;
-		int w = (calibWet*1000000)/nov;
+		double tmp = (double)calibWet;
+		double nov_full = 1000000;
+		double nov_float = nov;
+		double out = tmp * (nov_full/nov_float);
+		int w = (int)out;
 		
 		String cmd = "CLK:" +w + ";";
 		

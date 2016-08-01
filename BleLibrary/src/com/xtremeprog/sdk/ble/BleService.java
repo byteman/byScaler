@@ -258,13 +258,17 @@ public class BleService extends Service {
 							bleStatusAbnormal("-processrequest type "
 									+ mCurrentRequest.type + " address "
 									+ mCurrentRequest.address + " [timeout]");
-							if (mBle != null) {
+							if (mBle != null && mCurrentRequest != null) {
 								// 超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
 								// 这两句不能换位置，否则会出现空指针.
 								Log.e(MyTag, "timeout disconnect "
 										+ mCurrentRequest.address);
-								mBle.disconnect(mCurrentRequest.address);
-								bleGattDisConnected(mCurrentRequest.address);
+								if(mCurrentRequest.address!=null)
+								{
+									mBle.disconnect(mCurrentRequest.address);
+									bleGattDisConnected(mCurrentRequest.address);
+								}
+								
 							}
 							mElapsed = 0;
 							_thread.processNext();
@@ -590,17 +594,17 @@ public class BleService extends Service {
 		}
 	}
 
-	private void processNextRequest() {
+	private synchronized void processNextRequest() {
 		if (mCurrentRequest != null) {
 			return;
 		}
 
-		synchronized (mRequestQueue) {
-			if (mRequestQueue.isEmpty()) {
-				return;
-			}
-			mCurrentRequest = mRequestQueue.remove();
+		 
+		if (mRequestQueue.isEmpty()) {
+			return;
 		}
+		mCurrentRequest = mRequestQueue.remove();
+		startTimeoutThread();
 		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
 				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
 		boolean ret = false;
@@ -632,16 +636,17 @@ public class BleService extends Service {
 		}
 
 		if (ret) {
-			startTimeoutThread();
+			//startTimeoutThread();
 		} else {
+			clearTimeoutThread();
 			Log.d(TAG, "-processrequest type " + mCurrentRequest.type
 					+ " address " + mCurrentRequest.address + " [fail start]");
 			bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
 					FailReason.START_FAILED);
 			if (mBle != null) {
 				//超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
-				bleGattDisConnected(mCurrentRequest.address);
-				mBle.disconnect(mCurrentRequest.address);
+				//bleGattDisConnected(mCurrentRequest.address);
+				//mBle.disconnect(mCurrentRequest.address);
 			}
 			/*new Thread(new Runnable() {
 				@Override

@@ -146,7 +146,7 @@ public class Scaler {
 		this.rx_cnt++;
 		Log.e("scaler",address+" wait="+waitTime);
 		waitTime = System.currentTimeMillis();
-		if(Math.abs(weight-this.weight)< 1000)
+		//if(Math.abs(weight-this.weight)< 1000)
 		{
 			this.weight = weight;
 		}
@@ -178,7 +178,7 @@ public class Scaler {
 				setWeight(Utils.bytesToWeight(w));
 				
 				msgType = Global.MSG_BLE_WGTRESULT;
-				msg.arg1 = weightVlaue;
+				msg.arg1 = weight;
 				
 			}
 
