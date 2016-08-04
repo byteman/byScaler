@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 
 
 import com.blescaler.ui.R;
+import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
@@ -11,6 +12,7 @@ import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +43,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
+		WorkService.requestReadPar(address);
 	}
 
 	/* (non-Javadoc)
@@ -139,7 +142,9 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			WorkService.requestWriteParamValue(address, sp);
 			break;
 		case R.id.btn_eeprom:
-			WorkService.requestSaveParam(address);
+			
+			finish();
+			//WorkService.requestSaveParam(address);
 			break;
 		default:
 			break;

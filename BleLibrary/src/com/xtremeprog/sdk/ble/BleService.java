@@ -145,10 +145,10 @@ public class BleService extends Service {
 	private IBle mBle;
 	private Queue<BleRequest> mRequestQueue = new LinkedList<BleRequest>();
 	private BleRequest mCurrentRequest = null;
-	private static final int REQUEST_TIMEOUT = 30 ; // total timeout =
+	//private static final int REQUEST_TIMEOUT = 30 ; // total timeout =
 														// REQUEST_TIMEOUT *
 														// 100ms
-	
+	private int REQUEST_TIMEOUT = 30;
 	//private Thread mRequestTimeout;
 	
 			
@@ -187,13 +187,13 @@ public class BleService extends Service {
 						if (mBle != null) {
 								// 超时断开连接的时候也要发送广播，否则应用无法监测到连接断开.
 								// 这两句不能换位置，否则会出现空指针.
-									mBle.disconnect(mCurrentRequest.address);
+									//mBle.disconnect(mCurrentRequest.address);
 								}
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								mCurrentRequest = null;
-								processNextRequest();
+								
+								processNextRequest(0);
 							}
 						}, "th-ble").start();
 						break;
@@ -448,8 +448,8 @@ public class BleService extends Service {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					mCurrentRequest = null;
-					processNextRequest();
+					
+					processNextRequest(0);
 				}
 			}, "th-ble").start();
 		
@@ -496,11 +496,12 @@ public class BleService extends Service {
 	protected void addBleRequest(BleRequest request) {
 		synchronized (mRequestQueue) {
 			mRequestQueue.add(request);
-			processNextRequest();
+			processNextRequest(1);
 		}
 	}
 
-	private synchronized void processNextRequest() {
+	private synchronized void processNextRequest(int type) {
+		if(type == 0)mCurrentRequest = null;
 		if (mCurrentRequest != null) {
 			return;
 		}
@@ -512,7 +513,10 @@ public class BleService extends Service {
 		mCurrentRequest = mRequestQueue.remove();
 		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
 				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
-		startTimeoutThread();
+		if(mCurrentRequest.type == RequestType.WRITE_CHARACTERISTIC)
+			startTimeoutThread(30);
+		else 
+			startTimeoutThread(60);
 		boolean ret = false;
 		switch (mCurrentRequest.type) {
 		case CONNECT_GATT:
@@ -551,16 +555,17 @@ public class BleService extends Service {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					mCurrentRequest = null;
-					//mCurrentRequest = null;
-					processNextRequest();
+					
+					processNextRequest(0);
 				}
 			}, "th-ble").start();
 		}
 	}
 
-	private void startTimeoutThread() {
+	private void startTimeoutThread(int timeout) {
+		
 		mCheckTimeout = true;
+		REQUEST_TIMEOUT = timeout;
 		mRequestTimeout = new Thread(mTimeoutRunnable);
 		mRequestTimeout.start();
 	}
@@ -569,7 +574,7 @@ public class BleService extends Service {
 		return mCurrentRequest;
 	}
 
-	protected void setCurrentRequest(BleRequest mCurrentRequest) {
+	protected synchronized void  setCurrentRequest(BleRequest mCurrentRequest) {
 		this.mCurrentRequest = mCurrentRequest;
 	}
 

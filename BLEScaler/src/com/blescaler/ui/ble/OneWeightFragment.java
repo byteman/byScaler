@@ -352,7 +352,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				case Global.MSG_BLE_FAILERESULT:
 				{
 
-					Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
+					Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1) +"  " + WorkService.getFailType(msg.arg2), Toast.LENGTH_SHORT).show();
 					break;
 				}
 				

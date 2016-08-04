@@ -47,6 +47,17 @@ public class PairedScalerActivity extends Activity {
 		myact = getIntent().getStringExtra("act");
 		mLeDeviceListAdapter = new LeDeviceListAdapter();
 		lv_devs = (ListView) findViewById(R.id.lv_scan);
+		findViewById(R.id.btn_return).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getId() == R.id.btn_return)
+				{
+					finish();
+				}
+			}
+		});
 		lv_devs.setAdapter(mLeDeviceListAdapter);
 		lv_devs.setOnItemClickListener(new OnItemClickListener() {
 

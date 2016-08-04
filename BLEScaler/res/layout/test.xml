@@ -190,7 +190,7 @@
         </Button>
          <Button
             style="@style/bybutton"
-            android:text="@string/save"
+            android:text="@string/ret"
             android:id="@+id/btn_eeprom"
              android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

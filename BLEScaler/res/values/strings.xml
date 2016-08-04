@@ -33,6 +33,7 @@
 	<string name="calibzero">标定零点</string>
 	<string name="calibwgt">标定重量</string>
 	<string name="save">保存</string>
+	<string name="ret">返回</string>
 	<string name="connprt">连接打印机</string>
 	<string name="connoldprt">配对打印机</string>
 	<string name="cancle">取消</string>

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blescaler.ui.R;
+import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.WorkService;
@@ -31,7 +32,7 @@ public class CalibActivity extends Activity {
 	private EditText m_etWgt;
 	private static Handler mHandler = null;
 
-
+	private boolean m_readpara = false;
 	private ActionBar mActionBar;
 	private TextView m_tvWgt;
 	private Timer pTimer;
@@ -104,7 +105,7 @@ public class CalibActivity extends Activity {
 		m_btCalibWgt.setOnClickListener(pClickListener);
 		m_btQuit.setOnClickListener(pClickListener);
 		mDeviceAddress = getIntent().getStringExtra("address");
-		
+		m_readpara = false;
 		//String characteristic = getIntent().getStringExtra("characteristic");
 	
 		mHandler = new MHandler(this);
@@ -115,6 +116,10 @@ public class CalibActivity extends Activity {
 			    // TODO Auto-generated method stub  
 			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
 				   WorkService.requestReadWgt(mDeviceAddress);
+				   if(!m_readpara)
+				   {
+					   WorkService.requestReadPar(mDeviceAddress);
+				   }
 				   mHandler.postDelayed(this, 1000);  
 			   }   
 		};  
@@ -142,6 +147,7 @@ public class CalibActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
+		WorkService.requestReadPar(mDeviceAddress);
 		Log.e(TAG, "OnResume");
 		
 	}
@@ -174,6 +180,14 @@ public class CalibActivity extends Activity {
 					//BluetoothDevice device = (BluetoothDevice) msg.obj;
 					int weight = msg.arg1;
 					theActivity.m_tvWgt.setText(String.valueOf(weight));
+					break;
+				}
+				case Global.MSG_SCALER_PAR_GET_RESULT:
+				{
+					Scaler scaler = (Scaler) msg.obj;
+					if(scaler==null)return;
+					theActivity.m_readpara = true;	
+					Toast.makeText(theActivity, "读取参数成功...", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				case Global.MSG_SCALER_ZERO_CALIB_RESULT:

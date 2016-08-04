@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Formatter.BigDecimalLayoutForm;
 
 import android.R.bool;
 import android.app.Service;
@@ -88,15 +89,17 @@ public class WorkService extends Service {
 				
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
 				//蓝牙断开.
+				
 				Bundle extras = intent.getExtras();
 				if(extras == null) return;
 								
 				String addr = extras.getString(BleService.EXTRA_ADDR);
-
+				Toast.makeText(getApplicationContext(), addr+"收到断开...",Toast.LENGTH_SHORT).show();	
 						
 				Scaler s = scalers.get(addr);
 				if(s != null)
 				{
+					
 					s.setConnected(false,null);
 					Message msg = mHandler.obtainMessage(Global.MSG_BLE_DISCONNECTRESULT);
 					msg.obj = addr;
@@ -148,14 +151,18 @@ public class WorkService extends Service {
 					Scaler s = scalers.get(address);
 					if(s != null)
 					{
+						Log.e("Scaler", address + "connect ok");
 						s.setConnected(true,chars);
 					}
 					//启动数据接收通知.
 					if(!mBle.requestCharacteristicNotification(address, chars))
 					{
-						Toast.makeText(getApplicationContext(), "通知失败!",Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), "服务发现成功，请求启用通知失败!",Toast.LENGTH_SHORT).show();
 					}
-					
+					else
+					{
+						Toast.makeText(getApplicationContext(), "服务发现成功",Toast.LENGTH_SHORT).show();
+					}
 				}
 				
 				
@@ -204,42 +211,59 @@ public class WorkService extends Service {
 				
 				String address 	 = b.getString(BleService.EXTRA_ADDR);
 				RequestType type = (RequestType) b.getSerializable(BleService.EXTRA_REQUEST);
-				//FailReason  reason =  (FailReason) b.getSerializable(BleService.EXTRA_REASON);
+				int  reason =  b.getInt(BleService.EXTRA_REASON);
 			
-				if(type == RequestType.CHARACTERISTIC_NOTIFICATION)
-				{
-					Scaler s = scalers.get(address);
-					if(s == null)
-					{
-						return;
-					}
-					BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
-					if(bgs == null)
-					{
-						Log.e("service",address+"lost");
-						return;
-					}
-					
-					BleGattCharacteristic chars = bgs.getCharacteristic(
-							UUID.fromString(Utils.UUID_DATA));
-					if(chars==null) return;
-					//启动数据接收通知.
-					if(!mBle.requestCharacteristicNotification(address,chars))
-					{
-						Toast.makeText(getApplicationContext(), "通知失败!",Toast.LENGTH_SHORT).show();
-					}
-					
-				}
+//				if(type == RequestType.CHARACTERISTIC_NOTIFICATION)
+//				{
+//					Scaler s = scalers.get(address);
+//					if(s == null)
+//					{
+//						return;
+//					}
+//					BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
+//					if(bgs == null)
+//					{
+//						Log.e("service",address+"lost");
+//						return;
+//					}
+//					
+//					BleGattCharacteristic chars = bgs.getCharacteristic(
+//							UUID.fromString(Utils.UUID_DATA));
+//					if(chars==null) return;
+//					//启动数据接收通知.
+//					if(!mBle.requestCharacteristicNotification(address,chars))
+//					{
+//						Toast.makeText(getApplicationContext(), "通知失败!",Toast.LENGTH_SHORT).show();
+//					}
+//					
+//				}
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_FAILERESULT);
 				msg.obj = address;
 				msg.arg1 = type.ordinal();
-				//msg.arg2 = reason.ordinal();
+				msg.arg2 = reason;
 				mHandler.sendMessage(msg);
 				
 			}
 		}
 		
 	};
+	public static String getFailType(int type)
+	{
+		String err = "unkown";
+		if(type == FailReason.RESULT_FAILED.ordinal())
+		{
+			err = "结果失败";
+		}
+		else if(type == FailReason.TIMEOUT.ordinal())
+		{
+			err= "请求超时";
+		}
+		else if(type == FailReason.START_FAILED.ordinal())
+		{
+			err ="请求失败";
+		}
+		return err;
+	}
 	public static String getFailReason(int reason)
 	{
 		String type = "未知原因";
@@ -269,15 +293,15 @@ public class WorkService extends Service {
 		}
 		else if(reason ==  RequestType.READ_DESCRIPTOR.ordinal())
 		{
-			type = "读取特征失败";
+			type = "读取描述符失败";
 		}
 		else if(reason ==  RequestType.READ_RSSI.ordinal())
 		{
-			type = "读取特征失败";
+			type = "读取RSSI失败";
 		}
 		else if(reason ==  RequestType.WRITE_CHARACTERISTIC.ordinal())
 		{
-			type = "读取特征失败";
+			type = "写入特征失败";
 		}
 		else if(reason ==  RequestType.CHARACTERISTIC_STOP_NOTIFICATION.ordinal())
 		{

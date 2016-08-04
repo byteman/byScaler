@@ -55,7 +55,7 @@ public class Scaler {
 	}
 	public void dump_info()
 	{
-		Log.e("weight",address+" rx " + rx_cnt);
+		//Log.e("weight",address+" rx " + rx_cnt);
 	}
 	public void setRx_cnt(int rx_cnt) {
 		this.rx_cnt = rx_cnt;
@@ -144,7 +144,7 @@ public class Scaler {
 		
 		waitTime  = (System.currentTimeMillis() - waitTime);  
 		this.rx_cnt++;
-		Log.e("scaler",address+" wait="+waitTime);
+		//Log.e("scaler",address+" wait="+waitTime);
 		waitTime = System.currentTimeMillis();
 		//if(Math.abs(weight-this.weight)< 1000)
 		{
