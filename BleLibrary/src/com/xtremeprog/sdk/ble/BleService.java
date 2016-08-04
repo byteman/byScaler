@@ -514,9 +514,9 @@ public class BleService extends Service {
 		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
 				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
 		if(mCurrentRequest.type == RequestType.WRITE_CHARACTERISTIC)
-			startTimeoutThread(30);
+			startTimeoutThread(20);
 		else 
-			startTimeoutThread(60);
+			startTimeoutThread(50);
 		boolean ret = false;
 		switch (mCurrentRequest.type) {
 		case CONNECT_GATT:

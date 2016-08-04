@@ -178,8 +178,10 @@ public class CalibActivity extends Activity {
 				case Global.MSG_BLE_WGTRESULT:
 				{
 					//BluetoothDevice device = (BluetoothDevice) msg.obj;
-					int weight = msg.arg1;
-					theActivity.m_tvWgt.setText(String.valueOf(weight));
+					
+					Scaler d = (Scaler) msg.obj;
+					if(d != null)
+					theActivity.m_tvWgt.setText(d.getWeight() + " " + d.para.getUnit());
 					break;
 				}
 				case Global.MSG_SCALER_PAR_GET_RESULT:
