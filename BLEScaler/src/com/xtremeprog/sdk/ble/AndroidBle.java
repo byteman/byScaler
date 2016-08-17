@@ -100,6 +100,13 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	}
 	private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
 		@Override
+		public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+			// TODO Auto-generated method stub
+			super.onReadRemoteRssi(gatt, rssi, status);
+			Log.e(TAG, "rssi " + rssi + " " + status);
+		}
+
+		@Override
 		public void onConnectionStateChange(BluetoothGatt gatt, int status,
 				int newState) {
 			String address = gatt.getDevice().getAddress();
@@ -179,7 +186,19 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 				BluetoothGattDescriptor descriptor, int status) {
 			String address = gatt.getDevice().getAddress();
 			Log.d(TAG, "onDescriptorWrite " + address + " status " + status);
-			RequestType type = mService.getCurrentRequestType();
+			
+			if (status != BluetoothGatt.GATT_SUCCESS) {
+				mService.requestProcessed(address,
+						RequestType.CHARACTERISTIC_NOTIFICATION, false);
+				return;
+			}
+			
+			mService.bleCharacteristicNotification(address, descriptor
+						.getCharacteristic().getUuid().toString(), true,
+						status);
+		
+			
+		/*	RequestType type = mService.getCurrentRequestType();
 			if (type == RequestType.CHARACTERISTIC_NOTIFICATION
 					|| type == RequestType.CHARACTERISTIC_INDICATION
 					|| type == RequestType.CHARACTERISTIC_STOP_NOTIFICATION) {
@@ -201,7 +220,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 							status);
 				}
 				return;
-			}
+			}*/
 		};
 	};
 
