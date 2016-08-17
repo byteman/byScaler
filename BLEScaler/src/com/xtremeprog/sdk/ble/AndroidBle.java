@@ -103,7 +103,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		public void onConnectionStateChange(BluetoothGatt gatt, int status,
 				int newState) {
 			String address = gatt.getDevice().getAddress();
-			Log.d(TAG, "onConnectionStateChange " + address + " status "
+			Log.e(TAG, "onConnectionStateChange " + address + " status "
 					+ status + " newState " + newState);
 			if (status != BluetoothGatt.GATT_SUCCESS) {
 				disconnect(address);
@@ -113,6 +113,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 			}
 
 			if (newState == BluetoothProfile.STATE_CONNECTED) {
+				Log.e(TAG,"gatt connected.. request service");
 				mService.bleGattConnected(gatt.getDevice());
 				mService.addBleRequest(new BleRequest(
 						RequestType.DISCOVER_SERVICE, address));
@@ -126,7 +127,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		@Override
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			String address = gatt.getDevice().getAddress();
-			Log.d(TAG, "onServicesDiscovered " + address + " status " + status);
+			Log.e(TAG, "onServicesDiscovered " + address + " status " + status);
 			if (status != BluetoothGatt.GATT_SUCCESS) {
 				mService.requestProcessed(address,
 						RequestType.DISCOVER_SERVICE, false);
@@ -139,7 +140,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		public void onCharacteristicRead(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic, int status) {
 			String address = gatt.getDevice().getAddress();
-			Log.d(TAG, "onCharacteristicRead " + address + " status " + status);
+			Log.e(TAG, "onCharacteristicRead " + address + " status " + status);
 			if (status != BluetoothGatt.GATT_SUCCESS) {
 				mService.requestProcessed(address,
 						RequestType.READ_CHARACTERISTIC, false);
@@ -164,7 +165,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		public void onCharacteristicWrite(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic, int status) {
 			String address = gatt.getDevice().getAddress();
-			Log.d(TAG, "onCharacteristicWrite " + address + " status " + status);
+			Log.e(TAG, "onCharacteristicWrite " + address + " status " + status);
 			if (status != BluetoothGatt.GATT_SUCCESS) {
 				mService.requestProcessed(address,
 						RequestType.WRITE_CHARACTERISTIC, false);
@@ -178,20 +179,20 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 				BluetoothGattDescriptor descriptor, int status) {
 			String address = gatt.getDevice().getAddress();
 			Log.d(TAG, "onDescriptorWrite " + address + " status " + status);
-			BleRequest request = mService.getCurrentRequest();
-			if (request.type == RequestType.CHARACTERISTIC_NOTIFICATION
-					|| request.type == RequestType.CHARACTERISTIC_INDICATION
-					|| request.type == RequestType.CHARACTERISTIC_STOP_NOTIFICATION) {
+			RequestType type = mService.getCurrentRequestType();
+			if (type == RequestType.CHARACTERISTIC_NOTIFICATION
+					|| type == RequestType.CHARACTERISTIC_INDICATION
+					|| type == RequestType.CHARACTERISTIC_STOP_NOTIFICATION) {
 				if (status != BluetoothGatt.GATT_SUCCESS) {
 					mService.requestProcessed(address,
 							RequestType.CHARACTERISTIC_NOTIFICATION, false);
 					return;
 				}
-				if (request.type == RequestType.CHARACTERISTIC_NOTIFICATION) {
+				if (type == RequestType.CHARACTERISTIC_NOTIFICATION) {
 					mService.bleCharacteristicNotification(address, descriptor
 							.getCharacteristic().getUuid().toString(), true,
 							status);
-				} else if (request.type == RequestType.CHARACTERISTIC_INDICATION) {
+				} else if (type == RequestType.CHARACTERISTIC_INDICATION) {
 					mService.bleCharacteristicIndication(address, descriptor
 							.getCharacteristic().getUuid().toString(), status);
 				} else {
@@ -359,15 +360,15 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public boolean characteristicNotification(String address,
-			BleGattCharacteristic characteristic) {
-		BleRequest request = mService.getCurrentRequest();
+			BleGattCharacteristic characteristic,RequestType type) {
+		//BleRequest request = mService.getCurrentRequest();
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null || characteristic == null) {
 			return false;
 		}
 
 		boolean enable = true;
-		if (request.type == RequestType.CHARACTERISTIC_STOP_NOTIFICATION) {
+		if (type == RequestType.CHARACTERISTIC_STOP_NOTIFICATION) {
 			enable = false;
 		}
 		BluetoothGattCharacteristic c = characteristic.getGattCharacteristicA();
@@ -382,9 +383,9 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		}
 
 		byte[] val_set = null;
-		if (request.type == RequestType.CHARACTERISTIC_NOTIFICATION) {
+		if (type == RequestType.CHARACTERISTIC_NOTIFICATION) {
 			val_set = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
-		} else if (request.type == RequestType.CHARACTERISTIC_INDICATION) {
+		} else if (type == RequestType.CHARACTERISTIC_INDICATION) {
 			val_set = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE;
 		} else {
 			val_set = BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE;
@@ -429,11 +430,12 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	
 		//if (gatt != null && gatt.getServices().size() == 0) {
 		if (gatt != null ) {
+			Log.e("Scaler",address + " gatt has exist!!!,disconnect it");
 			disconnect(address);
-			Log.d("blelib",address + " gatt has exist!!!");
+			
 			//return false;
 		}
-
+		Log.e("Scaler",address + "request connect");
 		mService.addBleRequest(new BleRequest(RequestType.CONNECT_GATT, address));
 		return true;
 	}

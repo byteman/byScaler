@@ -46,6 +46,8 @@
 
 package com.xtremeprog.sdk.ble;
 
+import com.xtremeprog.sdk.ble.BleRequest.RequestType;
+
 public interface IBleRequestHandler {
 
 	public boolean connect(String address);
@@ -64,7 +66,7 @@ public interface IBleRequestHandler {
 	 * @return
 	 */
 	public boolean characteristicNotification(String address,
-			BleGattCharacteristic characteristic);
+			BleGattCharacteristic characteristic,RequestType type);
 
 	/**
 	 * @param address

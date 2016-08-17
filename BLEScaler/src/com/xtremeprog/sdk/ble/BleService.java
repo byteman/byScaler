@@ -51,6 +51,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
@@ -143,13 +148,12 @@ public class BleService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 	private BLESDK mBleSDK;
 	private IBle mBle;
-	private Queue<BleRequest> mRequestQueue = new LinkedList<BleRequest>();
+	private BlockingQueue<BleRequest> mRequestQueue = new ArrayBlockingQueue<BleRequest>(10);
+	private BlockingQueue<Integer> mTimeoutQueue = new ArrayBlockingQueue<Integer>(1);
+	
 	private BleRequest mCurrentRequest = null;
 
 	
-
-	private Object lock = new Object();
-
 	private String mNotificationAddress;
 
 	private Thread workThread = new Thread(new Runnable() {
@@ -157,9 +161,9 @@ public class BleService extends Service {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			synchronized (mRequestQueue) {
-				mRequestQueue.clear();
-			}
+			
+			mRequestQueue.clear();
+			
 			
 			// TODO Auto-generated method stub
 			while(true)
@@ -323,7 +327,7 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 		requestProcessed(address, RequestType.DISCOVER_SERVICE, true);
 	}
-
+	
 	protected void requestProcessed(String address, RequestType requestType,
 			boolean success) {
 		if (mCurrentRequest != null && mCurrentRequest.type == requestType) {
@@ -333,10 +337,9 @@ public class BleService extends Service {
 			if (!success) {
 				bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
 						FailReason.RESULT_FAILED);
+				
 			}
-			synchronized (lock) {
-				lock.notify();
-			}
+			mTimeoutQueue.offer(success?0:1); //提供数据并且唤醒.
 			
 		}
 
@@ -370,28 +373,24 @@ public class BleService extends Service {
 	}
 
 	protected void addBleRequest(BleRequest request) {
-		synchronized (mRequestQueue) {
-			if(mRequestQueue.size() < 4)
-				mRequestQueue.add(request);
-			
-			mRequestQueue.notify();
+
+		if(!mRequestQueue.offer(request))
+		{
+			Log.e(TAG, "addBleRequest full");
 		}
-		synchronized (lock) {
-			lock.notify();
-		}
+		
+		
 	}
 	
-	private void processNextRequest() throws InterruptedException {
-		
-		
-		synchronized(mRequestQueue){
-			if (mRequestQueue.isEmpty()) {
-				mRequestQueue.wait();
-			}
-			mCurrentRequest = mRequestQueue.remove();
+	private void processNextRequest() throws InterruptedException 
+	{
+	
+		BleRequest tmpRequest = mRequestQueue.take();
+	 //如果mRequestQueue没有数据就会阻塞.直到有数据会被唤醒.
+
+		synchronized (this) {
+			mCurrentRequest = tmpRequest;
 		}
-		 
-		
 		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
 				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
 		
@@ -408,7 +407,7 @@ public class BleService extends Service {
 		case CHARACTERISTIC_INDICATION:
 		case CHARACTERISTIC_STOP_NOTIFICATION:
 			ret = ((IBleRequestHandler) mBle).characteristicNotification(
-					mCurrentRequest.address, mCurrentRequest.characteristic);
+					mCurrentRequest.address, mCurrentRequest.characteristic,mCurrentRequest.type);
 			break;
 		case READ_CHARACTERISTIC:
 			ret = ((IBleRequestHandler) mBle).readCharacteristic(
@@ -425,22 +424,31 @@ public class BleService extends Service {
 		}
 
 		if (!ret) {
-			//startTimeoutThread();
-			
-			Log.d(TAG, "-processrequest type " + mCurrentRequest.type
+		
+			Log.e(TAG, "-processrequest type " + mCurrentRequest.type
 					+ " address " + mCurrentRequest.address + " [fail start]");
 			bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
 					FailReason.START_FAILED);
 			
 		}
 		else {
-			Log.e(TAG,"wait start-processrequest type " + mCurrentRequest.type
+			Log.e(TAG,"wait -processrequest type " + mCurrentRequest.type
 					+ " address " + mCurrentRequest.address);
-			synchronized (lock) {
-				lock.wait(3000);
+			mTimeoutQueue.clear();
+			Integer v = mTimeoutQueue.poll(3,TimeUnit.SECONDS);
+			if(v == null)
+			{
+				//timeout
+				Log.e(TAG,"timeout stop -processrequest type " + mCurrentRequest.type
+						+ " address " + mCurrentRequest.address);
 			}
-			Log.e(TAG,"wait stop-processrequest type " + mCurrentRequest.type
-					+ " address " + mCurrentRequest.address);
+			else
+			{
+				Log.e(TAG,"stop -processrequest type " + mCurrentRequest.type
+						+ " address " + mCurrentRequest.address + " "+v);
+			}
+		
+			
 		}
 	}
 
@@ -576,8 +584,13 @@ public class BleService extends Service {
 	protected void setNotificationAddress(String mNotificationAddress) {
 		this.mNotificationAddress = mNotificationAddress;
 	}
-	public BleRequest getCurrentRequest()
+	protected RequestType getCurrentRequestType()
 	{
-		return mCurrentRequest;
+		synchronized (this) {
+			if(mCurrentRequest == null) 
+				return RequestType.ERROR_TYPE;
+			return mCurrentRequest.type;
+		}
+		
 	}
 }
