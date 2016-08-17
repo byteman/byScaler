@@ -43,7 +43,7 @@ public class FlourWeightFragment extends BaseFragment implements View.OnClickLis
 	{
 		if(index >= WorkService.getScalerCount()) return;
 		String addr = WorkService.getDeviceAddress(this.getActivity(), index);
-		if(false == WorkService.hasConnected(addr))
+		//if(false == WorkService.hasConnected(addr))
 			WorkService.requestConnect(addr);
 	}
 	private View.OnClickListener listen1 = new View.OnClickListener() {
@@ -87,7 +87,7 @@ private View.OnClickListener listen4 = new View.OnClickListener() {
 
 			   if(timeout++ > 2)
 			   {
-				   WorkService.readNextWgt(false);
+				  // WorkService.readNextWgt(false);
 				   timeout = 0;
 			   }
 			   if(cout++ > 5)
@@ -242,14 +242,14 @@ private View.OnClickListener listen4 = new View.OnClickListener() {
 				case Global.MSG_BLE_DISCONNECTRESULT:
 				{
 					String addr =(String)msg.obj;
-					Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+					//Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
 					break;
 				}
 		
 				case Global.MSG_BLE_FAILERESULT:
 				{
 
-					Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
+					//Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
 					break;
 				}
 				

@@ -95,12 +95,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			 
 			   if(timeout++ > 2)
 			   {
-				   WorkService.readNextWgt(true);
+				   //WorkService.readNextWgt(true);
 				   timeout = 0;
 			   }
 			   if(cont++ >= 5)
 			   {
 				   updateState();
+				   
 				   cont = 0;
 			   }
 			  
@@ -136,16 +137,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		WorkService.addHandler(mHandler);
 		mHandler.postDelayed(watchdog, 200);
 		//WorkService.connectPrinter(null);
-		if(!WorkService.hasConnectAll())
-		{
-			//WorkService.connectAll();
-		}
+		
 		updateState();
 		tv_unit.setText(unit);
 		pause = false;
 		if(!WorkService.hasConnectPrinter())
 		{
-			WorkService.connectPrinter(null);
+			//WorkService.connectPrinter(null);
 		}
 	}
 	private void initUI()
@@ -324,7 +322,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				case Global.MSG_BLE_DISCONNECTRESULT:
 				{
 					String addr =(String)msg.obj;
-					Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+					//Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
 					
 					//theActivity.tv_conn.setText("已断开");
 					//WorkService.connectAll();
@@ -343,7 +341,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					}
 					else
 					{
-						Utils.Msgbox(theActivity.getActivity(), "连接打印机失败");
+						//Utils.Msgbox(theActivity.getActivity(), "连接打印机失败");
 					}
 					
 					break;
@@ -352,7 +350,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				case Global.MSG_BLE_FAILERESULT:
 				{
 
-					Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1) +"  " + WorkService.getFailType(msg.arg2), Toast.LENGTH_SHORT).show();
+					//Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1) +"  " + WorkService.getFailType(msg.arg2), Toast.LENGTH_SHORT).show();
 					break;
 				}
 				

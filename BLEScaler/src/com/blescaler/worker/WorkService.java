@@ -66,9 +66,37 @@ public class WorkService extends Service {
 	private static int gross= 0; //毛重,从秤上直接读取的重量
 	private static int net  = 0; //净重 = 毛重-皮重-零点重量.
 	private static boolean is_net_state = false; // 是否是净重状态,默认是毛重状态
+	private Object lock = new Object();
 	/////////////////////////////////////////////////
-	
-	
+	private Thread reConnThread = new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while(true)
+			{
+				try {
+					while(hasConnectAll())
+					{
+						synchronized (lock) {
+							lock.wait();
+						}
+					}
+					connectAll();
+					Thread.sleep(6000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	});
+	public void notifyReconnect()
+	{
+		synchronized (lock) {
+			lock.notify();
+		}
+	}
 	//蓝牙秤消息接收器.
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
 
@@ -105,7 +133,7 @@ public class WorkService extends Service {
 					msg.obj = addr;
 					mHandler.sendMessage(msg);	
 				}
-							
+				notifyReconnect();			
 				
 			} 
 
@@ -134,11 +162,11 @@ public class WorkService extends Service {
 				msg.obj = address;
 				mHandler.sendMessage(msg);
 				//获取对方蓝牙模块[数据通讯]特征描述符
-				
+				Log.e("Scaler", "discover_service notify");  
 				BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
 				if(bgs == null)
 				{
-					Log.e("service",address+"lost");
+					Log.e("service",address+"can not find service");
 					return;
 				}
 				
@@ -151,8 +179,8 @@ public class WorkService extends Service {
 					Scaler s = scalers.get(address);
 					if(s != null)
 					{
-						Log.e("Scaler", address + "connect ok");
-						s.setConnected(true,chars);
+						Log.e("Scaler", address + "service discory ok");
+						
 					}
 					//启动数据接收通知.
 					if(!mBle.requestCharacteristicNotification(address, chars))
@@ -161,7 +189,7 @@ public class WorkService extends Service {
 					}
 					else
 					{
-						Toast.makeText(getApplicationContext(), "服务发现成功",Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getApplicationContext(), "服务发现成功",Toast.LENGTH_SHORT).show();
 					}
 				}
 				
@@ -169,10 +197,40 @@ public class WorkService extends Service {
 			}else if (BleService.BLE_CHARACTERISTIC_NOTIFICATION.equals(action)) {
 				//启用通知成功.
 				Bundle extras = intent.getExtras();
+				String address = intent.getExtras().getString(BleService.EXTRA_ADDR);
 				boolean mNotifyStarted = extras.getBoolean(BleService.EXTRA_VALUE);
 				if(mNotifyStarted)
 				{
-					Toast.makeText(getApplicationContext(), "enable notify"+extras.getString(BleService.EXTRA_ADDR), Toast.LENGTH_SHORT).show();
+					
+
+					BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
+					if(bgs == null)
+					{
+						Log.e("service",address+"can not find service");
+						return;
+					}
+					
+					BleGattCharacteristic chars = bgs.getCharacteristic(
+							UUID.fromString(Utils.UUID_DATA));
+					
+					if(chars != null)
+					{
+						
+						Scaler s = scalers.get(address);
+						if(s != null)
+						{
+							Log.e("Scaler", address + "connect ok");
+							s.setConnected(true, chars);
+						}
+						
+					}
+					else
+					{
+						Log.e("Scaler", address + "can not find chars");
+					}
+					
+					
+					//Toast.makeText(getApplicationContext(), "enable notify"+extras.getString(BleService.EXTRA_ADDR), Toast.LENGTH_SHORT).show();
 				}
 			}else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action))
@@ -384,6 +442,7 @@ public class WorkService extends Service {
 		
 		Log.v("DrawerService", "onCreate");
 		myCtx = this;
+		//reConnThread.start();
 	}
 
 	@Override
