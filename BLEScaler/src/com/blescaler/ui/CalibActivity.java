@@ -23,7 +23,7 @@ import com.blescaler.worker.WorkService;
 
 public class CalibActivity extends Activity {
 
-	private String mDeviceAddress;
+	private static String mDeviceAddress;
 	
 	
 	private final String TAG = "CalibActivity";
@@ -180,8 +180,12 @@ public class CalibActivity extends Activity {
 					//BluetoothDevice device = (BluetoothDevice) msg.obj;
 					
 					Scaler d = (Scaler) msg.obj;
+					
 					if(d != null)
-					theActivity.m_tvWgt.setText(d.getWeight() + " " + d.para.getUnit());
+					{
+						if(d.getAddress().equals(mDeviceAddress))
+							theActivity.m_tvWgt.setText(d.getWeight() + " " + d.para.getUnit());
+					}
 					break;
 				}
 				case Global.MSG_SCALER_PAR_GET_RESULT:

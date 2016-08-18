@@ -221,6 +221,10 @@ public class WorkService extends Service {
 						{
 							Log.e("Scaler", address + "connect ok");
 							s.setConnected(true, chars);
+							Message msg = mHandler.obtainMessage(Global.MSG_SCALER_CONNECT_OK);
+							msg.obj = address;
+						
+							mHandler.sendMessage(msg);
 						}
 						
 					}
@@ -796,7 +800,7 @@ public class WorkService extends Service {
 	}
 	public static boolean connectNext()
 	{
-		boolean need_connect = false;
+		
 		if(WorkService.hasConnectAll()) return true;
 		if(WorkService.scalers.size() < max_count)
 		{
@@ -808,17 +812,17 @@ public class WorkService extends Service {
 			 if(scalers2.containsKey(i)) //不包含这个地址才创建新的称台设备.
 			 {
 				 Scaler dev = scalers2.get(i);
-				 if(dev!=null)
+				 if(dev!=null && dev.isConnected()!=true)
 				 {
 					 WorkService.requestConnect(dev.getAddress());
-					 need_connect = true;
+					 return true;
 				 }
 				
 			 }
 								
 		
 		}
-		return !need_connect;
+		return false;
 	}
 	//所有称都已经连接否
 	public static boolean hasConnectAll()

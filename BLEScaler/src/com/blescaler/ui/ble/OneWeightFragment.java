@@ -6,6 +6,8 @@ import java.lang.ref.WeakReference;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -49,7 +51,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private int timeout=0;
 	private int cont=0;
 	private boolean pause = false,disconnect=false;
-	
+	private static final int MSG_TIMEOUT = 0x0001;
+	private static ProgressDialog progressDialog = null;
 	private static Handler mHandler = null;
 	protected static final String TAG = "weight_activity";
 	private static String unit="g";
@@ -77,31 +80,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		public void run() {
 			// TODO Auto-generated method stub
 			 
-			   if(!pause)
-			   {
-				   
-					//WorkService.readAllWgt();
-			   }
-			   else
-			   {
-				   if(disconnect)
-				   {
-					   
-					
-						
-					   
-				   }
-			   }
-			 
-			   if(timeout++ > 2)
-			   {
-				   //WorkService.readNextWgt(true);
-				   timeout = 0;
-			   }
+			
 			   if(cont++ >= 5)
 			   {
 				   updateState();
-				   
+				   WorkService.readNextWgt(true);
 				   cont = 0;
 			   }
 			  
@@ -109,8 +92,19 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		}
 		
 	};
-	
-	
+	private void popConnectProcessBar(Context ctx)
+	{
+		if(WorkService.hasConnectAll()) return;
+		
+	    progressDialog = ProgressDialog.show(ctx, "蓝牙秤", "正在连接,请稍候！");                                
+	    WorkService.connectNext();   
+	  
+        
+        Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
+        
+	    mHandler.sendMessageDelayed(msg, 10000);
+	}
+    
 	private void ScreenDetect()
 	{
 		int t = this.getResources().getConfiguration().orientation ;
@@ -145,6 +139,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 			//WorkService.connectPrinter(null);
 		}
+		popConnectProcessBar(this.getActivity());
 	}
 	private void initUI()
 	{
@@ -226,7 +221,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			}
 			break;
 		case R.id.tv_weight:
-			WorkService.connectAll();
+			popConnectProcessBar(this.getActivity());
 			
 			break;
 		case R.id.btn_zero:
@@ -266,6 +261,29 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		wDao.saveWeight(item);
 
 		item = null;
+	}
+	private void showFailBox()
+	{
+		 new AlertDialog.Builder(this.getActivity()).setTitle("系统提示")//设置对话框标题  
+		  
+	     .setMessage("连接超时，点击重量显示可重新连接！")//设置显示的内容  
+	  
+	     .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮  
+	  
+	          
+	  
+	         @Override  
+	  
+	         public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件  
+	  
+	             // TODO Auto-generated method stub  
+	  
+	            dialog.dismiss();
+	  
+	         }  
+	  
+	     }).show();//在按键响应事件中显示此对话框  
+	  
 	}
 	private boolean printWeight()
 	{
@@ -354,14 +372,30 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					break;
 				}
 				
-				case Global.MSG_BLE_SERVICEDISRESULT:
+				case Global.MSG_SCALER_CONNECT_OK:
 				{
 					if(WorkService.hasConnectAll())
 					{
-						//theActivity.tv_conn.setText("已连接");
+						if(progressDialog!=null && progressDialog.isShowing())
+							progressDialog.dismiss(); //关闭进度条
+						Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
+					}
+					else {
+						
+						WorkService.connectNext(); 
 					}
 						
 					break;
+				}
+				case MSG_TIMEOUT:
+				{
+				
+					if(progressDialog!=null && progressDialog.isShowing())
+					{
+						progressDialog.dismiss(); //关闭进度条
+						theActivity.showFailBox();
+						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
+					}
 				}
 			}
 			

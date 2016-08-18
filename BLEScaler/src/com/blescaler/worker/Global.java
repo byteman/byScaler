@@ -62,6 +62,7 @@ public class Global {
 	public static final int MSG_SCALER_K_CALIB_RESULT=100043;	//标定重量系数
 	public static final int MSG_BLE_NO_BT_ADAPTER=10044; 	//手机不支持蓝牙
 	public static final int MSG_SCALER_SAVE_EEPROM=10045; 	//存储数据到eeprom
+	public static final int MSG_SCALER_CONNECT_OK=10046; 	//存储数据到eeprom
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
 	public static final String BYTESPARA2 = "bytespara2";
