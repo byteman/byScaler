@@ -1,0 +1,32 @@
+08-17 23:48:56.914: E/Scaler(19707): C4:BE:84:22:91:E2request connect
+08-17 23:48:56.923: E/Scaler(19707): C4:BE:84:22:97:37request connect
+08-17 23:48:56.932: E/Scaler(19707): wait -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2
+08-17 23:48:57.089: E/Scaler(19707): onConnectionStateChange C4:BE:84:22:91:E2 status 0 newState 2
+08-17 23:48:57.089: E/Scaler(19707): C4:BE:84:22:91:E2 gatt connected.. request service
+08-17 23:48:57.102: E/Scaler(19707): -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2 [success: true]
+08-17 23:48:57.102: E/Scaler(19707): stop -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2 0
+08-17 23:48:57.104: E/Scaler(19707): wait -processrequest type CONNECT_GATT address C4:BE:84:22:97:37
+08-17 23:48:59.951: E/Scaler(19707): onConnectionStateChange C4:BE:84:22:97:37 status 0 newState 2
+08-17 23:48:59.951: E/Scaler(19707): C4:BE:84:22:97:37 gatt connected.. request service
+08-17 23:48:59.954: E/Scaler(19707): -processrequest type CONNECT_GATT address C4:BE:84:22:97:37 [success: true]
+08-17 23:48:59.954: E/Scaler(19707): stop -processrequest type CONNECT_GATT address C4:BE:84:22:97:37 0
+08-17 23:48:59.956: E/Scaler(19707): wait -processrequest type DISCOVER_SERVICE address C4:BE:84:22:91:E2
+08-17 23:49:00.119: E/Scaler(19707): onServicesDiscovered C4:BE:84:22:91:E2 status 0
+08-17 23:49:00.120: E/Scaler(19707): -processrequest type DISCOVER_SERVICE address C4:BE:84:22:91:E2 [success: true]
+08-17 23:49:00.121: E/Scaler(19707): stop -processrequest type DISCOVER_SERVICE address C4:BE:84:22:91:E2 0
+08-17 23:49:00.121: E/Scaler(19707): discover_service notify
+08-17 23:49:00.122: E/Scaler(19707): C4:BE:84:22:91:E2service discory ok
+08-17 23:49:00.122: E/Scaler(19707): wait -processrequest type DISCOVER_SERVICE address C4:BE:84:22:97:37
+08-17 23:49:01.184: E/Scaler(19707): onServicesDiscovered C4:BE:84:22:97:37 status 0
+08-17 23:49:01.187: E/Scaler(19707): -processrequest type DISCOVER_SERVICE address C4:BE:84:22:97:37 [success: true]
+08-17 23:49:01.187: E/Scaler(19707): stop -processrequest type DISCOVER_SERVICE address C4:BE:84:22:97:37 0
+08-17 23:49:01.190: E/Scaler(19707): discover_service notify
+08-17 23:49:01.190: E/Scaler(19707): C4:BE:84:22:97:37service discory ok
+08-17 23:49:01.198: E/Scaler(19707): wait -processrequest type CHARACTERISTIC_NOTIFICATION address C4:BE:84:22:91:E2
+08-17 23:49:01.259: E/Scaler(19707): -processrequest type CHARACTERISTIC_NOTIFICATION address C4:BE:84:22:91:E2 [success: true]
+08-17 23:49:01.259: E/Scaler(19707): stop -processrequest type CHARACTERISTIC_NOTIFICATION address C4:BE:84:22:91:E2 0
+08-17 23:49:01.260: E/Scaler(19707): C4:BE:84:22:91:E2connect ok
+08-17 23:49:01.263: E/Scaler(19707): wait -processrequest type CHARACTERISTIC_NOTIFICATION address C4:BE:84:22:97:37
+08-17 23:49:01.347: E/Scaler(19707): -processrequest type CHARACTERISTIC_NOTIFICATION address C4:BE:84:22:97:37 [success: true]
+08-17 23:49:01.348: E/Scaler(19707): stop -processrequest type CHARACTERISTIC_NOTIFICATION address C4:BE:84:22:97:37 0
+08-17 23:49:01.348: E/Scaler(19707): C4:BE:84:22:97:37connect ok

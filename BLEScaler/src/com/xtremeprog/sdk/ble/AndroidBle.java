@@ -114,18 +114,18 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 					+ status + " newState " + newState);
 			if (status != BluetoothGatt.GATT_SUCCESS) {
 				disconnect(address);
-				Log.e(TAG, "GATT Failed-------");
+				Log.e(TAG, address +" GATT Failed-------");
 				mService.bleGattDisConnected(address);
 				return;
 			}
 
 			if (newState == BluetoothProfile.STATE_CONNECTED) {
-				Log.e(TAG,"gatt connected.. request service");
+				Log.e(TAG,address +" gatt connected.. request service");
 				mService.bleGattConnected(gatt.getDevice());
 				mService.addBleRequest(new BleRequest(
 						RequestType.DISCOVER_SERVICE, address));
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-				Log.e(TAG, "GATT disconnect-------");
+				Log.e(TAG, address + " GATT disconnect-------");
 				mService.bleGattDisConnected(address);
 				disconnect(address);
 			}
@@ -268,6 +268,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	public boolean connect(String address) {
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		BluetoothGatt gatt = device.connectGatt(mService, true, mGattCallback);
+		
 		if (gatt == null) {
 			mBluetoothGatts.remove(address);
 			return false;
@@ -285,6 +286,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 			
 			BluetoothGatt gatt = mBluetoothGatts.remove(address);
 			if (gatt != null) {
+				
 				gatt.disconnect();
 				gatt.close();
 			}

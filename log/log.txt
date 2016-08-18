@@ -1,0 +1,30 @@
+08-17 23:29:15.630: E/Scaler(19070): C4:BE:84:22:91:E2request connect
+08-17 23:29:15.632: E/Scaler(19070): C4:BE:84:22:97:37request connect
+08-17 23:29:15.655: E/Scaler(19070): wait -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2
+08-17 23:29:15.950: E/Scaler(19070): onConnectionStateChange C4:BE:84:22:91:E2 status 0 newState 2
+08-17 23:29:15.951: E/Scaler(19070): C4:BE:84:22:91:E2 gatt connected.. request service
+08-17 23:29:15.962: E/Scaler(19070): -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2 [success: true]
+08-17 23:29:15.963: E/Scaler(19070): stop -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2 0
+08-17 23:29:15.972: E/Scaler(19070): wait -processrequest type CONNECT_GATT address C4:BE:84:22:97:37
+08-17 23:29:16.162: E/Scaler(19070): onConnectionStateChange C4:BE:84:22:91:E2 status 0 newState 0
+08-17 23:29:16.163: E/Scaler(19070): C4:BE:84:22:91:E2 GATT disconnect-------
+08-17 23:29:16.178: E/Scaler(19070): -processrequest type CONNECT_GATT address C4:BE:84:22:91:E2 [success: false]
+08-17 23:29:16.315: E/Scaler(19070): stop -processrequest type CONNECT_GATT address C4:BE:84:22:97:37 1
+08-17 23:29:16.335: E/Scaler(19070): wait -processrequest type DISCOVER_SERVICE address C4:BE:84:22:91:E2
+08-17 23:29:16.337: W/BluetoothGatt(19070): Unhandled exception in callback
+08-17 23:29:16.337: W/BluetoothGatt(19070): java.lang.NullPointerException: Attempt to invoke virtual method 'void android.bluetooth.BluetoothGattCallback.onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)' on a null object reference
+08-17 23:29:16.337: W/BluetoothGatt(19070): 	at android.bluetooth.BluetoothGatt$1.onClientConnectionState(BluetoothGatt.java:187)
+08-17 23:29:16.337: W/BluetoothGatt(19070): 	at android.bluetooth.IBluetoothGattCallback$Stub.onTransact(IBluetoothGattCallback.java:70)
+08-17 23:29:16.337: W/BluetoothGatt(19070): 	at android.os.Binder.execTransact(Binder.java:454)
+08-17 23:29:23.800: E/Scaler(19070): onConnectionStateChange C4:BE:84:22:97:37 status 0 newState 2
+08-17 23:29:23.800: E/Scaler(19070): C4:BE:84:22:97:37 gatt connected.. request service
+08-17 23:29:24.000: E/Scaler(19070): onConnectionStateChange C4:BE:84:22:97:37 status 0 newState 0
+08-17 23:29:24.014: E/Scaler(19070): C4:BE:84:22:97:37 GATT disconnect-------
+08-17 23:29:24.067: W/BluetoothGatt(19070): Unhandled exception in callback
+08-17 23:29:24.067: W/BluetoothGatt(19070): java.lang.NullPointerException: Attempt to invoke virtual method 'void android.bluetooth.BluetoothGattCallback.onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)' on a null object reference
+08-17 23:29:24.067: W/BluetoothGatt(19070): 	at android.bluetooth.BluetoothGatt$1.onClientConnectionState(BluetoothGatt.java:187)
+08-17 23:29:24.067: W/BluetoothGatt(19070): 	at android.bluetooth.IBluetoothGattCallback$Stub.onTransact(IBluetoothGattCallback.java:70)
+08-17 23:29:24.067: W/BluetoothGatt(19070): 	at android.os.Binder.execTransact(Binder.java:454)
+08-17 23:29:26.337: E/Scaler(19070): timeout stop -processrequest type DISCOVER_SERVICE address C4:BE:84:22:91:E2
+08-17 23:29:26.349: E/Scaler(19070): -processrequest type DISCOVER_SERVICE address C4:BE:84:22:97:37 [fail start]
+08-17 23:29:30.246: E/weight_activity(19070): onStop

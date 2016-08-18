@@ -391,6 +391,7 @@ public class BleService extends Service {
 		synchronized (this) {
 			mCurrentRequest = tmpRequest;
 		}
+	
 		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
 				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
 		
@@ -435,12 +436,13 @@ public class BleService extends Service {
 			Log.e(TAG,"wait -processrequest type " + mCurrentRequest.type
 					+ " address " + mCurrentRequest.address);
 			mTimeoutQueue.clear();
-			Integer v = mTimeoutQueue.poll(3,TimeUnit.SECONDS);
+			Integer v = mTimeoutQueue.poll(10,TimeUnit.SECONDS);
 			if(v == null)
 			{
 				//timeout
 				Log.e(TAG,"timeout stop -processrequest type " + mCurrentRequest.type
 						+ " address " + mCurrentRequest.address);
+				mRequestQueue.clear();
 			}
 			else
 			{

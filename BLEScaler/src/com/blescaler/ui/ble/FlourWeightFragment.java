@@ -87,7 +87,7 @@ private View.OnClickListener listen4 = new View.OnClickListener() {
 
 			   if(timeout++ > 2)
 			   {
-				   WorkService.readNextWgt(false);
+				   //WorkService.readNextWgt(false);
 				   timeout = 0;
 			   }
 			   if(cout++ > 5)
