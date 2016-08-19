@@ -92,29 +92,40 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		}
 		
 	};
+	 private class SureButtonListener implements android.content.DialogInterface.OnClickListener{  
+		  
+	        public void onClick(DialogInterface dialog, int which) {  
+	            //点击“确定按钮”取消对话框  
+	            dialog.cancel();  
+	        }  
+	          
+	    }  
 	private void popConnectProcessBar(Context ctx)
 	{
+		if(WorkService.getScalerCount() == 0)
+		{
+			showFailBox("没有选择要连接的蓝牙秤，请先扫描！");
+			return;
+		}
 		if(WorkService.hasConnectAll()) return;
-		
-	    progressDialog = ProgressDialog.show(ctx, "蓝牙秤", "正在连接,请稍候！");                                
+		if(progressDialog!=null && progressDialog.isShowing())
+		{
+			return;
+		}
+	    progressDialog =ProgressDialog.show(ctx, "蓝牙秤", "正在连接,请稍候！");     
+	    //new ProgressDialog(ctx);
+	    
+	    //progressDialog.setButton("取消", new SureButtonListener());
+	    //progressDialog.show(ctx, "蓝牙秤hhhh", "正在连接,请稍候！");                                
 	    WorkService.connectNext();   
 	  
         
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
         
-	    mHandler.sendMessageDelayed(msg, 10000);
+	    mHandler.sendMessageDelayed(msg, 15000);
 	}
     
-	private void ScreenDetect()
-	{
-		int t = this.getResources().getConfiguration().orientation ;
-         
-        if(t == Configuration.ORIENTATION_LANDSCAPE){
-            
-        } else if(t ==Configuration.ORIENTATION_PORTRAIT){
-           
-        }
-	}
+
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
@@ -262,11 +273,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 		item = null;
 	}
-	private void showFailBox()
+	
+	private void showFailBox(String msg)
 	{
 		 new AlertDialog.Builder(this.getActivity()).setTitle("系统提示")//设置对话框标题  
 		  
-	     .setMessage("连接超时，点击重量显示可重新连接！")//设置显示的内容  
+	     .setMessage(msg)//设置显示的内容  
 	  
 	     .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮  
 	  
@@ -378,7 +390,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					{
 						if(progressDialog!=null && progressDialog.isShowing())
 							progressDialog.dismiss(); //关闭进度条
-						Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
+						//Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
 					}
 					else {
 						
@@ -393,7 +405,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					if(progressDialog!=null && progressDialog.isShowing())
 					{
 						progressDialog.dismiss(); //关闭进度条
-						theActivity.showFailBox();
+						theActivity.showFailBox("连接超时，点击重量显示可重新连接！");
 						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
 					}
 				}

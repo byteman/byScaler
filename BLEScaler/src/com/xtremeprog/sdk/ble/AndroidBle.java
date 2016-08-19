@@ -163,8 +163,8 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic) {
 			String address = gatt.getDevice().getAddress();
-			Log.d(TAG, "onCharacteristicChanged " + address);
-			Log.d(TAG, new String(Hex.encodeHex(characteristic.getValue())));
+			//Log.d(TAG, "onCharacteristicChanged " + address);
+			//Log.d(TAG, new String(Hex.encodeHex(characteristic.getValue())));
 			mService.bleCharacteristicChanged(address, characteristic.getUuid()
 					.toString(), characteristic.getValue());
 		}
@@ -172,7 +172,8 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		public void onCharacteristicWrite(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic, int status) {
 			String address = gatt.getDevice().getAddress();
-			Log.e(TAG, "onCharacteristicWrite " + address + " status " + status);
+			if(status!=0)
+				Log.e(TAG, "onCharacteristicWrite " + address + " status " + status);
 			if (status != BluetoothGatt.GATT_SUCCESS) {
 				mService.requestProcessed(address,
 						RequestType.WRITE_CHARACTERISTIC, false);
@@ -267,7 +268,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	@Override
 	public boolean connect(String address) {
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-		BluetoothGatt gatt = device.connectGatt(mService, true, mGattCallback);
+		BluetoothGatt gatt = device.connectGatt(mService, false, mGattCallback);
 		
 		if (gatt == null) {
 			mBluetoothGatts.remove(address);

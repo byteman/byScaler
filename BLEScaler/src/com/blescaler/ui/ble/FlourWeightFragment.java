@@ -85,9 +85,9 @@ private View.OnClickListener listen4 = new View.OnClickListener() {
 		public void run() {
 			// TODO Auto-generated method stub
 
-			   if(timeout++ > 2)
+			   if(timeout++ > 5)
 			   {
-				   //WorkService.readNextWgt(false);
+				   WorkService.readNextWgt(false);
 				   timeout = 0;
 			   }
 			   if(cout++ > 5)

@@ -184,7 +184,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 				Log.v(TAG, "Connect Result: " + result);
 				theActivity.dialog.cancel();
 				if (1 == result) {
-					PrintTest();
+					//PrintTest();
 					theActivity.finish();
 				}
 				break;

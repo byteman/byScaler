@@ -332,12 +332,12 @@ public class BleService extends Service {
 			boolean success) {
 		if (mCurrentRequest != null && mCurrentRequest.type == requestType) {
 			
-			Log.e(TAG, "-processrequest type " + requestType + " address "
-					+ address + " [success: " + success + "]");
+			
 			if (!success) {
 				bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
 						FailReason.RESULT_FAILED);
-				
+				Log.e(TAG, "-processrequest type " + requestType + " address "
+						+ address + " [success: " + success + "]");
 			}
 			mTimeoutQueue.offer(success?0:1); //提供数据并且唤醒.
 			
@@ -392,8 +392,8 @@ public class BleService extends Service {
 			mCurrentRequest = tmpRequest;
 		}
 	
-		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
-				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
+		//Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
+		//		+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
 		
 		boolean ret = false;
 		switch (mCurrentRequest.type) {
@@ -401,7 +401,7 @@ public class BleService extends Service {
 			ret = ((IBleRequestHandler) mBle).connect(mCurrentRequest.address);
 			break;
 		case DISCOVER_SERVICE:
-			Log.d(TAG, "begin discover_service");
+			Log.e(TAG, "begin discover_service");
 			ret = mBle.discoverServices(mCurrentRequest.address);
 			break;
 		case CHARACTERISTIC_NOTIFICATION:
