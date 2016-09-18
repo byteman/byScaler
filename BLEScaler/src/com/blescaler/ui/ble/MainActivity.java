@@ -38,8 +38,8 @@ import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements OnTouchListener, OnClickListener {
 	private DrawerLayout mDrawerLayout;
-	TextView leftmenu1, leftmenu2, leftmenu3, //
-			leftmenu4, leftmenu5, leftmenu6, leftmenu7, leftmenu8, prevLeftMenu;
+	TextView menu_serach, menu_one_scaler, menu_print, //
+			menu_calib, menu_para, menu_data_report, menu_setting, menu_four_scaler, prevLeftMenu;
 	GestureDetector simpleGestureListener;
 	
 	/*
@@ -123,22 +123,22 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		mDrawerLayout.setClickable(true);
 		mDrawerLayout.setLongClickable(true);
 
-		leftmenu1 = (TextView) findViewById(R.id.leftmenu1);
-		leftmenu2 = (TextView) findViewById(R.id.leftmenu2);
-		leftmenu3 = (TextView) findViewById(R.id.leftmenu3);
-		leftmenu4 = (TextView) findViewById(R.id.leftmenu4);
-		leftmenu5 = (TextView) findViewById(R.id.leftmenu5);
-		leftmenu6 = (TextView) findViewById(R.id.leftmenu6);
-		leftmenu7 = (TextView) findViewById(R.id.leftmenu7);
-		leftmenu8 = (TextView) findViewById(R.id.leftmenu8);
-		leftmenu1.setOnClickListener(this);
-		leftmenu2.setOnClickListener(this);
-		leftmenu3.setOnClickListener(this);
-		leftmenu4.setOnClickListener(this);
-		leftmenu5.setOnClickListener(this);
-		leftmenu6.setOnClickListener(this);
-		leftmenu7.setOnClickListener(this);
-		leftmenu8.setOnClickListener(this);
+		menu_serach = (TextView) findViewById(R.id.menu_serach);
+		menu_one_scaler = (TextView) findViewById(R.id.menu_one_scaler);
+		menu_print = (TextView) findViewById(R.id.menu_print);
+		menu_calib = (TextView) findViewById(R.id.menu_calib);
+		menu_para = (TextView) findViewById(R.id.menu_para);
+		menu_data_report = (TextView) findViewById(R.id.menu_data_report);
+		menu_setting = (TextView) findViewById(R.id.menu_setting);
+		menu_four_scaler = (TextView) findViewById(R.id.menu_four_scaler);
+		menu_serach.setOnClickListener(this);
+		menu_one_scaler.setOnClickListener(this);
+		menu_print.setOnClickListener(this);
+		menu_calib.setOnClickListener(this);
+		menu_para.setOnClickListener(this);
+		menu_data_report.setOnClickListener(this);
+		menu_setting.setOnClickListener(this);
+		menu_four_scaler.setOnClickListener(this);
 	
 		//ActionBar actionBar=getActionBar();
 		 //actionBar.setDisplayShowHomeEnabled(true);
@@ -151,64 +151,65 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	public void onClick(View v) {
 		mDrawerLayout.closeDrawers();
 		switch (v.getId()) {
-		case R.id.leftmenu1:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(1);
-			leftmenu1.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu1;
-			break;
-		case R.id.leftmenu2:
+		case R.id.menu_serach:
 			if (prevLeftMenu != null)
 				prevLeftMenu.setBackgroundColor(color.transparent);
 			goToFragment(2);
-			leftmenu2.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu2;
+			menu_serach.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_serach;  
 			break;
-		case R.id.leftmenu3:
+		case R.id.menu_one_scaler:
 			if (prevLeftMenu != null)
 				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(3);
-			leftmenu3.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu3;
+			goToFragment(7);
+			menu_one_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_one_scaler;
 			break;
-		case R.id.leftmenu4:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(4);
-
-			leftmenu4.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu4;
-			break;
-		case R.id.leftmenu5:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			leftmenu5.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu5;
-			StartActivity(SysParamActivity.class, null);
-
-			break;
-		case R.id.leftmenu6:
+		case R.id.menu_print:
 			if (prevLeftMenu != null)
 				prevLeftMenu.setBackgroundColor(color.transparent);
 			goToFragment(6);
-			leftmenu6.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu6;
+			menu_print.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_print;
 			break;
-		case R.id.leftmenu7:
+		case R.id.menu_calib:
 			if (prevLeftMenu != null)
 				prevLeftMenu.setBackgroundColor(color.transparent);
-			leftmenu6.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu7;
-			goToFragment(7);
+			goToFragment(8);
+
+			menu_calib.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_calib;
+			break;
+		case R.id.menu_para:
+			if (prevLeftMenu != null)
+				prevLeftMenu.setBackgroundColor(color.transparent);
+			menu_para.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_para;
+			goToFragment(4);
 
 			break;
-		case R.id.leftmenu8:
+		case R.id.menu_data_report:
 			if (prevLeftMenu != null)
 				prevLeftMenu.setBackgroundColor(color.transparent);
-			leftmenu8.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = leftmenu8;
-			goToFragment(8);
+			goToFragment(1);
+			menu_data_report.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_data_report;
+			break;
+		case R.id.menu_setting:
+			if (prevLeftMenu != null)
+				prevLeftMenu.setBackgroundColor(color.transparent);
+			menu_data_report.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_setting;
+			StartActivity(SysParamActivity.class, null);
+
+			break;
+		case R.id.menu_four_scaler:
+			if (prevLeftMenu != null)
+				prevLeftMenu.setBackgroundColor(color.transparent);
+			menu_four_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_four_scaler;
+			goToFragment(3);
+			
 			break;
 		}
 

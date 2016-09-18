@@ -34,7 +34,7 @@ public class CalibActivity extends Activity {
 
 	private boolean m_readpara = false;
 	private ActionBar mActionBar;
-	private TextView m_tvWgt;
+	private TextView m_tvWgt=null;
 	private Timer pTimer;
 	private Runnable runnable;
 	
@@ -181,10 +181,14 @@ public class CalibActivity extends Activity {
 					
 					Scaler d = (Scaler) msg.obj;
 					
-					if(d != null)
+					if(d != null && theActivity.m_tvWgt!=null)
 					{
 						if(d.getAddress().equals(mDeviceAddress))
-							theActivity.m_tvWgt.setText(d.getWeight() + " " + d.para.getUnit());
+						{
+							String w = d.getWeight()+"";
+							theActivity.m_tvWgt.setText(w);
+						}
+							
 					}
 					break;
 				}

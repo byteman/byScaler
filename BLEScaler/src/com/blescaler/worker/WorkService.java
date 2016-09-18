@@ -986,10 +986,23 @@ public class WorkService extends Service {
 	//去皮，取当前的重量为皮重,去皮后更改为净重状态.净重状态不能去皮
 	public static boolean discardTare()
 	{
-		if(is_net_state) return false;
-		tare = getGrossWeight();
-		tmp_tare = tare;
-		is_net_state = true;
+		
+		//if(is_net_state) return false;
+		int gross = getGrossWeight();
+		
+		if(gross > 0)
+		{
+			tare = gross;
+			tmp_tare = tare;
+			is_net_state = true;
+			
+		}
+		else
+		{
+			tare = 0;
+			tmp_tare = 0;
+			is_net_state = false;
+		}
 		return true;
 	}
 	//毛重和净重状态切换.

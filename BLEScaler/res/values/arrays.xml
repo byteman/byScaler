@@ -10,10 +10,10 @@
     </string-array>
     <string-array name="zeroinit">
         <item>关闭</item>
-        <item>+-2%(NOV)</item>
-        <item>+-5%(NOV)</item>
-        <item>+-10%(NOV)</item>
-        <item>+-20%(NOV)</item>
+        <item>+-2%</item>
+        <item>+-5%</item>
+        <item>+-10%</item>
+        <item>+-20%</item>
     </string-array>
     <string-array name="mtd">
         <item>关闭</item>
@@ -34,13 +34,13 @@
         <item>7位</item>
     </string-array>
  	<string-array name="div">
-        <item>1d</item>
-        <item>2d</item>
-        <item>5d</item>
-        <item>10d</item>
-        <item>20d</item>
-        <item>50d</item>
-        <item>100d</item>
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>50</item>
+        <item>100</item>
     </string-array>
     
  	 <string-array name="units">
