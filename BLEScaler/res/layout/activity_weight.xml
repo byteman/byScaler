@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/state_bg"
-            android:text="毛重"
+            android:text="gross"
             android:textColor="@color/red"
             android:textSize="24sp" />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/state_bg"
-            android:text="稳定"
+            android:text="stable"
             android:textColor="@color/red"
             android:textSize="24sp" />
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/state_bg"
-            android:text="零点"
+            android:text="zero"
             android:textColor="@color/red"
             android:textSize="24sp" />
 

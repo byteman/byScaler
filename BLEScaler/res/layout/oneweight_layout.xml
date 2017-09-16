@@ -21,7 +21,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/oval_shape3"
             android:gravity="center"
-            android:text="称名:00546"
+            android:text="name:00546"
             android:textSize="14sp" />
 
         <com.blescaler.ui.ble.AutoBgButton
@@ -81,7 +81,7 @@
          android:layout_height="wrap_content"
          android:layout_alignParentRight="true"
          android:layout_centerVertical="true"
-         android:text="断开"
+         android:text="disconnect"
           android:layout_marginLeft="50dp"
          android:textColor="@color/white"
          android:textSize="14sp" />
@@ -92,7 +92,7 @@
          android:layout_height="wrap_content"
         
          android:layout_centerVertical="true"
-         android:text="稳定"
+         android:text="stable"
          android:layout_toLeftOf="@id/textView5"
          android:textColor="@color/white"
          android:textSize="14sp" />

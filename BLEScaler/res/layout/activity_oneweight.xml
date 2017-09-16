@@ -20,7 +20,7 @@
             style="@style/bybutton"
             android:layout_marginLeft="10dp"
             android:background="@drawable/bt_oval_shape"
-            android:text="存重" />
+            android:text="save" />
 
         <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/btn_print"
@@ -28,7 +28,7 @@
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/btn_save"
             android:background="@drawable/bt_oval_shape"
-            android:text="打印" />
+            android:text="print" />
 
         <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/btn_zero"
@@ -36,7 +36,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/btn_print"
             android:background="@drawable/bt_oval_shape"
-            android:text="清零"
+            android:text="zero"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -48,7 +48,7 @@
        android:layout_gravity="center_horizontal"
        android:layout_above="@+id/mainlayout"
        android:background="@drawable/bt_oval_shape"
-       android:text="毛重"
+       android:text="Gross"
        android:textColor="@color/white"
        android:textSize="14sp"
        android:textStyle="bold" />
@@ -103,7 +103,7 @@
             style="@style/bybutton"
            
             android:background="@drawable/bt_oval_shape"
-            android:text="净重/毛重"
+            android:text="N/G"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -113,7 +113,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/btn_switch"
             android:background="@drawable/bt_oval_shape"
-            android:text="预置" />
+            android:text="PT" />
 
         <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/btn_tare"
@@ -121,7 +121,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/btn_preset"
             android:background="@drawable/bt_oval_shape"
-            android:text="去皮"
+            android:text="Tare"
             android:textStyle="bold" />
     </RelativeLayout>
 

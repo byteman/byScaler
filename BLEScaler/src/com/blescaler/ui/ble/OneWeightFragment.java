@@ -70,8 +70,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			   
 			   
 		   }
-		   if(WorkService.isNetState()) btn_ng.setText("净重");
-		   else btn_ng.setText("毛重");
+		   if(WorkService.isNetState()) btn_ng.setText("Net");
+		   else btn_ng.setText("Gross");
 	}
 	private Runnable watchdog = new Runnable()
 	{
@@ -208,7 +208,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	                        String inputValue = inputServer.getText().toString();
 	                        if(WorkService.setPreTare(Integer.parseInt(inputValue)))
 	                        {
-	                        	btn_ng.setText("净重");
+	                        	btn_ng.setText("Net");
 	                        }
 	                    }
 	                });
@@ -228,7 +228,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		case R.id.btn_tare:
 			if(WorkService.discardTare())
 			{
-				btn_ng.setText("净重");
+				btn_ng.setText("Net");
 			}
 			break;
 		case R.id.tv_weight:
@@ -247,12 +247,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			boolean is_net = WorkService.switchNetGross();
 			if(is_net)
 			{
-				btn_ng.setText("净重");
+				btn_ng.setText("Net");
 				
 			}
 			else
 			{
-				btn_ng.setText("毛重");
+				btn_ng.setText("Gross");
 			}
 			break;
 		case R.id.btn_preset:
@@ -276,7 +276,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	
 	private void showFailBox(String msg)
 	{
-		 new AlertDialog.Builder(this.getActivity()).setTitle("系统提示")//设置对话框标题  
+		 new AlertDialog.Builder(this.getActivity()).setTitle("prompt")//设置对话框标题  
 		  
 	     .setMessage(msg)//设置显示的内容  
 	  
