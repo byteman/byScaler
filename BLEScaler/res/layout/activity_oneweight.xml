@@ -6,8 +6,75 @@
     android:orientation="vertical"
     android:weightSum="4" >
 
-  
+    <LinearLayout
+        android:id="@+id/power"
+        android:layout_width="400dp"  
+        android:layout_height="50dp">
+        <com.blescaler.ui.ble.BatteryState
+            android:id="@+id/bs_power"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content" />
+         <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/btn_red_light_on"
+            style="@style/bybutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bt_red_shape"
+            android:text="on " />
+          <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/btn_green_light_on"
+            style="@style/bybutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bt_green_shape"
+            android:text="on " />
+           <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/btn_yellow_light_on"
+            style="@style/bybutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bt_yellow_shape"
+            android:text="on " />
+        
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/power2"
+        android:layout_marginLeft="80dp"
+        android:layout_below="@id/power"
+        android:layout_width="400dp"  
+        android:layout_height="50dp">
+       <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/btn_red_light_off"
+            style="@style/bybutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bt_red_shape"
+            android:text="off" />
+          <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/btn_green_light_off"
+            style="@style/bybutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bt_green_shape"
+            android:text="off" />
+           <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/btn_yellow_light_off"
+            style="@style/bybutton"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bt_yellow_shape"
+            android:text="off" />
+	 </LinearLayout>
+	 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="80dp"
@@ -94,14 +161,15 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
+        android:layout_below="@id/power2"
         android:layout_gravity="center_horizontal" >
 
+	  
         <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/btn_switch"
             style="@style/bybutton"
-           
+            android:layout_marginLeft="30dp"
             android:background="@drawable/bt_oval_shape"
             android:text="N/G"
             android:textColor="@color/white"
@@ -123,6 +191,9 @@
             android:background="@drawable/bt_oval_shape"
             android:text="Tare"
             android:textStyle="bold" />
+
+        
+
     </RelativeLayout>
 
 </RelativeLayout>

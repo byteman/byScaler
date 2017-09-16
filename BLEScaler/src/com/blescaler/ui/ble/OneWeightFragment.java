@@ -42,6 +42,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	AutoBgButton btn_tare = null;
 	AutoBgButton btn_zero = null;
 	AutoBgButton btn_swtich = null;
+	AutoBgButton btn_red_on = null;
+	AutoBgButton btn_yellow_on = null;
+	AutoBgButton btn_green_on = null;
+	AutoBgButton btn_red_off = null;
+	AutoBgButton btn_yellow_off = null;
+	AutoBgButton btn_green_off = null;
+	
+	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
 	
 	AutoBgButton btn_ng = null;
@@ -163,6 +171,16 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
 		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
 		tv_unit = (TextView) root.findViewById(R.id.textView2);
+		btn_power=(BatteryState)root.findViewById(R.id.bs_power);
+		btn_red_on = (AutoBgButton) root.findViewById(R.id.btn_red_light_on);
+		btn_yellow_on = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_on);
+		btn_green_on = (AutoBgButton) root.findViewById(R.id.btn_green_light_on);
+		btn_red_off = (AutoBgButton) root.findViewById(R.id.btn_red_light_off);
+		btn_yellow_off = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_off);
+		btn_green_off = (AutoBgButton) root.findViewById(R.id.btn_green_light_off);
+		
+		
+		btn_power.setPowerQuantity(1);
 		btn_save.setOnClickListener(this);
 		btn_print.setOnClickListener(this);
 		btn_tare.setOnClickListener(this);
@@ -170,6 +188,15 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_zero.setOnClickListener(this);
 		btn_swtich.setOnClickListener(this);
 		btn_preset.setOnClickListener(this);
+		
+		
+		btn_green_on.setOnClickListener(this);
+		btn_yellow_on.setOnClickListener(this);
+		btn_red_on.setOnClickListener(this);
+		btn_green_off.setOnClickListener(this);
+		btn_yellow_off.setOnClickListener(this);
+		btn_red_off.setOnClickListener(this);
+		
 		unit = WorkService.getUnit();
 		tv_unit.setText(unit);
 	}
@@ -254,6 +281,24 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			{
 				btn_ng.setText("Gross");
 			}
+			break;
+		case R.id.btn_green_light_on:
+			WorkService.CtrlLight(1,true);
+			break;
+		case R.id.btn_yellow_light_on:
+			WorkService.CtrlLight(2,true);
+			break;
+		case R.id.btn_red_light_on:
+			WorkService.CtrlLight(3,true);
+			break;
+		case R.id.btn_green_light_off:
+			WorkService.CtrlLight(1,false);
+			break;
+		case R.id.btn_yellow_light_off:
+			WorkService.CtrlLight(2,false);
+			break;
+		case R.id.btn_red_light_off:
+			WorkService.CtrlLight(3,false);
 			break;
 		case R.id.btn_preset:
 			inputTitleDialog();

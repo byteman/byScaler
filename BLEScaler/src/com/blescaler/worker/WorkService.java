@@ -577,7 +577,63 @@ public class WorkService extends Service {
 		if(mBle == null) return false;
 		return mBle.hasConnected(address);
 	}
-	
+
+	private static boolean  write_register(short reg_addr, short value)
+	{
+		//设备地址 1byte
+		//命令类型 0x10
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
+		//crc16
+		
+		byte buffer[]={0x1,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,1,2, (byte)((value>>8)&0xff),(byte)(value&0xFF)};
+		
+		return write_buffer(buffer);
+		
+	}
+//修改n个寄存器的值.发送后异步等待通知
+	private static int  write_registers(String address,int reg_addr, int nb,byte[] value)
+	{
+		return 0;
+	}
+//发送数据给连接了的设备.
+	private static boolean  write_buffer(byte[] value)
+	{
+		if(mBle == null) return false;
+
+		if(!hasConnectAll()) return false;
+		
+		for(int i = 0 ; i < max_count; i++)
+		{
+			
+			 if(scalers2.containsKey(i)) //包含这个地址才获取称台设备.
+			 {
+				 Scaler dev = scalers2.get(i);
+				 
+				 if(dev!=null && dev.isConnected())
+				 {
+					 
+					 	
+						BleGattCharacteristic chars = dev.GetBleChar();
+						if(chars == null) return false;
+						
+						
+						chars.setValue(value);
+						
+						return mBle.requestWriteCharacteristic(dev.getAddress(), chars, "false");
+				 }
+			 }
+								
+		
+		}
+		return true;
+		
+		
+		
+	}
+
 	private static boolean requestValue(String address,String cmd)
 	{
 		if(mBle == null) return false;
@@ -1020,6 +1076,12 @@ public class WorkService extends Service {
 			tare = 0; //将皮重设置为0，
 		}
 		return is_net_state;
+	}
+	public static boolean CtrlLight(int index, boolean on)
+	{
+		short value = on?(short)1:(short)0;
+		write_register((short)index,value);
+		return true;
 	}
 	public static String getUnit()
 	{
