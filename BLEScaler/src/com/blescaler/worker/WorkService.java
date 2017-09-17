@@ -577,7 +577,42 @@ public class WorkService extends Service {
 		if(mBle == null) return false;
 		return mBle.hasConnected(address);
 	}
+	private static boolean  read_registers(short reg_addr,short num)
+	{
+		//设备地址 1byte
+		//命令类型 0x3
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes(需要读取的寄存器数量)
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
+		//crc16
+		
+		byte buffer[]={0x20,0x3,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),(byte)((num>>8)&0xff),(byte)(num&0xFF),0,0};
+		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
+		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
+		buffer[6] = (byte)(crc16&0xFF);
+		buffer[7] = (byte)((crc16>>8)&0xff);
+		
+		return write_buffer(buffer);
+		
+	}
+	//向某个寄存器写入值.
+	private static boolean  read_register(short reg_addr)
+	{
+		//设备地址 1byte
+		//命令类型 0x3
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes(需要读取的寄存器数量)
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
+		//crc16
 
+		return read_registers(reg_addr,(short) 1);
+		
+	
+		
+	}
+	//向某个寄存器写入值.
 	private static boolean  write_register(short reg_addr, short value)
 	{
 		//设备地址 1byte
@@ -588,7 +623,10 @@ public class WorkService extends Service {
 		//寄存器值 (2*N)字节.
 		//crc16
 		
-		byte buffer[]={0x1,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,1,2, (byte)((value>>8)&0xff),(byte)(value&0xFF)};
+		byte buffer[]={0x1,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,1,2, (byte)((value>>8)&0xff),(byte)(value&0xFF),0,0};
+		short crc16 = (short)CRC16.calcCrc16(buffer);
+		buffer[9] = (byte)((crc16>>8)&0xff);
+		buffer[10] = (byte)(crc16&0xFF);
 		
 		return write_buffer(buffer);
 		
@@ -704,7 +742,7 @@ public class WorkService extends Service {
 			Log.e(TAG, "queue underflow " + size);
 			return false;
 		}
-		return requestValue(address, "ADV?;");
+		return read_registers((short)1, (short)2);
 
 	}
 	//判断打印机是否已经连接
@@ -1079,9 +1117,10 @@ public class WorkService extends Service {
 	}
 	public static boolean CtrlLight(int index, boolean on)
 	{
-		short value = on?(short)1:(short)0;
-		write_register((short)index,value);
-		return true;
+//		short value = on?(short)1:(short)0;
+//		write_register((short)index,value);
+//		return true;
+		return read_register((short)0x20);
 	}
 	public static String getUnit()
 	{

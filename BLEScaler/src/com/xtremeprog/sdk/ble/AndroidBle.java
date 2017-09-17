@@ -153,7 +153,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 						RequestType.READ_CHARACTERISTIC, false);
 				return;
 			}
-			// Log.d(TAG, "data " + characteristic.getStringValue(0));
+			 Log.d(TAG, "data " + characteristic.getStringValue(0));
 			mService.bleCharacteristicRead(gatt.getDevice().getAddress(),
 					characteristic.getUuid().toString(), status,
 					characteristic.getValue());
@@ -163,8 +163,8 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic) {
 			String address = gatt.getDevice().getAddress();
-			//Log.d(TAG, "onCharacteristicChanged " + address);
-			//Log.d(TAG, new String(Hex.encodeHex(characteristic.getValue())));
+			Log.d(TAG, "onCharacteristicChanged " + address);
+			Log.d(TAG, new String(Hex.encodeHex(characteristic.getValue())));
 			mService.bleCharacteristicChanged(address, characteristic.getUuid()
 					.toString(), characteristic.getValue());
 		}

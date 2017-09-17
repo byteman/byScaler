@@ -166,6 +166,22 @@ public class Scaler {
 		if(msg == null) return msgType;
 		
 		msg.obj = this;
+		if ((val[0] == 0x20) ){
+			if(val[1] == 0x03)
+			{
+				int reg_addr = (val[2]<<8)+val[3];
+				if(reg_addr == 0x1)
+				{
+					//get weight;
+					
+				}
+			}
+			else if(val[1] == 0x10)
+			{
+				
+			}
+		}
+		
 		if ((val[0] == 'A') && (val[1] == 'D') && (val[2] == 'V')) {
 
 			if (val[3] == ':') {
