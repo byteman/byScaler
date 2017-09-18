@@ -44,8 +44,8 @@
     </string-array>
     
  	 <string-array name="units">
-        <item>g</item>
         <item>kg</item>
+        <item>g</item>
         <item>t</item>
     </string-array>
     

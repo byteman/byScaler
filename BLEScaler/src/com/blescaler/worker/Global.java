@@ -55,7 +55,7 @@ public class Global {
 	public static final int MSG_BLE_FAILERESULT=100036;	//命令响应失败的消息
 	public static final int MSG_BLE_NOT_SUPPORT=100037;	//手机不支持蓝牙BLE
 	public static final int MSG_SCALER_PAR_SET_RESULT=100038;	//设置秤参数的响应
-	public static final int MSG_SCALER_PAR_GET_RESULT=100039;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_RESULT=100039;	//读取秤参数的响应	
 	public static final int MSG_SCALER_ZERO_QUERY_RESULT=100040;	//读取零点ad值
 	public static final int MSG_SCALER_ZERO_CALIB_RESULT=100041;	//标定零点ad值
 	public static final int MSG_SCALER_K_QUERY_RESULT=100042;	//读取重量系数
@@ -63,6 +63,16 @@ public class Global {
 	public static final int MSG_BLE_NO_BT_ADAPTER=10044; 	//手机不支持蓝牙
 	public static final int MSG_SCALER_SAVE_EEPROM=10045; 	//存储数据到eeprom
 	public static final int MSG_SCALER_CONNECT_OK=10046; 	//存储数据到eeprom
+	public static final int MSG_SCALER_PAR_GET_DIGDOT_RESULT=100047;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_DIV_RESULT=100048;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_SPAN_RESULT=100049;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_UNIT_RESULT=100050;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_PWR_ZERO_RESULT=100051;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_HAND_ZERO_RESULT=100052;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_ZEROTRACK_RESULT=100053;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_STABLE_RESULT=100054;	//读取秤参数的响应
+	public static final int MSG_SCALER_PAR_GET_FITER_RESULT=100055;	//读取秤参数的响应
+	
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
 	public static final String BYTESPARA2 = "bytespara2";

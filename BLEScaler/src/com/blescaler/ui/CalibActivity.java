@@ -118,7 +118,12 @@ public class CalibActivity extends Activity {
 				   WorkService.requestReadWgt(mDeviceAddress);
 				   if(!m_readpara)
 				   {
-					   WorkService.requestReadPar(mDeviceAddress);
+					   try {
+						WorkService.requestReadPar(mDeviceAddress);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				   }
 				   mHandler.postDelayed(this, 1000);  
 			   }   
@@ -147,7 +152,7 @@ public class CalibActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
-		WorkService.requestReadPar(mDeviceAddress);
+		
 		Log.e(TAG, "OnResume");
 		
 	}

@@ -89,14 +89,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			// TODO Auto-generated method stub
 			 
 			
-			   if(cont++ >= 5)
+			   if(cont++ >= 1)
 			   {
 				   updateState();
 				   WorkService.readNextWgt(true);
 				   cont = 0;
 			   }
 			  
-			   mHandler.postDelayed(this, 200);  
+			   mHandler.postDelayed(this, 100);  
 		}
 		
 	};

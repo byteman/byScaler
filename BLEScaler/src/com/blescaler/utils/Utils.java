@@ -160,7 +160,7 @@ public class Utils {
 	 * @return int  number
 	 */
 
-	public static int bytesToWeight(byte[] bytes) {
+	public static int bytesToWeight2(byte[] bytes) {
 		int number = bytes[2] & 0xFF;
 		// "|="按位或赋值。
 		number |= ((bytes[1] << 8) & 0xFF00);
@@ -169,6 +169,14 @@ public class Utils {
 			number |= ((0xFF << 24) & 0xFF000000);
 		else
 			number |= ((0 << 24) & 0xFF000000);
+		return number;
+	}
+	public static int bytesToInt(byte[] bytes,int index){
+		int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index+0] <<8)+bytes[index+1];
+		return number;
+	}
+	public static int bytesToWeight(byte[] bytes) {
+		int number = (bytes[2] <<24)+ (bytes[3] <<16)+(bytes[0] <<8)+bytes[1];
 		return number;
 	}
 	public static int bytesToString(byte[] bytes,int from, int to) throws Exception

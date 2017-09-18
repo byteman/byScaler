@@ -12,10 +12,11 @@ public class ScalerParam {
 	private int nov=10000;	//閲忕▼.
 	private byte zerotrack=0;	//闆剁偣璺熻釜閫熷害
 	private byte pwr_zerotrack=0; //寮?鏈虹疆闆惰寖鍥?
+	private byte hand_zerotrack=0;
 	private byte resultion=1; //鍒嗗害鏁?
 	private byte dignum=0;//灏忔暟鐐逛綅鏁?
-	
-	private String unit="g"; //鍗曚綅
+	private byte filter=0;
+	private byte unit=0; //鍗曚綅
 	private String mdtstr;
 	public static Map<Integer, String> mtdmaps = new HashMap<Integer, String>() ;
 	public static Map<Integer, String> zerotrackmaps = new HashMap<Integer, String>() ;
@@ -65,7 +66,7 @@ public class ScalerParam {
 	{
 		
 	}
-	public ScalerParam(int nov, byte mtd, byte zt,byte pzt,byte dig, byte res, String unit)
+	public ScalerParam(int nov, byte mtd, byte zt,byte pzt,byte dig, byte res, byte unit)
 	{
 		
 		this.nov = nov;
@@ -82,6 +83,13 @@ public class ScalerParam {
 	public byte getMtd()
 	{
 		return this.mtd;
+	}
+	public void setFilter(byte val) {
+		this.filter = val;
+	}
+	public byte getFilter()
+	{
+		return this.filter;
 	}
 	public int getNov() {
 		return nov;
@@ -101,13 +109,23 @@ public class ScalerParam {
 	public void setPwr_zerotrack(byte pwr_zerotrack) {
 		this.pwr_zerotrack = pwr_zerotrack;
 	}
+	public byte getHand_zerotrack() {
+		return hand_zerotrack;
+	}
+	public void setHand_zerotrack(byte zerotrack) {
+		this.hand_zerotrack = zerotrack;
+	}
 	public byte getResultion() {
 		return resultion;
 	}
 	public void setResultion(byte resultion) {
-		
-			this.resultion = resultion;
-	
+		if(resultion==1) this.resultion=0;
+		else if(resultion==2) this.resultion=1;
+		else if(resultion==5) this.resultion=2;
+		else if(resultion==10) this.resultion=3;
+		else if(resultion==20) this.resultion=4;
+		else if(resultion==50) this.resultion=5;
+		else if(resultion==100) this.resultion=6;
 	
 	}
 	public byte getDignum() {
@@ -116,10 +134,10 @@ public class ScalerParam {
 	public void setDignum(byte dignum) {
 		this.dignum = dignum;
 	}
-	public String getUnit() {
+	public byte getUnit() {
 		return unit;
 	}
-	public void setUnit(String unit) {
+	public void setUnit(byte unit) {
 		this.unit = unit;
 	}
 	public static byte[] intToByte(int number) {
@@ -148,30 +166,7 @@ public class ScalerParam {
 				+ ", resultion=" + resultion + ", dignum=" + dignum + ", unit="
 				+ unit + ", mdtstr=" + mdtstr + "]";
 	}
-	public byte[] getSetCmdBuffer()
-	{
-		byte[] send = new byte[15] ; //最多只能发生15个字符.
-		Arrays.fill(send, (byte) 0); //清零
-		byte[] nov_arr = intToByte(this.nov);
-		send[0] = 'P';
-		send[1] = 'A';
-		send[2] = 'R';
-		send[3] = ':';
-		
-		System.arraycopy(nov_arr, 0, send, 4, 4); //鎷疯礉nov
-		byte tmp = (byte) ((this.mtd)|(this.zerotrack<<3));
-		send[8] = tmp;//this.mtd;
-		tmp = (byte) ((this.pwr_zerotrack)|(this.resultion<<3));
-		send[9] = tmp;
-
-		send[10] = this.dignum;
-		int len = this.unit.length();
-		if(len > 3 ) len = 3;
-		System.arraycopy(this.unit.getBytes(), 0, send, 11, len); //最多复制3个字节 的unit.
-		send[14] = ';';
-		return send;
-		
-	}
+	
 	public boolean checkValid()
 	{
 		if(this.nov==0)this.nov=1000000;
@@ -185,23 +180,6 @@ public class ScalerParam {
 	}
 	public boolean parseParaBuffer(byte[] buffer)
 	{
-		if(buffer.length < 17) return false;
-		if( (buffer[0] != 'P')||  (buffer[1] != 'A') ||  (buffer[2] != 'R') ||  (buffer[3] != '?'))
-			return false;
-		this.nov = bytesToInt(Arrays.copyOfRange(buffer,4,8));
-		
-		this.mtd = buffer[8];
-		this.zerotrack = buffer[9];
-		this.pwr_zerotrack = buffer[10];
-		this.resultion = buffer[11];
-		
-		//if(this.resultion < 1) this.resultion = 1;
-		//this.resultion--;
-		this.dignum = buffer[12];
-		String ut = new String(Arrays.copyOfRange(buffer,13,17));
-		this.unit = ut;
-		//System.arraycopy(buffer, 0, send, 13, this.unit.length()); 
-		checkValid();
 		
 		return true;
 	}

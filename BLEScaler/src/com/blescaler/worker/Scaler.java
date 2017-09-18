@@ -140,7 +140,7 @@ public class Scaler {
 		return weight;
 	}
 	
-	public void setWeight(int weight) {
+	public void setWeight(int weight,int dot) {
 		
 		waitTime  = (System.currentTimeMillis() - waitTime);  
 		this.rx_cnt++;
@@ -150,6 +150,10 @@ public class Scaler {
 		{
 			this.weight = weight;
 		}
+		
+	}
+	public void setDot(int num)
+	{
 		
 	}
 	private void parseState(byte st)
@@ -166,141 +170,174 @@ public class Scaler {
 		if(msg == null) return msgType;
 		
 		msg.obj = this;
+		//地址  0x20 (1bytes)
+		//类型 0x03 (1bytes) 读取 (0x10 写入)
+		//数据长度 (1bytes) 
+		//寄存器首地址 (2bytes)
+		//数据 
+		//CRC16
+		
 		if ((val[0] == 0x20) ){
 			if(val[1] == 0x03)
 			{
-				int reg_addr = (val[2]<<8)+val[3];
-				if(reg_addr == 0x1)
+				int reg_num = (val[2]-2)/2;
+				int reg_addr = (val[3]<<8)+val[4];
+				
+				if(reg_addr == 0x0)
 				{
-					//get weight;
+					byte w[] = { 0, 0, 0, 0 };
+					if(val.length <  10)
+					{
+						 return 0;
+					}
+					System.arraycopy(val, 5, w, 0, 4);
 					
+					parseState(val[9]);
+					short dot = (short) ((val[11]<<8)+val[12]);
+					setWeight(Utils.bytesToWeight(w),dot);
+					
+					msgType = Global.MSG_BLE_WGTRESULT;
+					msg.arg1 = weight;
+					
+				}
+				else if(reg_addr == 0x3 )
+				{					
+					para.setDignum(val[6]);
+					msg.arg1 = 0;				
+				}
+				else if(reg_addr == 8)
+				{
+					para.setResultion(val[6]);
+					
+					para.setNov(Utils.bytesToInt(val,9));
+					
+					
+				}
+				else if(reg_addr == 14)
+				{
+					para.setUnit(val[6]);
+					para.setPwr_zerotrack(val[8]);
+					para.setHand_zerotrack(val[10]);
+					para.setZerotrack(val[12]);
+					para.setMtd(val[14]);
+					para.setFilter(val[16]);
+					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
+					msg.arg1 = 0;			
 				}
 			}
 			else if(val[1] == 0x10)
 			{
 				
 			}
-		}
-		
-		if ((val[0] == 'A') && (val[1] == 'D') && (val[2] == 'V')) {
-
-			if (val[3] == ':') {
-				if (val.length < 8)
-					return 0;
-				byte w[] = { 0, 0, 0, 0 };
-				System.arraycopy(val, 4, w, 0, 4);
-
-				parseState(val[7]);
-				setWeight(Utils.bytesToWeight(w));
+			else if(val[1] == 0x83)
+			{
 				
-				msgType = Global.MSG_BLE_WGTRESULT;
-				msg.arg1 = weight;
-				
-			}
-
-		} else if ((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R')) {
-
-			if (val[3] == '?') // 参数读取的返回值.
-			{
-
-				int ret = para.parseParaBuffer(val) ? 0 : 1;
-				msgType = Global.MSG_SCALER_PAR_GET_RESULT;
-				msg.arg1 = ret;				
-
-			} 
-			else if (val[3] == ':') // 参数设置的返回值.
-			{
-				msgType = Global.MSG_SCALER_PAR_SET_RESULT;
-				msg.arg1 = val[4] - '0';
-				
-			}
-		} else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z')) {
-
-			if (val[3] == '?') // 参数读取的返回值.
-			{
-
-				int ret = 0;
-
-				try {
-					int zero = Utils.bytesToString(val, 4, val.length);
-					this.zeroValue = zero;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					ret = 1;
-					e.printStackTrace();
-				}
-				msgType = Global.MSG_SCALER_ZERO_QUERY_RESULT;
-				msg.arg1 = ret;
-
-			} 
-			else if (val[3] == ':') // 参数设置的返回值.
-			{
-
-				if (val[4] == '0') {
-					try {
-						int zero = Utils.bytesToString(val, 6, val.length);
-						this.zeroValue = zero;
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				}
-				msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-				msg.arg1 = val[4] - '0';
-
-			}
-
-		}
-
-		else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K')) {
-
-			if (val[3] == '?') // 参数读取的返回值.
-			{
-
-				int ret = 0;
-
-				try {
-				
-					this.loadValue = Utils.bytesToString(val, 4, val.length);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					ret = 1;
-					e.printStackTrace();
-				}
-				msgType = Global.MSG_SCALER_K_QUERY_RESULT;
-
-				msg.obj = this;
-				msg.arg1 = ret;
-
-			} 
-			else if (val[3] == ':') // 参数设置的返回值.
-			{
-
-				if (val[4] == '0') {
-					try {
-						this.loadValue = Utils.bytesToString(val, 6, val.length);
-				
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				}
-				msgType = Global.MSG_SCALER_K_CALIB_RESULT;
-
-				msg.arg1 = val[4] - '0';
-
-			}
-
-		} else if ((val[0] == 'S') && (val[1] == 'A') && (val[2] == 'V')) {
-			if (val[3] == ':') {
-				msgType = Global.MSG_SCALER_SAVE_EEPROM;
-
-				msg.arg1 = val[4] - '0';
-
 			}
 		}
+//		
+//		 else if ((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R')) {
+//
+//			if (val[3] == '?') // 参数读取的返回值.
+//			{
+//
+//				int ret = para.parseParaBuffer(val) ? 0 : 1;
+//				msgType = Global.MSG_SCALER_PAR_GET_RESULT;
+//				msg.arg1 = ret;				
+//
+//			} 
+//			else if (val[3] == ':') // 参数设置的返回值.
+//			{
+//				msgType = Global.MSG_SCALER_PAR_SET_RESULT;
+//				msg.arg1 = val[4] - '0';
+//				
+//			}
+//		} else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z')) {
+//
+//			if (val[3] == '?') // 参数读取的返回值.
+//			{
+//
+//				int ret = 0;
+//
+//				try {
+//					int zero = Utils.bytesToString(val, 4, val.length);
+//					this.zeroValue = zero;
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					ret = 1;
+//					e.printStackTrace();
+//				}
+//				msgType = Global.MSG_SCALER_ZERO_QUERY_RESULT;
+//				msg.arg1 = ret;
+//
+//			} 
+//			else if (val[3] == ':') // 参数设置的返回值.
+//			{
+//
+//				if (val[4] == '0') {
+//					try {
+//						int zero = Utils.bytesToString(val, 6, val.length);
+//						this.zeroValue = zero;
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//
+//				}
+//				msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
+//				msg.arg1 = val[4] - '0';
+//
+//			}
+//
+//		}
+//
+//		else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K')) {
+//
+//			if (val[3] == '?') // 参数读取的返回值.
+//			{
+//
+//				int ret = 0;
+//
+//				try {
+//				
+//					this.loadValue = Utils.bytesToString(val, 4, val.length);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					ret = 1;
+//					e.printStackTrace();
+//				}
+//				msgType = Global.MSG_SCALER_K_QUERY_RESULT;
+//
+//				msg.obj = this;
+//				msg.arg1 = ret;
+//
+//			} 
+//			else if (val[3] == ':') // 参数设置的返回值.
+//			{
+//
+//				if (val[4] == '0') {
+//					try {
+//						this.loadValue = Utils.bytesToString(val, 6, val.length);
+//				
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//
+//				}
+//				msgType = Global.MSG_SCALER_K_CALIB_RESULT;
+//
+//				msg.arg1 = val[4] - '0';
+//
+//			}
+//
+//		} else if ((val[0] == 'S') && (val[1] == 'A') && (val[2] == 'V')) {
+//			if (val[3] == ':') {
+//				msgType = Global.MSG_SCALER_SAVE_EEPROM;
+//
+//				msg.arg1 = val[4] - '0';
+//
+//			}
+//		}
 
 		return msgType;
 	}

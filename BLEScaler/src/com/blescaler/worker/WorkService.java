@@ -577,7 +577,7 @@ public class WorkService extends Service {
 		if(mBle == null) return false;
 		return mBle.hasConnected(address);
 	}
-	private static boolean  read_registers(short reg_addr,short num)
+	private static boolean  read_registers(int reg_addr,int num)
 	{
 		//设备地址 1byte
 		//命令类型 0x3
@@ -586,8 +586,9 @@ public class WorkService extends Service {
 		//数据字节数 1byte (2*N)
 		//寄存器值 (2*N)字节.
 		//crc16
-		
-		byte buffer[]={0x20,0x3,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),(byte)((num>>8)&0xff),(byte)(num&0xFF),0,0};
+		short u_reg_addr = (short)reg_addr;
+		short u_reg_num  = (short)num;
+		byte buffer[]={0x20,0x3,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
 		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
 		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
 		buffer[6] = (byte)(crc16&0xFF);
@@ -613,7 +614,7 @@ public class WorkService extends Service {
 		
 	}
 	//向某个寄存器写入值.
-	private static boolean  write_register(short reg_addr, short value)
+	public static boolean  write_short_register(short reg_addr, short value)
 	{
 		//设备地址 1byte
 		//命令类型 0x10
@@ -623,18 +624,58 @@ public class WorkService extends Service {
 		//寄存器值 (2*N)字节.
 		//crc16
 		
-		byte buffer[]={0x1,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,1,2, (byte)((value>>8)&0xff),(byte)(value&0xFF),0,0};
-		short crc16 = (short)CRC16.calcCrc16(buffer);
-		buffer[9] = (byte)((crc16>>8)&0xff);
-		buffer[10] = (byte)(crc16&0xFF);
+		byte buffer[]={0x20,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,1,2, (byte)((value>>8)&0xff),(byte)(value&0xFF),0,0};
+		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
+		buffer[10] = (byte)((crc16>>8)&0xff);
+		buffer[9] = (byte)(crc16&0xFF);
+		
+		return write_buffer(buffer);
+		
+	}
+	public static boolean  write_int_register(short reg_addr, int value)
+	{
+		//设备地址 1byte
+		//命令类型 0x10
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
+		//crc16
+		
+		byte buffer[]={0x20,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,2,4, (byte)((value>>8)&0xff),(byte)((value)&0xff),(byte)((value>>24)&0xff),(byte)((value>>16)&0xff),0,0};
+		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
+		buffer[12] = (byte)((crc16>>8)&0xff);
+		buffer[11] = (byte)(crc16&0xFF);
 		
 		return write_buffer(buffer);
 		
 	}
 //修改n个寄存器的值.发送后异步等待通知
-	private static int  write_registers(String address,int reg_addr, int nb,byte[] value)
+	private static boolean  write_registers(String address,int reg_addr, int nb,byte[] value)
 	{
-		return 0;
+		//设备地址 1byte
+		//命令类型 0x10
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes(需要写入的寄存器数量)
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
+		//crc16
+		short u_reg_addr = (short)reg_addr;
+		short u_reg_num  = (short)nb;
+		
+		byte buffer[]={0x20,0x10,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
+		
+		byte[] cmd = new byte[8+nb*2];
+	
+		System.arraycopy(buffer, 0, cmd, 0, 6);
+		
+		
+		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
+		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
+		buffer[6] = (byte)(crc16&0xFF);
+		buffer[7] = (byte)((crc16>>8)&0xff);
+		
+		return write_buffer(buffer);
 	}
 //发送数据给连接了的设备.
 	private static boolean  write_buffer(byte[] value)
@@ -710,9 +751,14 @@ public class WorkService extends Service {
 		return requestValue(address, cmd);
 	}
 	//请求读取参数
-	public static boolean requestReadPar(String address)
+	public static boolean requestReadPar(String address) throws InterruptedException
 	{
-		return requestValue(address, "PAR?;");
+		read_registers(3,1); //小数点位数
+		Thread.sleep(50);
+		read_registers(8,5); //分度值->量程
+		Thread.sleep(50);
+		read_registers(14,6);//单位->滤波等级
+		return true;
 	}
 	//请求修改参数,修改后的参数未保存
 	public static boolean requestWriteParamValue(String address,ScalerParam s)
@@ -723,7 +769,9 @@ public class WorkService extends Service {
 		//BleGattCharacteristic chars = mChars.get(address);
 		if(chars == null) return false;
 		if(s == null) return false;
-		chars.setValue(s.getSetCmdBuffer());
+		
+		
+		//chars.setValue(s.getSetCmdBuffer());
 		
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
@@ -742,7 +790,8 @@ public class WorkService extends Service {
 			Log.e(TAG, "queue underflow " + size);
 			return false;
 		}
-		return read_registers((short)1, (short)2);
+		Log.e(TAG, "send packet");
+		return read_registers((short)0, (short)4);
 
 	}
 	//判断打印机是否已经连接

@@ -26,13 +26,17 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 
 	
 	
-	private Spinner sp_zerotrack;
-	private Spinner sp_zeroinit;
-	private Spinner sp_mtd;
+	private EditText edit_zerotrack;
+	private EditText edit_zeroinit;
+	private EditText edit_handzero;
+	private EditText edit_mtd;
+	private EditText edit_filter;
+	private EditText edt_nov;// edt_unit;
 	private Spinner sp_dignum;
 	private Spinner sp_div;
+	private Spinner sp_unit;
 	private Button btn_read, btn_write,btn_eeprom;
-	private EditText edt_nov;// edt_unit;
+	
 	private String address = "C4:BE:84:22:91:E2";
 	private static Handler mHandler = null;
 	/* (non-Javadoc)
@@ -43,7 +47,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
-		WorkService.requestReadPar(address);
+		//WorkService.requestReadPar(address);
 	}
 
 	/* (non-Javadoc)
@@ -65,17 +69,19 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.test);
-		sp_zerotrack = (Spinner) findViewById(R.id.sp_zerotrack);
-		sp_zeroinit = (Spinner) findViewById(R.id.sp_zeroinit);
-		sp_mtd = (Spinner) findViewById(R.id.sp_mtd);
+		edit_zerotrack = (EditText) findViewById(R.id.edit_zerotrack);
+		edit_zeroinit = (EditText) findViewById(R.id.edit_zeroinit);
+		edit_handzero = (EditText) findViewById(R.id.edit_handzero);
+		edit_mtd = (EditText) findViewById(R.id.edit_mtd);
+		edit_filter= (EditText) findViewById(R.id.edit_fiter);
 		sp_dignum = (Spinner) findViewById(R.id.sp_dignum);
 		sp_div = (Spinner) findViewById(R.id.sp_div);
+		sp_unit = (Spinner) findViewById(R.id.sp_unit);
 		btn_read = (Button) findViewById(R.id.btn_read);
 		btn_read.setOnClickListener(this);
 		btn_write = (Button) findViewById(R.id.btn_save);
 		btn_write.setOnClickListener(this);
-		btn_eeprom = (Button) findViewById(R.id.btn_eeprom);
-		btn_eeprom.setOnClickListener(this);
+		
 		
 		edt_nov = (EditText) findViewById(R.id.ed_nov);
 		//edt_unit = (EditText) findViewById(R.id.ed_unit);
@@ -83,18 +89,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		mHandler = new MHandler(this);
 	}
 
-	private boolean checkunit(String unit, ScalerParam sp) {
-		if (unit.equals("")) {
-			Utils.Msgbox(this, "请输入单位");
-			return false;
-		}
-		if (unit.length() > 3) {
-			Utils.Msgbox(this, "单位的长度不要超过3个字符");
-			return false;
-		}
-		sp.setUnit(unit);
-		return true;
-	}
+	
 
 	private boolean checknov(String nov, ScalerParam sp) {
 
@@ -102,10 +97,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			Utils.Msgbox(this, "请输入额定重量");
 			return false;
 		}
-		if (nov.length() > 7) {
-			Utils.Msgbox(this, "额定重量的长度不要超过7个字符");
-			return false;
-		}
+		
 
 		try {
 			sp.setNov(Integer.parseInt(nov));
@@ -123,24 +115,83 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_read:
-			WorkService.requestReadPar(address);
+			new Thread(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						WorkService.requestReadPar(address);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}).start();
+			
 			break;
 		case R.id.btn_save:
+			new Thread(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					//if (!checkunit(edt_unit.getText().toString(), sp))
+					//	return;
+					
+					int nov = Integer.parseInt(edt_nov.getText().toString());
+					int mtd = Integer.parseInt(edit_mtd.getText().toString());
+					int zeroinit = Integer.parseInt(edit_zeroinit.getText().toString());
+					int zerotrack = Integer.parseInt(edit_zerotrack.getText().toString());
+					int filter = Integer.parseInt(edit_filter.getText().toString());
+					int handzero = Integer.parseInt(edit_handzero.getText().toString());
+					
+					
+					
+					int div_id = (int) sp_div.getSelectedItemId();
+					short div = 1;
+					if (div_id == 0) div = 1;
+					else if (div_id == 1) div = 2;
+					else if (div_id == 2) div = 5;
+					else if (div_id == 3) div = 10;
+					else if (div_id == 4) div = 20;
+					else if (div_id == 5) div = 50;
+					else if (div_id == 6) div = 100;
+					
+					
+					try {
+						WorkService.write_short_register((short)3, (short)sp_dignum.getSelectedItemId());
+						Thread.sleep(50);
+						WorkService.write_short_register((short)8, (short)div);
+						Thread.sleep(50);
+						WorkService.write_short_register((short)14, (short)sp_unit.getSelectedItemId());
+						Thread.sleep(50);
+						WorkService.write_int_register((short)10, nov);
+						Thread.sleep(50);
+						WorkService.write_short_register((short)15, (short) zeroinit);
+						Thread.sleep(50);
+						WorkService.write_short_register((short)16, (short) handzero);
+						Thread.sleep(50);
+						WorkService.write_short_register((short)17, (short) zerotrack);
+						Thread.sleep(50);
+						WorkService.write_short_register((short)18, (short) mtd);
+						Thread.sleep(50);
+						WorkService.write_short_register((short)19, (short) filter);
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					
+				}
+				
+			}).start();
+			
 			ScalerParam sp = new ScalerParam();
 
-			//if (!checkunit(edt_unit.getText().toString(), sp))
-			//	return;
-			if (!checknov(edt_nov.getText().toString(), sp))
-				return;
-			sp.setMtd((byte) sp_mtd.getSelectedItemId());
-			sp.setZerotrack((byte) sp_zerotrack.getSelectedItemId());
-			sp.setPwr_zerotrack((byte) sp_zeroinit.getSelectedItemId());
-			sp.setDignum((byte) sp_dignum.getSelectedItemId());
-			
-			sp.setResultion((byte)sp_div.getSelectedItemId());
-			edt_nov.setText(sp.getNov()+"");
-			//edt_unit.setText(sp.getUnit()+"");
-			WorkService.requestWriteParamValue(address, sp);
+
 			break;
 		case R.id.btn_eeprom:
 			
@@ -151,16 +202,19 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
+	
 	private void showParam(ScalerParam sp)
 	{
 		sp_dignum.setSelection(sp.getDignum());
 		sp_div.setSelection(sp.getResultion());
-		sp_mtd.setSelection(sp.getMtd());
-		sp_zerotrack.setSelection(sp.getZerotrack());
-		sp_zeroinit.setSelection(sp.getPwr_zerotrack());
-		
+		sp_unit.setSelection(sp.getUnit());
+		edit_mtd.setText(""+sp.getMtd());
+		edit_handzero.setText(""+sp.getHand_zerotrack());
+		edit_zerotrack.setText(""+sp.getZerotrack());
+		edit_zeroinit.setText(""+sp.getPwr_zerotrack());	
 		edt_nov.setText(String.valueOf(sp.getNov()));
-		//edt_unit.setText(String.valueOf(sp.getUnit()));
+		edit_filter.setText(String.valueOf(sp.getFilter()));
+		
 	}
 	static class MHandler extends Handler {
 
