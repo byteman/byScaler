@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line1"
-        android:text="搜索蓝牙秤"
+        android:text="search"
         android:textColor="@color/white"
         android:textSize="18sp" />
     <View
@@ -37,7 +37,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line2"
-        android:text="总量程界面"
+        android:text="main"
         android:textColor="@color/white"
         android:textSize="18sp" />
      <View
@@ -55,7 +55,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line3"
-        android:text="四台秤界面"
+        android:text="four"
         android:textColor="@color/white"
         android:textSize="18sp" />
       
@@ -74,7 +74,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line10"
-        android:text="数据报表"
+        android:text="report"
         android:textColor="@color/white"
         android:textSize="18sp" />
       
@@ -103,7 +103,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line8"
-        android:text="设置"
+        android:text="setting"
         android:textColor="@color/white"
         android:textSize="18sp" />
 <View
@@ -120,7 +120,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line4"
-        android:text="打印设置"
+        android:text="printer"
         android:textColor="@color/white"
         android:textSize="18sp" />
  <View
@@ -138,7 +138,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line5"
-        android:text="称台标定"
+        android:text="calibrate"
         android:textColor="@color/white"
         android:textSize="18sp" />
  <View
@@ -156,7 +156,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line6"
-        android:text="参数设置"
+        android:text="setting"
         android:textColor="@color/white"
         android:textSize="18sp" />
  <View

@@ -105,7 +105,10 @@ public class ScalerParam {
 		return resultion;
 	}
 	public void setResultion(byte resultion) {
-		this.resultion = resultion;
+		
+			this.resultion = resultion;
+	
+	
 	}
 	public byte getDignum() {
 		return dignum;
@@ -192,8 +195,8 @@ public class ScalerParam {
 		this.pwr_zerotrack = buffer[10];
 		this.resultion = buffer[11];
 		
-		if(this.resultion < 1) this.resultion = 1;
-		this.resultion--;
+		//if(this.resultion < 1) this.resultion = 1;
+		//this.resultion--;
 		this.dignum = buffer[12];
 		String ut = new String(Arrays.copyOfRange(buffer,13,17));
 		this.unit = ut;

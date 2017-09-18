@@ -136,7 +136,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			sp.setZerotrack((byte) sp_zerotrack.getSelectedItemId());
 			sp.setPwr_zerotrack((byte) sp_zeroinit.getSelectedItemId());
 			sp.setDignum((byte) sp_dignum.getSelectedItemId());
-			sp.setResultion((byte)(sp_div.getSelectedItemId()+1));
+			
+			sp.setResultion((byte)sp_div.getSelectedItemId());
 			edt_nov.setText(sp.getNov()+"");
 			//edt_unit.setText(sp.getUnit()+"");
 			WorkService.requestWriteParamValue(address, sp);
