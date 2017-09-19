@@ -28,8 +28,11 @@ public class CalibActivity extends Activity {
 	
 	private final String TAG = "CalibActivity";
 	private TextView m_tvLoad,m_tvZero,m_tvK;
+	private Button btnScaler1,btnScaler2,btnScaler3,btnScaler4,btnStart=null;
 	private Button m_btCalibZero, m_btCalibWgt,m_btQuit=null;
+	private EditText editText1,editText2,editText3,editText4=null;
 	private EditText m_etWgt;
+	private boolean isStarted = false;
 	private static Handler mHandler = null;
 
 	private boolean m_readpara = false;
@@ -60,6 +63,57 @@ public class CalibActivity extends Activity {
 			}else if(v.getId() == R.id.btn_save)
 			{
 				finish();
+			}else if(v.getId() == R.id.Button01)
+			{
+				//scaler1
+				if(isStarted){
+					//auto calib
+				}else{
+					//hand calib
+					double value=Float.valueOf(editText1.getText().toString());
+					WorkService.hand_k(0, (int) (value*1000));
+				}
+			}
+			else if(v.getId() == R.id.Button03)
+			{
+				if(isStarted){
+					//auto calib
+				}else{
+					//hand calib
+					double value=Float.valueOf((String) editText2.getText().toString());
+					WorkService.hand_k(1, (int) (value*1000));
+				}
+				//scaler2
+			}else if(v.getId() == R.id.Button02)
+			{
+				if(isStarted){
+					//auto calib
+				}else{
+					//hand calib
+					double value=Float.valueOf((String) editText3.getText().toString());
+					WorkService.hand_k(2, (int) (value*1000));
+				}
+				//scaler3
+			}else if(v.getId() == R.id.Button04)
+			{
+				if(isStarted){
+					//auto calib
+				}else{
+					//hand calib
+					double value=Float.valueOf((String) editText4.getText().toString());
+					WorkService.hand_k(3, (int) (value*1000));
+				}
+				//scaler4
+			}else if(v.getId() == R.id.Button05)
+			{
+				//start.
+				if(isStarted){
+					btnStart.setText("stop");
+				}else{
+					btnStart.setText("start");
+				}
+				isStarted=!isStarted;
+				
 			}
 
 		}
@@ -98,44 +152,50 @@ public class CalibActivity extends Activity {
 		m_tvLoad = (TextView) findViewById(R.id.tvLoad);
 		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
 		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
+		btnScaler1=(Button) findViewById(R.id.Button01);
+		btnScaler2=(Button) findViewById(R.id.Button03);
+		btnScaler3=(Button) findViewById(R.id.Button02);
+		btnScaler4=(Button) findViewById(R.id.Button04);
+		btnStart=(Button) findViewById(R.id.Button05);
+		editText1=(EditText)findViewById(R.id.editText1);
+		editText2=(EditText)findViewById(R.id.EditText03);
+		editText3=(EditText)findViewById(R.id.EditText04);
+		editText4=(EditText)findViewById(R.id.EditText05);
 		
 		final View.OnClickListener pClickListener = new ButtonListener();
 
 		m_btCalibZero.setOnClickListener(pClickListener);
 		m_btCalibWgt.setOnClickListener(pClickListener);
 		m_btQuit.setOnClickListener(pClickListener);
+		btnScaler1.setOnClickListener(pClickListener);
+		btnScaler2.setOnClickListener(pClickListener);
+		btnScaler3.setOnClickListener(pClickListener);
+		btnScaler4.setOnClickListener(pClickListener);
 		mDeviceAddress = getIntent().getStringExtra("address");
 		m_readpara = false;
 		//String characteristic = getIntent().getStringExtra("characteristic");
 	
 		mHandler = new MHandler(this);
 		
-		runnable = new Runnable(){  
-			   @Override  
-			   public void run() {  
-			    // TODO Auto-generated method stub  
-			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
-				   WorkService.requestReadWgt(mDeviceAddress);
-				   if(!m_readpara)
-				   {
-					   try {
-						WorkService.requestReadPar(mDeviceAddress);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				   }
-				   mHandler.postDelayed(this, 1000);  
-			   }   
-		};  
-		mHandler.postDelayed(runnable, 200);
-		//pTimer = new Timer();
-		//pTimer.schedule(new TimerTask() {
-			//public void run() {
-				//Log.e(TAG,"calib timer");	
-				
-			//}
-		///}, 1000, 1000);
+//		runnable = new Runnable(){  
+//			   @Override  
+//			   public void run() {  
+//			    // TODO Auto-generated method stub  
+//			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
+//				   WorkService.requestReadWgt(mDeviceAddress);
+//				   if(!m_readpara)
+//				   {
+//					   try {
+//						WorkService.requestReadPar(mDeviceAddress);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				   }
+//				   mHandler.postDelayed(this, 1000);  
+//			   }   
+//		};  
+//		mHandler.postDelayed(runnable, 200);
 
 	}
 

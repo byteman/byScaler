@@ -14,13 +14,13 @@
         <TextView
             android:id="@+id/tvWgt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="53dp"
             android:layout_alignParentTop="true"
             android:background="@drawable/setbar_bg"
             android:gravity="center"
             android:text="12345"
             android:textColor="@color/red"
-            android:textSize="72sp" />
+            android:textSize="24sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -34,6 +34,7 @@
             android:id="@+id/tvFamaLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.12"
             android:gravity="center"
             android:paddingLeft="10dp"
             android:text="砝码重量"
@@ -43,7 +44,7 @@
             android:id="@+id/etWgt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.78"
             android:gravity="center"
             android:hint="@string/fama"
             android:inputType="number"
@@ -76,6 +77,15 @@
             android:inputType="number"
             android:textColor="#00f"
             android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btCalbWgt"
+            style="@style/bybutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.93"
+            android:text="@string/calibwgt" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -85,13 +95,6 @@
         android:layout_above="@+id/layOper"
         android:layout_gravity="bottom"
         android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/btCalbWgt"
-            style="@style/bybutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/calibwgt" />
 
         <TextView
             android:id="@+id/tvLoad"
@@ -153,5 +156,119 @@
             android:layout_weight="1"
             android:text="返回" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/Button01"
+        style="@style/bybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/layWgt2"
+        android:text="Scaler1" />
+
+    <Button
+        android:id="@+id/Button03"
+        style="@style/bybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/Button01"
+        android:text="Scaler2" />
+
+    <Button
+        android:id="@+id/Button04"
+        style="@style/bybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/Button02"
+        android:layout_below="@+id/Button02"
+        android:text="Scaler4" />
+
+    <EditText
+        android:id="@+id/EditText01"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_weight="0.78"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/fama"
+        android:inputType="number"
+        android:labelFor="@id/etWgt"
+        android:textColor="#00f"
+        android:textSize="20sp" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/EditText02"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_weight="0.78"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/fama"
+        android:inputType="number"
+        android:labelFor="@id/etWgt"
+        android:textColor="#00f"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/Button02"
+        style="@style/bybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/Button03"
+        android:text="Scaler3" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Button01"
+        android:layout_alignBottom="@+id/Button01"
+        android:layout_toRightOf="@+id/Button01"
+        android:ems="10" />
+
+    <Button
+        android:id="@+id/Button05"
+        style="@style/bybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/EditText05"
+        android:layout_centerVertical="true"
+        android:text="start auto calibrate" />
+
+    <EditText
+        android:id="@+id/EditText03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/Button03"
+        android:layout_toRightOf="@+id/Button03"
+        android:ems="10" />
+
+    <EditText
+        android:id="@+id/EditText04"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditText03"
+        android:layout_toRightOf="@+id/Button04"
+        android:ems="10" />
+
+    <EditText
+        android:id="@+id/EditText05"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Button04"
+        android:layout_alignBottom="@+id/Button04"
+        android:layout_toRightOf="@+id/Button04"
+        android:ems="10" />
 
 </RelativeLayout>

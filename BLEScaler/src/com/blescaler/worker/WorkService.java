@@ -650,8 +650,23 @@ public class WorkService extends Service {
 		return write_buffer(buffer);
 		
 	}
+	public static boolean  hand_k(int index, int value)
+	{
+		short s_index = (short)index;
+		byte[] cmd = new byte[6];
+		//序号
+		cmd[0] = (byte) ((s_index>>8)&0xff);
+		cmd[1] = (byte) ((s_index)&0xff);
+		
+		cmd[2] = (byte) ((value>>8)&0xff);
+		cmd[3] = (byte) ((value)&0xff);
+		cmd[4] = (byte) ((value>>24)&0xff);
+		cmd[5] = (byte) ((value>>16)&0xff);
+		
+		return write_registers(36,3,cmd);
+	}
 //修改n个寄存器的值.发送后异步等待通知
-	private static boolean  write_registers(String address,int reg_addr, int nb,byte[] value)
+	private static boolean  write_registers(int reg_addr, int nb,byte[] value)
 	{
 		//设备地址 1byte
 		//命令类型 0x10
@@ -663,17 +678,24 @@ public class WorkService extends Service {
 		short u_reg_addr = (short)reg_addr;
 		short u_reg_num  = (short)nb;
 		
-		byte buffer[]={0x20,0x10,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
+		//byte buffer[]={0x20,0x10,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
 		
-		byte[] cmd = new byte[8+nb*2];
-	
-		System.arraycopy(buffer, 0, cmd, 0, 6);
+		byte[] buffer = new byte[8+nb*2];
+		buffer[0] = 0x20;
+		buffer[1] = 0x10;
+		buffer[2] = (byte)((u_reg_addr>>8)&0xff);
+		buffer[3] = (byte)(u_reg_addr&0xFF);
+		buffer[4] = (byte)((u_reg_num>>8)&0xff);
+		buffer[5] = (byte)(u_reg_num&0xFF);
+		
+		System.arraycopy(buffer, 6, value, 0, value.length);
 		
 		
 		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
 		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
-		buffer[6] = (byte)(crc16&0xFF);
-		buffer[7] = (byte)((crc16>>8)&0xff);
+		buffer[buffer.length-1] = (byte)((crc16>>8)&0xff);
+		buffer[buffer.length-2] = (byte)(crc16&0xFF);
+		
 		
 		return write_buffer(buffer);
 	}
