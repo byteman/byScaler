@@ -139,7 +139,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					// TODO Auto-generated method stub
 					//if (!checkunit(edt_unit.getText().toString(), sp))
 					//	return;
-					
+					ScalerParam sp = new ScalerParam();
 					int nov = Integer.parseInt(edt_nov.getText().toString());
 					int mtd = Integer.parseInt(edit_mtd.getText().toString());
 					int zeroinit = Integer.parseInt(edit_zeroinit.getText().toString());
@@ -147,7 +147,12 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					int filter = Integer.parseInt(edit_filter.getText().toString());
 					int handzero = Integer.parseInt(edit_handzero.getText().toString());
 					
-					
+					sp.setNov(nov);
+					sp.setMtd((byte) mtd);
+					sp.setPwr_zerotrack((byte) zeroinit);
+					sp.setZerotrack((byte) zerotrack);
+					sp.setFilter((byte)filter);
+					sp.setHand_zerotrack((byte) handzero);
 					
 					int div_id = (int) sp_div.getSelectedItemId();
 					short div = 1;
@@ -158,27 +163,32 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					else if (div_id == 4) div = 20;
 					else if (div_id == 5) div = 50;
 					else if (div_id == 6) div = 100;
+					sp.setResultion((byte) div);
 					
+					sp.setDignum((byte) sp_dignum.getSelectedItemId());
+					sp.setDignum((byte) sp_unit.getSelectedItemId());
 					
 					try {
-						WorkService.write_short_register((short)3, (short)sp_dignum.getSelectedItemId());
-						Thread.sleep(50);
-						WorkService.write_short_register((short)8, (short)div);
-						Thread.sleep(50);
-						WorkService.write_short_register((short)14, (short)sp_unit.getSelectedItemId());
-						Thread.sleep(50);
-						WorkService.write_int_register((short)10, nov);
-						Thread.sleep(50);
-						WorkService.write_short_register((short)15, (short) zeroinit);
-						Thread.sleep(50);
-						WorkService.write_short_register((short)16, (short) handzero);
-						Thread.sleep(50);
-						WorkService.write_short_register((short)17, (short) zerotrack);
-						Thread.sleep(50);
-						WorkService.write_short_register((short)18, (short) mtd);
-						Thread.sleep(50);
-						WorkService.write_short_register((short)19, (short) filter);
-						Thread.sleep(50);
+						WorkService.requestWriteParamValue(address,sp);
+						
+//						WorkService.write_short_register((short)3, (short)sp_dignum.getSelectedItemId());
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)8, (short)div);
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)14, (short)sp_unit.getSelectedItemId());
+//						Thread.sleep(50);
+//						WorkService.write_int_register((short)10, nov);
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)15, (short) zeroinit);
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)16, (short) handzero);
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)17, (short) zerotrack);
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)18, (short) mtd);
+//						Thread.sleep(50);
+//						WorkService.write_short_register((short)19, (short) filter);
+//						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

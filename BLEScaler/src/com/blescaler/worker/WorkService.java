@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.blescaler.db.Config;
 import com.blescaler.db.WeightRecord;
 import com.blescaler.ui.BleApplication;
+import com.blescaler.utils.Register;
 import com.blescaler.utils.Utils;
 import com.lvrenyang.utils.DataUtils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
@@ -613,6 +614,19 @@ public class WorkService extends Service {
 	
 		
 	}
+	public static byte[]  begin_write_registers(short reg_addr, int reg_num)
+	{
+		return null;	
+	}
+	public static boolean  write_short2buffer(byte[] buffer,int offset,short value)
+	{
+		return true;	
+	}
+	public static boolean  write_int2buffer(byte[] buffer,int offset,int value)
+	{
+		return true;	
+	}
+	
 	//向某个寄存器写入值.
 	public static boolean  write_short_register(short reg_addr, short value)
 	{
@@ -653,17 +667,24 @@ public class WorkService extends Service {
 	public static boolean  hand_k(int index, int value)
 	{
 		short s_index = (short)index;
-		byte[] cmd = new byte[6];
-		//序号
-		cmd[0] = (byte) ((s_index>>8)&0xff);
-		cmd[1] = (byte) ((s_index)&0xff);
 		
-		cmd[2] = (byte) ((value>>8)&0xff);
-		cmd[3] = (byte) ((value)&0xff);
-		cmd[4] = (byte) ((value>>24)&0xff);
-		cmd[5] = (byte) ((value>>16)&0xff);
+		Register reg = new Register();
+		reg.BeginWrite(36);
+		reg.putShort((short) index);
+		reg.putInt(value);
 		
-		return write_registers(36,3,cmd);
+		return write_buffer(reg.getResult());
+//		byte[] cmd = new byte[6];
+//		//序号
+//		cmd[0] = (byte) ((s_index>>8)&0xff);
+//		cmd[1] = (byte) ((s_index)&0xff);
+//		
+//		cmd[2] = (byte) ((value>>8)&0xff);
+//		cmd[3] = (byte) ((value)&0xff);
+//		cmd[4] = (byte) ((value>>24)&0xff);
+//		cmd[5] = (byte) ((value>>16)&0xff);
+//		
+//		return write_registers(36,3,cmd);
 	}
 //修改n个寄存器的值.发送后异步等待通知
 	private static boolean  write_registers(int reg_addr, int nb,byte[] value)
@@ -680,15 +701,16 @@ public class WorkService extends Service {
 		
 		//byte buffer[]={0x20,0x10,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
 		
-		byte[] buffer = new byte[8+nb*2];
+		byte[] buffer = new byte[9+nb*2];
 		buffer[0] = 0x20;
 		buffer[1] = 0x10;
 		buffer[2] = (byte)((u_reg_addr>>8)&0xff);
 		buffer[3] = (byte)(u_reg_addr&0xFF);
 		buffer[4] = (byte)((u_reg_num>>8)&0xff);
 		buffer[5] = (byte)(u_reg_num&0xFF);
+		buffer[6] = (byte)(u_reg_num*2);
 		
-		System.arraycopy(buffer, 6, value, 0, value.length);
+		System.arraycopy(buffer, 7, value, 0, value.length);
 		
 		
 		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
@@ -787,11 +809,67 @@ public class WorkService extends Service {
 	{
 		if(mBle == null) return false;
 
-		BleGattCharacteristic chars = scalers.get(address).GetBleChar();
+		Scaler scaler = scalers.get(address);
+		if(scaler==null) return false;
+		BleGattCharacteristic chars = scaler.GetBleChar();
 		//BleGattCharacteristic chars = mChars.get(address);
 		if(chars == null) return false;
 		if(s == null) return false;
+		ScalerParam sp = scaler.para;
+		try{
+		if(sp.getDignum() != s.getDignum())
+		{
+			
+			write_short_register((short)3, (short)s.getDignum());
+			Thread.sleep(50);
+		}
+		if(sp.getResultion() != s.getResultion())
+		{
+			write_short_register((short)8, (short)s.getResultion());
+			Thread.sleep(50);
+		}
+		if(sp.getUnit() != s.getUnit())
+		{
+			WorkService.write_short_register((short)14, (short)s.getUnit());
+			Thread.sleep(50);
+		}
+		if(sp.getNov() != s.getNov())
+		{
+			WorkService.write_int_register((short)14, s.getNov());
+			Thread.sleep(50);
+		}
+		if(sp.getPwr_zerotrack() != s.getPwr_zerotrack())
+		{
+			WorkService.write_short_register((short)15, (short)s.getPwr_zerotrack());
+			Thread.sleep(50);
+		}
+		if(sp.getHand_zerotrack() != s.getHand_zerotrack())
+		{
+			WorkService.write_short_register((short)16, (short)s.getHand_zerotrack());
+			Thread.sleep(50);
+		}
+		if(sp.getZerotrack() != s.getZerotrack())
+		{
+			WorkService.write_short_register((short)17, (short)s.getZerotrack());
+			Thread.sleep(50);
+		}
+		if(sp.getMtd() != s.getMtd())
+		{
+			WorkService.write_short_register((short)18, (short)s.getMtd());
+			Thread.sleep(50);
+		}
+		if(sp.getFilter() != s.getFilter())
+		{
+			WorkService.write_short_register((short)19, (short)s.getFilter());
+			Thread.sleep(50);
+		}
 		
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+
 		
 		//chars.setValue(s.getSetCmdBuffer());
 		
