@@ -674,7 +674,7 @@ public class WorkService extends Service {
 	public static boolean  auto_k(int index)
 	{
 		Register reg = new Register();
-		reg.BeginWrite(44);
+		reg.BeginWrite(Global.REG_AUTO_DIFF_CALIB_INDEX);
 		reg.putShort((short) index);
 				
 		return write_buffer(reg.getResult());
@@ -683,7 +683,7 @@ public class WorkService extends Service {
 	{
 		
 		Register reg = new Register();
-		reg.BeginWrite(36+index*2);
+		reg.BeginWrite(Global.REG_SENSOR_DIFF_K1+index*2);
 		//reg.putShort((short) index);
 		reg.putInt(value);
 		
@@ -801,7 +801,7 @@ public class WorkService extends Service {
 	{
 		Register reg = new Register();
 		//1st
-		reg.BeginWrite(20);
+		reg.BeginWrite(Global.REG_CALIB_INDEX);
 		reg.putShorts((short) 0,(short)1);
 	
 		return write_buffer(reg.getResult());
@@ -826,7 +826,7 @@ public class WorkService extends Service {
 	{
 		Register reg = new Register();
 		//1st
-		reg.BeginWrite(20);
+		reg.BeginWrite(Global.REG_CALIB_INDEX);
 		reg.putShorts((short) point,(short)1);
 		if(point > 0)
 			reg.putInt(calibWet);
@@ -857,7 +857,7 @@ public class WorkService extends Service {
 		try{
 			Register reg = new Register();
 			//1st
-			reg.BeginWrite(8);
+			reg.BeginWrite(Global.REG_DIV1);
 			
 			reg.putShorts((short)s.getResultionx(),(short)s.getResultionx());	
 			reg.putInts(s.getNov());	
@@ -866,22 +866,29 @@ public class WorkService extends Service {
 			Thread.sleep(200);
 			
 			//2nd
-			reg.BeginWrite(14);
+			reg.BeginWrite(Global.REG_UNIT);
 			reg.putShorts(s.getUnit(),s.getPwr_zerotrack(),s.getHand_zerotrack());
 			
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
 			
-			reg.BeginWrite(17);
+			reg.BeginWrite(Global.REG_ZERO_TRACK_SPAN);
 			reg.putShorts(s.getZerotrack(),s.getMtd(),s.getFilter());
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
 			
 			//3rd
-			reg.BeginWrite(3); //dot
+			reg.BeginWrite(Global.REG_DOTNUM); //dot
 			reg.putShort(s.getDignum());
 			write_buffer(reg.getResult());
 			Thread.sleep(100);
+			
+			reg.BeginWrite(Global.REG_SLEEP_S); //dot
+			reg.putShort(s.getSleep());
+			reg.putShort(s.getSnr_num());
+			write_buffer(reg.getResult());
+			Thread.sleep(100);
+			
 			
 			
 //			reg.BeginWrite(8);
@@ -1283,7 +1290,7 @@ public class WorkService extends Service {
 	public static boolean setZero()
 	{
 		Register reg = new Register();
-		reg.BeginWrite(2);
+		reg.BeginWrite(Global.REG_OPERATION);
 		reg.putShort((short) 1);
 		return write_buffer(reg.getResult());
 	}
@@ -1344,7 +1351,7 @@ public class WorkService extends Service {
 //		write_register((short)index,value);
 //		return true;
 		Register reg = new Register();
-		reg.BeginWrite(47);
+		reg.BeginWrite(Global.REG_BATTERY);
 		reg.putShort((short) (index));
 		return write_buffer(reg.getResult());
 		

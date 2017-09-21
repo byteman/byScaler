@@ -143,6 +143,7 @@ public class Global {
 	public static final int CMD_CONNECT_SCALER=100314;
 	
 	public static final int REG_WEIGHT = 0;
+	public static final int REG_OPERATION = 2;
 	public static final int REG_DOTNUM = 3;
 	public static final int REG_DIV1 = 8;
 	public static final int REG_SPAN1 = 10;
@@ -161,8 +162,9 @@ public class Global {
 	public static final int REG_SENSOR_DIFF_K4 = 42;
 	public static final int REG_AUTO_DIFF_CALIB_INDEX = 44;
 	public static final int REG_SLEEP_S = 45;
-	public static final int REG_BATTERY = 46;
-	public static final int REG_SENSOR_NUM = 47;
+	public static final int REG_SENSOR_NUM = 46;
+	public static final int REG_BATTERY = 47;
+	
 	public static final int REG_LAMP_CTRL = 48;
 	public static final int REG_AD_CHAN1 = 49;
 	public static final int REG_AD_CHAN2 = 51;
