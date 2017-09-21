@@ -5,6 +5,7 @@ import com.blescaler.ui.ble.FlourWeightFragment;
 import com.blescaler.ui.ble.OneWeightFragment;
 import com.blescaler.ui.ble.WeightCountFragment;
 import com.blescaler.ui.BleApplication;
+import com.blescaler.ui.CalibActivity;
 import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.PairedScalerActivity;
@@ -235,9 +236,14 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		if(pos == 4)
 		{
 		
-		   Intent intent = new Intent(this, PairedScalerActivity.class);
-		   intent.putExtra("act", "param");
-		   startActivity(intent); 
+//		   Intent intent = new Intent(this, PairedScalerActivity.class);
+//		   intent.putExtra("act", "param");
+//		   startActivity(intent); 
+		   
+		   Intent intent = new Intent(MainActivity.this, ScalerParamActivity.class);
+		   intent.putExtra("address","00");
+		   startActivity(intent);
+			
 		   return;
 		}
 		if(pos == 5)
@@ -260,17 +266,24 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		}
 		if(pos == 8)
 		{
-			 Intent intent = new Intent(this, PairedScalerActivity.class);
-			 intent.putExtra("act", "calib");
-			 startActivity(intent); 
+//			 Intent intent = new Intent(this, PairedScalerActivity.class);
+//			 intent.putExtra("act", "calib");
+//			 startActivity(intent); 
+			  Intent intent = new Intent(MainActivity.this, CalibActivity.class);
+			   intent.putExtra("address","00");
+			   startActivity(intent);
+			   
 			 return;
 		}
 		if(pos == 9)
 		{
-			  Intent intent = new Intent(this, PairedScalerActivity.class);
-			  intent.putExtra("act", "debug");
-			  startActivity(intent); 
-		
+//			  Intent intent = new Intent(this, PairedScalerActivity.class);
+//			  intent.putExtra("act", "debug");
+//			  startActivity(intent); 
+			 Intent intent = new Intent(MainActivity.this, SysParamActivity.class);
+			   intent.putExtra("address","00");
+			   startActivity(intent);
+			   
 			   
 			  return;
 		}

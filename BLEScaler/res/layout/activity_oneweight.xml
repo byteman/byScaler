@@ -102,7 +102,7 @@
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/btn_save"
             android:background="@drawable/bt_oval_shape"
-            android:text="reset" />
+            android:text="poweroff" />
 
         <com.blescaler.ui.ble.AutoBgButton
             android:id="@+id/btn_zero"

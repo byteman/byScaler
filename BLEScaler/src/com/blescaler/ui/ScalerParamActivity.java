@@ -86,6 +86,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		btn_read.setOnClickListener(this);
 		btn_write = (Button) findViewById(R.id.btn_save);
 		btn_write.setOnClickListener(this);
+		btn_eeprom = (Button) findViewById(R.id.btn_eeprom);
+		btn_eeprom.setOnClickListener(this);
 		
 		
 		edt_nov = (EditText) findViewById(R.id.ed_nov);

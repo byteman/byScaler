@@ -286,11 +286,10 @@ public class CalibActivity extends Activity {
 					
 					if(d != null && theActivity.m_tvWgt!=null)
 					{
-						if(d.getAddress().equals(mDeviceAddress))
-						{
-							String w = d.getWeight()+"";
-							theActivity.m_tvWgt.setText(w);
-						}
+						
+						String w = d.getWeight()+"";
+						theActivity.m_tvWgt.setText(w);
+					
 							
 					}
 					break;

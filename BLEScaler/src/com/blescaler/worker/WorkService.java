@@ -3,10 +3,14 @@ package com.blescaler.worker;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Formatter.BigDecimalLayoutForm;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.R.bool;
 import android.app.Service;
@@ -59,6 +63,11 @@ public class WorkService extends Service {
 	private static String strUnit = "kg";
 	private static int max_count = 1;	//蓝牙秤设备个数.
 	private static String mPrinterAddress; //打印机蓝牙地址
+	private static BlockingQueue<byte[]> m_resend_queue = new ArrayBlockingQueue<byte[]>(10);
+	//private static ConcurrentHashMap<Integer,CmdObject> m_cmd_queue = new ConcurrentHashMap<Integer,CmdObject>();
+	private static HashMap<Integer,CmdObject> m_cmd_queue = new HashMap<Integer,CmdObject>();
+	
+	
 	////////////////////称重变量////////////////////////////////
 	private static int zero = 0; //零点重量
 	private static int next = 0;
@@ -68,23 +77,52 @@ public class WorkService extends Service {
 	private static int net  = 0; //净重 = 毛重-皮重-零点重量.
 	private static boolean is_net_state = false; // 是否是净重状态,默认是毛重状态
 	private Object lock = new Object();
+	private Object cmd_lock = new Object();
 	/////////////////////////////////////////////////
 	private Thread reConnThread = new Thread(new Runnable() {
 		
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			//Array<Integer> x = new ArrayList<Integer>();
 			while(true)
 			{
-				try {
-					while(hasConnectAll())
+				
+				synchronized (cmd_lock) {
+					Iterator<Map.Entry<Integer,CmdObject>> it = m_cmd_queue.entrySet().iterator();
+					while(it.hasNext())
 					{
-						synchronized (lock) {
-							lock.wait();
+						Map.Entry<Integer,CmdObject> entry = it.next();
+						CmdObject o = entry.getValue();
+						if(o!=null)
+						{
+							if(o.isTimeout())
+							{
+								write_buffer(o.value);
+							}
+							if(o.needRemove())
+							{
+								it.remove();
+							}
+							
 						}
 					}
-					connectAll();
-					Thread.sleep(6000);
+//					for(Integer key:m_cmd_queue.keySet()){
+//						CmdObject o = m_cmd_queue.get(key);
+//						if(o!=null)
+//						{
+//							if(o.isTimeout())
+//							{
+//								write_buffer(o.value);
+//							}
+//							
+//						}
+//						
+//					}
+				}
+				
+				try {
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -92,11 +130,63 @@ public class WorkService extends Service {
 			}
 		}
 	});
+	private Thread reSendThread = new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while(true)
+			{
+				try {
+					byte[] cmd = m_resend_queue.take();
+					if(cmd !=null)
+					{
+						write_buffer(cmd);
+						Thread.sleep(200);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	});
+	public void recv_object(byte[] cmd)
+	{
+		int reg_addr = cmd[3];
+		if(reg_addr ==0 || reg_addr==47)
+		   return;
+		synchronized (cmd_lock) {
+			if(m_cmd_queue.containsKey(reg_addr))
+			{
+				m_cmd_queue.remove(reg_addr);
+				
+			}
+		}
+		
+	}
 	public void notifyReconnect()
 	{
 		synchronized (lock) {
 			lock.notify();
 		}
+	}
+	static public boolean addCmd(byte[] cmd)
+	{
+		int reg_addr = cmd[3]; 
+		CmdObject o = null;
+		//m_cmd_queue.containsKey(reg_addr)
+		if(m_cmd_queue.containsKey(reg_addr))
+		{
+			o = m_cmd_queue.get(reg_addr);
+			o.reset();
+			return true;
+		}
+		o = new CmdObject(cmd);
+		m_cmd_queue.put(reg_addr, o);
+		
+		return true;
+		
 	}
 	//蓝牙秤消息接收器.
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
@@ -256,7 +346,7 @@ public class WorkService extends Service {
 				}
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_FAILERESULT);
 				
-				
+				recv_object(val);
 				int code = d.parseData(val, msg);
 				if(code == 0)
 				{
@@ -423,7 +513,8 @@ public class WorkService extends Service {
 		
 		Log.v("DrawerService", "onCreate");
 		myCtx = this;
-		//reConnThread.start();
+		reConnThread.start();
+		reSendThread.start();
 	}
 
 	@Override
@@ -676,8 +767,18 @@ public class WorkService extends Service {
 		
 		return write_buffer(buffer);
 	}
-//发送数据给连接了的设备.
 	private static boolean  write_buffer(byte[] value)
+	{
+		if(value[3] != 0 && value[3]!=47)
+		{
+			//addCmd(value);
+			
+			addCmd(value);
+		}
+		return write_buffer2(value);
+	}
+//发送数据给连接了的设备.
+	private static boolean  write_buffer2(byte[] value)
 	{
 		if(mBle == null) return false;
 
@@ -692,8 +793,7 @@ public class WorkService extends Service {
 				 
 				 if(dev!=null && dev.isConnected())
 				 {
-					 
-					 	
+
 						BleGattCharacteristic chars = dev.GetBleChar();
 						if(chars == null) return false;
 						
@@ -807,7 +907,7 @@ public class WorkService extends Service {
 	{
 		if(mBle == null) return false;
 
-		Scaler scaler = scalers.get(address);
+		Scaler scaler = scalers2.get(0);
 		if(scaler==null) return false;
 		BleGattCharacteristic chars = scaler.GetBleChar();
 		//BleGattCharacteristic chars = mChars.get(address);

@@ -58,7 +58,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private WeightDao wDao;
 	
 	private int timeout=0;
-	private int cont=0,cout_2s;
+	public int cont=0,cout_2s,cout_3s=0;
 	private boolean pause = false,disconnect=false;
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
@@ -99,7 +99,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				   WorkService.readPower();
 				   cout_2s = 0;
 			   }
-			  
+			   if(cout_3s > 0)
+			   {
+				   cout_3s--;
+			   }
 			   mHandler.postDelayed(this, 200);  
 		}
 		
@@ -254,6 +257,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	    }
 	@Override
 	public void onClick(View arg0) {
+		cout_3s = 5;
 		switch(arg0.getId())
 		{
 		case R.id.btn_still:
@@ -404,6 +408,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					
 					theActivity.timeout = 0;
 					if(d!=null)d.dump_info();
+					if(theActivity.cout_3s > 0)
+					{
+						return;
+					}
 					WorkService.readNextWgt(true);
 					
 					int dot = d.GetDotNum();

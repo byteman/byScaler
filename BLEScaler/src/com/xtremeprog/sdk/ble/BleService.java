@@ -339,7 +339,7 @@ public class BleService extends Service {
 				Log.e(TAG, "-processrequest type " + requestType + " address "
 						+ address + " [success: " + success + "]");
 			}
-			mTimeoutQueue.offer(success?0:1); //提供数据并且唤醒.
+			//mTimeoutQueue.offer(success?0:1); //提供数据并且唤醒.
 			
 		}
 
@@ -420,9 +420,11 @@ public class BleService extends Service {
 			break;
 		case READ_DESCRIPTOR:
 			break;
+		
 		default:
 			break;
 		}
+		
 
 		if (!ret) {
 		
@@ -435,6 +437,7 @@ public class BleService extends Service {
 		else {
 			Log.e(TAG,"wait -processrequest type " + mCurrentRequest.type
 					+ " address " + mCurrentRequest.address);
+			
 //			mTimeoutQueue.clear();
 //			Integer v = mTimeoutQueue.poll(100,TimeUnit.MILLISECONDS);
 //			if(v == null)
@@ -442,14 +445,28 @@ public class BleService extends Service {
 //				//timeout
 //				Log.e(TAG,"timeout stop -processrequest type " + mCurrentRequest.type
 //						+ " address " + mCurrentRequest.address);
-//				mRequestQueue.clear();
+//				//mRequestQueue.clear();
+//				if(mCurrentRequest.type==BleRequest.RequestType.WRITE_CHARACTERISTIC||
+//						mCurrentRequest.type==BleRequest.RequestType.READ_CHARACTERISTIC	)
+//				{
+//					byte[] val = mCurrentRequest.characteristic.getValue();
+//					if(val.length > 4)
+//					{
+//						int reg_addr = (val[2]<<8)+val[3];
+//						if(reg_addr != 0)
+//							continue;
+//					}
+//					
+//				}
 //			}
 //			else
 			{
 				Log.e(TAG,"stop -processrequest type " + mCurrentRequest.type
 						+ " address " + mCurrentRequest.address);
+				return;
 			}
 		
+			
 			
 		}
 	}
