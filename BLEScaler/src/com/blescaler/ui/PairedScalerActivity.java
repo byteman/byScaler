@@ -83,7 +83,7 @@ public class PairedScalerActivity extends Activity {
 				}
 				else if(myact.equals("debug"))
 				{
-					Intent intent = new Intent(PairedScalerActivity.this, CalibActivity.class);
+					Intent intent = new Intent(PairedScalerActivity.this, SysParamActivity.class);
 					intent.putExtra("address",addr);
 					startActivity(intent);
 				}

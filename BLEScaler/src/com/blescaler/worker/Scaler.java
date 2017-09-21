@@ -21,6 +21,12 @@ public class Scaler {
 	private int rx_cnt = 0;
 	private long waitTime = 0;
 	private String unit = "kg";
+	public String getUnit() {
+		return unit;
+	}
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
 	private int dot_num = 0;
 	private boolean zero = false;
 	private boolean standstill = false; //重量稳定
@@ -28,6 +34,13 @@ public class Scaler {
 	private boolean gross_overflow = false; //Scaling too sensitive
 	private boolean ad_overflow = false; //ADC overflow 
 	private boolean ng_state = false;
+	private boolean sleep_mode = false;
+	public boolean isSleep_mode() {
+		return sleep_mode;
+	}
+	public void setSleep_mode(boolean sleep_mode) {
+		this.sleep_mode = sleep_mode;
+	}
 	public float[] allks = new float[4];
 	public boolean isStandstill() {
 		return standstill;
@@ -165,13 +178,30 @@ public class Scaler {
 	{
 		
 	}
-	private void parseState(byte st)
+	private void parseState(short st)
 	{
 				
 		this.standstill = ((st&0x1)!=0)?true:false;
 		this.zero = ((st&0x2)!=0)?true:false;
 		this.ng_state = ((st&0x4)!=0)?true:false;
-		
+		if(((st>>9)&1)!=0)
+		{
+			this.unit="kg";
+		}
+		else if(((st>>10)&1)!=0)
+		{
+			this.unit="g";
+		}
+		else if(((st>>11)&1)!=0)
+		{
+			this.unit="lb";
+		}
+		if(((st>>8)&1)!=0)
+		{
+			this.sleep_mode=false;
+		}else{
+			this.sleep_mode=true;
+		}
 	}
 	//
 	public int parseData(byte[] val, Message msg) {
@@ -192,16 +222,16 @@ public class Scaler {
 				int reg_num = (val[2]-2)/2;
 				int reg_addr = (val[3]<<8)+val[4];
 				
-				if(reg_addr == 0x0)
+				if(reg_addr == Global.REG_WEIGHT)
 				{
 					byte w[] = { 0, 0, 0, 0 };
-					if(val.length <  10)
+					if(val.length <  15)
 					{
 						 return 0;
 					}
 					System.arraycopy(val, 5, w, 0, 4);
 					
-					parseState(val[10]);
+					parseState((short) ((val[9]<<8)+val[10]));
 					short dot = (short) ((val[11]<<8)+val[12]);
 					setWeight(Utils.bytesToWeight(w),dot);
 					this.dot_num = val[12];
@@ -210,12 +240,12 @@ public class Scaler {
 					msg.arg1 = weight;
 					
 				}
-				else if(reg_addr == 0x3 )
+				else if(reg_addr == Global.REG_DOTNUM )
 				{					
 					para.setDignum(val[6]);
 					msg.arg1 = 0;				
 				}
-				else if(reg_addr == 8)
+				else if(reg_addr == Global.REG_DIV1)
 				{
 					para.setResultionx(val[6]);
 					
@@ -223,26 +253,26 @@ public class Scaler {
 					
 					
 				}
-				else if(reg_addr == 14)
+				else if(reg_addr == Global.REG_UNIT)
 				{
+					if(val.length < 17) return 0;;
 					para.setUnit(val[6]);
 					para.setPwr_zerotrack(val[8]);
 					para.setHand_zerotrack(val[10]);
 					para.setZerotrack(val[12]);
 					para.setMtd(val[14]);
 					para.setFilter(val[16]);
-					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
-					msg.arg1 = 0;			
+					
 				}
 				
-				else if(reg_addr == 36)
+				else if(reg_addr == Global.REG_SENSOR_DIFF_K1)
 				{
 					allks[0]=(float)Utils.bytesToInt(val, 5)/1000.0f;
 					allks[1]=(float)Utils.bytesToInt(val, 9)/1000.0f;
 					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
 					msg.arg1 = 1;
 				}
-				else if(reg_addr == 40)
+				else if(reg_addr == Global.REG_SENSOR_DIFF_K3)
 				{
 					
 					allks[2]=(float)Utils.bytesToInt(val, 5)/1000.0f;
@@ -250,32 +280,59 @@ public class Scaler {
 					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
 					msg.arg1 = 2;
 				}
-				else if(reg_addr == 46)
+				else if(reg_addr == Global.REG_AD_CHAN1)
+				{
+					
+					msg.arg1 = Utils.bytesToInt(val, 5);
+					msg.arg2 = Utils.bytesToInt(val, 9);
+					
+					msgType = Global.MSG_SCALER_AD_CHAN1_RESULT;
+					
+				}
+				else if(reg_addr == Global.REG_AD_CHAN3)
+				{
+					
+					msg.arg1 = Utils.bytesToInt(val, 5);
+					msg.arg2 = Utils.bytesToInt(val, 9);
+					
+					msgType = Global.MSG_SCALER_AD_CHAN2_RESULT;
+					
+				}
+				else if(reg_addr == Global.REG_BATTERY)
 				{
 					msgType = Global.MSG_SCALER_POWER_RESULT;
 					msg.arg1 = (val[5]<<8)+val[6];
+				}
+				else if(reg_addr == Global.REG_SLEEP_S)
+				{
+					
+					para.setSleep((short) ((val[5]<<8)+val[6]));
+					para.setSnr_num((short) ((val[7]<<8)+val[8]));
+					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
+					msg.arg1 = 0;			
 				}
 			}
 			else if(val[1] == 0x10)
 			{
 				//写入的通知.
 				int reg_addr = (val[2]<<8)+val[3];
-				if(reg_addr == 0x8)
+				if(reg_addr == Global.REG_SLEEP_S)
 				{
 					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
 					msg.arg1 = 0;		
 				}
-				else if(reg_addr == 20)
+				else if(reg_addr == Global.REG_CALIB_INDEX)
 				{
 					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
 					msg.arg1 = 0;
 				}
-				else if(reg_addr == 44)
+				else if(reg_addr == Global.REG_AUTO_DIFF_CALIB_INDEX)
 				{
 					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
 					msg.arg1 = 0;
 				}
-				else if(reg_addr == 47)
+		
+				else if(reg_addr == Global.REG_LAMP_CTRL)
 				{
 					msgType = Global.MSG_SCALER_CTRL_RESULT;
 					msg.arg1 = 0;

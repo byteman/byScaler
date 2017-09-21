@@ -74,6 +74,8 @@ public class Global {
 	public static final int MSG_SCALER_PAR_GET_FITER_RESULT=100055;	//读取秤参数的响应
 	public static final int MSG_SCALER_CTRL_RESULT=100056;	//读取秤参数的响应
 	public static final int MSG_SCALER_POWER_RESULT=100057;	//读取秤参数的响应
+	public static final int MSG_SCALER_AD_CHAN1_RESULT=100058;	//读取秤参数的响应
+	public static final int MSG_SCALER_AD_CHAN2_RESULT=100059;	//读取秤参数的响应
 	
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
@@ -145,6 +147,7 @@ public class Global {
 	public static final int REG_WEIGHT = 0;
 	public static final int REG_OPERATION = 2;
 	public static final int REG_DOTNUM = 3;
+	public static final int REG_TARE = 6;
 	public static final int REG_DIV1 = 8;
 	public static final int REG_SPAN1 = 10;
 	public static final int REG_UNIT = 14;

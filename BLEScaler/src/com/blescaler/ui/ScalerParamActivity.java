@@ -169,30 +169,9 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					
 					sp.setDignum((byte) sp_dignum.getSelectedItemId());
 					sp.setUnit((byte) sp_unit.getSelectedItemId());
-					
-					
+
 					WorkService.requestWriteParamValue(address,sp);
-						
-//						WorkService.write_short_register((short)3, (short)sp_dignum.getSelectedItemId());
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)8, (short)div);
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)14, (short)sp_unit.getSelectedItemId());
-//						Thread.sleep(50);
-//						WorkService.write_int_register((short)10, nov);
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)15, (short) zeroinit);
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)16, (short) handzero);
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)17, (short) zerotrack);
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)18, (short) mtd);
-//						Thread.sleep(50);
-//						WorkService.write_short_register((short)19, (short) filter);
-//						Thread.sleep(50);
-				
-					
+		
 				}
 				
 			}).start();
@@ -223,6 +202,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		edit_zeroinit.setText(""+sp.getPwr_zerotrack());	
 		edt_nov.setText(String.valueOf(sp.getNov()));
 		edit_filter.setText(String.valueOf(sp.getFilter()));
+		edit_sleep.setText(String.valueOf(sp.getSleep()));
+		edit_srs_num.setText(String.valueOf(sp.getSnr_num()));
 		
 	}
 	static class MHandler extends Handler {

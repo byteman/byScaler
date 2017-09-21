@@ -267,9 +267,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		}
 		if(pos == 9)
 		{
-			  Intent intent = new Intent(this, SysParamActivity.class);
+			  Intent intent = new Intent(this, PairedScalerActivity.class);
 			  intent.putExtra("act", "debug");
 			  startActivity(intent); 
+		
+			   
 			  return;
 		}
 		if (newFragment == null)

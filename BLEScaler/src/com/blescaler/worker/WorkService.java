@@ -590,56 +590,7 @@ public class WorkService extends Service {
 	
 		
 	}
-	public static byte[]  begin_write_registers(short reg_addr, int reg_num)
-	{
-		return null;	
-	}
-	public static boolean  write_short2buffer(byte[] buffer,int offset,short value)
-	{
-		return true;	
-	}
-	public static boolean  write_int2buffer(byte[] buffer,int offset,int value)
-	{
-		return true;	
-	}
-	
-	//向某个寄存器写入值.
-	public static boolean  write_short_register(short reg_addr, short value)
-	{
-		//设备地址 1byte
-		//命令类型 0x10
-		//起始寄存器地址 reg_addr
-		//寄存器数量 2bytes
-		//数据字节数 1byte (2*N)
-		//寄存器值 (2*N)字节.
-		//crc16
-		
-		byte buffer[]={0x20,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,1,2, (byte)((value>>8)&0xff),(byte)(value&0xFF),0,0};
-		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
-		buffer[10] = (byte)((crc16>>8)&0xff);
-		buffer[9] = (byte)(crc16&0xFF);
-		
-		return write_buffer(buffer);
-		
-	}
-	public static boolean  write_int_register(short reg_addr, int value)
-	{
-		//设备地址 1byte
-		//命令类型 0x10
-		//起始寄存器地址 reg_addr
-		//寄存器数量 2bytes
-		//数据字节数 1byte (2*N)
-		//寄存器值 (2*N)字节.
-		//crc16
-		
-		byte buffer[]={0x20,0x10,(byte)((reg_addr>>8)&0xff),(byte)(reg_addr&0xFF),0,2,4, (byte)((value>>8)&0xff),(byte)((value)&0xff),(byte)((value>>24)&0xff),(byte)((value>>16)&0xff),0,0};
-		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
-		buffer[12] = (byte)((crc16>>8)&0xff);
-		buffer[11] = (byte)(crc16&0xFF);
-		
-		return write_buffer(buffer);
-		
-	}
+
 	public static boolean  read_all_ks()
 	{
 
@@ -647,11 +598,11 @@ public class WorkService extends Service {
 			Register reg = new Register();
 			//1st
 			
-			write_buffer(reg.BeginRead(36,4));
+			write_buffer(reg.BeginRead(Global.REG_SENSOR_DIFF_K1,4));
 			Thread.sleep(200);
 			//3rd
 			
-			write_buffer(reg.BeginRead(40,4));
+			write_buffer(reg.BeginRead(Global.REG_SENSOR_DIFF_K3,4));
 			Thread.sleep(100);
 
 		
@@ -688,17 +639,7 @@ public class WorkService extends Service {
 		reg.putInt(value);
 		
 		return write_buffer(reg.getResult());
-//		byte[] cmd = new byte[6];
-//		//序号
-//		cmd[0] = (byte) ((s_index>>8)&0xff);
-//		cmd[1] = (byte) ((s_index)&0xff);
-//		
-//		cmd[2] = (byte) ((value>>8)&0xff);
-//		cmd[3] = (byte) ((value)&0xff);
-//		cmd[4] = (byte) ((value>>24)&0xff);
-//		cmd[5] = (byte) ((value>>16)&0xff);
-//		
-//		return write_registers(36,3,cmd);
+
 	}
 //修改n个寄存器的值.发送后异步等待通知
 	private static boolean  write_registers(int reg_addr, int nb,byte[] value)
@@ -794,7 +735,24 @@ public class WorkService extends Service {
 	}
 	public static boolean requestReadAds()
 	{
-		//read_registers();
+		try{
+			Register reg = new Register();
+			//1st
+			
+			write_buffer(reg.BeginRead(Global.REG_AD_CHAN1,4));
+			Thread.sleep(100);
+			//3rd
+			
+			write_buffer(reg.BeginRead(Global.REG_AD_CHAN3,4));
+			Thread.sleep(100);
+
+		
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+
 		return true;
 	}
 	public static boolean CalibZero() 
@@ -835,11 +793,13 @@ public class WorkService extends Service {
 	//请求读取参数
 	public static boolean requestReadPar(String address) throws InterruptedException
 	{
-		read_registers(3,1); //小数点位数
+		read_registers(Global.REG_DOTNUM,1); //小数点位数
 		Thread.sleep(50);
-		read_registers(8,5); //分度值->量程
+		read_registers(Global.REG_DIV1,5); //分度值->量程
 		Thread.sleep(50);
-		read_registers(14,6);//单位->滤波等级
+		read_registers(Global.REG_UNIT,6);//单位->滤波等级
+		Thread.sleep(50);
+		read_registers(Global.REG_SLEEP_S,2);//单位->滤波等级
 		return true;
 	}
 	//请求修改参数,修改后的参数未保存
@@ -881,64 +841,13 @@ public class WorkService extends Service {
 			reg.BeginWrite(Global.REG_DOTNUM); //dot
 			reg.putShort(s.getDignum());
 			write_buffer(reg.getResult());
-			Thread.sleep(100);
+			Thread.sleep(200);
 			
 			reg.BeginWrite(Global.REG_SLEEP_S); //dot
 			reg.putShort(s.getSleep());
 			reg.putShort(s.getSnr_num());
 			write_buffer(reg.getResult());
-			Thread.sleep(100);
-			
-			
-			
-//			reg.BeginWrite(8);
-//			
-//		if(sp.getDignum() != s.getDignum())
-//		{
-//			
-//			write_short_register((short)3, (short)s.getDignum());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getResultion() != s.getResultion())
-//		{
-//			write_short_register((short)8, (short)s.getResultion());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getUnit() != s.getUnit())
-//		{
-//			WorkService.write_short_register((short)14, (short)s.getUnit());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getNov() != s.getNov())
-//		{
-//			WorkService.write_int_register((short)14, s.getNov());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getPwr_zerotrack() != s.getPwr_zerotrack())
-//		{
-//			WorkService.write_short_register((short)15, (short)s.getPwr_zerotrack());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getHand_zerotrack() != s.getHand_zerotrack())
-//		{
-//			WorkService.write_short_register((short)16, (short)s.getHand_zerotrack());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getZerotrack() != s.getZerotrack())
-//		{
-//			WorkService.write_short_register((short)17, (short)s.getZerotrack());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getMtd() != s.getMtd())
-//		{
-//			WorkService.write_short_register((short)18, (short)s.getMtd());
-//			Thread.sleep(50);
-//		}
-//		if(sp.getFilter() != s.getFilter())
-//		{
-//			WorkService.write_short_register((short)19, (short)s.getFilter());
-//			Thread.sleep(50);
-//		}
+			Thread.sleep(200);
 		
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
@@ -967,7 +876,7 @@ public class WorkService extends Service {
 			return false;
 		}
 		Log.e(TAG, "send packet");
-		return read_registers((short)0, (short)4);
+		return read_registers((short)Global.REG_WEIGHT, (short)4);
 
 	}
 	//判断打印机是否已经连接
@@ -1196,7 +1105,7 @@ public class WorkService extends Service {
 	}
 	public static boolean readPower()
 	{
-		return read_registers((short)46, (short)1);
+		return read_registers((short)Global.REG_BATTERY, (short)1);
 	}
 	public static boolean readNextWgt(boolean needAllconnect)
 	{
@@ -1297,11 +1206,11 @@ public class WorkService extends Service {
 	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
 	public static boolean setPreTare(int preTare)
 	{
-		if(is_net_state) return false; //净重状态不允许置零
-		tare = preTare;
-		tmp_tare = tare;
-		is_net_state = true;
-		return true;
+		Register reg = new Register();
+		reg.BeginWrite(Global.REG_TARE);
+		reg.putInt(preTare);
+		return write_buffer(reg.getResult());
+		
 	}
 	public static boolean isNetState()
 	{
@@ -1347,11 +1256,8 @@ public class WorkService extends Service {
 	}
 	public static boolean CtrlLight(int index)
 	{
-//		short value = on?(short)1:(short)0;
-//		write_register((short)index,value);
-//		return true;
 		Register reg = new Register();
-		reg.BeginWrite(Global.REG_BATTERY);
+		reg.BeginWrite(Global.REG_LAMP_CTRL);
 		reg.putShort((short) (index));
 		return write_buffer(reg.getResult());
 		

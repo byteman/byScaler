@@ -144,10 +144,20 @@ public class SysParamActivity extends Activity implements OnClickListener {
 			SysParamActivity theActivity = mActivity.get();
 			switch (msg.what) {
 
-				case Global.MSG_SCALER_SAVE_EEPROM:
-				{
 				
+				case Global.MSG_SCALER_AD_CHAN1_RESULT:
+				{				
+					theActivity.ed_ad1.setText(""+msg.arg1);
+					theActivity.ed_ad2.setText(""+msg.arg2);
 					break;
+				
+				}
+				case Global.MSG_SCALER_AD_CHAN2_RESULT:
+				{				
+					theActivity.ed_ad3.setText(""+msg.arg1);
+					theActivity.ed_ad4.setText(""+msg.arg2);
+					break;
+				
 				}
 			}
 		}

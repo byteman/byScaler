@@ -93,14 +93,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				   WorkService.readNextWgt(true);
 				   cont = 0;
 			   }
-			   if(cout_2s++ > 20)
+			   if(cout_2s++ > 10)
 			   {
 				   updateState();
 				   WorkService.readPower();
 				   cout_2s = 0;
 			   }
 			  
-			   mHandler.postDelayed(this, 100);  
+			   mHandler.postDelayed(this, 200);  
 		}
 		
 	};
@@ -209,7 +209,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_red_off.setOnClickListener(this);
 		
 		unit = WorkService.getUnit();
-		tv_unit.setText(unit);
+		
 	}
 	private void initRes()
 	{
@@ -246,7 +246,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	                        String inputValue = inputServer.getText().toString();
 	                        if(WorkService.setPreTare(Integer.parseInt(inputValue)))
 	                        {
-	                        	btn_ng.setText("Net");
+	                        	
 	                        }
 	                    }
 	                });
@@ -306,13 +306,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			inputTitleDialog();
 			break;
 		case R.id.btn_sleep:
-			WorkService.common_msg(2,12);
+			WorkService.common_msg(Global.REG_OPERATION,12);
 			break;
 		case R.id.btn_wake:
-			WorkService.common_msg(2,13);
+			WorkService.common_msg(Global.REG_OPERATION,13);
 			break;
 		case R.id.btn_unit:
-			WorkService.common_msg(2,14);
+			WorkService.common_msg(Global.REG_OPERATION,14);
 			break;
 		
 		}
@@ -407,19 +407,20 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					WorkService.readNextWgt(true);
 					
 					int dot = d.GetDotNum();
+					
 					switch(dot)
 				    {
 				        case 1:
-				        	weight = String.format("%0.1f",wf/10);
+				        	weight = String.format("%.1f",wf/10).toString();
 				            break;
 				        case 2:
-				        	weight = String.format("%0.2f",wf/100);
+				        	weight = String.format("%.2f ",wf/100).toString();
 				            break;
 				        case 3:
-				        	weight = String.format("%0.3f",wf/1000);
+				        	weight = String.format("%.3f",wf/1000).toString();
 				            break;
 				        case 4:
-				        	weight = String.format("%0.4f",wf/10000);
+				        	weight = String.format("%.4f",wf/10000).toString();
 				            break;
 				        default:
 				        	weight = String.format("%d",totalweight);
@@ -431,7 +432,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 						theActivity.btn_is_zero.setText(">0<");
 					}else
 					{
-						theActivity.btn_is_zero.setVisibility(View.VISIBLE);
+						theActivity.btn_is_zero.setText("");
 					}
 					if(d.isStandstill())
 					{
@@ -442,11 +443,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					}
 					if(d.isGross())
 					{
-						theActivity.btn_ng.setText("Gross");
+						theActivity.btn_ng.setText("Net");
 					}else
 					{
-						theActivity.btn_ng.setText("Net");
+						theActivity.btn_ng.setText("Gross");
 					}
+					
+					theActivity.tv_unit.setText(d.getUnit());
+					
 					break;
 				}
 				case Global.MSG_BLE_DISCONNECTRESULT:

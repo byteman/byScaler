@@ -103,7 +103,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line8"
-        android:text="setting"
+        android:text="debug"
         android:textColor="@color/white"
         android:textSize="18sp" />
 <View
