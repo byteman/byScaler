@@ -24,7 +24,7 @@ public class modbus {
 		
 		ByteBuffer buff = ByteBuffer.allocate(100);
 		buff.putInt(12);
-		buff.
+		
 		return buffer;
 				
 	}

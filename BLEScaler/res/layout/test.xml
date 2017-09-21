@@ -19,11 +19,20 @@
             android:text="@string/dignum" />
 
         <Spinner
-            android:id="@+id/sp_div"
+            android:id="@+id/sp_dot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/dignum"
             android:prompt="@string/dignum" />
+         <Button
+            style="@style/bybutton"
+            android:text="@string/write"
+            android:id="@+id/btn_dot"
+            android:layout_weight="1"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content">
+        </Button>
+        
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll5"
@@ -39,11 +48,13 @@
             android:text="@string/div" />
 
         <Spinner
-            android:id="@+id/sp_dot"
+            android:id="@+id/sp_div"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/div"
             android:prompt="@string/div" />
+   
+        
     </LinearLayout>
     
     <LinearLayout
@@ -176,29 +187,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 		/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll4"
-        android:layout_below="@id/ll3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dignum" />
-
-        <Spinner
-            android:id="@+id/sp_dignum"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/dignum"
-            android:prompt="@string/dignum" />
     </LinearLayout>
 
     

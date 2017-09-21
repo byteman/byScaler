@@ -72,6 +72,8 @@ public class Global {
 	public static final int MSG_SCALER_PAR_GET_ZEROTRACK_RESULT=100053;	//读取秤参数的响应
 	public static final int MSG_SCALER_PAR_GET_STABLE_RESULT=100054;	//读取秤参数的响应
 	public static final int MSG_SCALER_PAR_GET_FITER_RESULT=100055;	//读取秤参数的响应
+	public static final int MSG_SCALER_CTRL_RESULT=100056;	//读取秤参数的响应
+	public static final int MSG_SCALER_POWER_RESULT=100057;	//读取秤参数的响应
 	
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";

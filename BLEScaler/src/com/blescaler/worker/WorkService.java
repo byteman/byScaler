@@ -276,30 +276,6 @@ public class WorkService extends Service {
 				RequestType type = (RequestType) b.getSerializable(BleService.EXTRA_REQUEST);
 				int  reason =  b.getInt(BleService.EXTRA_REASON);
 			
-//				if(type == RequestType.CHARACTERISTIC_NOTIFICATION)
-//				{
-//					Scaler s = scalers.get(address);
-//					if(s == null)
-//					{
-//						return;
-//					}
-//					BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
-//					if(bgs == null)
-//					{
-//						Log.e("service",address+"lost");
-//						return;
-//					}
-//					
-//					BleGattCharacteristic chars = bgs.getCharacteristic(
-//							UUID.fromString(Utils.UUID_DATA));
-//					if(chars==null) return;
-//					//启动数据接收通知.
-//					if(!mBle.requestCharacteristicNotification(address,chars))
-//					{
-//						Toast.makeText(getApplicationContext(), "通知失败!",Toast.LENGTH_SHORT).show();
-//					}
-//					
-//				}
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_FAILERESULT);
 				msg.obj = address;
 				msg.arg1 = type.ordinal();
@@ -664,13 +640,43 @@ public class WorkService extends Service {
 		return write_buffer(buffer);
 		
 	}
+	public static boolean  read_all_ks()
+	{
+
+		try{
+			Register reg = new Register();
+			//1st
+			
+			write_buffer(reg.BeginRead(36,4));
+			Thread.sleep(200);
+			//3rd
+			
+			write_buffer(reg.BeginRead(40,4));
+			Thread.sleep(100);
+
+		
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+
+		return true;
+	}
+	public static boolean  auto_k(int index)
+	{
+		Register reg = new Register();
+		reg.BeginWrite(44);
+		reg.putShort((short) index);
+				
+		return write_buffer(reg.getResult());
+	}
 	public static boolean  hand_k(int index, int value)
 	{
-		short s_index = (short)index;
 		
 		Register reg = new Register();
-		reg.BeginWrite(36);
-		reg.putShort((short) index);
+		reg.BeginWrite(36+index*2);
+		//reg.putShort((short) index);
 		reg.putInt(value);
 		
 		return write_buffer(reg.getResult());
@@ -778,6 +784,15 @@ public class WorkService extends Service {
 	{
 		return requestValue(address, "CLZ;");
 	}
+	public static boolean CalibZero() 
+	{
+		Register reg = new Register();
+		//1st
+		reg.BeginWrite(20);
+		reg.putShorts((short) 0,(short)1);
+	
+		return write_buffer(reg.getResult());
+	}
 	//标定重量.calibWet 标定重量值 nov 满量程
 	public static boolean requestCalibK(String address,int calibWet,int nov) 
 	{
@@ -793,6 +808,16 @@ public class WorkService extends Service {
 		String cmd = "CLK:" +w + ";";
 		
 		return requestValue(address, cmd);
+	}
+	public static boolean CalibK(int point,int calibWet) 
+	{
+		Register reg = new Register();
+		//1st
+		reg.BeginWrite(20);
+		reg.putShorts((short) point,(short)1);
+		if(point > 0)
+			reg.putInt(calibWet);
+		return write_buffer(reg.getResult());
 	}
 	//请求读取参数
 	public static boolean requestReadPar(String address) throws InterruptedException
@@ -817,52 +842,83 @@ public class WorkService extends Service {
 		if(s == null) return false;
 		ScalerParam sp = scaler.para;
 		try{
-		if(sp.getDignum() != s.getDignum())
-		{
+			Register reg = new Register();
+			//1st
+			reg.BeginWrite(8);
 			
-			write_short_register((short)3, (short)s.getDignum());
-			Thread.sleep(50);
-		}
-		if(sp.getResultion() != s.getResultion())
-		{
-			write_short_register((short)8, (short)s.getResultion());
-			Thread.sleep(50);
-		}
-		if(sp.getUnit() != s.getUnit())
-		{
-			WorkService.write_short_register((short)14, (short)s.getUnit());
-			Thread.sleep(50);
-		}
-		if(sp.getNov() != s.getNov())
-		{
-			WorkService.write_int_register((short)14, s.getNov());
-			Thread.sleep(50);
-		}
-		if(sp.getPwr_zerotrack() != s.getPwr_zerotrack())
-		{
-			WorkService.write_short_register((short)15, (short)s.getPwr_zerotrack());
-			Thread.sleep(50);
-		}
-		if(sp.getHand_zerotrack() != s.getHand_zerotrack())
-		{
-			WorkService.write_short_register((short)16, (short)s.getHand_zerotrack());
-			Thread.sleep(50);
-		}
-		if(sp.getZerotrack() != s.getZerotrack())
-		{
-			WorkService.write_short_register((short)17, (short)s.getZerotrack());
-			Thread.sleep(50);
-		}
-		if(sp.getMtd() != s.getMtd())
-		{
-			WorkService.write_short_register((short)18, (short)s.getMtd());
-			Thread.sleep(50);
-		}
-		if(sp.getFilter() != s.getFilter())
-		{
-			WorkService.write_short_register((short)19, (short)s.getFilter());
-			Thread.sleep(50);
-		}
+			reg.putShorts((short)s.getResultionx(),(short)s.getResultionx());	
+			reg.putInts(s.getNov());	
+			
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
+			
+			//2nd
+			reg.BeginWrite(14);
+			reg.putShorts(s.getUnit(),s.getPwr_zerotrack(),s.getHand_zerotrack());
+			
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
+			
+			reg.BeginWrite(17);
+			reg.putShorts(s.getZerotrack(),s.getMtd(),s.getFilter());
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
+			
+			//3rd
+			reg.BeginWrite(3); //dot
+			reg.putShort(s.getDignum());
+			write_buffer(reg.getResult());
+			Thread.sleep(100);
+			
+			
+//			reg.BeginWrite(8);
+//			
+//		if(sp.getDignum() != s.getDignum())
+//		{
+//			
+//			write_short_register((short)3, (short)s.getDignum());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getResultion() != s.getResultion())
+//		{
+//			write_short_register((short)8, (short)s.getResultion());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getUnit() != s.getUnit())
+//		{
+//			WorkService.write_short_register((short)14, (short)s.getUnit());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getNov() != s.getNov())
+//		{
+//			WorkService.write_int_register((short)14, s.getNov());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getPwr_zerotrack() != s.getPwr_zerotrack())
+//		{
+//			WorkService.write_short_register((short)15, (short)s.getPwr_zerotrack());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getHand_zerotrack() != s.getHand_zerotrack())
+//		{
+//			WorkService.write_short_register((short)16, (short)s.getHand_zerotrack());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getZerotrack() != s.getZerotrack())
+//		{
+//			WorkService.write_short_register((short)17, (short)s.getZerotrack());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getMtd() != s.getMtd())
+//		{
+//			WorkService.write_short_register((short)18, (short)s.getMtd());
+//			Thread.sleep(50);
+//		}
+//		if(sp.getFilter() != s.getFilter())
+//		{
+//			WorkService.write_short_register((short)19, (short)s.getFilter());
+//			Thread.sleep(50);
+//		}
 		
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
@@ -1118,6 +1174,10 @@ public class WorkService extends Service {
 		
 		return true;
 	}
+	public static boolean readPower()
+	{
+		return read_registers((short)46, (short)1);
+	}
 	public static boolean readNextWgt(boolean needAllconnect)
 	{
 		if(needAllconnect) if(!hasConnectAll()) return false;
@@ -1209,9 +1269,10 @@ public class WorkService extends Service {
 	//置零当前重量
 	public static boolean setZero()
 	{
-		if(is_net_state) return false; //净重状态不允许置零
-		zero = getTotalWeight(); //毛重状态下，取所有称台总重为零点重量.
-		return true;
+		Register reg = new Register();
+		reg.BeginWrite(2);
+		reg.putShort((short) 1);
+		return write_buffer(reg.getResult());
 	}
 	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
 	public static boolean setPreTare(int preTare)
@@ -1264,12 +1325,16 @@ public class WorkService extends Service {
 		}
 		return is_net_state;
 	}
-	public static boolean CtrlLight(int index, boolean on)
+	public static boolean CtrlLight(int index)
 	{
 //		short value = on?(short)1:(short)0;
 //		write_register((short)index,value);
 //		return true;
-		return read_register((short)0x20);
+		Register reg = new Register();
+		reg.BeginWrite(47);
+		reg.putShort((short) (index));
+		return write_buffer(reg.getResult());
+		
 	}
 	public static String getUnit()
 	{

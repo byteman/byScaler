@@ -48,7 +48,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	AutoBgButton btn_red_off = null;
 	AutoBgButton btn_yellow_off = null;
 	AutoBgButton btn_green_off = null;
-	
+	AutoBgButton btn_is_zero = null;
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
 	
@@ -57,7 +57,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private WeightDao wDao;
 	
 	private int timeout=0;
-	private int cont=0;
+	private int cont=0,cout_2s;
 	private boolean pause = false,disconnect=false;
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
@@ -66,7 +66,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private static String unit="g";
 	private void updateState()
 	{
-		unit = WorkService.getUnit();
+		
 		 if(!WorkService.hasConnectAll())
 		   {
 			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
@@ -74,12 +74,9 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		   else
 		   {
 			   //87CEEB
-			   tv_weight.setTextColor(Color.rgb(0xFF, 0x00, 0x00));
-			   
-			   
+			   tv_weight.setTextColor(Color.rgb(0xFF, 0x00, 0x00));  
 		   }
-		   if(WorkService.isNetState()) btn_ng.setText("Net");
-		   else btn_ng.setText("Gross");
+		
 	}
 	private Runnable watchdog = new Runnable()
 	{
@@ -91,9 +88,15 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			
 			   if(cont++ >= 1)
 			   {
-				   updateState();
+				   
 				   WorkService.readNextWgt(true);
 				   cont = 0;
+			   }
+			   if(cout_2s++ > 20)
+			   {
+				   updateState();
+				   WorkService.readPower();
+				   cout_2s = 0;
 			   }
 			  
 			   mHandler.postDelayed(this, 100);  
@@ -178,7 +181,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_red_off = (AutoBgButton) root.findViewById(R.id.btn_red_light_off);
 		btn_yellow_off = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_off);
 		btn_green_off = (AutoBgButton) root.findViewById(R.id.btn_green_light_off);
-		
+		btn_is_zero = (AutoBgButton) root.findViewById(R.id.btn_zero1);
 		
 		btn_power.setPowerQuantity(1);
 		btn_save.setOnClickListener(this);
@@ -283,22 +286,22 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			}
 			break;
 		case R.id.btn_green_light_on:
-			WorkService.CtrlLight(1,true);
+			WorkService.CtrlLight(3);
 			break;
 		case R.id.btn_yellow_light_on:
-			WorkService.CtrlLight(2,true);
+			WorkService.CtrlLight(5);
 			break;
 		case R.id.btn_red_light_on:
-			WorkService.CtrlLight(3,true);
+			WorkService.CtrlLight(1);
 			break;
 		case R.id.btn_green_light_off:
-			WorkService.CtrlLight(1,false);
+			WorkService.CtrlLight(4);
 			break;
 		case R.id.btn_yellow_light_off:
-			WorkService.CtrlLight(2,false);
+			WorkService.CtrlLight(6);
 			break;
 		case R.id.btn_red_light_off:
-			WorkService.CtrlLight(3,false);
+			WorkService.CtrlLight(2);
 			break;
 		case R.id.btn_preset:
 			inputTitleDialog();
@@ -392,6 +395,28 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					theActivity.timeout = 0;
 					if(d!=null)d.dump_info();
 					WorkService.readNextWgt(true);
+					
+					if(d.isZero())
+					{
+						theActivity.btn_is_zero.setText(">0<");
+					}else
+					{
+						theActivity.btn_is_zero.setText("");
+					}
+					if(d.isStandstill())
+					{
+						//theActivity.btn_is_zero.setText("--");
+					}else
+					{
+						//theActivity.btn_is_zero.setText("~~");
+					}
+					if(d.isGross())
+					{
+						theActivity.btn_ng.setText("Gross");
+					}else
+					{
+						theActivity.btn_ng.setText("Net");
+					}
 					break;
 				}
 				case Global.MSG_BLE_DISCONNECTRESULT:
@@ -453,6 +478,17 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 						theActivity.showFailBox("连接超时，点击重量显示可重新连接！");
 						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
 					}
+				}
+				case Global.MSG_SCALER_CTRL_RESULT:
+				{
+					//Toast.makeText(theActivity.getActivity(), "success!", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				case Global.MSG_SCALER_POWER_RESULT:
+				{
+					int result = msg.arg1;
+					theActivity.btn_power.refreshPower((float)result/1000.0f);
+					break;
 				}
 			}
 			

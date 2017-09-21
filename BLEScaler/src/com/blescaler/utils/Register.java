@@ -85,11 +85,11 @@ public class Register {
 		short u_reg_num  = (short)reg_num;
 		
 		byte header[]={0x20,0x10,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0};
-
+		buffer.clear();	
 		buffer.put(header);
 
 	}
-	public  byte[] BeginRead(int reg_addr,int reg_num)
+	static public  byte[] BeginRead(int reg_addr,int reg_num)
 	{
 		//�豸��ַ 1byte
 		//�������� 0x3
@@ -102,8 +102,8 @@ public class Register {
 		byte out[]={0x20,0x3,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
 		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
 		short crc16 = (short)calcCrc16(out,0,out.length-2);
-		out[6] = (byte)(crc16&0xFF);
-		out[7] = (byte)((crc16>>8)&0xff);
+		out[out.length-1] = (byte)(crc16>>8&0xFF);
+		out[out.length-2] = (byte)((crc16)&0xff);
 		
 		return out;
 

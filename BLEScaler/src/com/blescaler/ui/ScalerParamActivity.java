@@ -32,6 +32,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 	private EditText edit_mtd;
 	private EditText edit_filter;
 	private EditText edt_nov;// edt_unit;
+	//private EditText edit_dignum;
 	private Spinner sp_dignum;
 	private Spinner sp_div;
 	private Spinner sp_unit;
@@ -74,7 +75,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		edit_handzero = (EditText) findViewById(R.id.edit_handzero);
 		edit_mtd = (EditText) findViewById(R.id.edit_mtd);
 		edit_filter= (EditText) findViewById(R.id.edit_fiter);
-		sp_dignum = (Spinner) findViewById(R.id.sp_dignum);
+		//edit_dignum = (EditText) findViewById(R.id.edit_dot);
+		sp_dignum = (Spinner) findViewById(R.id.sp_dot);
 		sp_div = (Spinner) findViewById(R.id.sp_div);
 		sp_unit = (Spinner) findViewById(R.id.sp_unit);
 		btn_read = (Button) findViewById(R.id.btn_read);
@@ -146,7 +148,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					int zerotrack = Integer.parseInt(edit_zerotrack.getText().toString());
 					int filter = Integer.parseInt(edit_filter.getText().toString());
 					int handzero = Integer.parseInt(edit_handzero.getText().toString());
-					
+					//int dot = Integer.parseInt(sp_dignum.getText().toString());
 					sp.setNov(nov);
 					sp.setMtd((byte) mtd);
 					sp.setPwr_zerotrack((byte) zeroinit);
@@ -155,21 +157,14 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					sp.setHand_zerotrack((byte) handzero);
 					
 					int div_id = (int) sp_div.getSelectedItemId();
-					short div = 1;
-					if (div_id == 0) div = 1;
-					else if (div_id == 1) div = 2;
-					else if (div_id == 2) div = 5;
-					else if (div_id == 3) div = 10;
-					else if (div_id == 4) div = 20;
-					else if (div_id == 5) div = 50;
-					else if (div_id == 6) div = 100;
-					sp.setResultion((byte) div);
+				
+					sp.setResultionIndex((byte) div_id);
 					
 					sp.setDignum((byte) sp_dignum.getSelectedItemId());
-					sp.setDignum((byte) sp_unit.getSelectedItemId());
+					sp.setUnit((byte) sp_unit.getSelectedItemId());
 					
-					try {
-						WorkService.requestWriteParamValue(address,sp);
+					
+					WorkService.requestWriteParamValue(address,sp);
 						
 //						WorkService.write_short_register((short)3, (short)sp_dignum.getSelectedItemId());
 //						Thread.sleep(50);
@@ -189,11 +184,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 //						Thread.sleep(50);
 //						WorkService.write_short_register((short)19, (short) filter);
 //						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
+				
 					
 				}
 				
@@ -215,8 +206,9 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 	
 	private void showParam(ScalerParam sp)
 	{
+		//edit_dignum.setText(""+sp.getDignum());
 		sp_dignum.setSelection(sp.getDignum());
-		sp_div.setSelection(sp.getResultion());
+		sp_div.setSelection(sp.getResultionIndex());
 		sp_unit.setSelection(sp.getUnit());
 		edit_mtd.setText(""+sp.getMtd());
 		edit_handzero.setText(""+sp.getHand_zerotrack());

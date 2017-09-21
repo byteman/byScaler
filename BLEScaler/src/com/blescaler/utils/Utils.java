@@ -10,7 +10,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.widget.Toast;
 
+
+
 public class Utils {
+	
 	public static Map<String, String> BLE_SERVICES = new HashMap<String, String>();
 	public static Map<String, String> BLE_CHARACTERISTICS = new HashMap<String, String>();
 	public static String UUID_SRV="0000FFE0-0000-1000-8000-00805F9B34FB"; //HC-08
@@ -172,12 +175,17 @@ public class Utils {
 		return number;
 	}
 	public static int bytesToInt(byte[] bytes,int index){
-		int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index+0] <<8)+bytes[index+1];
+		int number = bytes[index+1] & 0xFF;
+		// "|="按位或赋值。
+		number |= ((bytes[index] << 8) & 0xFF00);
+		number |= ((bytes[index+3] << 16) & 0xFF0000);
+		number |= ((bytes[index+2] << 24) & 0xFF000000);	
+		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
 		return number;
 	}
 	public static int bytesToWeight(byte[] bytes) {
-		int number = (bytes[2] <<24)+ (bytes[3] <<16)+(bytes[0] <<8)+bytes[1];
-		return number;
+		
+		return bytesToInt(bytes,0);
 	}
 	public static int bytesToString(byte[] bytes,int from, int to) throws Exception
 	{
@@ -297,4 +305,5 @@ public class Utils {
             e.printStackTrace();
         }
     }
+	
 }

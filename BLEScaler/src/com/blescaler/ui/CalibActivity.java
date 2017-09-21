@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blescaler.ui.R;
+import com.blescaler.utils.FloatValue;
+import com.blescaler.utils.IntValue;
+import com.blescaler.utils.NumberValues;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
@@ -29,7 +32,7 @@ public class CalibActivity extends Activity {
 	private final String TAG = "CalibActivity";
 	private TextView m_tvLoad,m_tvZero,m_tvK;
 	private Button btnScaler1,btnScaler2,btnScaler3,btnScaler4,btnStart=null;
-	private Button m_btCalibZero, m_btCalibWgt,m_btQuit=null;
+	private Button m_btCalibZero, m_btCalibWgt,btn_read,m_btQuit=null;
 	private EditText editText1,editText2,editText3,editText4=null;
 	private EditText m_etWgt;
 	private boolean isStarted = false;
@@ -40,26 +43,24 @@ public class CalibActivity extends Activity {
 	private TextView m_tvWgt=null;
 	private Timer pTimer;
 	private Runnable runnable;
-	
+
+
 	private final class ButtonListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if (v.getId() == R.id.btCalbZero) {
-				WorkService.requestCalibZero(mDeviceAddress);
+				WorkService.CalibZero();
 			
 			} else if (v.getId() == R.id.btCalbWgt) {
 				if (m_etWgt.getText().length() <= 0) {
-					Toast.makeText(CalibActivity.this, "请先输入内容",
+					Toast.makeText(CalibActivity.this, "input calc value",
 							Toast.LENGTH_LONG).show();
 					return;
 				}
+				IntValue wgt   =NumberValues.GetIntValue(m_etWgt.getText().toString());
 				
-				int wgt   = Integer.valueOf((String) m_etWgt.getText().toString());
-				Scaler s = WorkService.getScaler(mDeviceAddress);
-				if(s == null) return;
-				int nov   = s.para.getNov();
-				WorkService.requestCalibK(mDeviceAddress, wgt, nov);
+				WorkService.CalibK(1, wgt.value);
 			}else if(v.getId() == R.id.btn_save)
 			{
 				finish();
@@ -68,51 +69,75 @@ public class CalibActivity extends Activity {
 				//scaler1
 				if(isStarted){
 					//auto calib
+					WorkService.auto_k(1);
 				}else{
 					//hand calib
-					double value=Float.valueOf(editText1.getText().toString());
-					WorkService.hand_k(0, (int) (value*1000));
+					FloatValue vf =NumberValues.GetFloatValue(editText1.getText().toString());
+					if(vf.ok)
+						WorkService.hand_k(0, (int) (vf.value*1000));
 				}
 			}
 			else if(v.getId() == R.id.Button03)
 			{
 				if(isStarted){
 					//auto calib
+					WorkService.auto_k(2);
 				}else{
 					//hand calib
-					double value=Float.valueOf((String) editText2.getText().toString());
-					WorkService.hand_k(1, (int) (value*1000));
+					FloatValue vf =NumberValues.GetFloatValue(editText2.getText().toString());
+					if(vf.ok)
+						WorkService.hand_k(1, (int) (vf.value*1000));
 				}
 				//scaler2
 			}else if(v.getId() == R.id.Button02)
 			{
 				if(isStarted){
 					//auto calib
+					WorkService.auto_k(3);
 				}else{
 					//hand calib
-					double value=Float.valueOf((String) editText3.getText().toString());
-					WorkService.hand_k(2, (int) (value*1000));
+					FloatValue vf =NumberValues.GetFloatValue(editText3.getText().toString());
+					if(vf.ok)
+						WorkService.hand_k(2, (int) (vf.value*1000));
 				}
 				//scaler3
 			}else if(v.getId() == R.id.Button04)
 			{
 				if(isStarted){
 					//auto calib
+					WorkService.auto_k(4);
 				}else{
 					//hand calib
-					double value=Float.valueOf((String) editText4.getText().toString());
-					WorkService.hand_k(3, (int) (value*1000));
+					FloatValue vf =NumberValues.GetFloatValue(editText4.getText().toString());
+					if(vf.ok)
+						WorkService.hand_k(3, (int) (vf.value*1000));
 				}
 				//scaler4
 			}else if(v.getId() == R.id.Button05)
 			{
 				//start.
 				if(isStarted){
-					btnStart.setText("stop");
-				}else{
 					btnStart.setText("start");
+					WorkService.auto_k(5);
+				}else{
+					btnStart.setText("stop");
+					WorkService.auto_k(0);
 				}
 				isStarted=!isStarted;
+				
+			}
+			else if(v.getId() == R.id.btn_read)
+			{
+				new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						WorkService.read_all_ks();
+					}
+					
+				}).start();
+				
 				
 			}
 
@@ -150,8 +175,7 @@ public class CalibActivity extends Activity {
 		m_etWgt = (EditText) findViewById(R.id.etWgt);
 		m_tvZero = (TextView) findViewById(R.id.tvZeros);
 		m_tvLoad = (TextView) findViewById(R.id.tvLoad);
-		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
-		m_tvK = (TextView) findViewById(R.id.tvCalibKLabel);
+		
 		btnScaler1=(Button) findViewById(R.id.Button01);
 		btnScaler2=(Button) findViewById(R.id.Button03);
 		btnScaler3=(Button) findViewById(R.id.Button02);
@@ -161,6 +185,7 @@ public class CalibActivity extends Activity {
 		editText2=(EditText)findViewById(R.id.EditText03);
 		editText3=(EditText)findViewById(R.id.EditText04);
 		editText4=(EditText)findViewById(R.id.EditText05);
+		btn_read = (Button) findViewById(R.id.btn_read);
 		
 		final View.OnClickListener pClickListener = new ButtonListener();
 
@@ -171,31 +196,26 @@ public class CalibActivity extends Activity {
 		btnScaler2.setOnClickListener(pClickListener);
 		btnScaler3.setOnClickListener(pClickListener);
 		btnScaler4.setOnClickListener(pClickListener);
+		btn_read.setOnClickListener(pClickListener);
+		btnStart.setOnClickListener(pClickListener);
 		mDeviceAddress = getIntent().getStringExtra("address");
 		m_readpara = false;
 		//String characteristic = getIntent().getStringExtra("characteristic");
 	
 		mHandler = new MHandler(this);
 		
-//		runnable = new Runnable(){  
-//			   @Override  
-//			   public void run() {  
-//			    // TODO Auto-generated method stub  
-//			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
-//				   WorkService.requestReadWgt(mDeviceAddress);
-//				   if(!m_readpara)
-//				   {
-//					   try {
-//						WorkService.requestReadPar(mDeviceAddress);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				   }
-//				   mHandler.postDelayed(this, 1000);  
-//			   }   
-//		};  
-//		mHandler.postDelayed(runnable, 200);
+		runnable = new Runnable(){  
+			   @Override  
+			   public void run() {  
+			    // TODO Auto-generated method stub  
+			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
+				   WorkService.requestReadWgt(mDeviceAddress);
+				   
+				   
+				   mHandler.postDelayed(this, 2000);  
+			   }   
+		};  
+		mHandler.postDelayed(runnable, 2000);
 
 	}
 
@@ -239,7 +259,25 @@ public class CalibActivity extends Activity {
 		public void handleMessage(Message msg) {
 			CalibActivity theActivity = mActivity.get();
 			switch (msg.what) {
-
+				case Global.MSG_SCALER_K_QUERY_RESULT:
+				{
+					Scaler d = (Scaler) msg.obj;
+					
+					if(d != null)
+					{
+						if(msg.arg1==1)
+						{
+							theActivity.editText1.setText(""+d.allks[0]);
+							theActivity.editText2.setText(""+d.allks[1]);
+						}
+						else if(msg.arg1==2)
+						{
+							theActivity.editText3.setText(""+d.allks[2]);
+							theActivity.editText4.setText(""+d.allks[3]);
+						}
+					}
+					break;
+				}
 				case Global.MSG_BLE_WGTRESULT:
 				{
 					//BluetoothDevice device = (BluetoothDevice) msg.obj;
@@ -262,7 +300,7 @@ public class CalibActivity extends Activity {
 					Scaler scaler = (Scaler) msg.obj;
 					if(scaler==null)return;
 					theActivity.m_readpara = true;	
-					Toast.makeText(theActivity, "读取参数成功...", Toast.LENGTH_SHORT).show();
+					Toast.makeText(theActivity, "success!", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				case Global.MSG_SCALER_ZERO_CALIB_RESULT:
@@ -271,12 +309,12 @@ public class CalibActivity extends Activity {
 					Scaler s = (Scaler)msg.obj;
 					if(msg.arg1 != 0)
 					{
-						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
+						Toast.makeText(theActivity, "calibrate failed!", Toast.LENGTH_SHORT).show();
 					}
 					else 
 					{
-						theActivity.m_tvZero.setText(String.valueOf(s.getZeroValue()));
-						Toast.makeText(theActivity, "标定成功", Toast.LENGTH_SHORT).show();
+						
+						Toast.makeText(theActivity, "calibrate ok", Toast.LENGTH_SHORT).show();
 					}
 					break;
 				}
@@ -285,12 +323,12 @@ public class CalibActivity extends Activity {
 					Scaler s = (Scaler)msg.obj;
 					if(msg.arg1 != 0)
 					{
-						Toast.makeText(theActivity, "标定失败", Toast.LENGTH_SHORT).show();
+						Toast.makeText(theActivity, "calibrate failed!", Toast.LENGTH_SHORT).show();
 					}
 					else 
 					{
 						theActivity.m_tvLoad.setText(String.valueOf(s.getLoadValue()));
-						Toast.makeText(theActivity, "标定成功", Toast.LENGTH_SHORT).show();
+						Toast.makeText(theActivity, "calibrate ok", Toast.LENGTH_SHORT).show();
 					}
 					break;
 				}

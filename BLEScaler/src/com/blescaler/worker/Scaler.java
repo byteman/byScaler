@@ -21,13 +21,18 @@ public class Scaler {
 	private int rx_cnt = 0;
 	private long waitTime = 0;
 	private String unit = "kg";
+	private boolean zero = false;
 	private boolean standstill = false; //重量稳定
 	private boolean net_overflow = false; //Tare value too high
 	private boolean gross_overflow = false; //Scaling too sensitive
 	private boolean ad_overflow = false; //ADC overflow 
-	
+	private boolean ng_state = false;
+	public float[] allks = new float[4];
 	public boolean isStandstill() {
 		return standstill;
+	}
+	public boolean isGross() {
+		return ng_state;
 	}
 	public void setStandstill(boolean standstill) {
 		this.standstill = standstill;
@@ -49,6 +54,13 @@ public class Scaler {
 	}
 	public void setAd_overflow(boolean ad_overflow) {
 		this.ad_overflow = ad_overflow;
+	}
+	public boolean isZero() {
+		return zero;
+	}
+	
+	public void setZero(boolean zero) {
+		this.zero = zero;
 	}
 	public int getRx_cnt() {
 		return rx_cnt;
@@ -75,14 +87,6 @@ public class Scaler {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public int getZeroValue() {
-		return zeroValue;
-	}
-
-	public void setZeroValue(int zeroValue) {
-		this.zeroValue = zeroValue;
 	}
 
 	
@@ -158,10 +162,10 @@ public class Scaler {
 	}
 	private void parseState(byte st)
 	{
-		this.net_overflow = ((st&0x1)!=0)?true:false;
-		this.gross_overflow = ((st&0x2)!=0)?true:false;
-		this.ad_overflow = ((st&0x4)!=0)?true:false;
-		this.standstill = ((st&0x8)!=0)?true:false;
+				
+		this.standstill = ((st&0x1)!=0)?true:false;
+		this.zero = ((st&0x2)!=0)?true:false;
+		this.ng_state = ((st&0x4)!=0)?true:false;
 		
 	}
 	//
@@ -192,7 +196,7 @@ public class Scaler {
 					}
 					System.arraycopy(val, 5, w, 0, 4);
 					
-					parseState(val[9]);
+					parseState(val[10]);
 					short dot = (short) ((val[11]<<8)+val[12]);
 					setWeight(Utils.bytesToWeight(w),dot);
 					
@@ -207,7 +211,7 @@ public class Scaler {
 				}
 				else if(reg_addr == 8)
 				{
-					para.setResultion(val[6]);
+					para.setResultionx(val[6]);
 					
 					para.setNov(Utils.bytesToInt(val,9));
 					
@@ -224,10 +228,52 @@ public class Scaler {
 					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
 					msg.arg1 = 0;			
 				}
+				
+				else if(reg_addr == 36)
+				{
+					allks[0]=(float)Utils.bytesToInt(val, 5)/1000.0f;
+					allks[1]=(float)Utils.bytesToInt(val, 9)/1000.0f;
+					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
+					msg.arg1 = 1;
+				}
+				else if(reg_addr == 40)
+				{
+					
+					allks[2]=(float)Utils.bytesToInt(val, 5)/1000.0f;
+					allks[3]=(float)Utils.bytesToInt(val, 9)/1000.0f;
+					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
+					msg.arg1 = 2;
+				}
+				else if(reg_addr == 46)
+				{
+					msgType = Global.MSG_SCALER_POWER_RESULT;
+					msg.arg1 = (val[5]<<8)+val[6];
+				}
 			}
 			else if(val[1] == 0x10)
 			{
-				
+				//写入的通知.
+				int reg_addr = (val[2]<<8)+val[3];
+				if(reg_addr == 0x8)
+				{
+					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
+					msg.arg1 = 0;		
+				}
+				else if(reg_addr == 20)
+				{
+					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
+					msg.arg1 = 0;
+				}
+				else if(reg_addr == 44)
+				{
+					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
+					msg.arg1 = 0;
+				}
+				else if(reg_addr == 47)
+				{
+					msgType = Global.MSG_SCALER_CTRL_RESULT;
+					msg.arg1 = 0;
+				}
 			}
 			else if(val[1] == 0x83)
 			{

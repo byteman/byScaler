@@ -20,7 +20,7 @@
             android:gravity="center"
             android:text="12345"
             android:textColor="@color/red"
-            android:textSize="24sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -37,7 +37,7 @@
             android:layout_weight="0.12"
             android:gravity="center"
             android:paddingLeft="10dp"
-            android:text="砝码重量"
+            android:text="calib value"
             android:textSize="20sp" />
 
         <EditText
@@ -106,31 +106,6 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layCalibK"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layWgt"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/tvCalibKLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="@string/calibK"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/tvCalibK"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="#00f"
-            android:textSize="20sp" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layOper"
@@ -146,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/read" />
+            android:text="read" />
 
         <Button
             android:id="@id/btn_save"
@@ -154,7 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="返回" />
+            android:text="back" />
     </LinearLayout>
 
     <Button
@@ -249,7 +224,6 @@
         android:id="@+id/EditText03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/Button03"
         android:layout_toRightOf="@+id/Button03"
         android:ems="10" />

@@ -8,15 +8,15 @@ import java.util.Map;
 
 public class ScalerParam {
 	
-	private byte mtd=0;	//绋冲畾绾у埆
-	private int nov=10000;	//閲忕▼.
-	private byte zerotrack=0;	//闆剁偣璺熻釜閫熷害
-	private byte pwr_zerotrack=0; //寮?鏈虹疆闆惰寖鍥?
-	private byte hand_zerotrack=0;
+	private byte mtd=-1;	//绋冲畾绾у埆
+	private int nov=-1;	//閲忕▼.
+	private byte zerotrack=-1;	//闆剁偣璺熻釜閫熷害
+	private byte pwr_zerotrack=-1; //寮?鏈虹疆闆惰寖鍥?
+	private byte hand_zerotrack=-1;
 	private byte resultion=1; //鍒嗗害鏁?
-	private byte dignum=0;//灏忔暟鐐逛綅鏁?
-	private byte filter=0;
-	private byte unit=0; //鍗曚綅
+	private byte dignum=-1;//灏忔暟鐐逛綅鏁?
+	private byte filter=-1;
+	private byte unit=-1; //鍗曚綅
 	private String mdtstr;
 	public static Map<Integer, String> mtdmaps = new HashMap<Integer, String>() ;
 	public static Map<Integer, String> zerotrackmaps = new HashMap<Integer, String>() ;
@@ -115,10 +115,10 @@ public class ScalerParam {
 	public void setHand_zerotrack(byte zerotrack) {
 		this.hand_zerotrack = zerotrack;
 	}
-	public byte getResultion() {
+	public byte getResultionx() {
 		return resultion;
 	}
-	public void setResultion(byte resultion) {
+	public byte getResultionIndex() {
 		if(resultion==1) this.resultion=0;
 		else if(resultion==2) this.resultion=1;
 		else if(resultion==5) this.resultion=2;
@@ -126,8 +126,23 @@ public class ScalerParam {
 		else if(resultion==20) this.resultion=4;
 		else if(resultion==50) this.resultion=5;
 		else if(resultion==100) this.resultion=6;
+		return 0;
+	}
+	public void setResultionx(byte resultion) {
+		this.resultion = resultion;
 	
 	}
+	public void setResultionIndex(byte index) {
+		
+		if(index==0) this.resultion=1;
+		else if(resultion==1) this.resultion=2;
+		else if(resultion==2) this.resultion=5;
+		else if(resultion==3) this.resultion=10;
+		else if(resultion==4) this.resultion=20;
+		else if(resultion==5) this.resultion=50;
+		else if(resultion==6) this.resultion=100;
+	}
+	
 	public byte getDignum() {
 		return dignum;
 	}
