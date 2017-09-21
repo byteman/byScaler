@@ -663,6 +663,14 @@ public class WorkService extends Service {
 
 		return true;
 	}
+	public static boolean  common_msg(int reg_addr,int value )
+	{
+		Register reg = new Register();
+		reg.BeginWrite(reg_addr);
+		reg.putShort((short) value);
+				
+		return write_buffer(reg.getResult());
+	}
 	public static boolean  auto_k(int index)
 	{
 		Register reg = new Register();
@@ -783,6 +791,11 @@ public class WorkService extends Service {
 	public static boolean requestCalibZero(String address) 
 	{
 		return requestValue(address, "CLZ;");
+	}
+	public static boolean requestReadAds()
+	{
+		//read_registers();
+		return true;
 	}
 	public static boolean CalibZero() 
 	{

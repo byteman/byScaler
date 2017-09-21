@@ -49,6 +49,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	AutoBgButton btn_yellow_off = null;
 	AutoBgButton btn_green_off = null;
 	AutoBgButton btn_is_zero = null;
+	AutoBgButton btn_sleep,btn_wakeup,btn_unit,btn_still = null;
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
 	
@@ -123,7 +124,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 			return;
 		}
-	    progressDialog =ProgressDialog.show(ctx, "蓝牙秤", "正在连接,请稍候！");     
+	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
 	    //new ProgressDialog(ctx);
 	    
 	    //progressDialog.setButton("取消", new SureButtonListener());
@@ -133,7 +134,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
         
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
         
-	    mHandler.sendMessageDelayed(msg, 15000);
+	    mHandler.sendMessageDelayed(msg, 2000);
 	}
     
 
@@ -182,6 +183,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_yellow_off = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_off);
 		btn_green_off = (AutoBgButton) root.findViewById(R.id.btn_green_light_off);
 		btn_is_zero = (AutoBgButton) root.findViewById(R.id.btn_zero1);
+		btn_sleep = (AutoBgButton) root.findViewById(R.id.btn_sleep);
+		btn_wakeup = (AutoBgButton) root.findViewById(R.id.btn_wake);
+		btn_unit = (AutoBgButton) root.findViewById(R.id.btn_unit);
+		btn_still = (AutoBgButton) root.findViewById(R.id.btn_still);
+		btn_sleep.setOnClickListener(this);
+		btn_wakeup.setOnClickListener(this);
+		btn_unit.setOnClickListener(this);
 		
 		btn_power.setPowerQuantity(1);
 		btn_save.setOnClickListener(this);
@@ -191,7 +199,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_zero.setOnClickListener(this);
 		btn_swtich.setOnClickListener(this);
 		btn_preset.setOnClickListener(this);
-		
+		//btn_still.setOnClickListener(this);
 		
 		btn_green_on.setOnClickListener(this);
 		btn_yellow_on.setOnClickListener(this);
@@ -248,18 +256,18 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	public void onClick(View arg0) {
 		switch(arg0.getId())
 		{
+		case R.id.btn_still:
+			
+			break;
 		case R.id.btn_save:
 			saveWeight();
 			Utils.Msgbox(this.getActivity(), "保存成功");
 			break;
 		case R.id.btn_print:
-			printWeight();
+			WorkService.common_msg(2,99);
 			break;
 		case R.id.btn_tare:
-			if(WorkService.discardTare())
-			{
-				btn_ng.setText("Net");
-			}
+			WorkService.common_msg(2,2);
 			break;
 		case R.id.tv_weight:
 			popConnectProcessBar(this.getActivity());
@@ -274,16 +282,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_switch:
 			//净重和毛重切换
-			boolean is_net = WorkService.switchNetGross();
-			if(is_net)
-			{
-				btn_ng.setText("Net");
-				
-			}
-			else
-			{
-				btn_ng.setText("Gross");
-			}
+			WorkService.common_msg(2,5);
 			break;
 		case R.id.btn_green_light_on:
 			WorkService.CtrlLight(3);
@@ -305,6 +304,15 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_preset:
 			inputTitleDialog();
+			break;
+		case R.id.btn_sleep:
+			WorkService.common_msg(2,12);
+			break;
+		case R.id.btn_wake:
+			WorkService.common_msg(2,13);
+			break;
+		case R.id.btn_unit:
+			WorkService.common_msg(2,14);
 			break;
 		
 		}
@@ -391,24 +399,46 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					//int weight = msg.arg1;
 					Scaler d = (Scaler) msg.obj;
 					int totalweight = WorkService.getNetWeight();
-					theActivity.tv_weight.setText(String.valueOf(totalweight));
+					float wf = totalweight;
+					String weight = "";
+					
 					theActivity.timeout = 0;
 					if(d!=null)d.dump_info();
 					WorkService.readNextWgt(true);
 					
+					int dot = d.GetDotNum();
+					switch(dot)
+				    {
+				        case 1:
+				        	weight = String.format("%0.1f",wf/10);
+				            break;
+				        case 2:
+				        	weight = String.format("%0.2f",wf/100);
+				            break;
+				        case 3:
+				        	weight = String.format("%0.3f",wf/1000);
+				            break;
+				        case 4:
+				        	weight = String.format("%0.4f",wf/10000);
+				            break;
+				        default:
+				        	weight = String.format("%d",totalweight);
+				            break;
+				    }
+					theActivity.tv_weight.setText(weight);
 					if(d.isZero())
 					{
 						theActivity.btn_is_zero.setText(">0<");
 					}else
 					{
-						theActivity.btn_is_zero.setText("");
+						theActivity.btn_is_zero.setVisibility(View.VISIBLE);
 					}
 					if(d.isStandstill())
 					{
-						//theActivity.btn_is_zero.setText("--");
+						theActivity.btn_still.setText("--");
 					}else
 					{
-						//theActivity.btn_is_zero.setText("~~");
+						theActivity.btn_still.setText("~~");
 					}
 					if(d.isGross())
 					{

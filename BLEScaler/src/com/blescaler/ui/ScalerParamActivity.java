@@ -32,6 +32,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 	private EditText edit_mtd;
 	private EditText edit_filter;
 	private EditText edt_nov;// edt_unit;
+	private EditText edit_sleep,edit_srs_num;
 	//private EditText edit_dignum;
 	private Spinner sp_dignum;
 	private Spinner sp_div;
@@ -75,6 +76,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		edit_handzero = (EditText) findViewById(R.id.edit_handzero);
 		edit_mtd = (EditText) findViewById(R.id.edit_mtd);
 		edit_filter= (EditText) findViewById(R.id.edit_fiter);
+		edit_sleep= (EditText) findViewById(R.id.edit_sleep);
+		edit_srs_num= (EditText) findViewById(R.id.edit_snr_num);
 		//edit_dignum = (EditText) findViewById(R.id.edit_dot);
 		sp_dignum = (Spinner) findViewById(R.id.sp_dot);
 		sp_div = (Spinner) findViewById(R.id.sp_div);
@@ -148,6 +151,9 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					int zerotrack = Integer.parseInt(edit_zerotrack.getText().toString());
 					int filter = Integer.parseInt(edit_filter.getText().toString());
 					int handzero = Integer.parseInt(edit_handzero.getText().toString());
+					int sleep = Integer.parseInt(edit_sleep.getText().toString());
+					int srs_num = Integer.parseInt(edit_srs_num.getText().toString());
+					
 					//int dot = Integer.parseInt(sp_dignum.getText().toString());
 					sp.setNov(nov);
 					sp.setMtd((byte) mtd);
@@ -155,7 +161,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					sp.setZerotrack((byte) zerotrack);
 					sp.setFilter((byte)filter);
 					sp.setHand_zerotrack((byte) handzero);
-					
+					sp.setSleep((short) sleep);
+					sp.setSnr_num((short) srs_num);
 					int div_id = (int) sp_div.getSelectedItemId();
 				
 					sp.setResultionIndex((byte) div_id);

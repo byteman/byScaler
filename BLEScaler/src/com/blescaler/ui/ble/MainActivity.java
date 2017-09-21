@@ -166,11 +166,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 			prevLeftMenu = menu_one_scaler;
 			break;
 		case R.id.menu_print:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(6);
-			menu_print.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = menu_print;
+//			if (prevLeftMenu != null)
+//				prevLeftMenu.setBackgroundColor(color.transparent);
+//			goToFragment(6);
+//			menu_print.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+//			prevLeftMenu = menu_print;
 			break;
 		case R.id.menu_calib:
 			if (prevLeftMenu != null)
@@ -200,15 +200,15 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 				prevLeftMenu.setBackgroundColor(color.transparent);
 			menu_data_report.setBackgroundColor(getResources().getColor(R.color.set_item_click));
 			prevLeftMenu = menu_setting;
-			StartActivity(SysParamActivity.class, null);
-
+			//StartActivity(SysParamActivity.class, null);
+			goToFragment(9);
 			break;
 		case R.id.menu_four_scaler:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			menu_four_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = menu_four_scaler;
-			goToFragment(3);
+//			if (prevLeftMenu != null)
+//				prevLeftMenu.setBackgroundColor(color.transparent);
+//			menu_four_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+//			prevLeftMenu = menu_four_scaler;
+//			goToFragment(3);
 			
 			break;
 		}
@@ -249,8 +249,8 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		}
 		if (pos == 7)
 			newFragment = OneWeightFragment.newFragment();
-		if (pos == 3)
-			newFragment = FlourWeightFragment.newFragment();
+		//if (pos == 3)
+		//	newFragment = FlourWeightFragment.newFragment();
 		if (pos == 6)
 		{
 			 Intent intent = new Intent(this, SearchBTActivity.class);
@@ -264,6 +264,13 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 			 intent.putExtra("act", "calib");
 			 startActivity(intent); 
 			 return;
+		}
+		if(pos == 9)
+		{
+			  Intent intent = new Intent(this, SysParamActivity.class);
+			  intent.putExtra("act", "debug");
+			  startActivity(intent); 
+			  return;
 		}
 		if (newFragment == null)
 			return;

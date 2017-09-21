@@ -21,6 +21,7 @@ public class Scaler {
 	private int rx_cnt = 0;
 	private long waitTime = 0;
 	private String unit = "kg";
+	private int dot_num = 0;
 	private boolean zero = false;
 	private boolean standstill = false; //重量稳定
 	private boolean net_overflow = false; //Tare value too high
@@ -33,6 +34,10 @@ public class Scaler {
 	}
 	public boolean isGross() {
 		return ng_state;
+	}
+	public int GetDotNum()
+	{
+		return dot_num;
 	}
 	public void setStandstill(boolean standstill) {
 		this.standstill = standstill;
@@ -199,6 +204,7 @@ public class Scaler {
 					parseState(val[10]);
 					short dot = (short) ((val[11]<<8)+val[12]);
 					setWeight(Utils.bytesToWeight(w),dot);
+					this.dot_num = val[12];
 					
 					msgType = Global.MSG_BLE_WGTRESULT;
 					msg.arg1 = weight;

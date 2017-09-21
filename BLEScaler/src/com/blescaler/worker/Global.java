@@ -142,6 +142,35 @@ public class Global {
 	
 	public static final int CMD_CONNECT_SCALER=100314;
 	
+	public static final int REG_WEIGHT = 0;
+	public static final int REG_DOTNUM = 3;
+	public static final int REG_DIV1 = 8;
+	public static final int REG_SPAN1 = 10;
+	public static final int REG_UNIT = 14;
+	public static final int REG_PWR_ZERO_SPAN = 15;
+	public static final int REG_HAND_ZERO_SPAN = 16;
+	public static final int REG_ZERO_TRACK_SPAN = 17;
+	public static final int REG_STILL_DIS_SPAN = 18;
+	public static final int REG_STILL_FILTER_LEVEL = 19;
+	public static final int REG_CALIB_INDEX = 20; //标定序号 0 标0
+	public static final int REG_CALIB_EXEC = 21;
+	public static final int REG_CALIB_VALUE = 22;
+	public static final int REG_SENSOR_DIFF_K1 = 36;
+	public static final int REG_SENSOR_DIFF_K2 = 38;
+	public static final int REG_SENSOR_DIFF_K3 = 40;
+	public static final int REG_SENSOR_DIFF_K4 = 42;
+	public static final int REG_AUTO_DIFF_CALIB_INDEX = 44;
+	public static final int REG_SLEEP_S = 45;
+	public static final int REG_BATTERY = 46;
+	public static final int REG_SENSOR_NUM = 47;
+	public static final int REG_LAMP_CTRL = 48;
+	public static final int REG_AD_CHAN1 = 49;
+	public static final int REG_AD_CHAN2 = 51;
+	public static final int REG_AD_CHAN3 = 53;
+	public static final int REG_AD_CHAN4 = 55;
+	
+	
+	
 	public static String toast_success = "Done";
 	public static String toast_fail = "Fail";
 	public static String toast_notconnect = "Please connect printer";

@@ -17,6 +17,21 @@ public class ScalerParam {
 	private byte dignum=-1;//灏忔暟鐐逛綅鏁?
 	private byte filter=-1;
 	private byte unit=-1; //鍗曚綅
+	private short sleep = 0;
+	public short getSleep() {
+		return sleep;
+	}
+	public void setSleep(short sleep) {
+		this.sleep = sleep;
+	}
+	public short getSnr_num() {
+		return snr_num;
+	}
+	public void setSnr_num(short snr_num) {
+		this.snr_num = snr_num;
+	}
+	private short snr_num = 0;
+	
 	private String mdtstr;
 	public static Map<Integer, String> mtdmaps = new HashMap<Integer, String>() ;
 	public static Map<Integer, String> zerotrackmaps = new HashMap<Integer, String>() ;
@@ -115,6 +130,7 @@ public class ScalerParam {
 	public void setHand_zerotrack(byte zerotrack) {
 		this.hand_zerotrack = zerotrack;
 	}
+
 	public byte getResultionx() {
 		return resultion;
 	}
