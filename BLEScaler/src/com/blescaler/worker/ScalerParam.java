@@ -135,13 +135,13 @@ public class ScalerParam {
 		return resultion;
 	}
 	public byte getResultionIndex() {
-		if(resultion==1) this.resultion=0;
-		else if(resultion==2) this.resultion=1;
-		else if(resultion==5) this.resultion=2;
-		else if(resultion==10) this.resultion=3;
-		else if(resultion==20) this.resultion=4;
-		else if(resultion==50) this.resultion=5;
-		else if(resultion==100) this.resultion=6;
+		if(resultion==1) return 0;
+		else if(resultion==2)   return 1;
+		else if(resultion==5)   return 2;
+		else if(resultion==10)  return 3;
+		else if(resultion==20)  return 4;
+		else if(resultion==50)  return 5;
+		else if(resultion==100) return 6 ;
 		return 0;
 	}
 	public void setResultionx(byte resultion) {
