@@ -151,12 +151,12 @@ public class ScalerParam {
 	public void setResultionIndex(byte index) {
 		
 		if(index==0) this.resultion=1;
-		else if(resultion==1) this.resultion=2;
-		else if(resultion==2) this.resultion=5;
-		else if(resultion==3) this.resultion=10;
-		else if(resultion==4) this.resultion=20;
-		else if(resultion==5) this.resultion=50;
-		else if(resultion==6) this.resultion=100;
+		else if(index==1) this.resultion=2;
+		else if(index==2) this.resultion=5;
+		else if(index==3) this.resultion=10;
+		else if(index==4) this.resultion=20;
+		else if(index==5) this.resultion=50;
+		else if(index==6) this.resultion=100;
 	}
 	
 	public byte getDignum() {

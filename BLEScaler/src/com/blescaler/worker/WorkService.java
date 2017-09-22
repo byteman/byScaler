@@ -490,7 +490,13 @@ public class WorkService extends Service {
 			
 		} 
 		BluetoothAdapter adpter=BluetoothAdapter.getDefaultAdapter();
-		adpter.enable();
+		if(adpter!=null)
+		{
+			adpter.enable();
+		}else{
+			Log.e("WorkService", "can not open ble");
+		}
+		
 		scalers = new HashMap<String, Scaler>();
 		scalers2 = new HashMap<Integer, Scaler>();
 		mPrinterAddress = WorkService.getPrinterAddress(this);
