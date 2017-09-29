@@ -20,10 +20,42 @@ public class ScalerParam {
 	{
 		
 	}
+	public int ipToLong(String ipAddress) {  
+		  
+		int result = 0;  
+		  
+		String[] ipAddressInArray = ipAddress.split("\\.");  
+		  
+		for (int i = 3; i >= 0; i--) {  
+		  
+		    long ip = Long.parseLong(ipAddressInArray[3 - i]);  
+		  
+		    //left shifting 24,16,8,0 and bitwise OR  
+		  
+		    //1. 192 << 24  
+		    //1. 168 << 16  
+		    //1. 1   << 8  
+		    //1. 2   << 0  
+		    result |= ip << (i * 8);  
+		  
+		}  
+		return result;  
+	} 
+	public boolean SetHostString(String ip)
+	{
+		hostip=ipToLong(ip);
+		return true;
+	}
+	public String longToIp2(int ip) {  
+		  
+		return ((ip >> 24) & 0xFF) + "."   
+		    + ((ip >> 16) & 0xFF) + "."   
+		    + ((ip >> 8) & 0xFF) + "."   
+		    + (ip & 0xFF);  
+		 }  
 	public String GetHostString()
 	{
-		String ip = String.format("%d.%d.%d.%d", (byte) ((0xff000000 & hostip) >> 24), (byte) ((0xff0000 & hostip) >> 16), (byte) ((0xff00 & hostip) >> 8),(byte) (0xff & hostip)); 
-		
+		String ip = longToIp2(hostip);
 		return ip;
 			
 	}

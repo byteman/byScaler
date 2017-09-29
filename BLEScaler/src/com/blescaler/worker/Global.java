@@ -78,8 +78,13 @@ public class Global {
 	public static final int MSG_SCALER_AD_CHAN2_RESULT=100059;	//读取秤参数的响应
 	public static final int MSG_GET_PARAM1_RESULT=100060;	//读取秤参数的响应
 	public static final int MSG_GET_PARAM2_RESULT=100061;	//读取秤参数的响应
-	public static final int MSG_SET_PARAM1_RESULT=100062;	//读取秤参数的响应
-	public static final int MSG_SET_PARAM2_RESULT=100063;	//读取秤参数的响应
+	public static final int MSG_GET_PARAM3_RESULT=100062;	//读取秤参数的响应
+	public static final int MSG_GET_PARAM4_RESULT=100063;	//读取秤参数的响应
+	public static final int MSG_GET_PARAM5_RESULT=100064;	//读取秤参数的响应
+	
+	
+	public static final int MSG_SET_PARAM1_RESULT=100065;	//读取秤参数的响应
+	public static final int MSG_SET_PARAM2_RESULT=100066;	//读取秤参数的响应
 	
 	
 	// Bundle data使用

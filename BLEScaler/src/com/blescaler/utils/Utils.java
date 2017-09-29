@@ -183,6 +183,14 @@ public class Utils {
 		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
 		return number;
 	}
+	public static short bytesToShort(byte[] bytes,int index){
+		int number = bytes[index+1] & 0xFF;
+		// "|="按位或赋值。
+		number |= ((bytes[index] << 8) & 0xFF00);
+
+		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
+		return (short) number;
+	}
 	public static int bytesToWeight(byte[] bytes) {
 		
 		return bytesToInt(bytes,0);

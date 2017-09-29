@@ -95,19 +95,32 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		address = getIntent().getStringExtra("address");
 		mHandler = new MHandler(this);
 	}
-
+	private void clear()
+	{
+		edit_ver.setText("");
+		edit_hostip.setText("");
+		edit_port.setText("");
+		edit_id.setText("");
+		edit_heart.setText("");
+		edit_channel.setText("");
+		edit_send_time_s.setText("");
+		edit_acquire_s.setText("");
+		
+	}
 
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_read:
+			clear();
 			new Thread(new Runnable(){
 
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
 					try {
+						
 						WorkService.requestReadPar1(address);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -126,7 +139,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					// TODO Auto-generated method stub
 
 					ScalerParam sp = new ScalerParam();
-					sp.hostip = Integer.parseInt(edit_hostip.getText().toString());
+					sp.SetHostString(edit_hostip.getText().toString());
+					
 					sp.hostport = Integer.parseInt(edit_port.getText().toString());
 					sp.dev_id = (short) Integer.parseInt(edit_id.getText().toString());
 					sp.heart = (short) Integer.parseInt(edit_heart.getText().toString());
@@ -155,17 +169,23 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	private void showParam(ScalerParam sp)
+	private void showVerParam(ScalerParam sp)
 	{
-		
+
+		edit_ver.setText(""+sp.version);	
+		edit_id.setText("" + sp.dev_id);
+	}
+	private void showHostParam(ScalerParam sp)
+	{
 		edit_hostip.setText(sp.GetHostString());
 		edit_port.setText(""+sp.hostport);
-		edit_ver.setText(""+sp.version);	
+	}
+	private void showTimeParam(ScalerParam sp)
+	{	
 		edit_send_time_s.setText(""+sp.send_time_s);
 		edit_heart.setText("" + sp.heart);
 		edit_channel.setText("" + sp.channel);
 		edit_acquire_s.setText("" + sp.acquire_s);
-		edit_id.setText("" + sp.dev_id);
 	}
 	static class MHandler extends Handler {
 
@@ -181,12 +201,28 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			ScalerParamActivity theActivity = mActivity.get();
 			switch (msg.what) {
 
-				case Global.MSG_SCALER_PAR_GET_RESULT:
+				case Global.MSG_GET_PARAM1_RESULT:
 				{
 					Scaler scaler = (Scaler) msg.obj;
 					if(scaler==null)return;
-					theActivity.showParam(scaler.para);
-					Utils.Msgbox(theActivity, "读取成功");
+					theActivity.showVerParam(scaler.para);
+					//Utils.Msgbox(theActivity, "读取成功");
+					break;
+				}
+				case Global.MSG_GET_PARAM2_RESULT:
+				{
+					Scaler scaler = (Scaler) msg.obj;
+					if(scaler==null)return;
+					theActivity.showHostParam(scaler.para);
+					//Utils.Msgbox(theActivity, "读取成功");
+					break;
+				}
+				case Global.MSG_GET_PARAM3_RESULT:
+				{
+					Scaler scaler = (Scaler) msg.obj;
+					if(scaler==null)return;
+					theActivity.showTimeParam(scaler.para);
+					//Utils.Msgbox(theActivity, "读取成功");
 					break;
 				}
 				case Global.MSG_SCALER_PAR_SET_RESULT:
@@ -206,7 +242,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 				{
 					
 					String reason = WorkService.getFailReason(msg.arg1);
-					Utils.Msgbox(theActivity, "请求失败: " + reason);
+					//Utils.Msgbox(theActivity, "请求失败: " + reason);
 					break;
 				}
 				case Global.MSG_SCALER_SAVE_EEPROM:

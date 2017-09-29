@@ -437,7 +437,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 					case Global.MSG_BLE_FAILERESULT:
 					{
 
-						Toast.makeText(theActivity, WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
+						//Toast.makeText(theActivity, WorkService.getFailReason(msg.arg1), Toast.LENGTH_SHORT).show();
 						break;
 					}
 					

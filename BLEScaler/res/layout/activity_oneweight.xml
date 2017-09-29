@@ -126,7 +126,7 @@
             android:layout_marginLeft="5dp"
             android:background="@drawable/white_oval_shape"
             android:gravity="center"
-            android:text=""
+            android:text="1000"
             android:textColor="@color/grey"
             android:textSize="45sp"
             android:textStyle="bold" />

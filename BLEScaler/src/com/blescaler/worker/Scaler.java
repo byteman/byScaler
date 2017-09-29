@@ -220,13 +220,13 @@ public class Scaler {
 			if(val[1] == 0x03)
 			{
 				int reg_num = (val[2]-2)/2;
-				int reg_addr = (val[3]<<8)+val[4];
+				int reg_addr = Utils.bytesToShort(val,3);
 
 				if(reg_addr == Global.REG_DEV_VERSION )
 				{			
 					if(val.length < 9) return 0;
-					para.version = (short) ((val[5]<<8) + val[6]);
-					para.dev_id  = (short) ((val[7]<<8) + val[8]);
+					para.version = Utils.bytesToShort(val,5);
+					para.dev_id  = Utils.bytesToShort(val,7);
 					msgType = Global.MSG_GET_PARAM1_RESULT;
 					msg.arg1 = 0;				
 				}
@@ -235,16 +235,16 @@ public class Scaler {
 					if(val.length < 13) return 0;
 					para.hostip = Utils.bytesToInt(val, 5);					
 					para.hostport = Utils.bytesToInt(val, 9);					
-					msgType = Global.MSG_GET_PARAM1_RESULT;
+					msgType = Global.MSG_GET_PARAM2_RESULT;
 				}
 				else if(reg_addr == Global.REG_SEND_TIME)
 				{
 					
-					para.send_time_s = (short) ((val[5]<<8) + val[6]);
-					para.heart = (short) ((val[7]<<8) + val[8]);
-					para.channel = (short) ((val[9]<<8) + val[10]);
-					para.acquire_s = (short) ((val[11]<<8) + val[12]);
-					msgType = Global.MSG_GET_PARAM1_RESULT;
+					para.send_time_s = Utils.bytesToShort(val,5);
+					para.heart = Utils.bytesToShort(val,7);
+					para.channel = Utils.bytesToShort(val,9);
+					para.acquire_s = Utils.bytesToShort(val,11);
+					msgType = Global.MSG_GET_PARAM3_RESULT;
 
 					
 				}
@@ -252,7 +252,7 @@ public class Scaler {
 				else if(reg_addr == Global.REG_READ_INDEX)
 				{
 					para.send_time_s = (short) ((val[5]<<8) + val[6]);
-					msgType = Global.MSG_GET_PARAM2_RESULT;
+					msgType = Global.MSG_GET_PARAM4_RESULT;
 					msg.arg1 = 1;
 				}
 				else if(reg_addr == Global.REG_TIME)
@@ -262,7 +262,7 @@ public class Scaler {
 					para.day_hour = (short) ((val[7]<<8) + val[8]);
 					para.min_second = (short) ((val[9]<<8) + val[10]);
 					
-					msgType = Global.MSG_GET_PARAM2_RESULT;
+					msgType = Global.MSG_GET_PARAM5_RESULT;
 					msg.arg1 = 2;
 				}
 //				else if(reg_addr == Global.REG_AD_CHAN1)
@@ -300,17 +300,17 @@ public class Scaler {
 			else if(val[1] == 0x10)
 			{
 				//写入的通知.
-				int reg_addr = (val[2]<<8)+val[3];
-//				if(reg_addr == Global.REG_SLEEP_S)
-//				{
-//					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
-//					msg.arg1 = 0;		
-//				}
-//				else if(reg_addr == Global.REG_CALIB_INDEX)
-//				{
-//					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-//					msg.arg1 = 0;
-//				}
+				int reg_addr = Utils.bytesToShort(val,2);
+				if(reg_addr == Global.REG_SEND_TIME)
+				{
+					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
+					msg.arg1 = 0;		
+				}
+				else if(reg_addr == Global.REG_DEV_ID)
+				{
+					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
+					msg.arg1 = 0;
+				}
 //				else if(reg_addr == Global.REG_AUTO_DIFF_CALIB_INDEX)
 //				{
 //					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;

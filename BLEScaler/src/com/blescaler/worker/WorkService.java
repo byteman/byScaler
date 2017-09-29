@@ -968,18 +968,18 @@ public class WorkService extends Service {
 		try{
 			Register reg = new Register();
 			//1st
-			reg.BeginWrite(Global.REG_DEV_ID);
-			
-			reg.putShort(s.dev_id);	
-			reg.putInts(s.hostip,s.hostport);	
-			
-			write_buffer(reg.getResult());
-			Thread.sleep(200);
+//			reg.BeginWrite(Global.REG_DEV_ID);
+//			
+//			reg.putShort(s.dev_id);	
+//			reg.putInts(s.hostip,s.hostport);	
+//			
+//			write_buffer(reg.getResult());
+//			Thread.sleep(200);
 			
 			//2nd
 			reg.BeginWrite(Global.REG_SEND_TIME);
-			reg.putShorts(s.send_time_s, s.heart, s.channel, s.acquire_s);
-			
+			//reg.putShorts(s.send_time_s, s.heart, s.channel, s.acquire_s);
+			reg.putShorts(s.send_time_s, s.heart);
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
 			
