@@ -22,19 +22,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class ScalerParamActivity extends Activity implements OnClickListener {
+public class ScalerParamActivity2 extends Activity implements OnClickListener {
 
 	
 	
 	private EditText edit_ver;
 	private EditText edit_time;
-	private EditText edit_hostip;
-	private EditText edit_port;
-	private EditText edit_id;
-	private EditText edit_heart;
-	private EditText edit_channel,edit_send_time_s,edit_acquire_s;
+	private EditText edit_write_index,edit_read_index;
+	private Button 	 btn_gprs_test;
+	
 
-	private Button btn_read, btn_write,btn_next,btn_back;
+	private Button btn_read, btn_write,btn_back,btn_sync_time;
 	
 	private String address = "C4:BE:84:22:91:E2";
 	private static Handler mHandler = null;
@@ -67,26 +65,22 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.test);
+		setContentView(R.layout.test2);
 				
 		edit_ver = (EditText) findViewById(R.id.edit_ver);
 		//edit_time = (EditText) findViewById(R.id.edit_time);
 		
-		edit_hostip = (EditText) findViewById(R.id.edit_hostip);
-		edit_port = (EditText) findViewById(R.id.edit_port);
-		edit_id= (EditText) findViewById(R.id.edit_id);
-		edit_heart= (EditText) findViewById(R.id.edit_heart);
-		edit_channel= (EditText) findViewById(R.id.edit_channel);
-		//edit_dignum = (EditText) findViewById(R.id.edit_dot);
-		edit_send_time_s = (EditText) findViewById(R.id.edit_send_time_s);
-		edit_acquire_s = (EditText) findViewById(R.id.edit_acquire_s);
+		edit_time = (EditText) findViewById(R.id.edit_time);
+		edit_write_index = (EditText) findViewById(R.id.edit_write_index);
+		edit_read_index= (EditText) findViewById(R.id.edit_read_index);
+	
 	
 		btn_read = (Button) findViewById(R.id.btn_read);
 		btn_read.setOnClickListener(this);
 		btn_write = (Button) findViewById(R.id.btn_save);
 		btn_write.setOnClickListener(this);
-		btn_next = (Button) findViewById(R.id.btn_next);
-		btn_next.setOnClickListener(this);
+		btn_sync_time = (Button) findViewById(R.id.btn_sync_time);
+		btn_sync_time.setOnClickListener(this);
 		
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_back.setOnClickListener(this);
@@ -108,7 +102,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 				public void run() {
 					// TODO Auto-generated method stub
 					try {
-						WorkService.requestReadPar1(address);
+						WorkService.requestReadPar2(address);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -126,15 +120,11 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					// TODO Auto-generated method stub
 
 					ScalerParam sp = new ScalerParam();
-					sp.hostip = Integer.parseInt(edit_hostip.getText().toString());
-					sp.hostport = Integer.parseInt(edit_port.getText().toString());
-					sp.dev_id = (short) Integer.parseInt(edit_id.getText().toString());
-					sp.heart = (short) Integer.parseInt(edit_heart.getText().toString());
-					sp.channel = (short) Integer.parseInt(edit_channel.getText().toString());
-					sp.send_time_s = (short) Integer.parseInt(edit_send_time_s.getText().toString());
-					sp.acquire_s = (short) Integer.parseInt(edit_acquire_s.getText().toString());
+					sp.write_index = (short) Integer.parseInt(edit_write_index.getText().toString());
+					sp.read_index = (short) Integer.parseInt(edit_read_index.getText().toString());
+					sp.SetNowTime();
 									
-					WorkService.requestWriteParamValue1(address,sp);
+					WorkService.requestWriteParamValue2(address,sp);
 		
 				}
 				
@@ -147,7 +137,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			finish();
 			//WorkService.requestSaveParam(address);
 			break;
-		case R.id.btn_next:
+		case R.id.btn_sync_time:
 			
 			break;
 		default:
@@ -158,27 +148,23 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 	private void showParam(ScalerParam sp)
 	{
 		
-		edit_hostip.setText(sp.GetHostString());
-		edit_port.setText(""+sp.hostport);
-		edit_ver.setText(""+sp.version);	
-		edit_send_time_s.setText(""+sp.send_time_s);
-		edit_heart.setText("" + sp.heart);
-		edit_channel.setText("" + sp.channel);
-		edit_acquire_s.setText("" + sp.acquire_s);
-		edit_id.setText("" + sp.dev_id);
+		edit_time.setText(sp.GetTimeString());	
+		edit_write_index.setText(""+sp.write_index);
+		edit_read_index.setText("" + sp.read_index);
+	
 	}
 	static class MHandler extends Handler {
 
-		WeakReference<ScalerParamActivity> mActivity;
+		WeakReference<ScalerParamActivity2> mActivity;
 
-		MHandler(ScalerParamActivity activity) {
-			mActivity = new WeakReference<ScalerParamActivity>(activity);
+		MHandler(ScalerParamActivity2 activity) {
+			mActivity = new WeakReference<ScalerParamActivity2>(activity);
 			
 		}
 
 		@Override
 		public void handleMessage(Message msg) {
-			ScalerParamActivity theActivity = mActivity.get();
+			ScalerParamActivity2 theActivity = mActivity.get();
 			switch (msg.what) {
 
 				case Global.MSG_SCALER_PAR_GET_RESULT:

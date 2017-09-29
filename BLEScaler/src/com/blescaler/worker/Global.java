@@ -76,6 +76,11 @@ public class Global {
 	public static final int MSG_SCALER_POWER_RESULT=100057;	//读取秤参数的响应
 	public static final int MSG_SCALER_AD_CHAN1_RESULT=100058;	//读取秤参数的响应
 	public static final int MSG_SCALER_AD_CHAN2_RESULT=100059;	//读取秤参数的响应
+	public static final int MSG_GET_PARAM1_RESULT=100060;	//读取秤参数的响应
+	public static final int MSG_GET_PARAM2_RESULT=100061;	//读取秤参数的响应
+	public static final int MSG_SET_PARAM1_RESULT=100062;	//读取秤参数的响应
+	public static final int MSG_SET_PARAM2_RESULT=100063;	//读取秤参数的响应
+	
 	
 	// Bundle data使用
 	public static final String BYTESPARA1 = "bytespara1";
@@ -144,36 +149,24 @@ public class Global {
 	
 	public static final int CMD_CONNECT_SCALER=100314;
 	
-	public static final int REG_WEIGHT = 0;
-	public static final int REG_OPERATION = 2;
-	public static final int REG_DOTNUM = 3;
-	public static final int REG_TARE = 6;
-	public static final int REG_DIV1 = 8;
-	public static final int REG_SPAN1 = 10;
-	public static final int REG_UNIT = 14;
-	public static final int REG_PWR_ZERO_SPAN = 15;
-	public static final int REG_HAND_ZERO_SPAN = 16;
-	public static final int REG_ZERO_TRACK_SPAN = 17;
-	public static final int REG_STILL_DIS_SPAN = 18;
-	public static final int REG_STILL_FILTER_LEVEL = 19;
-	public static final int REG_CALIB_INDEX = 20; //标定序号 0 标0
-	public static final int REG_CALIB_EXEC = 21;
-	public static final int REG_CALIB_VALUE = 22;
-	public static final int REG_SENSOR_DIFF_K1 = 36;
-	public static final int REG_SENSOR_DIFF_K2 = 38;
-	public static final int REG_SENSOR_DIFF_K3 = 40;
-	public static final int REG_SENSOR_DIFF_K4 = 42;
-	public static final int REG_AUTO_DIFF_CALIB_INDEX = 44;
-	public static final int REG_SLEEP_S = 45;
-	public static final int REG_SENSOR_NUM = 46;
-	public static final int REG_BATTERY = 47;
-	
-	public static final int REG_LAMP_CTRL = 48;
-	public static final int REG_AD_CHAN1 = 49;
-	public static final int REG_AD_CHAN2 = 51;
-	public static final int REG_AD_CHAN3 = 53;
-	public static final int REG_AD_CHAN4 = 55;
-	
+	public static final int REG_CHAN1_ZX = 0;
+	public static final int REG_CHAN1_WD = 1;
+	public static final int REG_DEV_STATUS =24;
+	public static final int REG_DEV_VERSION =25;
+	public static final int REG_DEV_ID =26;
+	public static final int REG_HOST_IP =27;
+	public static final int REG_HOST_PORT =29;
+	public static final int REG_SEND_TIME =31;
+	public static final int REG_HEART_TIME =32;
+	public static final int REG_CHAN_NUM  =33;
+	public static final int REG_ACQUIRE_TIME =34;
+	public static final int REG_WRITE_INDEX =35;
+	public static final int REG_READ_INDEX =36;
+	public static final int REG_SEND_NOW =37;
+	public static final int REG_GPRS_TEST =38;
+	public static final int REG_GPRS_SIGNAL =39;
+	public static final int REG_TIME =40;
+
 	
 	
 	public static String toast_success = "Done";

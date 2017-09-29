@@ -691,23 +691,6 @@ public class WorkService extends Service {
 	public static boolean  read_all_ks()
 	{
 
-		try{
-			Register reg = new Register();
-			//1st
-			
-			write_buffer(reg.BeginRead(Global.REG_SENSOR_DIFF_K1,4));
-			Thread.sleep(200);
-			//3rd
-			
-			write_buffer(reg.BeginRead(Global.REG_SENSOR_DIFF_K3,4));
-			Thread.sleep(100);
-
-		
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	}
 
 		return true;
 	}
@@ -721,21 +704,11 @@ public class WorkService extends Service {
 	}
 	public static boolean  auto_k(int index)
 	{
-		Register reg = new Register();
-		reg.BeginWrite(Global.REG_AUTO_DIFF_CALIB_INDEX);
-		reg.putShort((short) index);
-				
-		return write_buffer(reg.getResult());
+		return true;
 	}
 	public static boolean  hand_k(int index, int value)
 	{
-		
-		Register reg = new Register();
-		reg.BeginWrite(Global.REG_SENSOR_DIFF_K1+index*2);
-		//reg.putShort((short) index);
-		reg.putInt(value);
-		
-		return write_buffer(reg.getResult());
+		return true;
 
 	}
 //修改n个寄存器的值.发送后异步等待通知
@@ -845,11 +818,11 @@ public class WorkService extends Service {
 			Register reg = new Register();
 			//1st
 			
-			write_buffer(reg.BeginRead(Global.REG_AD_CHAN1,4));
+			write_buffer(reg.BeginRead(Global.REG_CHAN1_ZX,4));
 			Thread.sleep(100);
 			//3rd
 			
-			write_buffer(reg.BeginRead(Global.REG_AD_CHAN3,4));
+			write_buffer(reg.BeginRead(Global.REG_CHAN1_WD,4));
 			Thread.sleep(100);
 
 		
@@ -863,12 +836,7 @@ public class WorkService extends Service {
 	}
 	public static boolean CalibZero() 
 	{
-		Register reg = new Register();
-		//1st
-		reg.BeginWrite(Global.REG_CALIB_INDEX);
-		reg.putShorts((short) 0,(short)1);
-	
-		return write_buffer(reg.getResult());
+		return true;
 	}
 	//标定重量.calibWet 标定重量值 nov 满量程
 	public static boolean requestCalibK(String address,int calibWet,int nov) 
@@ -888,28 +856,105 @@ public class WorkService extends Service {
 	}
 	public static boolean CalibK(int point,int calibWet) 
 	{
-		Register reg = new Register();
-		//1st
-		reg.BeginWrite(Global.REG_CALIB_INDEX);
-		reg.putShorts((short) point,(short)1);
-		if(point > 0)
-			reg.putInt(calibWet);
-		return write_buffer(reg.getResult());
+		return true;
 	}
 	//请求读取参数
-	public static boolean requestReadPar(String address) throws InterruptedException
+	public static boolean requestReadPar1(String address) throws InterruptedException
 	{
-		read_registers(Global.REG_DOTNUM,1); //小数点位数
-		Thread.sleep(50);
-		read_registers(Global.REG_DIV1,5); //分度值->量程
-		Thread.sleep(50);
-		read_registers(Global.REG_UNIT,6);//单位->滤波等级
-		Thread.sleep(50);
-		read_registers(Global.REG_SLEEP_S,2);//单位->滤波等级
+		Register reg = new Register();
+		//1st
+//		40026		软件版本号：
+//		40027		设备编号
+
+		write_buffer(reg.BeginRead(Global.REG_DEV_VERSION,2));
+		Thread.sleep(100);
+		//3rd
+//		40028/40029		远程服务器IP（192.168.1.12 = 0xC0A8010C）
+//		40030/40031		远程服务器端口：（）
+
+		write_buffer(reg.BeginRead(Global.REG_HOST_IP,4));
+		Thread.sleep(100);
+		//数据发送间隔（单位秒）
+		//心跳包发送间隔（单位秒）
+		//通道数量（1~~6）
+		//数据采集间隔时间（秒）
+		write_buffer(reg.BeginRead(Global.REG_SEND_TIME,4));
+		Thread.sleep(100);
+		
+		
+		return true;
+	}
+	public static boolean requestReadPar2(String address) throws InterruptedException
+	{
+		Register reg = new Register();
+		//1st
+//		40036		数据保存开始地址
+//		40037		数据读取开始地址
+
+
+		write_buffer(reg.BeginRead(Global.REG_WRITE_INDEX,2));
+		Thread.sleep(100);
+		
+//		40041		日期（年、月  17年9月 = 0x1109）
+//		40042		日期（日、时  5号13点 = 0x050d）
+//		40043		时间（分、秒  10:9 = 0x0a09）
+
+
+		write_buffer(reg.BeginRead(Global.REG_TIME,3));
+		Thread.sleep(100);
+		
+		
+		
 		return true;
 	}
 	//请求修改参数,修改后的参数未保存
-	public static boolean requestWriteParamValue(String address,ScalerParam s)
+	public static boolean requestWriteParamValue2(String address,ScalerParam s)
+	{
+		if(mBle == null) return false;
+
+		Scaler scaler = scalers2.get(0);
+		if(scaler==null) return false;
+		BleGattCharacteristic chars = scaler.GetBleChar();
+		//BleGattCharacteristic chars = mChars.get(address);
+		if(chars == null) return false;
+		if(s == null) return false;
+		ScalerParam sp = scaler.para;
+		try{
+			Register reg = new Register();
+			
+			
+			//1st
+			reg.BeginWrite(Global.REG_TIME);
+			
+			reg.putShorts(s.year_month,s.day_hour, s.min_second);	
+			
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
+			
+			//2nd
+			reg.BeginWrite(Global.REG_WRITE_INDEX);
+			reg.putShorts(s.write_index, s.read_index);
+			
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
+			
+		
+		
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+
+		
+		//chars.setValue(s.getSetCmdBuffer());
+		
+		return mBle.requestWriteCharacteristic(address, chars, "false");
+
+	}
+	
+	//请求修改参数,修改后的参数未保存
+	public static boolean requestWriteParamValue1(String address,ScalerParam s)
 	{
 		if(mBle == null) return false;
 
@@ -923,37 +968,22 @@ public class WorkService extends Service {
 		try{
 			Register reg = new Register();
 			//1st
-			reg.BeginWrite(Global.REG_DIV1);
+			reg.BeginWrite(Global.REG_DEV_ID);
 			
-			reg.putShorts((short)s.getResultionx(),(short)s.getResultionx());	
-			reg.putInts(s.getNov());	
+			reg.putShort(s.dev_id);	
+			reg.putInts(s.hostip,s.hostport);	
 			
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
 			
 			//2nd
-			reg.BeginWrite(Global.REG_UNIT);
-			reg.putShorts(s.getUnit(),s.getPwr_zerotrack(),s.getHand_zerotrack());
+			reg.BeginWrite(Global.REG_SEND_TIME);
+			reg.putShorts(s.send_time_s, s.heart, s.channel, s.acquire_s);
 			
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
 			
-			reg.BeginWrite(Global.REG_ZERO_TRACK_SPAN);
-			reg.putShorts(s.getZerotrack(),s.getMtd(),s.getFilter());
-			write_buffer(reg.getResult());
-			Thread.sleep(200);
-			
-			//3rd
-			reg.BeginWrite(Global.REG_DOTNUM); //dot
-			reg.putShort(s.getDignum());
-			write_buffer(reg.getResult());
-			Thread.sleep(200);
-			
-			reg.BeginWrite(Global.REG_SLEEP_S); //dot
-			reg.putShort(s.getSleep());
-			reg.putShort(s.getSnr_num());
-			write_buffer(reg.getResult());
-			Thread.sleep(200);
+		
 		
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
@@ -975,14 +1005,7 @@ public class WorkService extends Service {
 	//读取某个秤的重量值
 	public static boolean requestReadWgt(String address)
 	{
-		int size = getQueSize() ;
-		if(size > 10) 
-		{
-			Log.e(TAG, "queue underflow " + size);
-			return false;
-		}
-		Log.e(TAG, "send packet");
-		return read_registers((short)Global.REG_WEIGHT, (short)4);
+		return true;
 
 	}
 	//判断打印机是否已经连接
@@ -1211,7 +1234,7 @@ public class WorkService extends Service {
 	}
 	public static boolean readPower()
 	{
-		return read_registers((short)Global.REG_BATTERY, (short)1);
+		return true;
 	}
 	public static boolean readNextWgt(boolean needAllconnect)
 	{
@@ -1304,18 +1327,12 @@ public class WorkService extends Service {
 	//置零当前重量
 	public static boolean setZero()
 	{
-		Register reg = new Register();
-		reg.BeginWrite(Global.REG_OPERATION);
-		reg.putShort((short) 1);
-		return write_buffer(reg.getResult());
+		return true;
 	}
 	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
 	public static boolean setPreTare(int preTare)
 	{
-		Register reg = new Register();
-		reg.BeginWrite(Global.REG_TARE);
-		reg.putInt(preTare);
-		return write_buffer(reg.getResult());
+		return true;
 		
 	}
 	public static boolean isNetState()
@@ -1362,10 +1379,7 @@ public class WorkService extends Service {
 	}
 	public static boolean CtrlLight(int index)
 	{
-		Register reg = new Register();
-		reg.BeginWrite(Global.REG_LAMP_CTRL);
-		reg.putShort((short) (index));
-		return write_buffer(reg.getResult());
+		return true;
 		
 	}
 	public static String getUnit()

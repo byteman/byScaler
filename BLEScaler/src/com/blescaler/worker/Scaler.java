@@ -221,122 +221,107 @@ public class Scaler {
 			{
 				int reg_num = (val[2]-2)/2;
 				int reg_addr = (val[3]<<8)+val[4];
-				
-				if(reg_addr == Global.REG_WEIGHT)
-				{
-					byte w[] = { 0, 0, 0, 0 };
-					if(val.length <  15)
-					{
-						 return 0;
-					}
-					System.arraycopy(val, 5, w, 0, 4);
-					
-					parseState((short) ((val[9]<<8)+val[10]));
-					short dot = (short) ((val[11]<<8)+val[12]);
-					setWeight(Utils.bytesToWeight(w),dot);
-					this.dot_num = val[12];
-					
-					msgType = Global.MSG_BLE_WGTRESULT;
-					msg.arg1 = weight;
-					
-				}
-				else if(reg_addr == Global.REG_DOTNUM )
-				{					
-					para.setDignum(val[6]);
+
+				if(reg_addr == Global.REG_DEV_VERSION )
+				{			
+					if(val.length < 9) return 0;
+					para.version = (short) ((val[5]<<8) + val[6]);
+					para.dev_id  = (short) ((val[7]<<8) + val[8]);
+					msgType = Global.MSG_GET_PARAM1_RESULT;
 					msg.arg1 = 0;				
 				}
-				else if(reg_addr == Global.REG_DIV1)
+				else if(reg_addr == Global.REG_HOST_IP)
 				{
-					para.setResultionx(val[6]);
-					
-					para.setNov(Utils.bytesToInt(val,9));
-					
-					
+					if(val.length < 13) return 0;
+					para.hostip = Utils.bytesToInt(val, 5);					
+					para.hostport = Utils.bytesToInt(val, 9);					
+					msgType = Global.MSG_GET_PARAM1_RESULT;
 				}
-				else if(reg_addr == Global.REG_UNIT)
+				else if(reg_addr == Global.REG_SEND_TIME)
 				{
-					if(val.length < 17) return 0;;
-					para.setUnit(val[6]);
-					para.setPwr_zerotrack(val[8]);
-					para.setHand_zerotrack(val[10]);
-					para.setZerotrack(val[12]);
-					para.setMtd(val[14]);
-					para.setFilter(val[16]);
+					
+					para.send_time_s = (short) ((val[5]<<8) + val[6]);
+					para.heart = (short) ((val[7]<<8) + val[8]);
+					para.channel = (short) ((val[9]<<8) + val[10]);
+					para.acquire_s = (short) ((val[11]<<8) + val[12]);
+					msgType = Global.MSG_GET_PARAM1_RESULT;
+
 					
 				}
 				
-				else if(reg_addr == Global.REG_SENSOR_DIFF_K1)
+				else if(reg_addr == Global.REG_READ_INDEX)
 				{
-					allks[0]=(float)Utils.bytesToInt(val, 5)/1000.0f;
-					allks[1]=(float)Utils.bytesToInt(val, 9)/1000.0f;
-					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
+					para.send_time_s = (short) ((val[5]<<8) + val[6]);
+					msgType = Global.MSG_GET_PARAM2_RESULT;
 					msg.arg1 = 1;
 				}
-				else if(reg_addr == Global.REG_SENSOR_DIFF_K3)
+				else if(reg_addr == Global.REG_TIME)
 				{
 					
-					allks[2]=(float)Utils.bytesToInt(val, 5)/1000.0f;
-					allks[3]=(float)Utils.bytesToInt(val, 9)/1000.0f;
+					para.year_month = (short) ((val[5]<<8) + val[6]);
+					para.day_hour = (short) ((val[7]<<8) + val[8]);
+					para.min_second = (short) ((val[9]<<8) + val[10]);
+					
 					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
 					msg.arg1 = 2;
 				}
-				else if(reg_addr == Global.REG_AD_CHAN1)
-				{
-					
-					msg.arg1 = Utils.bytesToInt(val, 5);
-					msg.arg2 = Utils.bytesToInt(val, 9);
-					
-					msgType = Global.MSG_SCALER_AD_CHAN1_RESULT;
-					
-				}
-				else if(reg_addr == Global.REG_AD_CHAN3)
-				{
-					
-					msg.arg1 = Utils.bytesToInt(val, 5);
-					msg.arg2 = Utils.bytesToInt(val, 9);
-					
-					msgType = Global.MSG_SCALER_AD_CHAN2_RESULT;
-					
-				}
-				else if(reg_addr == Global.REG_BATTERY)
-				{
-					msgType = Global.MSG_SCALER_POWER_RESULT;
-					msg.arg1 = (val[5]<<8)+val[6];
-				}
-				else if(reg_addr == Global.REG_SLEEP_S)
-				{
-					
-					para.setSleep((short) ((val[5]<<8)+val[6]));
-					para.setSnr_num((short) ((val[7]<<8)+val[8]));
-					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
-					msg.arg1 = 0;			
-				}
+//				else if(reg_addr == Global.REG_AD_CHAN1)
+//				{
+//					
+//					msg.arg1 = Utils.bytesToInt(val, 5);
+//					msg.arg2 = Utils.bytesToInt(val, 9);
+//					
+//					msgType = Global.MSG_SCALER_AD_CHAN1_RESULT;
+//					
+//				}
+//				else if(reg_addr == Global.REG_AD_CHAN3)
+//				{
+//					
+//					msg.arg1 = Utils.bytesToInt(val, 5);
+//					msg.arg2 = Utils.bytesToInt(val, 9);
+//					
+//					msgType = Global.MSG_SCALER_AD_CHAN2_RESULT;
+//					
+//				}
+//				else if(reg_addr == Global.REG_BATTERY)
+//				{
+//					msgType = Global.MSG_SCALER_POWER_RESULT;
+//					msg.arg1 = (val[5]<<8)+val[6];
+//				}
+//				else if(reg_addr == Global.REG_SLEEP_S)
+//				{
+//					
+//					para.setSleep((short) ((val[5]<<8)+val[6]));
+//					para.setSnr_num((short) ((val[7]<<8)+val[8]));
+//					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
+//					msg.arg1 = 0;			
+//				}
 			}
 			else if(val[1] == 0x10)
 			{
 				//写入的通知.
 				int reg_addr = (val[2]<<8)+val[3];
-				if(reg_addr == Global.REG_SLEEP_S)
-				{
-					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
-					msg.arg1 = 0;		
-				}
-				else if(reg_addr == Global.REG_CALIB_INDEX)
-				{
-					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-					msg.arg1 = 0;
-				}
-				else if(reg_addr == Global.REG_AUTO_DIFF_CALIB_INDEX)
-				{
-					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-					msg.arg1 = 0;
-				}
-		
-				else if(reg_addr == Global.REG_LAMP_CTRL)
-				{
-					msgType = Global.MSG_SCALER_CTRL_RESULT;
-					msg.arg1 = 0;
-				}
+//				if(reg_addr == Global.REG_SLEEP_S)
+//				{
+//					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
+//					msg.arg1 = 0;		
+//				}
+//				else if(reg_addr == Global.REG_CALIB_INDEX)
+//				{
+//					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
+//					msg.arg1 = 0;
+//				}
+//				else if(reg_addr == Global.REG_AUTO_DIFF_CALIB_INDEX)
+//				{
+//					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
+//					msg.arg1 = 0;
+//				}
+//		
+//				else if(reg_addr == Global.REG_LAMP_CTRL)
+//				{
+//					msgType = Global.MSG_SCALER_CTRL_RESULT;
+//					msg.arg1 = 0;
+//				}
 			}
 			else if(val[1] == 0x83)
 			{

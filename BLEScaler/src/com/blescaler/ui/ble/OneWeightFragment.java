@@ -309,15 +309,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		case R.id.btn_preset:
 			inputTitleDialog();
 			break;
-		case R.id.btn_sleep:
-			WorkService.common_msg(Global.REG_OPERATION,12);
-			break;
-		case R.id.btn_wake:
-			WorkService.common_msg(Global.REG_OPERATION,13);
-			break;
-		case R.id.btn_unit:
-			WorkService.common_msg(Global.REG_OPERATION,14);
-			break;
+
 		
 		}
 		

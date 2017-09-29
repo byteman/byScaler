@@ -16,11 +16,11 @@
             android:id="@+id/textView51"
             android:layout_width="100px"
             android:layout_height="wrap_content"
-            android:text="服务器IP" />
+            android:text="时间" />
 
         <EditText
-            android:id="@+id/edit_hostip"
-            android:hint="47.93.224.211"
+            android:id="@+id/edit_time"
+            android:editable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 		 />
@@ -38,11 +38,12 @@
             android:id="@+id/textView5"
             android:layout_width="100px"
             android:layout_height="wrap_content"
-            android:text="服务器端口" />
+            android:text="数据写入地址" />
 
         <EditText
-            android:id="@+id/edit_port"
-            android:hint="9000"
+            android:id="@+id/edit_write_index"
+            android:maxLength="5"
+            android:hint="不要超过65535"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
@@ -62,10 +63,10 @@
             android:id="@+id/textView6"
             android:layout_width="100px"
             android:layout_height="wrap_content"
-            android:text="设备编号" />
+            android:text="数据读取地址" />
 
         <EditText
-            android:id="@+id/edit_id"
+            android:id="@+id/edit_read_index"
             android:inputType="number"
             android:maxLength="5"
             android:hint="不要超过65535"
@@ -73,121 +74,9 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
     
-    <LinearLayout
-          android:id="@+id/ll7"
-         android:layout_below="@id/ll6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="100px"
-            android:layout_height="wrap_content"
-            android:text="发送间隔(秒)" />
-
-    
-         <EditText
-            android:id="@+id/edit_send_time_s"
-            android:maxLength="5"
-            android:hint="不要超过65535"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-             />
-         
-    </LinearLayout> 
     
    
-     <LinearLayout
-        android:id="@+id/ll2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="100px"
-            android:layout_height="wrap_content"
-            android:text="心跳间隔(秒)" />
-
-        <EditText
-            android:id="@+id/edit_heart"
-            android:maxLength="5"
-            android:hint="不要超过65535"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-		 />
-    </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/ll9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView21"
-            android:layout_width="100px"
-            android:layout_height="wrap_content"
-            android:text="采集间隔(秒)" />
-
-        <EditText
-            android:id="@+id/edit_acquire_s"
-            android:maxLength="5"
-            android:hint="不要超过65535"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-		 />
-    </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/ll1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="100px"
-            android:layout_height="wrap_content"
-            android:text="通道个数" />
-
-         <EditText
-            android:id="@+id/edit_channel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-		 />
-    </LinearLayout>
-
    
-
-    <LinearLayout
-         android:id="@+id/ll3"
-         android:layout_below="@id/ll2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-         
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="100px"
-            android:layout_height="wrap_content"
-            android:text="版本号" />
-
-        <EditText
-            android:id="@+id/edit_ver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-		/>
-    </LinearLayout>
-
-    
 
    <LinearLayout
          android:id="@+id/ll333"
@@ -206,11 +95,11 @@
         android:orientation="horizontal" >
     </LinearLayout>
      <LinearLayout
-         android:id="@+id/ll71"
+        android:id="@+id/ll71"
    
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
         <Button
@@ -234,8 +123,8 @@
         </Button>
          <Button
             style="@style/bybutton"
-            android:text="下一页"
-            android:id="@+id/btn_next"
+            android:text="同步时间"
+            android:id="@+id/btn_sync_time"
              android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
