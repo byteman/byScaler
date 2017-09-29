@@ -262,7 +262,7 @@ public class Scaler {
 					para.day_hour = (short) ((val[7]<<8) + val[8]);
 					para.min_second = (short) ((val[9]<<8) + val[10]);
 					
-					msgType = Global.MSG_SCALER_K_QUERY_RESULT;
+					msgType = Global.MSG_GET_PARAM2_RESULT;
 					msg.arg1 = 2;
 				}
 //				else if(reg_addr == Global.REG_AD_CHAN1)
