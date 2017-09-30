@@ -196,6 +196,10 @@ public class Scaler {
 		{
 			this.unit="lb";
 		}
+		else if(((st>>12)&1)!=0)
+		{
+			this.unit="oz";
+		}
 		if(((st>>8)&1)!=0)
 		{
 			this.sleep_mode=false;
