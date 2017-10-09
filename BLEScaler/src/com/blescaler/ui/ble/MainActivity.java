@@ -37,7 +37,7 @@ import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends BaseActivity implements OnTouchListener, OnClickListener {
+public class MainActivity extends BaseActivity implements OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	TextView menu_serach, menu_one_scaler, menu_print, //
 			menu_calib, menu_para, menu_data_report, menu_setting, menu_four_scaler, prevLeftMenu;
@@ -116,37 +116,37 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 
 	}
 
-	private void initView() {
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
-
-		mDrawerLayout.setOnTouchListener(this);
-		mDrawerLayout.setFocusable(true);
-		mDrawerLayout.setClickable(true);
-		mDrawerLayout.setLongClickable(true);
-
-		menu_serach = (TextView) findViewById(R.id.menu_serach);
-		menu_one_scaler = (TextView) findViewById(R.id.menu_one_scaler);
-		menu_print = (TextView) findViewById(R.id.menu_print);
-		menu_calib = (TextView) findViewById(R.id.menu_calib);
-		menu_para = (TextView) findViewById(R.id.menu_para);
-		menu_data_report = (TextView) findViewById(R.id.menu_data_report);
-		menu_setting = (TextView) findViewById(R.id.menu_setting);
-		menu_four_scaler = (TextView) findViewById(R.id.menu_four_scaler);
-		menu_serach.setOnClickListener(this);
-		menu_one_scaler.setOnClickListener(this);
-		menu_print.setOnClickListener(this);
-		menu_calib.setOnClickListener(this);
-		menu_para.setOnClickListener(this);
-		menu_data_report.setOnClickListener(this);
-		menu_setting.setOnClickListener(this);
-		menu_four_scaler.setOnClickListener(this);
-	
-		//ActionBar actionBar=getActionBar();
-		 //actionBar.setDisplayShowHomeEnabled(true);
-	
-		
-
-	}
+//	private void initView() {
+//		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
+//
+//		mDrawerLayout.setOnTouchListener(this);
+//		mDrawerLayout.setFocusable(true);
+//		mDrawerLayout.setClickable(true);
+//		mDrawerLayout.setLongClickable(true);
+//
+//		menu_serach = (TextView) findViewById(R.id.menu_serach);
+//		menu_one_scaler = (TextView) findViewById(R.id.menu_one_scaler);
+//		menu_print = (TextView) findViewById(R.id.menu_print);
+//		menu_calib = (TextView) findViewById(R.id.menu_calib);
+//		menu_para = (TextView) findViewById(R.id.menu_para);
+//		menu_data_report = (TextView) findViewById(R.id.menu_data_report);
+//		menu_setting = (TextView) findViewById(R.id.menu_setting);
+//		menu_four_scaler = (TextView) findViewById(R.id.menu_four_scaler);
+//		menu_serach.setOnClickListener(this);
+//		menu_one_scaler.setOnClickListener(this);
+//		menu_print.setOnClickListener(this);
+//		menu_calib.setOnClickListener(this);
+//		menu_para.setOnClickListener(this);
+//		menu_data_report.setOnClickListener(this);
+//		menu_setting.setOnClickListener(this);
+//		menu_four_scaler.setOnClickListener(this);
+//	
+//		//ActionBar actionBar=getActionBar();
+//		 //actionBar.setDisplayShowHomeEnabled(true);
+//	
+//		
+//
+//	}
 
 	@Override
 	public void onClick(View v) {
@@ -298,10 +298,6 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		return false;//simpleGestureListener.onTouchEvent(event);
-	}
 	
 	private long exitTime = 0;
 
