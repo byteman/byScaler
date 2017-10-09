@@ -77,7 +77,7 @@ public class WorkService extends Service {
 	private static int net  = 0; //净重 = 毛重-皮重-零点重量.
 	private static boolean is_net_state = false; // 是否是净重状态,默认是毛重状态
 	private Object lock = new Object();
-	private Object cmd_lock = new Object();
+	private static Object cmd_lock = new Object();
 	/////////////////////////////////////////////////
 	private Thread reConnThread = new Thread(new Runnable() {
 		
@@ -171,20 +171,21 @@ public class WorkService extends Service {
 			lock.notify();
 		}
 	}
-	static public boolean addCmd(byte[] cmd)
+	public static boolean addCmd(byte[] cmd)
 	{
 		int reg_addr = cmd[3]; 
 		CmdObject o = null;
 		//m_cmd_queue.containsKey(reg_addr)
-		if(m_cmd_queue.containsKey(reg_addr))
-		{
-			o = m_cmd_queue.get(reg_addr);
-			o.reset();
-			return true;
+		synchronized (cmd_lock) {
+			if(m_cmd_queue.containsKey(reg_addr))
+			{
+				o = m_cmd_queue.get(reg_addr);
+				o.reset();
+				return true;
+			}
+			o = new CmdObject(cmd);
+			m_cmd_queue.put(reg_addr, o);
 		}
-		o = new CmdObject(cmd);
-		m_cmd_queue.put(reg_addr, o);
-		
 		return true;
 		
 	}
@@ -858,6 +859,32 @@ public class WorkService extends Service {
 	{
 		return true;
 	}
+	public static boolean requestChannels(String address,int num) throws InterruptedException
+	{
+		Register reg = new Register();
+		//1st
+		//40001/40002		通道1振弦频率值（放大100倍）		整型(1)	只读
+		//40003/40004		通道1温度触感器值		整型(1)	只读
+
+
+		for(int i = 0; i < 6; i++)
+		{
+			write_buffer(reg.BeginRead(Global.REG_CHAN1_ZX+i*4,4));
+			Thread.sleep(100);
+		}
+		
+		//3rd
+//		40028/40029		远程服务器IP（192.168.1.12 = 0xC0A8010C）
+//		40030/40031		远程服务器端口：（）
+
+		write_buffer(reg.BeginRead(Global.REG_DEV_STATUS,1));
+		Thread.sleep(100);
+		
+//		write_buffer(reg.BeginRead(Global.REG_GPRS_SIGNAL,1));
+//		Thread.sleep(100);
+		
+		return true;
+	}
 	//请求读取参数
 	public static boolean requestReadPar1(String address) throws InterruptedException
 	{
@@ -952,6 +979,15 @@ public class WorkService extends Service {
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
 	}
+	//请求修改参数,修改后的参数未保存
+		public static boolean requestSendNow()
+		{
+			Register reg = new Register();
+			reg.BeginWrite(Global.REG_SEND_NOW);
+			reg.putShort((short) (1));
+			return write_buffer(reg.getResult());
+
+		}
 	//请求修改参数,修改后的参数未保存
 		public static boolean SyncTime(String address,ScalerParam s)
 		{

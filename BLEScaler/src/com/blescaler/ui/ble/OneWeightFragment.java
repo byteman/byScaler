@@ -27,59 +27,66 @@ import android.widget.Toast;
 
 import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
+import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.R;
-
+import com.blescaler.ui.ScalerParamActivity;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
+import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
 
 public class OneWeightFragment extends BaseFragment implements View.OnClickListener {
 	View root;
-	AutoBgButton btn_save = null;
-	AutoBgButton btn_print = null;
-	AutoBgButton btn_tare = null;
-	AutoBgButton btn_zero = null;
-	AutoBgButton btn_swtich = null;
-	AutoBgButton btn_red_on = null;
-	AutoBgButton btn_yellow_on = null;
-	AutoBgButton btn_green_on = null;
-	AutoBgButton btn_red_off = null;
-	AutoBgButton btn_yellow_off = null;
-	AutoBgButton btn_green_off = null;
-	AutoBgButton btn_is_zero = null;
-	AutoBgButton btn_sleep,btn_wakeup,btn_unit,btn_still = null;
+	
 	BatteryState btn_power = null;
-	TextView tv_weight = null,tv_unit=null;
 	
-	AutoBgButton btn_ng = null;
-	AutoBgButton btn_preset = null;
+
 	private WeightDao wDao;
-	
-	private int timeout=0;
-	public int cont=0,cout_2s,cout_3s=0;
-	private boolean pause = false,disconnect=false;
+	private AutoBgButton btn_reconn=null,btn_send=null,btn_search,btn_setting;
+	private TextView tvch1,tvch2,tvch3,tvch4,tvch5,tvch6;
+	private TextView dev_signal,dev_status;
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
 	private static Handler mHandler = null;
 	protected static final String TAG = "weight_activity";
-	private static String unit="g";
+
 	private void updateState()
 	{
 		
 		 if(!WorkService.hasConnectAll())
 		   {
-			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
+			 btn_reconn.setText("已经连接");
+			 btn_reconn.setTextColor(Color.rgb(0x80, 0x80, 0x80));
+			 
 		   }
 		   else
 		   {
 			   //87CEEB
-			   tv_weight.setTextColor(Color.rgb(0xFF, 0x00, 0x00));  
+			   btn_reconn.setText("重新连接");
+			   btn_reconn.setTextColor(Color.rgb(0xFF, 0x00, 0x00));  
+			   
 		   }
 		
 	}
-
+	private Runnable watchdog = new Runnable()
+	{
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			updateState();
+				try {
+					WorkService.requestChannels("",6);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			   mHandler.postDelayed(this, 2000);  
+		}
+		
+	};
 	 private class SureButtonListener implements android.content.DialogInterface.OnClickListener{  
 		  
 	        public void onClick(DialogInterface dialog, int which) {  
@@ -118,6 +125,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		mHandler.removeCallbacks(watchdog);
 		
 		
 		WorkService.delHandler(mHandler);
@@ -128,59 +136,33 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
+		mHandler.postDelayed(watchdog, 2000);
 		
-		updateState();
-		tv_unit.setText(unit);
-		pause = false;
-		
+	
 		popConnectProcessBar(this.getActivity());
 	}
 	private void initUI()
 	{
-		btn_save  = (AutoBgButton) root.findViewById(R.id.btn_save);
-		btn_print = (AutoBgButton) root.findViewById(R.id.btn_print);
-		btn_tare  = (AutoBgButton) root.findViewById(R.id.btn_tare);
-		btn_swtich = (AutoBgButton) root.findViewById(R.id.btn_switch);
-		tv_weight = (TextView) root.findViewById(R.id.tv_weight);
-		btn_zero = (AutoBgButton) root.findViewById(R.id.btn_zero);
-		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
-		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
-		tv_unit = (TextView) root.findViewById(R.id.textView2);
 		btn_power=(BatteryState)root.findViewById(R.id.bs_power);
-		btn_red_on = (AutoBgButton) root.findViewById(R.id.btn_red_light_on);
-		btn_yellow_on = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_on);
-		btn_green_on = (AutoBgButton) root.findViewById(R.id.btn_green_light_on);
-		btn_red_off = (AutoBgButton) root.findViewById(R.id.btn_red_light_off);
-		btn_yellow_off = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_off);
-		btn_green_off = (AutoBgButton) root.findViewById(R.id.btn_green_light_off);
-		btn_is_zero = (AutoBgButton) root.findViewById(R.id.btn_zero1);
-		btn_sleep = (AutoBgButton) root.findViewById(R.id.btn_sleep);
-		btn_wakeup = (AutoBgButton) root.findViewById(R.id.btn_wake);
-		btn_unit = (AutoBgButton) root.findViewById(R.id.btn_unit);
-		btn_still = (AutoBgButton) root.findViewById(R.id.btn_still);
-		btn_sleep.setOnClickListener(this);
-		btn_wakeup.setOnClickListener(this);
-		btn_unit.setOnClickListener(this);
-		
 		btn_power.setPowerQuantity(1);
-		btn_save.setOnClickListener(this);
-		btn_print.setOnClickListener(this);
-		btn_tare.setOnClickListener(this);
-		tv_weight.setOnClickListener(this);
-		btn_zero.setOnClickListener(this);
-		btn_swtich.setOnClickListener(this);
-		btn_preset.setOnClickListener(this);
-		//btn_still.setOnClickListener(this);
+		btn_reconn = (AutoBgButton) root.findViewById(R.id.btn_reconn_device);
+	
+		tvch1 = (TextView) root.findViewById(R.id.val_chan1);
+		tvch2 = (TextView) root.findViewById(R.id.val_chan2);
+		tvch3 = (TextView) root.findViewById(R.id.val_chan3);
+		tvch4 = (TextView) root.findViewById(R.id.val_chan4);
+		tvch5 = (TextView) root.findViewById(R.id.val_chan5);
+		tvch6 = (TextView) root.findViewById(R.id.val_chan6);
 		
-		btn_green_on.setOnClickListener(this);
-		btn_yellow_on.setOnClickListener(this);
-		btn_red_on.setOnClickListener(this);
-		btn_green_off.setOnClickListener(this);
-		btn_yellow_off.setOnClickListener(this);
-		btn_red_off.setOnClickListener(this);
-		
-		unit = WorkService.getUnit();
-		
+		dev_signal= (TextView) root.findViewById(R.id.dev_signal);
+		dev_status= (TextView) root.findViewById(R.id.dev_status);
+		btn_send= (AutoBgButton) root.findViewById(R.id.btn_send_now);
+		btn_reconn.setOnClickListener(this);
+		btn_send.setOnClickListener(this);
+		btn_search = (AutoBgButton) root.findViewById(R.id.btn_search_me);
+		btn_search.setOnClickListener(this);
+		btn_setting = (AutoBgButton) root.findViewById(R.id.btn_setting);
+		btn_setting.setOnClickListener(this);
 	}
 	private void initRes()
 	{
@@ -188,6 +170,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		
 		wDao = new WeightDao(this.getActivity());
 
+		mHandler.postDelayed(watchdog, 300);
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -199,98 +182,40 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		return root;
 	}
 
-	 private void inputTitleDialog() {
-
-	        final EditText inputServer = new EditText(this.getActivity());
-	        inputServer.setFocusable(true);
-
-	        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-	        builder.setTitle("请输入").setIcon(
-	        		android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(
-	                "取消", null);
-	        builder.setPositiveButton("确定",
-	                new DialogInterface.OnClickListener() {
-
-	                    public void onClick(DialogInterface dialog, int which) {
-	                        String inputValue = inputServer.getText().toString();
-	                        if(WorkService.setPreTare(Integer.parseInt(inputValue)))
-	                        {
-	                        	
-	                        }
-	                    }
-	                });
-	        builder.show();
-	    }
+	
 	@Override
 	public void onClick(View arg0) {
-		cout_3s = 5;
+		
 		switch(arg0.getId())
 		{
-		case R.id.btn_still:
-			
-			break;
-		case R.id.btn_save:
-			saveWeight();
-			Utils.Msgbox(this.getActivity(), "保存成功");
-			break;
-		case R.id.btn_print:
-			WorkService.common_msg(2,99);
-			break;
-		case R.id.btn_tare:
-			WorkService.common_msg(2,2);
-			break;
-		case R.id.tv_weight:
+		
+		case R.id.btn_reconn_device:
 			popConnectProcessBar(this.getActivity());
 			
 			break;
-		case R.id.btn_zero:
-			//清零
-			if(!WorkService.setZero())
-			{
-				Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
-			}
+		case R.id.btn_send_now:
+			WorkService.requestSendNow();
 			break;
-		case R.id.btn_switch:
-			//净重和毛重切换
-			WorkService.common_msg(2,5);
+		case R.id.btn_setting:
+		{
+		   Intent intent = new Intent(this.getActivity(), ScalerParamActivity.class);
+		   intent.putExtra("address","00");
+		   startActivity(intent);
+			
 			break;
-		case R.id.btn_green_light_on:
-			WorkService.CtrlLight(3);
+		}
+		case R.id.btn_search_me:
+		{
+			 Intent intent = new Intent(this.getActivity(), DeviceScanActivity.class);
+			 startActivity(intent); 
+				
 			break;
-		case R.id.btn_yellow_light_on:
-			WorkService.CtrlLight(5);
-			break;
-		case R.id.btn_red_light_on:
-			WorkService.CtrlLight(1);
-			break;
-		case R.id.btn_green_light_off:
-			WorkService.CtrlLight(4);
-			break;
-		case R.id.btn_yellow_light_off:
-			WorkService.CtrlLight(6);
-			break;
-		case R.id.btn_red_light_off:
-			WorkService.CtrlLight(2);
-			break;
-		case R.id.btn_preset:
-			inputTitleDialog();
-			break;
-
-		
+		}
 		}
 		
-	}
-
-	private void saveWeight() {
-		// TODO Auto-generated method stub
-		String kgs = tv_weight.getText().toString();
 		
-		WeightRecord item = new WeightRecord(); //这里会自动读取重量并填充.
-	
-		wDao.saveWeight(item);
-
-		item = null;
 	}
+
 	
 	private void showFailBox(String msg)
 	{
@@ -315,22 +240,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	     }).show();//在按键响应事件中显示此对话框  
 	  
 	}
-	private boolean printWeight()
-	{
-		if(!WorkService.hasConnectPrinter())
-		{
-			WorkService.connectPrinter(null);
-			Toast.makeText(this.getActivity(), "正在连接打印机，请等待", Toast.LENGTH_SHORT).show();
-			
-			return false;		
-		}
-		WeightRecord data = new WeightRecord();
-		if(wDao != null)
-			if(wDao.getWeightRecord(data))
-				WorkService.requestPrint(data);
-		
-		return true;
-	}
+
 	public static Fragment newFragment() {
 		OneWeightFragment f = new OneWeightFragment();
 		Bundle bundle = new Bundle();
@@ -339,7 +249,58 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		f.setArguments(bundle);
 		return f;
 	}
-
+	public boolean showChannels(Scaler sp,int channel)
+	{
+		float zx = sp.all_zx[channel];
+		float wd = sp.all_wd[channel];
+		switch(channel)
+		{
+		case 0:
+			tvch1.setText("zx:" + zx + " wd:" + wd);
+			break;
+		case 1:
+			tvch2.setText("zx:" + zx + " wd:" + wd);
+			break;
+		case 2:
+			tvch3.setText("zx:" + zx + " wd:" + wd);
+			break;
+		case 3:
+			tvch4.setText("zx:" + zx + " wd:" + wd);
+			break;
+		case 4:
+			tvch5.setText("zx:" + zx + " wd:" + wd);
+			break;
+		case 5:
+			tvch6.setText("zx:" + zx + " wd:" + wd);
+			break;
+		}
+		return true;
+		
+	}
+	public void showSignal(int signal)
+	{
+		dev_signal.setText("信号强度:"+signal+"%");
+	}
+	public void showStatus(int status)
+	{
+		String status_text = "";
+		if((status&0x1)==0){
+			status_text+="未连接";
+		}
+		if((status&0x2)==0){
+			status_text+="GPRS初始化失败";
+		}
+		if((status&0x4)==0){
+			status_text+="发送失败";
+		}
+		if((status&0x8)==0){
+			status_text+="太阳能电压故障";
+		}
+		if((status&0x16)==0){
+			status_text+="DC电压故障";
+		}
+		
+	}
 	static class MHandler extends Handler {
 
 		WeakReference<OneWeightFragment> mActivity;
@@ -355,68 +316,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			OneWeightFragment theActivity = mActivity.get();
 			switch (msg.what) {
 
-				case Global.MSG_BLE_WGTRESULT:
+				case Global.MSG_GET_CHANNELS_RESULT:
 				{
-					//BluetoothDevice device = (BluetoothDevice) msg.obj;
-					//int weight = msg.arg1;
+					
 					Scaler d = (Scaler) msg.obj;
-					int totalweight = WorkService.getNetWeight();
-					float wf = totalweight;
-					String weight = "";
 					
-					theActivity.timeout = 0;
-					if(d!=null)d.dump_info();
-					if(theActivity.cout_3s > 0)
-					{
-						return;
-					}
-					WorkService.readNextWgt(true);
-					
-					int dot = d.GetDotNum();
-					
-					switch(dot)
-				    {
-				        case 1:
-				        	weight = String.format("%.1f",wf/10).toString();
-				            break;
-				        case 2:
-				        	weight = String.format("%.2f ",wf/100).toString();
-				            break;
-				        case 3:
-				        	weight = String.format("%.3f",wf/1000).toString();
-				            break;
-				        case 4:
-				        	weight = String.format("%.4f",wf/10000).toString();
-				            break;
-				        default:
-				        	weight = String.format("%d",totalweight);
-				            break;
-				    }
-					theActivity.tv_weight.setText(weight);
-					if(d.isZero())
-					{
-						theActivity.btn_is_zero.setText(">0<");
-					}else
-					{
-						theActivity.btn_is_zero.setText("");
-					}
-					if(d.isStandstill())
-					{
-						theActivity.btn_still.setText("--");
-					}else
-					{
-						theActivity.btn_still.setText("~~");
-					}
-					if(d.isGross())
-					{
-						theActivity.btn_ng.setText("Net");
-					}else
-					{
-						theActivity.btn_ng.setText("Gross");
-					}
-					
-					theActivity.tv_unit.setText(d.getUnit());
-					
+					theActivity.showChannels(d,msg.arg1);
 					break;
 				}
 				case Global.MSG_BLE_DISCONNECTRESULT:
@@ -429,31 +334,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					//mHandler.postDelayed(r, delayMillis)
 					break;
 				}
-				case Global.MSG_WORKTHREAD_SEND_CONNECTBTRESULT:
-				{
-					int result = msg.arg1;
-				
-					if(result == 1)
-					{
-						String addr = (String)(msg.obj);
-						WorkService.setPrinterAddress(theActivity.getActivity(),addr);
-						theActivity.printWeight();
-					}
-					else
-					{
-						//Utils.Msgbox(theActivity.getActivity(), "连接打印机失败");
-					}
-					
-					break;
-					
-				}
-				case Global.MSG_BLE_FAILERESULT:
-				{
-
-					//Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1) +"  " + WorkService.getFailType(msg.arg2), Toast.LENGTH_SHORT).show();
-					break;
-				}
-				
+							
 				case Global.MSG_SCALER_CONNECT_OK:
 				{
 					if(WorkService.hasConnectAll())
@@ -475,7 +356,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					if(progressDialog!=null && progressDialog.isShowing())
 					{
 						progressDialog.dismiss(); //关闭进度条
-						theActivity.showFailBox("连接超时，点击重量显示可重新连接！");
+						theActivity.showFailBox("连接超时，点击重新连接！");
 						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
 					}
 				}
@@ -490,6 +371,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					theActivity.btn_power.refreshPower((float)result/1000.0f);
 					break;
 				}
+				case Global.MSG_GET_GPRS_SIGNAL_RESULT:
+					theActivity.showSignal(msg.arg1);
+					break;
+				case Global.MSG_GET_DEV_STATUS_RESULT:
+					theActivity.showStatus(msg.arg1);
+					break;
 			}
 			
 		}

@@ -81,6 +81,9 @@ public class Global {
 	public static final int MSG_GET_PARAM3_RESULT=100062;	//读取秤参数的响应
 	public static final int MSG_GET_PARAM4_RESULT=100063;	//读取秤参数的响应
 	public static final int MSG_GET_PARAM5_RESULT=100064;	//读取秤参数的响应
+	public static final int MSG_GET_CHANNELS_RESULT=100065;	//读取秤参数的响应
+	public static final int MSG_GET_GPRS_SIGNAL_RESULT=100066;	//读取秤参数的响应
+	public static final int MSG_GET_DEV_STATUS_RESULT=100067;	//读取秤参数的响应
 	
 	
 	public static final int MSG_SET_PARAM1_RESULT=100065;	//读取秤参数的响应
@@ -156,6 +159,12 @@ public class Global {
 	
 	public static final int REG_CHAN1_ZX = 0;
 	public static final int REG_CHAN1_WD = 1;
+	public static final int REG_CHAN2_ZX = 4;
+	public static final int REG_CHAN3_ZX = 8;
+	public static final int REG_CHAN4_ZX = 12;
+	public static final int REG_CHAN5_ZX = 16;
+	public static final int REG_CHAN6_ZX = 20;
+	
 	public static final int REG_DEV_STATUS =24;
 	public static final int REG_DEV_VERSION =25;
 	public static final int REG_DEV_ID =26;

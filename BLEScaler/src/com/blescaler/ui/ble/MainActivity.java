@@ -61,56 +61,56 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		
 		
 		setContentView(R.layout.layout_content);
-		initView();
+		//initView();
 
-		simpleGestureListener = new GestureDetector(this, new GestureDetector.OnGestureListener() {
-
-			@Override
-			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
-				return false;
-			}
-
-			@Override
-			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-				if(e1==null) return false;
-				if(e2==null) return false;
-				if (e1.getX() - e2.getX() < -20) {
-
-					mDrawerLayout.openDrawer(Gravity.LEFT);
-					return true;
-				}
-				if (e1.getX() - e2.getX() > 20) {
-
-					mDrawerLayout.closeDrawers();
-					return true;
-				}
-				return false;
-			}
-
-			@Override
-			public boolean onDown(MotionEvent e) {
-				return false;
-			}
-
-			@Override
-			public void onLongPress(MotionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onShowPress(MotionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public boolean onSingleTapUp(MotionEvent e) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
+//		simpleGestureListener = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+//
+//			@Override
+//			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//
+//				return false;
+//			}
+//
+//			@Override
+//			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//				if(e1==null) return false;
+//				if(e2==null) return false;
+//				if (e1.getX() - e2.getX() < -20) {
+//
+//					mDrawerLayout.openDrawer(Gravity.LEFT);
+//					return true;
+//				}
+//				if (e1.getX() - e2.getX() > 20) {
+//
+//					mDrawerLayout.closeDrawers();
+//					return true;
+//				}
+//				return false;
+//			}
+//
+//			@Override
+//			public boolean onDown(MotionEvent e) {
+//				return false;
+//			}
+//
+//			@Override
+//			public void onLongPress(MotionEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void onShowPress(MotionEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public boolean onSingleTapUp(MotionEvent e) {
+//				// TODO Auto-generated method stub
+//				return false;
+//			}
+//		});
 		goToFragment(7);
 		
 
@@ -160,11 +160,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 			prevLeftMenu = menu_serach;  
 			break;
 		case R.id.menu_one_scaler:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(7);
-			menu_one_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = menu_one_scaler;
+//			if (prevLeftMenu != null)
+//				prevLeftMenu.setBackgroundColor(color.transparent);
+//			goToFragment(7);
+//			menu_one_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+//			prevLeftMenu = menu_one_scaler;
 			break;
 		case R.id.menu_print:
 //			if (prevLeftMenu != null)
@@ -174,12 +174,12 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 //			prevLeftMenu = menu_print;
 			break;
 		case R.id.menu_calib:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(8);
-
-			menu_calib.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = menu_calib;
+//			if (prevLeftMenu != null)
+//				prevLeftMenu.setBackgroundColor(color.transparent);
+//			goToFragment(8);
+//
+//			menu_calib.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+//			prevLeftMenu = menu_calib;
 			break;
 		case R.id.menu_para:
 			if (prevLeftMenu != null)
@@ -190,11 +190,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 
 			break;
 		case R.id.menu_data_report:
-			if (prevLeftMenu != null)
-				prevLeftMenu.setBackgroundColor(color.transparent);
-			goToFragment(1);
-			menu_data_report.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-			prevLeftMenu = menu_data_report;
+//			if (prevLeftMenu != null)
+//				prevLeftMenu.setBackgroundColor(color.transparent);
+//			goToFragment(1);
+//			menu_data_report.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+//			prevLeftMenu = menu_data_report;
 			break;
 		case R.id.menu_setting:
 			if (prevLeftMenu != null)
@@ -300,7 +300,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		return simpleGestureListener.onTouchEvent(event);
+		return false;//simpleGestureListener.onTouchEvent(event);
 	}
 	
 	private long exitTime = 0;

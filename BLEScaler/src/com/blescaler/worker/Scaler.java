@@ -42,6 +42,8 @@ public class Scaler {
 		this.sleep_mode = sleep_mode;
 	}
 	public float[] allks = new float[4];
+	public float[] all_zx = new float[6];
+	public float[] all_wd = new float[6];
 	public boolean isStandstill() {
 		return standstill;
 	}
@@ -221,82 +223,89 @@ public class Scaler {
 			{
 				int reg_num = (val[2]-2)/2;
 				int reg_addr = Utils.bytesToShort(val,3);
-
-				if(reg_addr == Global.REG_DEV_VERSION )
-				{			
-					if(val.length < 9) return 0;
-					para.version = Utils.bytesToShort(val,5);
-					para.dev_id  = Utils.bytesToShort(val,7);
-					msgType = Global.MSG_GET_PARAM1_RESULT;
-					msg.arg1 = 0;				
-				}
-				else if(reg_addr == Global.REG_HOST_IP)
-				{
-					if(val.length < 13) return 0;
-					para.hostip = Utils.bytesToInt(val, 5);					
-					para.hostport = Utils.bytesToInt(val, 9);					
-					msgType = Global.MSG_GET_PARAM2_RESULT;
-				}
-				else if(reg_addr == Global.REG_SEND_TIME)
-				{
-					
-					para.send_time_s = Utils.bytesToShort(val,5);
-					para.heart = Utils.bytesToShort(val,7);
-					para.channel = Utils.bytesToShort(val,9);
-					para.acquire_s = Utils.bytesToShort(val,11);
-					msgType = Global.MSG_GET_PARAM3_RESULT;
-
-					
-				}
 				
-				else if(reg_addr == Global.REG_WRITE_INDEX)
+				switch(reg_addr)
 				{
-					para.write_index = Utils.bytesToShort(val,5);
-					para.read_index = Utils.bytesToShort(val,7);
-					msgType = Global.MSG_GET_PARAM4_RESULT;
-					msg.arg1 = 1;
-				}
-				else if(reg_addr == Global.REG_TIME)
-				{
+					case Global.REG_DEV_VERSION:
+					{
+						if(val.length < 9) return 0;
+						para.version = Utils.bytesToShort(val,5);
+						para.dev_id  = Utils.bytesToShort(val,7);
+						msgType = Global.MSG_GET_PARAM1_RESULT;
+						msg.arg1 = 0;	
+						break;
+					}
+					case Global.REG_CHAN1_ZX:
+					case Global.REG_CHAN2_ZX:
+					case Global.REG_CHAN3_ZX:
+					case Global.REG_CHAN4_ZX:
+					case Global.REG_CHAN5_ZX:
+					case Global.REG_CHAN6_ZX:
+					{
+						msgType = Global.MSG_GET_CHANNELS_RESULT;
+						int index = (reg_addr - Global.REG_CHAN1_ZX)/4;
+						all_zx[index] = (float)Utils.bytesToInt(val, 5)/(float)100.0f;
+						all_wd[index] = (float)Utils.bytesToInt(val, 9)/(float)100.0f;				
+						msg.arg1 = index;
+
+						break;
+					}
+					case Global.REG_HOST_IP:
+					{
+						if(val.length < 13) return 0;
+						para.hostip = Utils.bytesToInt(val, 5);					
+						para.hostport = Utils.bytesToInt(val, 9);					
+						msgType = Global.MSG_GET_PARAM2_RESULT;
+						break;
+					}
+					case Global.REG_SEND_TIME:
+					{
+						para.send_time_s = Utils.bytesToShort(val,5);
+						para.heart = Utils.bytesToShort(val,7);
+						para.channel = Utils.bytesToShort(val,9);
+						para.acquire_s = Utils.bytesToShort(val,11);
+						msgType = Global.MSG_GET_PARAM3_RESULT;
+						break;
+					}
+					case Global.REG_WRITE_INDEX:
+					{
+						para.write_index = Utils.bytesToShort(val,5);
+						para.read_index = Utils.bytesToShort(val,7);
+						msgType = Global.MSG_GET_PARAM4_RESULT;
+						msg.arg1 = 1;
+						break;
+					}
+					case Global.REG_TIME:
+					{
+						para.year_month = Utils.bytesToShort(val,5);
+						para.day_hour = Utils.bytesToShort(val,7);
+						para.min_second = Utils.bytesToShort(val,9);
+						
+						msgType = Global.MSG_GET_PARAM5_RESULT;
+						msg.arg1 = Utils.bytesToShort(val,5);
+						break;
+					}
+					case Global.REG_GPRS_SIGNAL:
+					{
+						msgType = Global.MSG_GET_GPRS_SIGNAL_RESULT;
+						msg.arg1 = 2;
+						break;
+					}
+					case Global.REG_DEV_STATUS:
+					{
+						msgType = Global.MSG_GET_DEV_STATUS_RESULT;
+						msg.arg1 = Utils.bytesToShort(val,5);
+						break;
+					}
 					
-					para.year_month = Utils.bytesToShort(val,5);
-					para.day_hour = Utils.bytesToShort(val,7);
-					para.min_second = Utils.bytesToShort(val,9);
 					
-					msgType = Global.MSG_GET_PARAM5_RESULT;
-					msg.arg1 = 2;
+					default:
+					{
+						break;
+					}
+					
 				}
-//				else if(reg_addr == Global.REG_AD_CHAN1)
-//				{
-//					
-//					msg.arg1 = Utils.bytesToInt(val, 5);
-//					msg.arg2 = Utils.bytesToInt(val, 9);
-//					
-//					msgType = Global.MSG_SCALER_AD_CHAN1_RESULT;
-//					
-//				}
-//				else if(reg_addr == Global.REG_AD_CHAN3)
-//				{
-//					
-//					msg.arg1 = Utils.bytesToInt(val, 5);
-//					msg.arg2 = Utils.bytesToInt(val, 9);
-//					
-//					msgType = Global.MSG_SCALER_AD_CHAN2_RESULT;
-//					
-//				}
-//				else if(reg_addr == Global.REG_BATTERY)
-//				{
-//					msgType = Global.MSG_SCALER_POWER_RESULT;
-//					msg.arg1 = (val[5]<<8)+val[6];
-//				}
-//				else if(reg_addr == Global.REG_SLEEP_S)
-//				{
-//					
-//					para.setSleep((short) ((val[5]<<8)+val[6]));
-//					para.setSnr_num((short) ((val[7]<<8)+val[8]));
-//					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
-//					msg.arg1 = 0;			
-//				}
+
 			}
 			else if(val[1] == 0x10)
 			{
@@ -312,127 +321,13 @@ public class Scaler {
 					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
 					msg.arg1 = 0;
 				}
-//				else if(reg_addr == Global.REG_AUTO_DIFF_CALIB_INDEX)
-//				{
-//					msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-//					msg.arg1 = 0;
-//				}
-//		
-//				else if(reg_addr == Global.REG_LAMP_CTRL)
-//				{
-//					msgType = Global.MSG_SCALER_CTRL_RESULT;
-//					msg.arg1 = 0;
-//				}
 			}
 			else if(val[1] == 0x83)
 			{
 				
 			}
 		}
-//		
-//		 else if ((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R')) {
-//
-//			if (val[3] == '?') // 参数读取的返回值.
-//			{
-//
-//				int ret = para.parseParaBuffer(val) ? 0 : 1;
-//				msgType = Global.MSG_SCALER_PAR_GET_RESULT;
-//				msg.arg1 = ret;				
-//
-//			} 
-//			else if (val[3] == ':') // 参数设置的返回值.
-//			{
-//				msgType = Global.MSG_SCALER_PAR_SET_RESULT;
-//				msg.arg1 = val[4] - '0';
-//				
-//			}
-//		} else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z')) {
-//
-//			if (val[3] == '?') // 参数读取的返回值.
-//			{
-//
-//				int ret = 0;
-//
-//				try {
-//					int zero = Utils.bytesToString(val, 4, val.length);
-//					this.zeroValue = zero;
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					ret = 1;
-//					e.printStackTrace();
-//				}
-//				msgType = Global.MSG_SCALER_ZERO_QUERY_RESULT;
-//				msg.arg1 = ret;
-//
-//			} 
-//			else if (val[3] == ':') // 参数设置的返回值.
-//			{
-//
-//				if (val[4] == '0') {
-//					try {
-//						int zero = Utils.bytesToString(val, 6, val.length);
-//						this.zeroValue = zero;
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				}
-//				msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-//				msg.arg1 = val[4] - '0';
-//
-//			}
-//
-//		}
-//
-//		else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K')) {
-//
-//			if (val[3] == '?') // 参数读取的返回值.
-//			{
-//
-//				int ret = 0;
-//
-//				try {
-//				
-//					this.loadValue = Utils.bytesToString(val, 4, val.length);
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					ret = 1;
-//					e.printStackTrace();
-//				}
-//				msgType = Global.MSG_SCALER_K_QUERY_RESULT;
-//
-//				msg.obj = this;
-//				msg.arg1 = ret;
-//
-//			} 
-//			else if (val[3] == ':') // 参数设置的返回值.
-//			{
-//
-//				if (val[4] == '0') {
-//					try {
-//						this.loadValue = Utils.bytesToString(val, 6, val.length);
-//				
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				}
-//				msgType = Global.MSG_SCALER_K_CALIB_RESULT;
-//
-//				msg.arg1 = val[4] - '0';
-//
-//			}
-//
-//		} else if ((val[0] == 'S') && (val[1] == 'A') && (val[2] == 'V')) {
-//			if (val[3] == ':') {
-//				msgType = Global.MSG_SCALER_SAVE_EEPROM;
-//
-//				msg.arg1 = val[4] - '0';
-//
-//			}
-//		}
+
 
 		return msgType;
 	}
