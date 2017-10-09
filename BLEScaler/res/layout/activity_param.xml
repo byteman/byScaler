@@ -62,7 +62,7 @@
             android:id="@+id/tv3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ad2"
+            android:text="ad3"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -86,7 +86,7 @@
             android:id="@+id/tv4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ad2"
+            android:text="ad4"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -116,7 +116,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="保存" >
+            android:text="save" >
         </Button>
 
         <Button
@@ -126,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="返回" >
+            android:text="back" >
         </Button>
     </LinearLayout>
 
