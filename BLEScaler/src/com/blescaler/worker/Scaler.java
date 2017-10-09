@@ -249,18 +249,19 @@ public class Scaler {
 					
 				}
 				
-				else if(reg_addr == Global.REG_READ_INDEX)
+				else if(reg_addr == Global.REG_WRITE_INDEX)
 				{
-					para.send_time_s = (short) ((val[5]<<8) + val[6]);
+					para.write_index = Utils.bytesToShort(val,5);
+					para.read_index = Utils.bytesToShort(val,7);
 					msgType = Global.MSG_GET_PARAM4_RESULT;
 					msg.arg1 = 1;
 				}
 				else if(reg_addr == Global.REG_TIME)
 				{
 					
-					para.year_month = (short) ((val[5]<<8) + val[6]);
-					para.day_hour = (short) ((val[7]<<8) + val[8]);
-					para.min_second = (short) ((val[9]<<8) + val[10]);
+					para.year_month = Utils.bytesToShort(val,5);
+					para.day_hour = Utils.bytesToShort(val,7);
+					para.min_second = Utils.bytesToShort(val,9);
 					
 					msgType = Global.MSG_GET_PARAM5_RESULT;
 					msg.arg1 = 2;

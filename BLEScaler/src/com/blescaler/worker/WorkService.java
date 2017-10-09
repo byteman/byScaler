@@ -952,6 +952,43 @@ public class WorkService extends Service {
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 
 	}
+	//请求修改参数,修改后的参数未保存
+		public static boolean SyncTime(String address,ScalerParam s)
+		{
+			if(mBle == null) return false;
+
+			Scaler scaler = scalers2.get(0);
+			if(scaler==null) return false;
+			BleGattCharacteristic chars = scaler.GetBleChar();
+			//BleGattCharacteristic chars = mChars.get(address);
+			if(chars == null) return false;
+			if(s == null) return false;
+			ScalerParam sp = scaler.para;
+			try{
+				Register reg = new Register();
+				
+				
+				//1st
+				reg.BeginWrite(Global.REG_TIME);
+				
+				reg.putShorts(s.year_month,s.day_hour, s.min_second);	
+				
+				write_buffer(reg.getResult());
+				Thread.sleep(200);
+
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+			
+			//chars.setValue(s.getSetCmdBuffer());
+			
+			return mBle.requestWriteCharacteristic(address, chars, "false");
+
+		}
 	
 	//请求修改参数,修改后的参数未保存
 	public static boolean requestWriteParamValue1(String address,ScalerParam s)
@@ -968,18 +1005,18 @@ public class WorkService extends Service {
 		try{
 			Register reg = new Register();
 			//1st
-//			reg.BeginWrite(Global.REG_DEV_ID);
-//			
-//			reg.putShort(s.dev_id);	
-//			reg.putInts(s.hostip,s.hostport);	
-//			
-//			write_buffer(reg.getResult());
-//			Thread.sleep(200);
+			reg.BeginWrite(Global.REG_DEV_ID);
+			
+			reg.putShort(s.dev_id);	
+			reg.putInts(s.hostip,s.hostport);	
+			
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
 			
 			//2nd
 			reg.BeginWrite(Global.REG_SEND_TIME);
-			//reg.putShorts(s.send_time_s, s.heart, s.channel, s.acquire_s);
-			reg.putShorts(s.send_time_s, s.heart);
+			reg.putShorts(s.send_time_s, s.heart, s.channel, s.acquire_s);
+			//reg.putShorts(s.send_time_s, s.heart);
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
 			
@@ -1011,7 +1048,7 @@ public class WorkService extends Service {
 	//判断打印机是否已经连接
 	public static boolean hasConnectPrinter()
 	{
-		return WorkService.workThread.isConnected();
+		return true;
 	}
 	//获取打印机的蓝牙地址
 	public static String getPrinterAddress(Context pCtx)

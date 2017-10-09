@@ -3,6 +3,7 @@ package com.blescaler.ui;
 import java.lang.ref.WeakReference;
 
 
+
 import com.blescaler.ui.R;
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.utils.Utils;
@@ -163,6 +164,9 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.btn_next:
 			
+			  Intent intent = new Intent(ScalerParamActivity.this, ScalerParamActivity2.class);
+			  intent.putExtra("address","00");
+			  startActivity(intent);
 			break;
 		default:
 			break;

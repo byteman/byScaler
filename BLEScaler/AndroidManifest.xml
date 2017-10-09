@@ -71,6 +71,10 @@ limitations under the License.
             android:name=".ScalerParamActivity"            
             android:label="@string/title_activity_weight" >
         </activity>
+          <activity
+            android:name=".ScalerParamActivity2"            
+            android:label="@string/title_activity_weight" >
+        </activity>
         <activity
             android:name=".CalibActivity"      
             android:label="@string/calibwgt" >

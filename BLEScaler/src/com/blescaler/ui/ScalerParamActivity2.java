@@ -138,19 +138,38 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 			//WorkService.requestSaveParam(address);
 			break;
 		case R.id.btn_sync_time:
-			
+			new Thread(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+
+					ScalerParam sp = new ScalerParam();
+				
+					sp.SetNowTime();
+									
+					WorkService.SyncTime(address,sp);
+		
+				}
+				
+			}).start();
 			break;
 		default:
 			break;
 		}
 	}
 	
-	private void showParam(ScalerParam sp)
+	private void showAddrParam(ScalerParam sp)
+	{	
+		edit_write_index.setText(""+sp.write_index);
+		edit_read_index.setText("" + sp.read_index);
+	
+	}
+	private void showTimeParam(ScalerParam sp)
 	{
 		
 		edit_time.setText(sp.GetTimeString());	
-		edit_write_index.setText(""+sp.write_index);
-		edit_read_index.setText("" + sp.read_index);
+
 	
 	}
 	static class MHandler extends Handler {
@@ -167,12 +186,20 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 			ScalerParamActivity2 theActivity = mActivity.get();
 			switch (msg.what) {
 
-				case Global.MSG_SCALER_PAR_GET_RESULT:
+				case Global.MSG_GET_PARAM4_RESULT:
 				{
 					Scaler scaler = (Scaler) msg.obj;
 					if(scaler==null)return;
-					theActivity.showParam(scaler.para);
-					Utils.Msgbox(theActivity, "读取成功");
+					theActivity.showAddrParam(scaler.para);
+					//Utils.Msgbox(theActivity, "读取成功");
+					break;
+				}
+				case Global.MSG_GET_PARAM5_RESULT:
+				{
+					Scaler scaler = (Scaler) msg.obj;
+					if(scaler==null)return;
+					theActivity.showTimeParam(scaler.para);
+					//Utils.Msgbox(theActivity, "读取成功");
 					break;
 				}
 				case Global.MSG_SCALER_PAR_SET_RESULT:

@@ -61,7 +61,7 @@ public class ScalerParam {
 	}
 	public String GetTimeString()
 	{
-		String time = String.format("%d-%d-%d.%d",  2000 + ((0xff00 & year_month) >> 8),(byte) (0xff & year_month),((0xff00 & day_hour) >> 8),(byte) (0xff & day_hour),((0xff00 & min_second) >> 8),(byte) (0xff & min_second)); 
+		String time = String.format("%d-%d-%d %d:%d:%d",  2000 + ((0xff00 & year_month) >> 8),(byte) (0xff & year_month),((0xff00 & day_hour) >> 8),(byte) (0xff & day_hour),((0xff00 & min_second) >> 8),(byte) (0xff & min_second)); 
 		
 		return time;
 	}
@@ -69,9 +69,9 @@ public class ScalerParam {
 	{
 		Time t=new Time(); // or Time t=new Time("GMT+8"); 加上Time Zone资料。  
 		t.setToNow();
-		year_month = (short) (((t.year-2000)>>8)+t.month);  
-		day_hour = (short) ((t.monthDay>>8)+t.hour);  
-		min_second=(short) ((t.minute>>8)+t.second); 
+		year_month = (short) (((t.year-2000)<<8)+t.month);  
+		day_hour = (short) ((t.monthDay<<8)+t.hour);  
+		min_second=(short) ((t.minute<<8)+t.second); 
 		return true;
 	}
 	public static byte[] intToByte(int number) {

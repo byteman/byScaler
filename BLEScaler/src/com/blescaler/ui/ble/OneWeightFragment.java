@@ -79,34 +79,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		   }
 		
 	}
-	private Runnable watchdog = new Runnable()
-	{
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			 
-			
-			   if(cont++ >= 1)
-			   {
-				   
-				   WorkService.readNextWgt(true);
-				   cont = 0;
-			   }
-			   if(cout_2s++ > 10)
-			   {
-				   updateState();
-				   WorkService.readPower();
-				   cout_2s = 0;
-			   }
-			   if(cout_3s > 0)
-			   {
-				   cout_3s--;
-			   }
-			   mHandler.postDelayed(this, 200);  
-		}
-		
-	};
+
 	 private class SureButtonListener implements android.content.DialogInterface.OnClickListener{  
 		  
 	        public void onClick(DialogInterface dialog, int which) {  
@@ -145,7 +118,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		mHandler.removeCallbacks(watchdog);
+		
 		
 		WorkService.delHandler(mHandler);
 		Log.e(TAG, "onStop");
@@ -155,16 +128,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
-		mHandler.postDelayed(watchdog, 200);
-		//WorkService.connectPrinter(null);
 		
 		updateState();
 		tv_unit.setText(unit);
 		pause = false;
-		if(!WorkService.hasConnectPrinter())
-		{
-			//WorkService.connectPrinter(null);
-		}
+		
 		popConnectProcessBar(this.getActivity());
 	}
 	private void initUI()
@@ -219,9 +187,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		mHandler = new MHandler(this);
 		
 		wDao = new WeightDao(this.getActivity());
-		
-		
-		mHandler.postDelayed(watchdog, 200);
+
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
