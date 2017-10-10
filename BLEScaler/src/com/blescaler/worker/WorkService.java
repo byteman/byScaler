@@ -17,8 +17,10 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +36,7 @@ import com.blescaler.ui.BleApplication;
 import com.blescaler.utils.Register;
 import com.blescaler.utils.Utils;
 import com.lvrenyang.utils.DataUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleGattService;
 import com.xtremeprog.sdk.ble.BleRequest.FailReason;
@@ -50,7 +53,7 @@ import com.xtremeprog.sdk.ble.IBle;
 public class WorkService extends Service {
 
 	// Service和workThread通信用mHandler
-	
+	private BleService mService = null;
 	public static WorkThread workThread = null; //打印服务工作线程
 	private static Handler mHandler = null;
 	private static Context  myCtx = null;
@@ -151,7 +154,7 @@ public class WorkService extends Service {
 			}
 		}
 	});
-	public void recv_object(byte[] cmd)
+	public static void recv_object(byte[] cmd)
 	{
 		int reg_addr = cmd[3];
 		if(reg_addr ==0 || reg_addr==47)
@@ -165,12 +168,7 @@ public class WorkService extends Service {
 		}
 		
 	}
-	public void notifyReconnect()
-	{
-		synchronized (lock) {
-			lock.notify();
-		}
-	}
+
 	public static boolean addCmd(byte[] cmd)
 	{
 		int reg_addr = cmd[3]; 
@@ -225,7 +223,7 @@ public class WorkService extends Service {
 					msg.obj = addr;
 					mHandler.sendMessage(msg);	
 				}
-				notifyReconnect();			
+				
 				
 			} 
 
@@ -482,14 +480,9 @@ public class WorkService extends Service {
 			}
 		}	
 	}
-	@Override
-	public void onCreate() {
-		BleApplication app = (BleApplication) getApplication();
-		mBle = app.getIBle();
-		if (mBle == null) {
-			Log.e("WorkService", "getBLE failed");
-			
-		} 
+	private boolean init()
+	{
+	
 		BluetoothAdapter adpter=BluetoothAdapter.getDefaultAdapter();
 		if(adpter!=null)
 		{
@@ -522,6 +515,33 @@ public class WorkService extends Service {
 		myCtx = this;
 		reConnThread.start();
 		reSendThread.start();
+		return false;
+		
+	}
+	private final ServiceConnection mServiceConnection = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName className,
+				IBinder rawBinder) {
+			mService  = ((BleService.LocalBinder) rawBinder).getService();
+			mBle = mService.getBle();
+			init();
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName classname) {
+			mService = null;
+		}
+		
+		
+	};
+	
+	@Override
+	public void onCreate() {
+		CrashReport.initCrashReport(this, "900009251", false);
+		Intent bindIntent = new Intent(this, BleService.class);
+		bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+			
+		
 	}
 
 	@Override

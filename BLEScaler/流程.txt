@@ -1,0 +1,32 @@
+BleApplication
+	1.onCreate 启动一个BleService服务，并绑定到当前application
+	2.服务绑定成功后，再启动WorkService服务，并绑定到当前进程，注意这里要先启动BleService
+	因为WorkService中需要用到BleService中初始化的蓝牙设备。
+	3.可以修改为只启动WorkService服务，然后在WorkService中再启动Ble服务。
+	4.注意只有等两者都启动完成后，才能使用WorkService服务中的函数.
+	5.Workservcie启动后会发送一个消息，应用程序可以等待该消息，完成后再进入主界面，调用worksercie的函数
+	
+	Workservcie大多是静态变量，静态变量的初始化是在onCreate中
+	
+	6.提供一个CreateScaler(string addr)可以返回一个Scaler对象。 
+	7.提供一个连接函数Connect(string addr);
+	8.提供设置最大称台个数SetMaxScaler(int num);不需要这个接口，个数由外部逻辑去管理
+	里面只提供按地址读取和设置的功能，把全部读取，下个读取等逻辑都放到外面，对外只提供按地址读取
+	也不保存最大称个数的功能。
+Workservcie	
+	1.提供接口函数 
+	2.提供分包发送和短线通知
+	3.称通讯协议分析和打包
+BleService
+	1.提供最底层的通讯功能
+Scaler对象
+	代表一个蓝牙称，sdk可以同时连接多个蓝牙称，每连接一个称前需要创建一个Scaler对象，以后某个称的数据
+	接收成功的时候，会以该Scaler作为参数传递给用户
+	主要参数有
+	1.设备状态和称重状态
+	2.称的标定参数和计量参数
+	3.称蓝牙的连接状态，是否断开
+	4.设备蓝牙地址和名称
+	5.分析接收到的数据
+	6.当前称的重量和单位值。
+	
