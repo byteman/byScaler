@@ -57,14 +57,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		
 		 if(!WorkService.hasConnectAll())
 		   {
-			 btn_reconn.setText("已经连接");
+			 btn_reconn.setText("点击连接");
 			 btn_reconn.setTextColor(Color.rgb(0x80, 0x80, 0x80));
 			 
 		   }
 		   else
 		   {
 			   //87CEEB
-			   btn_reconn.setText("重新连接");
+			   btn_reconn.setText("已经连接");
 			   btn_reconn.setTextColor(Color.rgb(0xFF, 0x00, 0x00));  
 			   
 		   }

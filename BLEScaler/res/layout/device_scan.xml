@@ -28,14 +28,14 @@
 	        android:layout_marginLeft="10dp"
 	        android:layout_marginRight="10dp"
 	        android:layout_weight="1"
-	        android:text="@string/save" />
+	        android:text="保存" />
 	    
 	    <Button
 	        style="@style/bybutton"
 	        android:id="@+id/btn_cancel"
 	    	android:layout_marginRight="10dp"
 	    	android:layout_weight="1"
-	        android:text="取消" />
+	        android:text="返回" />
 
 	</LinearLayout>
 	

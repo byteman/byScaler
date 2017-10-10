@@ -11,11 +11,5 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg" />
 
-    <include
-        android:layout_width="162dp"
-        android:layout_height="match_parent"
-       android:layout_gravity="start"
-        layout="@+layout/menu_left_layout"
-        android:clickable="true" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -38,7 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
-	private DrawerLayout mDrawerLayout;
+	//private DrawerLayout mDrawerLayout;
 	TextView menu_serach, menu_one_scaler, menu_print, //
 			menu_calib, menu_para, menu_data_report, menu_setting, menu_four_scaler, prevLeftMenu;
 	GestureDetector simpleGestureListener;
@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		mDrawerLayout.closeDrawers();
+		//mDrawerLayout.closeDrawers();
 		switch (v.getId()) {
 		case R.id.menu_serach:
 			if (prevLeftMenu != null)

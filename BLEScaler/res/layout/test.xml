@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/textView51"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="服务器IP" />
 
@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="服务器端口" />
 
@@ -60,7 +60,7 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="设备编号" />
 
@@ -83,7 +83,7 @@
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="发送间隔(秒)" />
 
@@ -108,7 +108,7 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="心跳间隔(秒)" />
 
@@ -130,7 +130,7 @@
 
         <TextView
             android:id="@+id/textView21"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="采集间隔(秒)" />
 
@@ -152,7 +152,7 @@
 
         <TextView
             android:id="@+id/textView1"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="通道个数" />
 
@@ -176,7 +176,7 @@
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="版本号" />
 
@@ -219,35 +219,29 @@
             android:layout_weight="1"
             android:id="@+id/btn_read"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="5dp"
             android:layout_height="wrap_content">
         </Button>
         <Button
             style="@style/bybutton"
             android:text="保存"
-            android:id="@+id/btn_save"
             android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>
          <Button
             style="@style/bybutton"
             android:text="下一页"
-            android:id="@+id/btn_next"
-             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:layout_weight="1"
+            android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>
         <Button
             style="@style/bybutton"
             android:text="返回"
-            android:id="@+id/btn_back"
-             android:layout_marginLeft="5dp"
             android:layout_weight="1"
+            android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>
