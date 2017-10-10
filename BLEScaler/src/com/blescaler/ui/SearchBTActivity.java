@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.blescaler.worker.WorkService;
 import com.blescaler.worker.Global;
 import com.blescaler.ui.R;
-import com.lvrenyang.utils.DataUtils;
+
 
 public class SearchBTActivity extends Activity implements OnClickListener {
 
@@ -131,7 +131,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 							dialog.setIndeterminate(true);
 							dialog.setCancelable(false);
 							dialog.show();
-							WorkService.workThread.connectBt(address);
+							
 						}
 					});
 					button.getBackground().setAlpha(100);
@@ -193,25 +193,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		void PrintTest() {
-			String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n";
-			byte[] tmp1 = { 0x1b, 0x40, (byte) 0xB2, (byte) 0xE2, (byte) 0xCA,
-					(byte) 0xD4, (byte) 0xD2, (byte) 0xB3, 0x0A };
-			byte[] tmp2 = { 0x1b, 0x21, 0x01 };
-			byte[] tmp3 = { 0x0A, 0x0A, 0x0A, 0x0A };
-			byte[] buf = DataUtils.byteArraysToBytes(new byte[][] { tmp1,
-					str.getBytes(), tmp2, str.getBytes(), tmp3 });
-			if (WorkService.workThread.isConnected()) {
-				Bundle data = new Bundle();
-				data.putByteArray(Global.BYTESPARA1, buf);
-				data.putInt(Global.INTPARA1, 0);
-				data.putInt(Global.INTPARA2, buf.length);
-				WorkService.workThread.handleCmd(Global.CMD_WRITE, data);
-			} else {
-				Toast.makeText(mActivity.get(), Global.toast_notconnect,
-						Toast.LENGTH_SHORT).show();
-			}
-		}
+		
 	}
 
 }

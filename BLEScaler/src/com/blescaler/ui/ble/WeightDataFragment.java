@@ -120,18 +120,7 @@ public class WeightDataFragment extends BaseFragment implements
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.buttonPrintForm: {
-			if (!WorkService.hasConnectPrinter()) {
-
-				Utils.Msgbox(this.getActivity(), "请先连接打印机");
-
-				break;
-			}
-			WeightRecord data = new WeightRecord();
-			if (wDao != null)
-				if (wDao.getWeightRecord(data))
-					WorkService.requestPrint(data);
-			break;
-
+		
 		}
 		}
 	}

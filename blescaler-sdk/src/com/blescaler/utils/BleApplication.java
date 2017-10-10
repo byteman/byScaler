@@ -1,4 +1,4 @@
-package com.blescaler.ui;
+package com.blescaler.utils;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -27,7 +27,6 @@ public class BleApplication extends Application {
 				IBinder rawBinder) {
 			
 			mWorkService = ((WorkService.LocalBinder) rawBinder).getService();
-			mWorkService.get();
 		}
 
 		@Override
@@ -61,8 +60,6 @@ public class BleApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-		//CrashHandler catchHandler = CrashHandler.getInstance();  
-        //catchHandler.init(getApplicationContext());  
         CrashReport.initCrashReport(this, "900009251", false);
 		Intent bindIntent = new Intent(this, BleService.class);
 		bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);

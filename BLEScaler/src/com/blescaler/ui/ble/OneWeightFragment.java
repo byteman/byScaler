@@ -161,10 +161,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		updateState();
 		tv_unit.setText(unit);
 		pause = false;
-		if(!WorkService.hasConnectPrinter())
-		{
-			//WorkService.connectPrinter(null);
-		}
+		
 		popConnectProcessBar(this.getActivity());
 	}
 	private void initUI()
@@ -211,7 +208,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_yellow_off.setOnClickListener(this);
 		btn_red_off.setOnClickListener(this);
 		
-		unit = WorkService.getUnit();
+	
 		
 	}
 	private void initRes()
@@ -357,22 +354,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	     }).show();//在按键响应事件中显示此对话框  
 	  
 	}
-	private boolean printWeight()
-	{
-		if(!WorkService.hasConnectPrinter())
-		{
-			WorkService.connectPrinter(null);
-			Toast.makeText(this.getActivity(), "正在连接打印机，请等待", Toast.LENGTH_SHORT).show();
-			
-			return false;		
-		}
-		WeightRecord data = new WeightRecord();
-		if(wDao != null)
-			if(wDao.getWeightRecord(data))
-				WorkService.requestPrint(data);
-		
-		return true;
-	}
+
 	public static Fragment newFragment() {
 		OneWeightFragment f = new OneWeightFragment();
 		Bundle bundle = new Bundle();
@@ -470,24 +452,6 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					//WorkService.connectAll();
 					//mHandler.postDelayed(r, delayMillis)
 					break;
-				}
-				case Global.MSG_WORKTHREAD_SEND_CONNECTBTRESULT:
-				{
-					int result = msg.arg1;
-				
-					if(result == 1)
-					{
-						String addr = (String)(msg.obj);
-						WorkService.setPrinterAddress(theActivity.getActivity(),addr);
-						theActivity.printWeight();
-					}
-					else
-					{
-						//Utils.Msgbox(theActivity.getActivity(), "连接打印机失败");
-					}
-					
-					break;
-					
 				}
 				case Global.MSG_BLE_FAILERESULT:
 				{

@@ -73,7 +73,7 @@ public class ConnectBTPairedActivity extends Activity implements
 		dialog.setIndeterminate(true);
 		dialog.setCancelable(false);
 		dialog.show();
-		WorkService.workThread.connectBt(address);
+		
 	}
 
 	private List<Map<String, Object>> getBoundedPrinters() {
@@ -133,7 +133,7 @@ public class ConnectBTPairedActivity extends Activity implements
 				theActivity.dialog.cancel();
 				theActivity.finish();
 				String addr = (String)(msg.obj);
-				WorkService.setPrinterAddress(theActivity,addr);
+				
 				break;
 			}
 

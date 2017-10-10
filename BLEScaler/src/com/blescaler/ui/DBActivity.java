@@ -25,7 +25,7 @@ import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
 import com.blescaler.ui.R;
 import com.blescaler.utils.Utils;
-import com.lvrenyang.utils.DataUtils;
+
 
 public class DBActivity extends Activity implements OnClickListener {
 
@@ -73,17 +73,7 @@ public class DBActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (arg0.getId()) {
 			case R.id.buttonPrintForm: {
-				if(!WorkService.hasConnectPrinter())
-				{
-					Toast.makeText(this, "请先连接打印机", Toast.LENGTH_SHORT).show();
-					
-					break;		
-				}
-				WeightRecord data = new WeightRecord();
-				if(wDao != null)
-					if(wDao.getWeightRecord(data))
-						WorkService.requestPrint(data);
-				break;
+				
 				
 			}
 			case R.id.btn_quit:

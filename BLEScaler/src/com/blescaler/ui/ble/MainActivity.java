@@ -1,30 +1,21 @@
 package com.blescaler.ui.ble;
 
 import com.blescaler.ui.ble.BaseActivity;
-import com.blescaler.ui.ble.FlourWeightFragment;
 import com.blescaler.ui.ble.OneWeightFragment;
-import com.blescaler.ui.ble.WeightCountFragment;
-import com.blescaler.ui.BleApplication;
 import com.blescaler.ui.CalibActivity;
 import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
-import com.blescaler.ui.PairedScalerActivity;
 import com.blescaler.ui.ScalerParamActivity;
 import com.blescaler.ui.R;
 import com.blescaler.ui.SearchBTActivity;
 import com.blescaler.ui.SysParamActivity;
 import com.blescaler.worker.WorkService;
-
 import android.R.color;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;

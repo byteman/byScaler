@@ -38,7 +38,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
-import com.aiven.alert.util.MineAlert;
 import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
 import com.blescaler.ui.ConnectBTPairedActivity;
@@ -298,20 +297,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 			Utils.Msgbox(this, "保存成功");
 			break;
 	
-		case R.id.btn_print:
-			//startActivity(new Intent(this, FormActivity.class));
-			if(!WorkService.hasConnectPrinter())
-			{
-				Toast.makeText(this, "请先连接打印机", Toast.LENGTH_SHORT).show();
-				
-				break;		
-			}
-			WeightRecord data = new WeightRecord();
-			if(wDao != null)
-				if(wDao.getWeightRecord(data))
-					WorkService.requestPrint(data);
-			
-			break;
+		
 		case R.id.btn_tare:
 			//去皮操作
 			if(WorkService.discardTare())
@@ -430,7 +416,7 @@ public class WeightActivity extends Activity implements View.OnClickListener {
 						Log.v(TAG, "Connect Result: " + result);
 						
 						String addr = (String)(msg.obj);
-						WorkService.setPrinterAddress(theActivity,addr);
+						
 						break;
 						
 					}

@@ -11,7 +11,7 @@ import java.util.Set;
 import com.blescaler.ui.R;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.WorkService;
-import com.lvrenyang.utils.DataUtils;
+
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -212,7 +212,7 @@ public class SettingFragment11 extends BaseFragment implements OnClickListener {
 							dialog.setIndeterminate(true);
 							dialog.setCancelable(false);
 							dialog.show();
-							WorkService.workThread.connectBt(address);
+							
 						}
 					});
 					button.getBackground().setAlpha(100);
