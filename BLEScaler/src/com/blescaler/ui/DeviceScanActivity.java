@@ -117,24 +117,7 @@ public class DeviceScanActivity extends Activity   {
 
 	
 
-	private void onDeviceDisconnected() {
-		// TODO Auto-generated method stub
 
-	}
-
-	private void createWeightActivity() {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-
-				Intent intent = new Intent(DeviceScanActivity.this,
-						WeightActivity.class);
-				
-				startActivity(intent);
-			}
-		});
-	
-	};
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onStop()

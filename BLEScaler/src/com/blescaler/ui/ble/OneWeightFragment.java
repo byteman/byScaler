@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
-import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.R;
 import com.blescaler.ui.ScalerParamActivity;

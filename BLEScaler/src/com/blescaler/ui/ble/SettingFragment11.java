@@ -212,7 +212,7 @@ public class SettingFragment11 extends BaseFragment implements OnClickListener {
 							dialog.setIndeterminate(true);
 							dialog.setCancelable(false);
 							dialog.show();
-							WorkService.workThread.connectBt(address);
+							
 						}
 					});
 					button.getBackground().setAlpha(100);

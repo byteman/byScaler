@@ -17,42 +17,23 @@ import com.blescaler.worker.WorkService;
 
 public class BleApplication extends Application {
 
-	private BleService mService;
+	
 	private WorkService mWorkService;
-	private IBle mBle;
+	
 
-	private final ServiceConnection mServiceConnection2 = new ServiceConnection() {
+	private final ServiceConnection mServiceConnection = new ServiceConnection() {
 		
 		public void onServiceConnected(ComponentName className,
 				IBinder rawBinder) {
 			
 			mWorkService = ((WorkService.LocalBinder) rawBinder).getService();
-			mWorkService.get();
+			
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName classname) {
 			mWorkService = null;	
 		}
-	};
-	private final ServiceConnection mServiceConnection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(ComponentName className,
-				IBinder rawBinder) {
-			mService = ((BleService.LocalBinder) rawBinder).getService();
-			mBle = mService.getBle();
-			
-			Intent bindIntent = new Intent(getApplicationContext(), WorkService.class);
-			bindService(bindIntent, mServiceConnection2, Context.BIND_AUTO_CREATE);
-			
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName classname) {
-			mService = null;
-		}
-		
-		
 	};
 	
 
@@ -61,19 +42,18 @@ public class BleApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-		//CrashHandler catchHandler = CrashHandler.getInstance();  
-        //catchHandler.init(getApplicationContext());  
+		
         CrashReport.initCrashReport(this, "900009251", false);
-		Intent bindIntent = new Intent(this, BleService.class);
+
+		Intent bindIntent = new Intent(getApplicationContext(), WorkService.class);
 		bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
 		
 		
 	}
 	public void quit()
 	{
-		mService.unbindService(mServiceConnection);
+		mWorkService.unbindService(mServiceConnection);
 	}
-	public IBle getIBle() {
-		return mBle;
-	}
+
 }

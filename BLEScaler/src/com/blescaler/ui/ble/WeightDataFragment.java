@@ -126,10 +126,7 @@ public class WeightDataFragment extends BaseFragment implements
 
 				break;
 			}
-			WeightRecord data = new WeightRecord();
-			if (wDao != null)
-				if (wDao.getWeightRecord(data))
-					WorkService.requestPrint(data);
+
 			break;
 
 		}

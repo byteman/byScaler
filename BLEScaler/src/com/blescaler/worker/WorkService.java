@@ -54,7 +54,7 @@ public class WorkService extends Service {
 
 	// Service和workThread通信用mHandler
 	private BleService mService = null;
-	public static WorkThread workThread = null; //打印服务工作线程
+	
 	private static Handler mHandler = null;
 	private static Context  myCtx = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
@@ -493,20 +493,12 @@ public class WorkService extends Service {
 		
 		scalers = new HashMap<String, Scaler>();
 		scalers2 = new HashMap<Integer, Scaler>();
-		mPrinterAddress = WorkService.getPrinterAddress(this);
-		if(mPrinterAddress == null || mPrinterAddress=="")
-		{
-			mPrinterAddress = "00:02:0A:03:C3:BC";
-			WorkService.setPrinterAddress(this, mPrinterAddress);
-		}
+
 		loadScalerConfig(this);
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 
 		mHandler = new MHandler(this);
-		workThread = new WorkThread(mHandler);
-		workThread.start();
-		//_threadRead = new Thread(new ReadThread());
-		//_threadRead.start();
+
 		Message msg = Message.obtain();
 		msg.what = Global.MSG_ALLTHREAD_READY;
 		notifyHandlers(msg);
@@ -556,8 +548,6 @@ public class WorkService extends Service {
 	@Override
 	public void onDestroy() {
 
-		workThread.quit();
-		workThread = null;
 		Log.v("DrawerService", "onDestroy");
 	}
 	public void get()
@@ -1112,53 +1102,8 @@ public class WorkService extends Service {
 		
 		return Config.getInstance(pCtx).getPrinterAddress();
 	}
-	//修改打印机的蓝牙地址.
-	public static void setPrinterAddress(Context pCtx,String address)
-	{	
-		 Config.getInstance(pCtx).setPrinterAddress(address);
-	}
-	//打印榜单
-	public static boolean requestPrint(WeightRecord data)
-	{
-		byte[] header =  { 0x1b, 0x40, 0x1c, 0x26, 0x1b, 0x39,0x01 };
-		byte[] setHT = {0x1b,0x44,0x10,0x00};
-		byte[] HT = {0x09};
-		byte[] LF = {0x0d,0x0a};
-		if(!hasConnectPrinter()) return false;
-		byte[][] allbuf = new byte[][]{header,
-				setHT,"流水号".getBytes(),HT,data.getID().getBytes(),LF,LF,
-				
-				setHT,"日期".getBytes(),HT,data.getFormatDate().getBytes(),LF,
-				setHT,"时间".getBytes(),HT,data.getFormatTime().getBytes(),LF,
-				setHT,"毛重".getBytes(),HT,WorkService.formatUnit(data.getGross()).getBytes(),LF,
-				setHT,"皮重".getBytes(),HT,WorkService.formatUnit(data.getTare()).getBytes(),LF,
-				setHT,"净重".getBytes(),HT,WorkService.formatUnit(data.getNet()).getBytes(),LF,LF,
-				};
-		byte[] buf = DataUtils.byteArraysToBytes(allbuf);
-		if (WorkService.workThread.isConnected()) {
-			Bundle d = new Bundle();
-			d.putByteArray(Global.BYTESPARA1, buf);
-			d.putInt(Global.INTPARA1, 0);
-			d.putInt(Global.INTPARA2, buf.length);
-			WorkService.workThread.handleCmd(Global.CMD_POS_WRITE, d);
-		} else {
-			//打印机未连接
-			return false;
-		}
-		return true;
-		
-	}
-	//连接指定地址的打印机
-	public static void connectPrinter(String address)
-	{
-		if(WorkService.workThread.isConnected()) return;
-		if(address == null)
-		{
-			WorkService.workThread.connectBt(mPrinterAddress);
-			return;
-		}
-		WorkService.workThread.connectBt(address);
-	}
+	
+	
 	//获取打印机地址
 	public static String getPrinterAddress()
 	{

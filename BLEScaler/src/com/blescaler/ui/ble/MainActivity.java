@@ -6,12 +6,10 @@ import com.blescaler.ui.ble.OneWeightFragment;
 import com.blescaler.ui.ble.WeightCountFragment;
 import com.blescaler.ui.BleApplication;
 import com.blescaler.ui.CalibActivity;
-import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.PairedScalerActivity;
 import com.blescaler.ui.ScalerParamActivity;
 import com.blescaler.ui.R;
-import com.blescaler.ui.SearchBTActivity;
 import com.blescaler.ui.SysParamActivity;
 import com.blescaler.worker.WorkService;
 
@@ -222,8 +220,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		if(pos ==  1)
 		{
 			//newFragment = WeightDataFragment.newFragment();
-		   Intent intent = new Intent(this, DBActivity.class);
-		   startActivity(intent); 
+		
 		   return;
 		}
 		if(pos == 2)
@@ -259,9 +256,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		//	newFragment = FlourWeightFragment.newFragment();
 		if (pos == 6)
 		{
-			 Intent intent = new Intent(this, SearchBTActivity.class);
 			
-			 startActivity(intent); 
 			 return;
 		}
 		if(pos == 8)
