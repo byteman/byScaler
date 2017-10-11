@@ -28,10 +28,32 @@ public class Config
 		{
 			mConfig = new Config(pContext);
 		}
+		
 		return mConfig;
 	}
-
+	public Channel getChannel(int index)
+	{
+		Channel chan = new Channel();
+		
+		chan.setC( mSharedPre.getFloat("channel"+index+".c", (float) 0.10197));
+		chan.setK( mSharedPre.getFloat("channel"+index+".k", (float) -0.12088));
+		chan.setG( mSharedPre.getFloat("channel"+index+".g", (float) -0.002256));
+		chan.setR0( mSharedPre.getFloat("channel"+index+".r0", (float) 8880.4));
+		chan.setT0( mSharedPre.getFloat("channel"+index+".t0", (float) 18.3));	
+		return chan;
+	}
+	public void setChannel(int index, Channel chan)
+	{
+		mEditor.putFloat("channel"+index+".c", chan.getC());
+		mEditor.putFloat("channel"+index+".k", chan.getK());
+		mEditor.putFloat("channel"+index+".g", chan.getG());
+		mEditor.putFloat("channel"+index+".r0", chan.getR0());
+		mEditor.putFloat("channel"+index+".t0", chan.getT0());
+		
+		mEditor.commit();
+	}
 	public String getPrinterAddress() {
+		
 		return mSharedPre.getString("printer_address", "");
 	}
 

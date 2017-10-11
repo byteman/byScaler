@@ -3,6 +3,7 @@ package com.blescaler.ui.ble;
 
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -25,8 +26,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blescaler.db.Channel;
+import com.blescaler.db.Config;
 import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
+import com.blescaler.ui.CalcParamActivity;
 import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.R;
@@ -47,6 +51,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private AutoBgButton btn_reconn=null,btn_send=null,btn_search,btn_setting;
 	private TextView tvch1,tvch2,tvch3,tvch4,tvch5,tvch6;
 	private TextView dev_signal,dev_status;
+	private HashMap<Integer,Channel> chans = new HashMap<Integer,Channel>();
+	
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
 	private static Handler mHandler = null;
@@ -114,7 +120,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	    //progressDialog.show(ctx, "蓝牙秤hhhh", "正在连接,请稍候！");                                
 	    WorkService.connectNext();   
 	  
-        
+	    
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
         
 	    mHandler.sendMessageDelayed(msg, 2000);
@@ -131,10 +137,20 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		WorkService.delHandler(mHandler);
 		Log.e(TAG, "onStop");
 	}
+	private void reload()
+	{
+		for(int i = 1; i <= 6; i++)
+		{
+			
+			chans.put(i,  Config.getInstance(this.getActivity()).getChannel(i));
+			
+		}
+	}
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		reload();
 		WorkService.addHandler(mHandler);
 		mHandler.postDelayed(watchdog, 2000);
 		
@@ -154,6 +170,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		tvch5 = (TextView) root.findViewById(R.id.val_chan5);
 		tvch6 = (TextView) root.findViewById(R.id.val_chan6);
 		
+		tvch1.setOnClickListener(this);
+		tvch2.setOnClickListener(this);
+		tvch3.setOnClickListener(this);
+		tvch4.setOnClickListener(this);
+		tvch5.setOnClickListener(this);
+		tvch6.setOnClickListener(this);
+		
 		dev_signal= (TextView) root.findViewById(R.id.dev_signal);
 		dev_status= (TextView) root.findViewById(R.id.dev_status);
 		btn_send= (AutoBgButton) root.findViewById(R.id.btn_send_now);
@@ -163,6 +186,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_search.setOnClickListener(this);
 		btn_setting = (AutoBgButton) root.findViewById(R.id.btn_setting);
 		btn_setting.setOnClickListener(this);
+		reload();
 	}
 	private void initRes()
 	{
@@ -211,6 +235,23 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				
 			break;
 		}
+		
+		case R.id.val_chan1:
+		case R.id.val_chan2:
+		case R.id.val_chan3:
+		case R.id.val_chan4:
+		case R.id.val_chan5:
+		case R.id.val_chan6:
+			Intent intent = new Intent(this.getActivity(), CalcParamActivity.class);
+			if(arg0.getId() == R.id.val_chan1)intent.putExtra("channel",1);
+			else if(arg0.getId() == R.id.val_chan2)intent.putExtra("channel",2);
+			else if(arg0.getId() == R.id.val_chan3)intent.putExtra("channel",3);
+			else if(arg0.getId() == R.id.val_chan4)intent.putExtra("channel",4);
+			else if(arg0.getId() == R.id.val_chan5)intent.putExtra("channel",5);
+			else if(arg0.getId() == R.id.val_chan6)intent.putExtra("channel",6);
+			startActivity(intent); 
+				
+			break;
 		}
 		
 		
@@ -249,29 +290,54 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		f.setArguments(bundle);
 		return f;
 	}
+	double CalcValue(int index,double P_AD,double T_AD)
+	{
+		Channel ch = chans.get(index);
+		if(ch == null)
+		{
+			return 0;
+		}
+		
+	    double a = 0.0014051;
+	    double b = 0.0002369;
+	    double c = 0.0000001019;
+	    //const double d = 101.97;
+	    //计算温度
+	    double N2 = Math.log(T_AD);
+	    double T1 =  1/(a+ b*N2 + c*N2*N2*N2)-273.2; //温度值
+	    //计算
+	    double R1 = (P_AD*P_AD) / 1000; //渗透压.
+
+	    double P  = ch.getG() * ( R1 - ch.getR0() ) + ch.getK() * ( T1 - ch.getT0() );
+
+
+	    double H = P * ch.getC();
+	    return H;
+	}
 	public boolean showChannels(Scaler sp,int channel)
 	{
 		float zx = sp.all_zx[channel];
 		float wd = sp.all_wd[channel];
+		String v = String .format("%.2f",CalcValue(channel+1,zx,wd));
 		switch(channel)
 		{
 		case 0:
-			tvch1.setText("zx:" + zx + " wd:" + wd);
+			tvch1.setText("zx:" + zx + " wd:" + wd + " " + v);
 			break;
 		case 1:
-			tvch2.setText("zx:" + zx + " wd:" + wd);
+			tvch2.setText("zx:" + zx + " wd:" + wd+ " " + v);
 			break;
 		case 2:
-			tvch3.setText("zx:" + zx + " wd:" + wd);
+			tvch3.setText("zx:" + zx + " wd:" + wd+ " " + v);
 			break;
 		case 3:
-			tvch4.setText("zx:" + zx + " wd:" + wd);
+			tvch4.setText("zx:" + zx + " wd:" + wd+ " " + v);
 			break;
 		case 4:
-			tvch5.setText("zx:" + zx + " wd:" + wd);
+			tvch5.setText("zx:" + zx + " wd:" + wd+ " " + v);
 			break;
 		case 5:
-			tvch6.setText("zx:" + zx + " wd:" + wd);
+			tvch6.setText("zx:" + zx + " wd:" + wd+ " " + v);
 			break;
 		}
 		return true;

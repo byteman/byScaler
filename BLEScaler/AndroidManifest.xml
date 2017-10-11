@@ -80,7 +80,7 @@ limitations under the License.
             android:label="@string/calibwgt" >
         </activity>
          <activity
-            android:name=".ConnectBTPairedActivity"
+            android:name=".CalcParamActivity"
             android:label="@string/search" >
         </activity>
          <activity
