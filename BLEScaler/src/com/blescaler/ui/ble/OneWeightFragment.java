@@ -60,8 +60,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	private void updateState()
 	{
-		
-		 if(!WorkService.hasConnectAll())
+		   //showChannels2(2979.24f,4230.73f,2);
+		   if(!WorkService.hasConnectAll())
 		   {
 			 btn_reconn.setText("点击连接");
 			 btn_reconn.setTextColor(Color.rgb(0x80, 0x80, 0x80));
@@ -318,7 +318,36 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 		float zx = sp.all_zx[channel];
 		float wd = sp.all_wd[channel];
-		String v = String .format("%.2f",CalcValue(channel+1,zx,wd));
+		String v = String .format("%.2f",CalcValue(channel+1,2979.24,4230.73));
+		switch(channel)
+		{
+		case 0:
+			tvch1.setText("zx:" + zx + " wd:" + wd + " " + v);
+			break;
+		case 1:
+			tvch2.setText("zx:" + zx + " wd:" + wd+ " " + v);
+			break;
+		case 2:
+			tvch3.setText("zx:" + zx + " wd:" + wd+ " " + v);
+			break;
+		case 3:
+			tvch4.setText("zx:" + zx + " wd:" + wd+ " " + v);
+			break;
+		case 4:
+			tvch5.setText("zx:" + zx + " wd:" + wd+ " " + v);
+			break;
+		case 5:
+			tvch6.setText("zx:" + zx + " wd:" + wd+ " " + v);
+			break;
+		}
+		return true;
+		
+	}
+	public boolean showChannels2(float zx,float wd,int channel)
+	{
+//		float zx = sp.all_zx[channel];
+//		float wd = sp.all_wd[channel];
+		String v = String .format("%.2f",CalcValue(channel+1,2979.24,4230.73));
 		switch(channel)
 		{
 		case 0:
