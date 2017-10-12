@@ -1,8 +1,9 @@
 package com.blescaler.worker;
 
 public class CmdObject {
-	CmdObject(byte[] buffer)
+	CmdObject(String addr,byte[] buffer)
 	{
+		address = addr;
 		reg_addr = buffer[3];
 		value=buffer;
 		send_time = System.currentTimeMillis();
@@ -34,6 +35,7 @@ public class CmdObject {
 		return false;
 
 	}
+	String address;
 	int reg_addr;
 	byte[] value;
 	long send_time;

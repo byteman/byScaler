@@ -7,30 +7,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Formatter.BigDecimalLayoutForm;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 
-import android.R.bool;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Toast;
 
-
-
-import com.blescaler.utils.BleApplication;
+import com.blescaler.utils.CRC16;
 import com.blescaler.utils.Register;
 import com.blescaler.utils.Utils;
 import com.blescaler.utils.Config;
@@ -42,42 +36,31 @@ import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
 /**
- * 瑙傚療鑰呮ā寮�
+ * 观察者模式
  * 
  * @author Administrator
  * 
  */
 public class WorkService extends Service {
 
-	// Service鍜寃orkThread閫氫俊鐢╩Handler
-	
+	// Service和workThread通信用mHandler
+	private BleService mService = null;
 	
 	private static Handler mHandler = null;
 	private static Context  myCtx = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
-	public static Map<String,Scaler> scalers;
-	private static Map<Integer,Scaler> scalers2;
-	//private static SparseArray<Scaler> scalers2;
+	public static  Map<String,Scaler> scalers;
+	
 	private static IBle mBle;
 	private static String TAG = "WorkSrv";
 	
-	private static int max_count = 1;	//钃濈墮绉よ澶囦釜鏁�.
-	private static String mPrinterAddress; //鎵撳嵃鏈鸿摑鐗欏湴鍧�
-	private static BlockingQueue<byte[]> m_resend_queue = new ArrayBlockingQueue<byte[]>(10);
-	//private static ConcurrentHashMap<Integer,CmdObject> m_cmd_queue = new ConcurrentHashMap<Integer,CmdObject>();
+	private static int max_count = 0;	//蓝牙秤设备个数.
+	
 	private static HashMap<Integer,CmdObject> m_cmd_queue = new HashMap<Integer,CmdObject>();
-	
-	
-	////////////////////绉伴噸鍙橀噺////////////////////////////////
-	private static int zero = 0; //闆剁偣閲嶉噺
-	private static int next = 0;
-	private static int tare = 0; //鐨噸
-	private static int tmp_tare = 0; //涓存椂鐨噸
-	private static int gross= 0; //姣涢噸,浠庣Г涓婄洿鎺ヨ鍙栫殑閲嶉噺
-	private static int net  = 0; //鍑�閲� = 姣涢噸-鐨噸-闆剁偣閲嶉噺.
-	private static boolean is_net_state = false; // 鏄惁鏄噣閲嶇姸鎬�,榛樿鏄瘺閲嶇姸鎬�
-	private Object lock = new Object();
 	private static Object cmd_lock = new Object();
+	
+	
+	
 	/////////////////////////////////////////////////
 	private Thread reConnThread = new Thread(new Runnable() {
 		
@@ -98,7 +81,7 @@ public class WorkService extends Service {
 						{
 							if(o.isTimeout())
 							{
-								write_buffer(o.value);
+								write_buffer(o.address,o.value);
 							}
 							if(o.needRemove())
 							{
@@ -118,31 +101,11 @@ public class WorkService extends Service {
 			}
 		}
 	});
-	private Thread reSendThread = new Thread(new Runnable() {
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			while(true)
-			{
-				try {
-					byte[] cmd = m_resend_queue.take();
-					if(cmd !=null)
-					{
-						write_buffer(cmd);
-						Thread.sleep(200);
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	});
-	public void recv_object(byte[] cmd)
+	
+	public static void recv_object(byte[] cmd)
 	{
 		int reg_addr = cmd[3];
-		if(reg_addr ==0 || reg_addr==47)
+		if(reg_addr == Global.REG_WEIGHT || reg_addr==Global.REG_BATTERY)
 		   return;
 		synchronized (cmd_lock) {
 			if(m_cmd_queue.containsKey(reg_addr))
@@ -153,13 +116,8 @@ public class WorkService extends Service {
 		}
 		
 	}
-	public void notifyReconnect()
-	{
-		synchronized (lock) {
-			lock.notify();
-		}
-	}
-	static public boolean addCmd(byte[] cmd)
+	
+	static public boolean addCmd(String addr,byte[] cmd)
 	{
 		int reg_addr = cmd[3]; 
 		CmdObject o = null;
@@ -170,38 +128,38 @@ public class WorkService extends Service {
 				o.reset();
 				return true;
 			}
-			o = new CmdObject(cmd);
+			o = new CmdObject(addr,cmd);
 			m_cmd_queue.put(reg_addr, o);
 		}
 		return true;
 		
 	}
-	//钃濈墮绉ゆ秷鎭帴鏀跺櫒.
+	//蓝牙秤消息接收器.
 	private final BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
-
+	
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
 			
 			if (BleService.BLE_GATT_CONNECTED.equals(action)) {
-				//钃濈墮杩炴帴鎴愬姛.
+				//蓝牙连接成功.
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_CONNECTRESULT);
 				final BluetoothDevice device = intent.getExtras()
 						.getParcelable(BleService.EXTRA_DEVICE);
 			
 				
-				msg.obj = device;	//杩炴帴鎴愬姛鐨勮摑鐗欒澶�
+				msg.obj = device;	//连接成功的蓝牙设备
 				mHandler.sendMessage(msg);
 				
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-				//钃濈墮鏂紑.
+				//蓝牙断开.
 				
 				Bundle extras = intent.getExtras();
 				if(extras == null) return;
 								
 				String addr = extras.getString(BleService.EXTRA_ADDR);
-				Toast.makeText(getApplicationContext(), addr+"鏀跺埌鏂紑...",Toast.LENGTH_SHORT).show();	
+				Toast.makeText(getApplicationContext(), addr+"收到断开...",Toast.LENGTH_SHORT).show();	
 						
 				Scaler s = scalers.get(addr);
 				if(s != null)
@@ -212,17 +170,17 @@ public class WorkService extends Service {
 					msg.obj = addr;
 					mHandler.sendMessage(msg);	
 				}
-				notifyReconnect();			
+						
 				
 			} 
-
+	
 			else if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
-				//鎵嬫満涓嶆敮鎸佽摑鐗�4.0
+				//手机不支持蓝牙4.0
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_NOT_SUPPORT);
 				mHandler.sendMessage(msg);	
 			} 
 			else if (BleService.BLE_DEVICE_FOUND.equals(action)) {
-				//鎵弿鍒颁竴涓猙le璁惧.
+				//扫描到一个ble设备.
 					Bundle extras = intent.getExtras();
 					final BluetoothDevice device = extras
 							.getParcelable(BleService.EXTRA_DEVICE);
@@ -231,17 +189,17 @@ public class WorkService extends Service {
 					msg.obj = device;
 					mHandler.sendMessage(msg);
 			} else if (BleService.BLE_NO_BT_ADAPTER.equals(action)) {
-				//鎵嬫満涓嶆敮鎸佽摑鐗�
+				//手机不支持蓝牙
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_NO_BT_ADAPTER);
 				mHandler.sendMessage(msg);	
 			}else if (BleService.BLE_SERVICE_DISCOVERED.equals(action)) {
-				//ble璁惧鐨勬湇鍔℃灇涓惧畬姣�.
+				//ble设备的服务枚举完毕.
 				String address = intent.getExtras().getString(BleService.EXTRA_ADDR);
 				Message msg = mHandler.obtainMessage(Global.MSG_BLE_SERVICEDISRESULT);
 				msg.obj = address;
 				mHandler.sendMessage(msg);
-				//鑾峰彇瀵规柟钃濈墮妯″潡[鏁版嵁閫氳]鐗瑰緛鎻忚堪绗�
-				Log.e("Scaler", "discover_service notify");  
+				//获取对方蓝牙模块[数据通讯]特征描述符
+				
 				BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
 				if(bgs == null)
 				{
@@ -261,27 +219,27 @@ public class WorkService extends Service {
 						Log.e("Scaler", address + "service discory ok");
 						
 					}
-					//鍚姩鏁版嵁鎺ユ敹閫氱煡.
+					//启动数据接收通知.
 					if(!mBle.requestCharacteristicNotification(address, chars))
 					{
-						Toast.makeText(getApplicationContext(), "鏈嶅姟鍙戠幇鎴愬姛锛岃姹傚惎鐢ㄩ�氱煡澶辫触!",Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), "服务发现成功，请求启用通知失败!",Toast.LENGTH_SHORT).show();
 					}
 					else
 					{
-						//Toast.makeText(getApplicationContext(), "鏈嶅姟鍙戠幇鎴愬姛",Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getApplicationContext(), "服务发现成功",Toast.LENGTH_SHORT).show();
 					}
 				}
 				
 				
 			}else if (BleService.BLE_CHARACTERISTIC_NOTIFICATION.equals(action)) {
-				//鍚敤閫氱煡鎴愬姛.
+				//启用通知成功.
 				Bundle extras = intent.getExtras();
 				String address = intent.getExtras().getString(BleService.EXTRA_ADDR);
 				boolean mNotifyStarted = extras.getBoolean(BleService.EXTRA_VALUE);
 				if(mNotifyStarted)
 				{
 					
-
+	
 					BleGattService bgs = mBle.getService(address,UUID.fromString(Utils.UUID_SRV));
 					if(bgs == null)
 					{
@@ -318,7 +276,7 @@ public class WorkService extends Service {
 			}else if (BleService.BLE_CHARACTERISTIC_READ.equals(action)
 					|| BleService.BLE_CHARACTERISTIC_CHANGED.equals(action))
 			{
-				//鏈夊鏂归�氱煡鏁版嵁杩斿洖.
+				//有对方通知数据返回.
 				Bundle extras = intent.getExtras();
 				String addr = extras.getString(BleService.EXTRA_ADDR);
 				Scaler d = WorkService.scalers.get(addr);
@@ -346,7 +304,7 @@ public class WorkService extends Service {
 				
 		}		
 		else if (BleService.BLE_REQUEST_FAILED.equals(action)) {
-				//鍛戒护璇锋眰澶辫触,鍒嗘瀽鏄偅涓懡浠わ紝鍐冲畾鏄惁閲嶆柊鍙戦��.
+				//命令请求失败,分析是那个命令，决定是否重新发送.
 				Bundle b = intent.getExtras();
 				if(b == null) return;
 				
@@ -369,64 +327,64 @@ public class WorkService extends Service {
 		String err = "unkown";
 		if(type == FailReason.RESULT_FAILED.ordinal())
 		{
-			err = "缁撴灉澶辫触";
+			err = "结果失败";
 		}
 		else if(type == FailReason.TIMEOUT.ordinal())
 		{
-			err= "璇锋眰瓒呮椂";
+			err= "请求超时";
 		}
 		else if(type == FailReason.START_FAILED.ordinal())
 		{
-			err ="璇锋眰澶辫触";
+			err ="请求失败";
 		}
 		return err;
 	}
 	public static String getFailReason(int reason)
 	{
-		String type = "鏈煡鍘熷洜";
+		String type = "未知原因";
 		if(reason ==  RequestType.CHARACTERISTIC_NOTIFICATION.ordinal())
 		{
-			type = "鍚姩閫氱煡璇锋眰澶辫触";
+			type = "启动通知请求失败";
 		}
 		else if(reason ==  RequestType.CONNECT_GATT.ordinal())
 		{
-			type = "杩炴帴鏈嶅姟澶辫触";
+			type = "连接服务失败";
 		}
 		else if(reason ==  RequestType.DISCOVER_SERVICE.ordinal())
 		{
-			type = "鏋氫妇鏈嶅姟澶辫触";
+			type = "枚举服务失败";
 		}
 		else if(reason ==  RequestType.CONNECT_GATT.ordinal())
 		{
-			type = "杩炴帴鏈嶅姟澶辫触";
+			type = "连接服务失败";
 		}
 		else if(reason ==  RequestType.CHARACTERISTIC_INDICATION.ordinal())
 		{
-			type = "鐗瑰緛鎸囩ず澶辫触";
+			type = "特征指示失败";
 		}
 		else if(reason ==  RequestType.READ_CHARACTERISTIC.ordinal())
 		{
-			type = "璇诲彇鐗瑰緛澶辫触";
+			type = "读取特征失败";
 		}
 		else if(reason ==  RequestType.READ_DESCRIPTOR.ordinal())
 		{
-			type = "璇诲彇鎻忚堪绗﹀け璐�";
+			type = "读取描述符失败";
 		}
 		else if(reason ==  RequestType.READ_RSSI.ordinal())
 		{
-			type = "璇诲彇RSSI澶辫触";
+			type = "读取RSSI失败";
 		}
 		else if(reason ==  RequestType.WRITE_CHARACTERISTIC.ordinal())
 		{
-			type = "鍐欏叆鐗瑰緛澶辫触";
+			type = "写入特征失败";
 		}
 		else if(reason ==  RequestType.CHARACTERISTIC_STOP_NOTIFICATION.ordinal())
 		{
-			type = "鍋滄閫氱煡澶辫触";
+			type = "停止通知失败";
 		}
 		else if(reason ==  RequestType.WRITE_DESCRIPTOR.ordinal())
 		{
-			type = "鍐欐弿杩扮澶辫触";
+			type = "写描述符失败";
 		}
 		return type;
 		 
@@ -436,47 +394,42 @@ public class WorkService extends Service {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	public class LocalBinder extends Binder {
 		public WorkService getService() {
 			return WorkService.this;
 		}
 	}
+	//创建一个称对象.
+	public static Scaler CreateScaler(String address)
+	{
+		if(!scalers.containsKey(address)) //不包含这个地址才创建新的称台设备.
+		{
+			 Scaler scaler =  new Scaler(address);
+			 
+			 scalers.put(address,scaler);
+			 max_count++;
+			 return scaler;
+		}
+		return null;
+		
+	}
+	public static void ClearScalers()
+	{
+		scalers.clear();
+	}
 	
 	private static void loadScalerConfig(Context ctx)
 	{
-		//WorkService.setDeviceAddress(this, 1,"C4:BE:84:22:8F:B0");
-		scalers.clear();
-		scalers2.clear();
-		//WorkService.setDeviceAddress(this, 0,"C4:BE:84:22:91:E2");
-		//WorkService.setDeviceAddress(this, 2,"C4:BE:84:22:8F:C8");
-		max_count = 1;//Config.getInstance(ctx).getScalerCount();
 		
-		for(int i = 0 ; i < max_count; i++)
-		{
-			String addr = WorkService.getDeviceAddress(ctx, i);
-			String name = WorkService.getDeviceName(ctx, i);
-			if(addr != null && addr != "")
-			{
-				 if(!scalers.containsKey(addr)) //涓嶅寘鍚繖涓湴鍧�鎵嶅垱寤烘柊鐨勭О鍙拌澶�.
-				 {
-					 Scaler scaler =  new Scaler(addr);
-					 scaler.setName(name);
-					 scalers.put(addr,scaler);
-					 scalers2.put(i, scaler);
-				 }
-								
-			}
-		}	
+		scalers.clear();
+		
+		max_count = 0;
+		
 	}
-	@Override
-	public void onCreate() {
-		BleApplication app = (BleApplication) getApplication();
-		mBle = app.getIBle();
-		if (mBle == null) {
-			Log.e("WorkService", "getBLE failed");
-			
-		} 
+	private boolean init()
+	{
+	
 		BluetoothAdapter adpter=BluetoothAdapter.getDefaultAdapter();
 		if(adpter!=null)
 		{
@@ -486,15 +439,13 @@ public class WorkService extends Service {
 		}
 		
 		scalers = new HashMap<String, Scaler>();
-		scalers2 = new HashMap<Integer, Scaler>();
 		
+	
 		loadScalerConfig(this);
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
-
+	
 		mHandler = new MHandler(this);
 	
-		//_threadRead = new Thread(new ReadThread());
-		//_threadRead.start();
 		Message msg = Message.obtain();
 		msg.what = Global.MSG_ALLTHREAD_READY;
 		notifyHandlers(msg);
@@ -502,9 +453,36 @@ public class WorkService extends Service {
 		Log.v("DrawerService", "onCreate");
 		myCtx = this;
 		reConnThread.start();
-		reSendThread.start();
+		
+		return false;
+		
 	}
-
+	private final ServiceConnection mServiceConnection = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName className,
+				IBinder rawBinder) {
+			mService  = ((BleService.LocalBinder) rawBinder).getService();
+			mBle = mService.getBle();
+			init();
+		}
+	
+		@Override
+		public void onServiceDisconnected(ComponentName classname) {
+			mService = null;
+		}
+		
+		
+	};
+	
+	@Override
+	public void onCreate() {
+		
+		Intent bindIntent = new Intent(this, BleService.class);
+		bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+			
+		
+	}
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.v("DrawerService", "onStartCommand");
@@ -513,28 +491,28 @@ public class WorkService extends Service {
 		notifyHandlers(msg);
 		return START_NOT_STICKY;
 	}
-
+	
 	@Override
 	public void onDestroy() {
-
+	
 	
 		Log.v("DrawerService", "onDestroy");
 	}
-
+	
 	static class MHandler extends Handler {
-
+	
 		WeakReference<WorkService> mService;
-
+	
 		MHandler(WorkService service) {
 			mService = new WeakReference<WorkService>(service);
 		}
-
+	
 		@Override
 		public void handleMessage(Message msg) {
 			notifyHandlers(msg);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param handler
@@ -544,7 +522,7 @@ public class WorkService extends Service {
 			targetsHandler.add(handler);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param handler
@@ -554,7 +532,7 @@ public class WorkService extends Service {
 			targetsHandler.remove(handler);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param msg
@@ -565,73 +543,54 @@ public class WorkService extends Service {
 			targetsHandler.get(i).sendMessage(message);
 		}
 	}
-	//鍚姩鎵弿ble钃濈墮璁惧
+	//启动扫描ble蓝牙设备
 	public static void startScan()
 	{
 		
 		if(mBle != null)
 		mBle.startScan();
 	}
-	//鍋滄鎵弿ble钃濈墮璁惧
+	//停止扫描ble蓝牙设备
 	public static  void stopScan()
 	{
 		if(mBle != null)
 			mBle.stopScan();
 	}
-	
-	//璇锋眰杩炴帴鏌愪釜绉ょ殑钃濈墮鍦板潃
+
+	//请求连接某个秤的蓝牙地址
 	public static  boolean requestConnect(String address)
 	{
 		if(mBle == null) return false;
 		return mBle.requestConnect(address);
 	}
-	//璇锋眰鏂紑鏌愪釜绉ょ殑钃濈墮鍦板潃
+	//请求断开某个秤的蓝牙地址
 	public static  void requestDisConnect(String address)
 	{
 		if(mBle == null) return ;
 		mBle.disconnect(address);
 	}
-	//璇锋眰鏂紑鎵�鏈夌Г鐨勮摑鐗欏湴鍧�
-	public static  void requestDisConnectAll()
-	{
-		if(mBle == null) return ;
-		for(int i = 0 ; i < max_count; i++)
-		{
-			
-			 if(scalers2.containsKey(i)) //鍖呭惈杩欎釜鍦板潃鎵嶈幏鍙栫О鍙拌澶�.
-			 {
-				Scaler dev = scalers2.get(i);
-				 
-				if(dev!=null)
-				{
-					dev.setConnected(false, null);
-					mBle.disconnect(dev.getAddress());
-				}
-			 }
-								
-		
-		}
-	}
-	//鍒ゆ柇鎵嬫満钃濈墮鏄惁鍚敤
+	
+	//判断手机蓝牙是否启用
 	public static boolean adapterEnabled()
 	{
 		if(mBle == null) return false;
 		return mBle.adapterEnabled();
 	}
-	//鍒ゆ柇鏌愪釜钃濈墮鍦板潃鏄惁宸茬粡杩炴帴
+	//判断某个蓝牙地址是否已经连接
 	public static boolean hasConnected(String address)
 	{
 		if(mBle == null) return false;
 		return mBle.hasConnected(address);
 	}
-	private static boolean  read_registers(int reg_addr,int num)
+	//读取某个称的寄存器.
+	private static boolean  read_registers(String addr, int reg_addr,int num)
 	{
-		//璁惧鍦板潃 1byte
-		//鍛戒护绫诲瀷 0x3
-		//璧峰瀵勫瓨鍣ㄥ湴鍧� reg_addr
-		//瀵勫瓨鍣ㄦ暟閲� 2bytes(闇�瑕佽鍙栫殑瀵勫瓨鍣ㄦ暟閲�)
-		//鏁版嵁瀛楄妭鏁� 1byte (2*N)
-		//瀵勫瓨鍣ㄥ�� (2*N)瀛楄妭.
+		//设备地址 1byte
+		//命令类型 0x3
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes(需要读取的寄存器数量)
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
 		//crc16
 		short u_reg_addr = (short)reg_addr;
 		short u_reg_num  = (short)num;
@@ -641,66 +600,51 @@ public class WorkService extends Service {
 		buffer[6] = (byte)(crc16&0xFF);
 		buffer[7] = (byte)((crc16>>8)&0xff);
 		
-		return write_buffer(buffer);
+		return write_buffer(addr,buffer);
 		
 	}
-	//鍚戞煇涓瘎瀛樺櫒鍐欏叆鍊�.
-	private static boolean  read_register(short reg_addr)
-	{
-		//璁惧鍦板潃 1byte
-		//鍛戒护绫诲瀷 0x3
-		//璧峰瀵勫瓨鍣ㄥ湴鍧� reg_addr
-		//瀵勫瓨鍣ㄦ暟閲� 2bytes(闇�瑕佽鍙栫殑瀵勫瓨鍣ㄦ暟閲�)
-		//鏁版嵁瀛楄妭鏁� 1byte (2*N)
-		//瀵勫瓨鍣ㄥ�� (2*N)瀛楄妭.
-		//crc16
-
-		return read_registers(reg_addr,(short) 1);
-		
 	
-		
-	}
-
-	public static boolean  read_all_ks()
+	
+	public static boolean  read_all_ks(String address)
 	{
-
+	
 		try{
 			Register reg = new Register();
 			//1st
 			
-			write_buffer(reg.BeginRead(Global.REG_SENSOR_DIFF_K1,4));
+			write_buffer(address,reg.BeginRead(Global.REG_SENSOR_DIFF_K1,4));
 			Thread.sleep(200);
 			//3rd
 			
-			write_buffer(reg.BeginRead(Global.REG_SENSOR_DIFF_K3,4));
+			write_buffer(address,reg.BeginRead(Global.REG_SENSOR_DIFF_K3,4));
 			Thread.sleep(100);
-
+	
 		
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 		return false;
 	}
-
+	
 		return true;
 	}
-	public static boolean  common_msg(int reg_addr,int value )
+	public static boolean  common_msg(String address,int reg_addr,int value )
 	{
 		Register reg = new Register();
 		reg.BeginWrite(reg_addr);
 		reg.putShort((short) value);
 				
-		return write_buffer(reg.getResult());
+		return write_buffer(address,reg.getResult());
 	}
-	public static boolean  auto_k(int index)
+	public static boolean  auto_k(String address,int index)
 	{
 		Register reg = new Register();
 		reg.BeginWrite(Global.REG_AUTO_DIFF_CALIB_INDEX);
 		reg.putShort((short) index);
 				
-		return write_buffer(reg.getResult());
+		return write_buffer(address,reg.getResult());
 	}
-	public static boolean  hand_k(int index, int value)
+	public static boolean  hand_k(String address,int index, int value)
 	{
 		
 		Register reg = new Register();
@@ -708,58 +652,47 @@ public class WorkService extends Service {
 		//reg.putShort((short) index);
 		reg.putInt(value);
 		
-		return write_buffer(reg.getResult());
-
+		return write_buffer(address,reg.getResult());
+	
 	}
-	private static boolean  write_buffer(byte[] value)
+	private static boolean  write_buffer(String address,byte[] value)
 	{
 		if(value[3] != 0 && value[3]!=47)
 		{
 			//addCmd(value);
 			
-			addCmd(value);
+			addCmd(address,value);
 		}
-		return write_buffer2(value);
+		return write_buffer2(address,value);
 	}
-//鍙戦�佹暟鎹粰杩炴帴浜嗙殑璁惧.
-	private static boolean  write_buffer2(byte[] value)
+	//发送数据给连接了的设备.
+	private static boolean  write_buffer2(String address,byte[] value)
 	{
 		if(mBle == null) return false;
-
-		if(!hasConnectAll()) return false;
-		
-		for(int i = 0 ; i < max_count; i++)
-		{
+	
+	
+		 Scaler dev = scalers.get(address);
+		 
+		 if(dev !=null && dev.isConnected())
+		 {
+			BleGattCharacteristic chars = dev.GetBleChar();
+			if(chars == null) return false;
+				
+			chars.setValue(value);
 			
-			 if(scalers2.containsKey(i)) //鍖呭惈杩欎釜鍦板潃鎵嶈幏鍙栫О鍙拌澶�.
-			 {
-				 Scaler dev = scalers2.get(i);
-				 
-				 if(dev!=null && dev.isConnected())
-				 {
-
-						BleGattCharacteristic chars = dev.GetBleChar();
-						if(chars == null) return false;
-						
-						
-						chars.setValue(value);
-						
-						return mBle.requestWriteCharacteristic(dev.getAddress(), chars, "false");
-				 }
-			 }
-								
-		
-		}
+			return mBle.requestWriteCharacteristic(dev.getAddress(), chars, "false");
+		 }
+	
 		return true;
 		
 		
 		
 	}
-
+	
 	private static boolean requestValue(String address,String cmd)
 	{
 		if(mBle == null) return false;
-
+	
 		Scaler s = scalers.get(address);
 		if(s==null) return false;
 		BleGattCharacteristic chars = s.GetBleChar();
@@ -769,62 +702,47 @@ public class WorkService extends Service {
 		chars.setValue(cmd);
 		
 		return mBle.requestWriteCharacteristic(address, chars, "false");
-
+	
 	}
-	//鏍囧畾闆剁偣
-	//address 璁惧鍦板潃  
+	//标定零点
+	//address 设备地址  
 	public static boolean requestCalibZero(String address) 
 	{
 		return requestValue(address, "CLZ;");
 	}
-	public static boolean requestReadAds()
+	public static boolean requestReadAds(String address)
 	{
 		try{
 			Register reg = new Register();
 			//1st
 			
-			write_buffer(reg.BeginRead(Global.REG_AD_CHAN1,4));
+			write_buffer(address,reg.BeginRead(Global.REG_AD_CHAN1,4));
 			Thread.sleep(100);
 			//3rd
 			
-			write_buffer(reg.BeginRead(Global.REG_AD_CHAN3,4));
+			write_buffer(address,reg.BeginRead(Global.REG_AD_CHAN3,4));
 			Thread.sleep(100);
-
+	
 		
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 		return false;
 	}
-
+	
 		return true;
 	}
-	public static boolean CalibZero() 
+	public static boolean CalibZero(String address) 
 	{
 		Register reg = new Register();
 		//1st
 		reg.BeginWrite(Global.REG_CALIB_INDEX);
 		reg.putShorts((short) 0,(short)1);
 	
-		return write_buffer(reg.getResult());
+		return write_buffer(address,reg.getResult());
 	}
-	//鏍囧畾閲嶉噺.calibWet 鏍囧畾閲嶉噺鍊� nov 婊￠噺绋�
-	public static boolean requestCalibK(String address,int calibWet,int nov) 
-	{
-		Scaler s = scalers.get(address);
-		if(s==null) return false;
-		if(nov==0)nov = 1000000;
-		double tmp = (double)calibWet;
-		double nov_full = 1000000;
-		double nov_float = nov;
-		double out = tmp * (nov_full/nov_float);
-		int w = (int)out;
-		
-		String cmd = "CLK:" +w + ";";
-		
-		return requestValue(address, cmd);
-	}
-	public static boolean CalibK(int point,int calibWet) 
+	
+	public static boolean CalibK(String address,int point,int calibWet) 
 	{
 		Register reg = new Register();
 		//1st
@@ -832,32 +750,32 @@ public class WorkService extends Service {
 		reg.putShorts((short) point,(short)1);
 		if(point > 0)
 			reg.putInt(calibWet);
-		return write_buffer(reg.getResult());
+		return write_buffer(address,reg.getResult());
 	}
-	//璇锋眰璇诲彇鍙傛暟
+	//请求读取参数
 	public static boolean requestReadPar(String address) throws InterruptedException
 	{
-		read_registers(Global.REG_DOTNUM,1); //灏忔暟鐐逛綅鏁�
+		read_registers(address,Global.REG_DOTNUM,1); //小数点位数
 		Thread.sleep(50);
-		read_registers(Global.REG_DIV1,5); //鍒嗗害鍊�->閲忕▼
+		read_registers(address,Global.REG_DIV1,5); //分度数
 		Thread.sleep(50);
-		read_registers(Global.REG_UNIT,6);//鍗曚綅->婊ゆ尝绛夌骇
+		read_registers(address,Global.REG_UNIT,6);//单位
 		Thread.sleep(50);
-		read_registers(Global.REG_SLEEP_S,2);//鍗曚綅->婊ゆ尝绛夌骇
+		read_registers(address,Global.REG_SLEEP_S,2);//休眠时间
 		return true;
 	}
-	//璇锋眰淇敼鍙傛暟,淇敼鍚庣殑鍙傛暟鏈繚瀛�
+	
 	public static boolean requestWriteParamValue(String address,ScalerParam s)
 	{
 		if(mBle == null) return false;
-
-		Scaler scaler = scalers2.get(0);
+		if(s == null) return false;
+		Scaler scaler = scalers.get(address);
 		if(scaler==null) return false;
 		BleGattCharacteristic chars = scaler.GetBleChar();
-		//BleGattCharacteristic chars = mChars.get(address);
+	
 		if(chars == null) return false;
-		if(s == null) return false;
-		ScalerParam sp = scaler.para;
+		
+		
 		try{
 			Register reg = new Register();
 			//1st
@@ -866,31 +784,31 @@ public class WorkService extends Service {
 			reg.putShorts((short)s.getResultionx(),(short)s.getResultionx());	
 			reg.putInts(s.getNov());	
 			
-			write_buffer(reg.getResult());
+			write_buffer(address,reg.getResult());
 			Thread.sleep(200);
 			
 			//2nd
 			reg.BeginWrite(Global.REG_UNIT);
 			reg.putShorts(s.getUnit(),s.getPwr_zerotrack(),s.getHand_zerotrack());
 			
-			write_buffer(reg.getResult());
+			write_buffer(address,reg.getResult());
 			Thread.sleep(200);
 			
 			reg.BeginWrite(Global.REG_ZERO_TRACK_SPAN);
 			reg.putShorts(s.getZerotrack(),s.getMtd(),s.getFilter());
-			write_buffer(reg.getResult());
+			write_buffer(address,reg.getResult());
 			Thread.sleep(200);
 			
 			//3rd
 			reg.BeginWrite(Global.REG_DOTNUM); //dot
 			reg.putShort(s.getDignum());
-			write_buffer(reg.getResult());
+			write_buffer(address,reg.getResult());
 			Thread.sleep(200);
 			
 			reg.BeginWrite(Global.REG_SLEEP_S); //dot
 			reg.putShort(s.getSleep());
 			reg.putShort(s.getSnr_num());
-			write_buffer(reg.getResult());
+			write_buffer(address,reg.getResult());
 			Thread.sleep(200);
 		
 	} catch (InterruptedException e) {
@@ -898,52 +816,34 @@ public class WorkService extends Service {
 		e.printStackTrace();
 		return false;
 	}
-
-		
-		//chars.setValue(s.getSetCmdBuffer());
+	
 		
 		return mBle.requestWriteCharacteristic(address, chars, "false");
-
+	
 	}
-	//閫氱煡绉ゅ皢鍙傛暟鍐欏叆鍐呴儴eeprom
-	public static boolean requestSaveParam(String address)
+	public static boolean readPower(String address)
 	{
-		return requestValue(address, "SAV1;");
+		return read_registers(address,(short)Global.REG_BATTERY, (short)1);
 	}
-	//璇诲彇鏌愪釜绉ょ殑閲嶉噺鍊�
+	//读取某个秤的重量值
 	public static boolean requestReadWgt(String address)
 	{
-		int size = getQueSize() ;
-		if(size > 10) 
-		{
-			Log.e(TAG, "queue underflow " + size);
-			return false;
-		}
-		Log.e(TAG, "send packet");
-		return read_registers((short)Global.REG_WEIGHT, (short)4);
-
+		return read_registers(address,(short)Global.REG_WEIGHT, (short)4);
 	}
 	
-
-	public static String getPrinterAddress()
-	{
-		return mPrinterAddress;
-	}
-	//鑾峰彇鎸囧畾鍦板潃鐨勭О鍙拌澶�.
+	
+	//获取指定地址的称台设备.
 	public static Scaler getScaler(String addr)
 	{
 		return scalers.get(addr);
 	}
-	public static Scaler getScaler(int id)
-	{
-		return scalers2.get(id);
-	}
+	
 	public static int getQueSize()
 	{
 		if(mBle==null) return 0;
 		return mBle.getQueueSize();
 	}
-	//鑾峰彇鍦板潃搴忓彿鐨勭О鐨勮摑鐗欏湴鍧�
+	//读取剩余电量
 	public static String getDeviceAddress(Context pCtx,int index)
 	{
 		
@@ -974,289 +874,56 @@ public class WorkService extends Service {
 		{
 			setDeviceAddress(pCtx, i , devs.get(i));
 		}
+
 		
-		max_count = devs.size();
-		Config.getInstance(pCtx).setScalerCount(max_count);
-		//淇敼鍦板潃鍚庯紝閲嶆柊鍔犺浇鍦板潃鍒楄〃.
-		loadScalerConfig(pCtx);
 	}
-	//杩炴帴鎵�鏈夎摑鐗欑Г,鏃犺鏄惁杩炴帴鎴愬姛
-	public static boolean connectAll()
+	public static boolean setZero(String address)
 	{
-		boolean need_connect = false;
-		if(WorkService.hasConnectAll()) return true;
-		if(WorkService.scalers.size() < max_count)
-		{
-			return false;
-		}
-		for(int i = 0 ; i < max_count; i++)
-		{
-			
-			 if(scalers2.containsKey(i)) //涓嶅寘鍚繖涓湴鍧�鎵嶅垱寤烘柊鐨勭О鍙拌澶�.
-			 {
-				 Scaler dev = scalers2.get(i);
-				 if(dev!=null && dev.isConnected()!=true)
-				 {
-					 WorkService.requestConnect(dev.getAddress());
-					 need_connect = true;
-				 }
-				
-			 }
-								
-		
-		}
-		return !need_connect;
+		Register reg = new Register();
+		reg.BeginWrite(Global.REG_OPERATION);
+		reg.putShort((short) 1);
+		return write_buffer(address, reg.getResult());
 	}
-	public static boolean connectNext()
-	{
-		
-		if(WorkService.hasConnectAll()) return true;
-		if(WorkService.scalers.size() < max_count)
-		{
-			return false;
-		}
-		for(int i = 0 ; i < max_count; i++)
-		{
-			
-			 if(scalers2.containsKey(i)) //涓嶅寘鍚繖涓湴鍧�鎵嶅垱寤烘柊鐨勭О鍙拌澶�.
-			 {
-				 Scaler dev = scalers2.get(i);
-				 if(dev!=null && dev.isConnected()!=true)
-				 {
-					 WorkService.requestConnect(dev.getAddress());
-					 return true;
-				 }
-				
-			 }
-								
-		
-		}
-		return false;
-	}
-	//鎵�鏈夌О閮藉凡缁忚繛鎺ュ惁
-	public static boolean hasConnectAll()
-	{
-		boolean need_connect = false;
-		if(WorkService.scalers==null) return false;
-		if(WorkService.scalers.size() < max_count)
-		{
-			return false;
-		}
-		for(int i = 0 ; i < max_count; i++)
-		{
-			
-			 if(scalers2.containsKey(i)) //鍖呭惈杩欎釜鍦板潃鎵嶈幏鍙栫О鍙拌澶�.
-			 {
-				 Scaler dev = scalers2.get(i);
-				 
-				if(dev!=null && !dev.isConnected())
-				{
-					need_connect = true;
-					break;
-				}
-			 }
-								
-		
-		}
-		
-		return !need_connect;
-	}
-	//璇诲彇鎵�鏈夌О鐨勯噸閲�.
-	public static boolean readAllWgt()
-	{
-		if(!hasConnectAll()) return false;
-		
-		for(int i = 0 ; i < max_count; i++)
-		{
-			
-			 if(scalers2.containsKey(i)) //鍖呭惈杩欎釜鍦板潃鎵嶈幏鍙栫О鍙拌澶�.
-			 {
-				 Scaler dev = scalers2.get(i);
-				 
-				 if(dev!=null && dev.isConnected())
-				 {
-					WorkService.requestReadWgt(dev.getAddress());
-				 }
-			 }
-								
-		
-		}
-		
-		return true;
-	}
-	public static boolean readPower()
-	{
-		return read_registers((short)Global.REG_BATTERY, (short)1);
-	}
-	public static boolean readNextWgt(boolean needAllconnect)
-	{
-		if(needAllconnect) if(!hasConnectAll()) return false;
-	
-		if(next >= scalers2.size()) next = 0;
-		Scaler dev = scalers2.get(next);
-		 
-		if(dev!=null && dev.isConnected())
-		{
-			WorkService.requestReadWgt(dev.getAddress());
-		}
-		next++;
-		
-		
-		return true;
-	}
-	
-	//鑾峰彇绉ょ殑涓暟
 	public static int getScalerCount()
 	{
 		if(scalers==null) return 0;
 		return scalers.size();
 	}
-	//鑾峰彇鎸囧畾搴忓彿绉ょ殑钃濈墮鍦板潃
-	public static String getScalerAddress(int index)
-	{
-		if(index >= getScalerCount()) return null;
-		
-		
-		Scaler s = scalers2.get(index);
-		if(s == null) return null;
-		
-		return s.getAddress();
-	}
-	
-	//鑾峰彇鎸囧畾搴忓彿绉ょ殑杩炴帴鐘舵��.
-	public static boolean getScalerConnectState(int index)
-	{
-		if(index >= getScalerCount()) return false;
-		
-		
-		Scaler s = scalers2.get(index);
-		if(s == null) return false;
-		
-		return s.isConnected(); 
-		
-	}
-	//鑾峰彇鎵�鏈夌Г鍔犺捣鏉ョ殑閲嶉噺.
-	public static int getTotalWeight()
-	{
-		int totalweight = 0;
-		for(int i = 0 ; i < max_count; i++)
-		{
-			
-			 if(scalers2.containsKey(i)) //涓嶅寘鍚繖涓湴鍧�鎵嶅垱寤烘柊鐨勭О鍙拌澶�.
-			 {
-				Scaler dev = scalers2.get(i);
-				
-				if(dev!=null && dev.isConnected())
-				{
-					totalweight += dev.getWeight();
-				}
-			 }							
-		}
-		return totalweight;
-	}
-	//鑾峰彇棰勭疆鍜屽幓鐨椂淇濆瓨鐨勭毊閲�
-	public static int getSavedTareWeight()
-	{
-		return tmp_tare;
-	}
-	//鑾峰彇褰撳墠鐨勭毊閲�.鍑�閲嶇姸鎬佷笅鎵嶆湁鐨噸锛屾瘺閲嶇姸鎬佷笅鐨噸涓�0
-	public static int getTareWeight()
-	{
-		if(is_net_state) return tare;
-		return 0;
-	}
-	//鑾峰彇姣涢噸
-	public static int getGrossWeight()
-	{
-		return getTotalWeight() - zero;
-	}
-	//鑾峰彇鍑�閲�,姣涢噸鐘舵�佷笅鐨噸涓�0锛屽噣閲�=姣涢噸  鍑�閲嶇姸鎬佷笅鍑�閲嶆墠鏄笂娆¤缃殑鍊硷紝鍑�閲�=姣涢噸-鍑�閲� .  瀹炴椂鏄剧ず鐨勪篃鏄繖涓噸閲�.
-	public static int getNetWeight()
-	{
-		return getGrossWeight() - getTareWeight();
-	}
-	
-	//缃浂褰撳墠閲嶉噺
-	public static boolean setZero()
-	{
-		Register reg = new Register();
-		reg.BeginWrite(Global.REG_OPERATION);
-		reg.putShort((short) 1);
-		return write_buffer(reg.getResult());
-	}
-	//棰勭疆鐨噸,鎵嬪伐璁剧疆鐨噸,棰勭疆鐨噸鍚庯紝鐘舵�佹洿鏀逛负鍑�閲嶇姸鎬�.
-	public static boolean setPreTare(int preTare)
+	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
+	public static boolean setPreTare(String address,int preTare)
 	{
 		Register reg = new Register();
 		reg.BeginWrite(Global.REG_TARE);
 		reg.putInt(preTare);
-		return write_buffer(reg.getResult());
+		return write_buffer(address,reg.getResult());
 		
 	}
-	public static boolean isNetState()
+	public static  void requestDisConnectAll()
 	{
-		return is_net_state;
-	}
-	//鍘荤毊锛屽彇褰撳墠鐨勯噸閲忎负鐨噸,鍘荤毊鍚庢洿鏀逛负鍑�閲嶇姸鎬�.鍑�閲嶇姸鎬佷笉鑳藉幓鐨�
-	public static boolean discardTare()
-	{
+		if(mBle == null) return ;
 		
-		//if(is_net_state) return false;
-		int gross = getGrossWeight();
-		
-		if(gross > 0)
+		Iterator<Map.Entry<String,Scaler>> it = scalers.entrySet().iterator();
+		while(it.hasNext())
 		{
-			tare = gross;
-			tmp_tare = tare;
-			is_net_state = true;
-			
+			Map.Entry<String,Scaler> entry = it.next();
+			Scaler s = entry.getValue();
+			if(s!=null)
+			{
+				s.setConnected(false, null);
+				mBle.disconnect(s.getAddress());
+			}
 		}
-		else
-		{
-			tare = 0;
-			tmp_tare = 0;
-			is_net_state = false;
-		}
-		return true;
 	}
-	//姣涢噸鍜屽噣閲嶇姸鎬佸垏鎹�.
-	public static boolean switchNetGross()
-	{
-		is_net_state=!is_net_state;
-		if(is_net_state)
-		{
-			//濡傛灉鎵嬪伐鍒囨崲鍒板噣閲嶇姸鎬�.
-			tare = tmp_tare; //鎭㈠涓婃淇濆瓨鐨勭毊閲�.
-		}
-		else
-		{
-			//濡傛灉鎵嬪伐鍒囨崲鍒颁簡姣涢噸鐘舵��.
-			tare = 0; //灏嗙毊閲嶈缃负0锛�
-		}
-		return is_net_state;
-	}
-	public static boolean CtrlLight(int index)
+	//控制灯
+	public static boolean CtrlLight(String address,int index)
 	{
 		Register reg = new Register();
 		reg.BeginWrite(Global.REG_LAMP_CTRL);
 		reg.putShort((short) (index));
-		return write_buffer(reg.getResult());
+		return write_buffer(address,reg.getResult());
 		
 	}
-
-	private class CommandReceiver extends BroadcastReceiver{
-
-		  @Override
-		  public void onReceive(Context context, Intent intent) {
-		   int cmd=intent.getIntExtra("cmd", -1);
-		   if(cmd==1){//濡傛灉绛変簬0
-		 
-		     stopSelf();//鍋滄鏈嶅姟
-		    
-		   }
-		  }
-		  
-	}
+	
 
 }
 

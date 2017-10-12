@@ -26,11 +26,11 @@ import com.blescaler.worker.WorkService;
 
 public class CalibActivity extends Activity {
 
-	private static String mDeviceAddress;
+	private String mDeviceAddress;
 	
 	
 	private final String TAG = "CalibActivity";
-	private TextView m_tvLoad,m_tvZero,m_tvK;
+	private TextView m_tvLoad,m_tvK;
 	private Button btnScaler1,btnScaler2,btnScaler3,btnScaler4,btnStart=null;
 	private Button m_btCalibZero, m_btCalibWgt,btn_read,m_btQuit=null;
 	private EditText editText1,editText2,editText3,editText4=null;
@@ -38,10 +38,8 @@ public class CalibActivity extends Activity {
 	private boolean isStarted = false;
 	private static Handler mHandler = null;
 
-	private boolean m_readpara = false;
-	private ActionBar mActionBar;
 	private TextView m_tvWgt=null;
-	private Timer pTimer;
+
 	private Runnable runnable;
 
 
@@ -50,7 +48,7 @@ public class CalibActivity extends Activity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if (v.getId() == R.id.btCalbZero) {
-				WorkService.CalibZero();
+				WorkService.CalibZero(mDeviceAddress);
 			
 			} else if (v.getId() == R.id.btCalbWgt) {
 				if (m_etWgt.getText().length() <= 0) {
@@ -60,7 +58,7 @@ public class CalibActivity extends Activity {
 				}
 				IntValue wgt   =NumberValues.GetIntValue(m_etWgt.getText().toString());
 				
-				WorkService.CalibK(1, wgt.value);
+				WorkService.CalibK(mDeviceAddress,1, wgt.value);
 			}else if(v.getId() == R.id.btn_save)
 			{
 				finish();
@@ -69,48 +67,48 @@ public class CalibActivity extends Activity {
 				//scaler1
 				if(isStarted){
 					//auto calib
-					WorkService.auto_k(1);
+					WorkService.auto_k(mDeviceAddress,1);
 				}else{
 					//hand calib
 					FloatValue vf =NumberValues.GetFloatValue(editText1.getText().toString());
 					if(vf.ok)
-						WorkService.hand_k(0, (int) (vf.value*1000));
+						WorkService.hand_k(mDeviceAddress,0, (int) (vf.value*1000));
 				}
 			}
 			else if(v.getId() == R.id.Button03)
 			{
 				if(isStarted){
 					//auto calib
-					WorkService.auto_k(2);
+					WorkService.auto_k(mDeviceAddress,2);
 				}else{
 					//hand calib
 					FloatValue vf =NumberValues.GetFloatValue(editText2.getText().toString());
 					if(vf.ok)
-						WorkService.hand_k(1, (int) (vf.value*1000));
+						WorkService.hand_k(mDeviceAddress,1, (int) (vf.value*1000));
 				}
 				//scaler2
 			}else if(v.getId() == R.id.Button02)
 			{
 				if(isStarted){
 					//auto calib
-					WorkService.auto_k(3);
+					WorkService.auto_k(mDeviceAddress,3);
 				}else{
 					//hand calib
 					FloatValue vf =NumberValues.GetFloatValue(editText3.getText().toString());
 					if(vf.ok)
-						WorkService.hand_k(2, (int) (vf.value*1000));
+						WorkService.hand_k(mDeviceAddress,2, (int) (vf.value*1000));
 				}
 				//scaler3
 			}else if(v.getId() == R.id.Button04)
 			{
 				if(isStarted){
 					//auto calib
-					WorkService.auto_k(4);
+					WorkService.auto_k(mDeviceAddress,4);
 				}else{
 					//hand calib
 					FloatValue vf =NumberValues.GetFloatValue(editText4.getText().toString());
 					if(vf.ok)
-						WorkService.hand_k(3, (int) (vf.value*1000));
+						WorkService.hand_k(mDeviceAddress,3, (int) (vf.value*1000));
 				}
 				//scaler4
 			}else if(v.getId() == R.id.Button05)
@@ -118,10 +116,10 @@ public class CalibActivity extends Activity {
 				//start.
 				if(isStarted){
 					btnStart.setText("start");
-					WorkService.auto_k(5);
+					WorkService.auto_k(mDeviceAddress,5);
 				}else{
 					btnStart.setText("stop");
-					WorkService.auto_k(0);
+					WorkService.auto_k(mDeviceAddress,0);
 				}
 				isStarted=!isStarted;
 				
@@ -133,7 +131,7 @@ public class CalibActivity extends Activity {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						WorkService.read_all_ks();
+						WorkService.read_all_ks(mDeviceAddress);
 					}
 					
 				}).start();
@@ -153,7 +151,9 @@ public class CalibActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.calib);
+		
 		init();
 
 	}
@@ -173,7 +173,7 @@ public class CalibActivity extends Activity {
 		m_btCalibWgt = (Button) findViewById(R.id.btCalbWgt);
 		m_btQuit= (Button) findViewById(R.id.btn_save);
 		m_etWgt = (EditText) findViewById(R.id.etWgt);
-		m_tvZero = (TextView) findViewById(R.id.tvZeros);
+		
 		m_tvLoad = (TextView) findViewById(R.id.tvLoad);
 		
 		btnScaler1=(Button) findViewById(R.id.Button01);
@@ -199,7 +199,7 @@ public class CalibActivity extends Activity {
 		btn_read.setOnClickListener(pClickListener);
 		btnStart.setOnClickListener(pClickListener);
 		mDeviceAddress = getIntent().getStringExtra("address");
-		m_readpara = false;
+		
 		//String characteristic = getIntent().getStringExtra("characteristic");
 	
 		mHandler = new MHandler(this);
@@ -298,13 +298,13 @@ public class CalibActivity extends Activity {
 				{
 					Scaler scaler = (Scaler) msg.obj;
 					if(scaler==null)return;
-					theActivity.m_readpara = true;	
+					
 					Toast.makeText(theActivity, "success!", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				case Global.MSG_SCALER_ZERO_CALIB_RESULT:
 				{
-					int result = msg.arg1;
+				
 					Scaler s = (Scaler)msg.obj;
 					if(msg.arg1 != 0)
 					{

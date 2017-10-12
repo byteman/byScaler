@@ -3,11 +3,9 @@ package com.blescaler.ui.ble;
 import com.blescaler.ui.ble.BaseActivity;
 import com.blescaler.ui.ble.OneWeightFragment;
 import com.blescaler.ui.CalibActivity;
-import com.blescaler.ui.DBActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.ScalerParamActivity;
 import com.blescaler.ui.R;
-import com.blescaler.ui.SearchBTActivity;
 import com.blescaler.ui.SysParamActivity;
 import com.blescaler.worker.WorkService;
 import android.R.color;
@@ -213,9 +211,9 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		if(pos ==  1)
 		{
 			//newFragment = WeightDataFragment.newFragment();
-		   Intent intent = new Intent(this, DBActivity.class);
-		   startActivity(intent); 
-		   return;
+//		   Intent intent = new Intent(this, DBActivity.class);
+//		   startActivity(intent); 
+//		   return;
 		}
 		if(pos == 2)
 		{
@@ -246,15 +244,6 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		}
 		if (pos == 7)
 			newFragment = OneWeightFragment.newFragment();
-		//if (pos == 3)
-		//	newFragment = FlourWeightFragment.newFragment();
-		if (pos == 6)
-		{
-			 Intent intent = new Intent(this, SearchBTActivity.class);
-			
-			 startActivity(intent); 
-			 return;
-		}
 		if(pos == 8)
 		{
 //			 Intent intent = new Intent(this, PairedScalerActivity.class);
@@ -305,7 +294,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
                         Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             } else {
-            	WorkService.requestDisConnectAll();
+            	
                 moveTaskToBack(false);
                 
                 finish();

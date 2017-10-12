@@ -129,16 +129,16 @@ public class PairedScalerActivity extends Activity {
 		}
 		 // 初始化isSelected的数据  
 	    private void initDate() {  
-	       int n = WorkService.getScalerCount();
-	       mLeDevices.clear();
-	       for(int i = 0; i < n; i++)
-	       {
-	    	   Scaler s = WorkService.getScaler(i);
-	    	   if(s!=null)
-	    	   {
-	    		   mLeDevices.add(s);
-	    	   }
-	       }
+//	       int n = WorkService.getScalerCount();
+//	       mLeDevices.clear();
+//	       for(int i = 0; i < n; i++)
+//	       {
+//	    	   Scaler s = WorkService.getScaler(i);
+//	    	   if(s!=null)
+//	    	   {
+//	    		   mLeDevices.add(s);
+//	    	   }
+//	       }
 	    } 
 	   
 		public void addDevice(Scaler device) {

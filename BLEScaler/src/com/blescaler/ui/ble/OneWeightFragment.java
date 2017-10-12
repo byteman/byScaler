@@ -25,11 +25,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blescaler.db.WeightDao;
-import com.blescaler.db.WeightRecord;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.R;
-
+import com.blescaler.utils.Config;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
@@ -55,20 +53,26 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	
 	AutoBgButton btn_ng = null;
 	AutoBgButton btn_preset = null;
-	private WeightDao wDao;
 	
-	private int timeout=0;
+	Scaler scaler = null;
 	public int cont=0,cout_2s,cout_3s=0;
-	private boolean pause = false,disconnect=false;
+	private static String address;
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
 	private static Handler mHandler = null;
 	protected static final String TAG = "weight_activity";
 	private static String unit="g";
+	
+	public boolean connectAll()
+	{
+		boolean need_connect = false;
+	
+		return !need_connect;
+	}
 	private void updateState()
 	{
-		
-		 if(!WorkService.hasConnectAll())
+		   if(scaler == null) return;
+		   if(!scaler.isConnected())
 		   {
 			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
 		   }
@@ -90,13 +94,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			   if(cont++ >= 1)
 			   {
 				   
-				   WorkService.readNextWgt(true);
+				   WorkService.requestReadWgt(address);
 				   cont = 0;
 			   }
 			   if(cout_2s++ > 10)
 			   {
 				   updateState();
-				   WorkService.readPower();
+				   WorkService.readPower(address);
 				   cout_2s = 0;
 			   }
 			   if(cout_3s > 0)
@@ -122,17 +126,19 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			showFailBox("没有选择要连接的蓝牙秤，请先扫描！");
 			return;
 		}
-		if(WorkService.hasConnectAll()) return;
+		if(scaler != null)
+		{
+			if(scaler.isConnected()) return;
+		}
+		
 		if(progressDialog!=null && progressDialog.isShowing())
 		{
 			return;
 		}
 	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
-	    //new ProgressDialog(ctx);
-	    
-	    //progressDialog.setButton("取消", new SureButtonListener());
-	    //progressDialog.show(ctx, "蓝牙秤hhhh", "正在连接,请稍候！");                                
-	    WorkService.connectNext();   
+        
+	    //reloadScaler();
+	    WorkService.requestConnect(scaler.getAddress());
 	  
         
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
@@ -160,7 +166,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		
 		updateState();
 		tv_unit.setText(unit);
-		pause = false;
+		
 		
 		popConnectProcessBar(this.getActivity());
 	}
@@ -215,15 +221,24 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 		mHandler = new MHandler(this);
 		
-		wDao = new WeightDao(this.getActivity());
-		
 		
 		mHandler.postDelayed(watchdog, 200);
+	}
+	private void reloadScaler()
+	{
+		address = WorkService.getDeviceAddress(this.getActivity(), 0);
+		//if(address == "") return;
+		WorkService.ClearScalers();
+		
+		scaler = WorkService.CreateScaler(address);
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		root = inflater.inflate(R.layout.activity_oneweight, container, false);
+		
+		
+		reloadScaler();
 		initUI();
 		initRes();
 	
@@ -244,7 +259,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	                    public void onClick(DialogInterface dialog, int which) {
 	                        String inputValue = inputServer.getText().toString();
-	                        if(WorkService.setPreTare(Integer.parseInt(inputValue)))
+	                        if(WorkService.setPreTare(address,Integer.parseInt(inputValue)))
 	                        {
 	                        	
 	                        }
@@ -265,10 +280,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			Utils.Msgbox(this.getActivity(), "保存成功");
 			break;
 		case R.id.btn_print:
-			WorkService.common_msg(2,99);
+			WorkService.common_msg(address,Global.REG_OPERATION,99);
 			break;
 		case R.id.btn_tare:
-			WorkService.common_msg(2,2);
+			WorkService.common_msg(address,Global.REG_OPERATION,2);
 			break;
 		case R.id.tv_weight:
 			popConnectProcessBar(this.getActivity());
@@ -276,44 +291,44 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_zero:
 			//清零
-			if(!WorkService.setZero())
+			if(!WorkService.setZero(address))
 			{
 				Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
 			}
 			break;
 		case R.id.btn_switch:
 			//净重和毛重切换
-			WorkService.common_msg(2,5);
+			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
 		case R.id.btn_green_light_on:
-			WorkService.CtrlLight(3);
+			WorkService.CtrlLight(address,3);
 			break;
 		case R.id.btn_yellow_light_on:
-			WorkService.CtrlLight(5);
+			WorkService.CtrlLight(address,5);
 			break;
 		case R.id.btn_red_light_on:
-			WorkService.CtrlLight(1);
+			WorkService.CtrlLight(address,1);
 			break;
 		case R.id.btn_green_light_off:
-			WorkService.CtrlLight(4);
+			WorkService.CtrlLight(address,4);
 			break;
 		case R.id.btn_yellow_light_off:
-			WorkService.CtrlLight(6);
+			WorkService.CtrlLight(address,6);
 			break;
 		case R.id.btn_red_light_off:
-			WorkService.CtrlLight(2);
+			WorkService.CtrlLight(address,2);
 			break;
 		case R.id.btn_preset:
 			inputTitleDialog();
 			break;
 		case R.id.btn_sleep:
-			WorkService.common_msg(Global.REG_OPERATION,12);
+			WorkService.common_msg(address,Global.REG_OPERATION,12);
 			break;
 		case R.id.btn_wake:
-			WorkService.common_msg(Global.REG_OPERATION,13);
+			WorkService.common_msg(address,Global.REG_OPERATION,13);
 			break;
 		case R.id.btn_unit:
-			WorkService.common_msg(Global.REG_OPERATION,14);
+			WorkService.common_msg(address,Global.REG_OPERATION,14);
 			break;
 		
 		}
@@ -324,11 +339,6 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		// TODO Auto-generated method stub
 		String kgs = tv_weight.getText().toString();
 		
-		WeightRecord item = new WeightRecord(); //这里会自动读取重量并填充.
-	
-		wDao.saveWeight(item);
-
-		item = null;
 	}
 	
 	private void showFailBox(String msg)
@@ -381,20 +391,19 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 				case Global.MSG_BLE_WGTRESULT:
 				{
-					//BluetoothDevice device = (BluetoothDevice) msg.obj;
-					//int weight = msg.arg1;
+					
 					Scaler d = (Scaler) msg.obj;
-					int totalweight = WorkService.getNetWeight();
+					int totalweight = d.getWeight();
 					float wf = totalweight;
 					String weight = "";
 					
-					theActivity.timeout = 0;
+					
 					if(d!=null)d.dump_info();
 					if(theActivity.cout_3s > 0)
 					{
 						return;
 					}
-					WorkService.readNextWgt(true);
+					WorkService.requestReadWgt(address);
 					
 					int dot = d.GetDotNum();
 					
@@ -446,7 +455,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				case Global.MSG_BLE_DISCONNECTRESULT:
 				{
 					String addr =(String)msg.obj;
-					//Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+					Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
 					
 					//theActivity.tv_conn.setText("已断开");
 					//WorkService.connectAll();
@@ -462,17 +471,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				
 				case Global.MSG_SCALER_CONNECT_OK:
 				{
-					if(WorkService.hasConnectAll())
-					{
-						if(progressDialog!=null && progressDialog.isShowing())
-							progressDialog.dismiss(); //关闭进度条
+				
+					if(progressDialog!=null && progressDialog.isShowing())
+						progressDialog.dismiss(); //关闭进度条
 						//Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
-					}
-					else {
-						
-						WorkService.connectNext(); 
-					}
-						
+					
 					break;
 				}
 				case MSG_TIMEOUT:

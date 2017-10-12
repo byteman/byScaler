@@ -122,19 +122,6 @@ public class DeviceScanActivity extends Activity   {
 
 	}
 
-	private void createWeightActivity() {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-
-				Intent intent = new Intent(DeviceScanActivity.this,
-						WeightActivity.class);
-				
-				startActivity(intent);
-			}
-		});
-	
-	};
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onStop()
@@ -145,7 +132,7 @@ public class DeviceScanActivity extends Activity   {
 		super.onStop();
 		WorkService.delHandler(mHandler);
 	}
-
+	
 	private OnClickListener listener = new OnClickListener() {
 		
 		@Override
@@ -157,11 +144,7 @@ public class DeviceScanActivity extends Activity   {
 				List<String> devs =  mLeDeviceListAdapter.getSelectAddress();
 				
 				WorkService.saveDevicesAddress(DeviceScanActivity.this, devs);
-				for(int i = 0 ;i < devs.size();i++)
-				{
-					String name = mLeDeviceListAdapter.getDevice(i).getName();
-					WorkService.setDeviceName(DeviceScanActivity.this,i, name);
-				}
+				
 				finish();
 			}
 			else if(v.getId() == R.id.btn_cancel)

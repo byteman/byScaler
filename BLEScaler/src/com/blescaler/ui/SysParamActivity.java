@@ -93,7 +93,7 @@ public class SysParamActivity extends Activity implements OnClickListener {
 			   public void run() {  
 			    // TODO Auto-generated method stub  
 			    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
-				   WorkService.requestReadAds();
+				   WorkService.requestReadAds(address);
 				   
 				   
 				   mHandler.postDelayed(this, 1000);  
