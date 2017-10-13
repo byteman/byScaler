@@ -35,6 +35,11 @@ import com.xtremeprog.sdk.ble.BleRequest.RequestType;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
+/** @defgroup SDKInterface SDK接口 
+ *  SDK对外的接口函数
+ *  @{
+ */
+
 /**
    # SDK主服务,提供了蓝牙称管理的所有接口
    
@@ -587,13 +592,18 @@ public class WorkService extends Service {
 			targetsHandler.get(i).sendMessage(message);
 		}
 	}
-	//启动扫描ble蓝牙设备
+	/**
+	 * 启动扫描ble蓝牙设备
+	 */
 	public static void startScan()
 	{
 		
 		if(mBle != null)
 		mBle.startScan();
 	}
+	/**
+	 * 启动扫描ble蓝牙设备
+	 */
 	//停止扫描ble蓝牙设备
 	public static  void stopScan()
 	{
@@ -643,7 +653,11 @@ public class WorkService extends Service {
 		if(mBle == null) return false;
 		return mBle.adapterEnabled();
 	}
-	//判断某个蓝牙地址是否已经连接
+	/**
+	 * 判断某个蓝牙地址是否已经连接
+	 * @param address
+	 * @return
+	 */
 	public static boolean hasConnected(String address)
 	{
 		if(mBle == null) return false;
@@ -651,7 +665,11 @@ public class WorkService extends Service {
 	}
 	
 	
-	
+	/**
+	 * 读取某个蓝牙称所有的角差系数
+	 * @param address
+	 * @return
+	 */
 	public static boolean  read_all_ks(String address)
 	{
 	
@@ -675,6 +693,13 @@ public class WorkService extends Service {
 	
 		return true;
 	}
+	/**
+	 * 向某个称的某个寄存器地址发送一个数据
+	 * @param address 称地址
+	 * @param reg_addr 寄存器地址
+	 * @param value  写入的值
+	 * @return
+	 */
 	public static boolean  common_msg(String address,int reg_addr,int value )
 	{
 		Register reg = new Register();
@@ -683,6 +708,13 @@ public class WorkService extends Service {
 				
 		return write_buffer(address,reg.getResult());
 	}
+	
+	/**
+	 * 自动角差标定
+	 * @param address 称地址
+	 * @param index 标定的是第几个传感器
+	 * @return
+	 */
 	public static boolean  auto_k(String address,int index)
 	{
 		Register reg = new Register();
@@ -691,6 +723,13 @@ public class WorkService extends Service {
 				
 		return write_buffer(address,reg.getResult());
 	}
+	/**
+	 * 手动角差标定
+	 * @param address 称地址
+	 * @param index 标定的是第几个传感器
+	 * @param value 修改的值 该系数是放大了100倍
+	 * @return
+	 */
 	public static boolean  hand_k(String address,int index, int value)
 	{
 		
@@ -703,7 +742,11 @@ public class WorkService extends Service {
 	
 	}
 
-
+	/**
+	 * 读取某个称每一路的AD值
+	 * @param address 称地址
+	 * @return
+	 */
 	public static boolean requestReadAds(String address)
 	{
 		try{
@@ -726,6 +769,11 @@ public class WorkService extends Service {
 	
 		return true;
 	}
+	/**
+	 * 标定零点
+	 * @param address 称地址
+	 * @return
+	 */
 	public static boolean CalibZero(String address) 
 	{
 		Register reg = new Register();
@@ -735,7 +783,13 @@ public class WorkService extends Service {
 	
 		return write_buffer(address,reg.getResult());
 	}
-	
+	/**
+	 * 标定某个称的重量
+	 * @param address 称地址
+	 * @param point 标定点
+	 * @param calibWet 标定的砝码重量
+	 * @return
+	 */
 	public static boolean CalibK(String address,int point,int calibWet) 
 	{
 		Register reg = new Register();
@@ -745,8 +799,15 @@ public class WorkService extends Service {
 		if(point > 0)
 			reg.putInt(calibWet);
 		return write_buffer(address,reg.getResult());
+	
 	}
-	//请求读取参数
+	/**
+	 * 请求读取计量参数
+	 * @param address 称地址
+	 * @return
+	 * @throws InterruptedException
+	 */
+	
 	public static boolean requestReadPar(String address) throws InterruptedException
 	{
 		read_registers(address,Global.REG_DOTNUM,1); //小数点位数
@@ -758,7 +819,13 @@ public class WorkService extends Service {
 		read_registers(address,Global.REG_SLEEP_S,2);//休眠时间
 		return true;
 	}
-	
+	/**
+	 * 请求写入计量参数
+	 * @param address 称地址
+	 * @param s 称参数
+	 * @return
+	 * @throws InterruptedException
+	 */
 	public static boolean requestWriteParamValue(String address,ScalerParam s)
 	{
 		if(mBle == null) return false;
@@ -815,11 +882,21 @@ public class WorkService extends Service {
 		return mBle.requestWriteCharacteristic(address, chars, "false");
 	
 	}
+	/**
+	 * 读取剩余电量
+	 * @param address
+	 * @return
+	 */
 	public static boolean readPower(String address)
 	{
 		return read_registers(address,(short)Global.REG_BATTERY, (short)1);
 	}
-	//读取某个秤的重量值
+	/**
+	 * 读取某个秤的重量值
+	 * @param address
+	 * @return
+	 */
+	
 	public static boolean requestReadWgt(String address)
 	{
 		return read_registers(address,(short)Global.REG_WEIGHT, (short)4);
@@ -837,7 +914,7 @@ public class WorkService extends Service {
 		if(mBle==null) return 0;
 		return mBle.getQueueSize();
 	}
-	//读取剩余电量
+	
 	public static String getDeviceAddress(Context pCtx,int index)
 	{
 		
@@ -875,6 +952,11 @@ public class WorkService extends Service {
 
 		
 	}
+	/**
+	 * 清零
+	 * @param address
+	 * @return
+	 */
 	public static boolean setZero(String address)
 	{
 		Register reg = new Register();
@@ -887,7 +969,12 @@ public class WorkService extends Service {
 		if(scalers==null) return 0;
 		return scalers.size();
 	}
-	//预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
+	/**
+	 * 预置皮重,手工设置皮重,预置皮重后，状态更改为净重状态.
+	 * @param address
+	 * @param preTare 
+	 * @return
+	 */
 	public static boolean setPreTare(String address,int preTare)
 	{
 		Register reg = new Register();
@@ -896,6 +983,9 @@ public class WorkService extends Service {
 		return write_buffer(address,reg.getResult());
 		
 	}
+	/**
+	 * 断开所有称的连接
+	 */
 	public static  void requestDisConnectAll()
 	{
 		if(mBle == null) return ;
@@ -912,7 +1002,13 @@ public class WorkService extends Service {
 			}
 		}
 	}
-	//控制灯
+	/**
+	 * 控制灯
+	 * @param address 
+	 * @param index 
+	 * @return
+	 */
+	
 	public static boolean CtrlLight(String address,int index)
 	{
 		Register reg = new Register();
@@ -924,4 +1020,5 @@ public class WorkService extends Service {
 	
 
 }
+/** @} */ // end of group1
 

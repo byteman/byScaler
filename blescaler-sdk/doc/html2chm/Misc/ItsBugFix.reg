@@ -1,0 +1,6 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\ITS FILE\shell\open\command]
+@="\"C:\\Program Files\\Internet Explorer\\iexplore.exe\" -nohome ms-its:%1::/"
+
+

@@ -1,9 +1,12 @@
 package com.blescaler.worker;
 
+
 /**
- * 全局皆可访问的变量放在这里，例如服务和线程通讯的msg
+ * @defgroup message 消息类型
+ *    @{
+ * 蓝牙SDK是发生消息给注册客户端
  * 
- * @author Administrator
+ * @author byteman
  * 
  */
 public class Global {
@@ -47,7 +50,7 @@ public class Global {
 	
 	
 	//add for BLE 
-	public static final int MSG_BLE_SCANRESULT=100031;	//扫描蓝牙设备的结果
+	public static final int MSG_BLE_SCANRESULT=100031;	/*!<扫描蓝牙设备的结果 */ 
 	public static final int MSG_BLE_CONNECTRESULT=100032;	//连接设备的响应消息
 	public static final int MSG_BLE_DISCONNECTRESULT=100033;	//设备断开命令的响应
 	public static final int MSG_BLE_SERVICEDISRESULT=100034;	//设备服务列举的响应
@@ -97,7 +100,7 @@ public class Global {
 	
 	public static final int CMD_CONNECT_SCALER=100314;
 	
-	public static final int REG_WEIGHT = 0;
+	public static final int REG_WEIGHT = 0; /*!< 重量数据 */
 	public static final int REG_OPERATION = 2;
 	public static final int REG_DOTNUM = 3;
 	public static final int REG_TARE = 6;
@@ -135,3 +138,4 @@ public class Global {
 	public static String toast_usbpermit = "Please permit app use usb and reclick this button";
 	public static String toast_connecting = "Connecting";
 }
+/** @} */ // end of group1

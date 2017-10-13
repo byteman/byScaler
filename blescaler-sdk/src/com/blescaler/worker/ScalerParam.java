@@ -7,15 +7,15 @@ import java.util.Map;
 
 public class ScalerParam {
 	
-	private byte mtd=-1;	//绋冲畾绾у埆
-	private int nov=-1;	//閲忕▼.
-	private byte zerotrack=-1;	//闆剁偣璺熻釜閫熷害
-	private byte pwr_zerotrack=-1; //寮?鏈虹疆闆惰寖鍥?
+	private byte mtd=-1;	
+	private int nov=-1;	
+	private byte zerotrack=-1;	
+	private byte pwr_zerotrack=-1; 
 	private byte hand_zerotrack=-1;
-	private byte resultion=1; //鍒嗗害鏁?
-	private byte dignum=-1;//灏忔暟鐐逛綅鏁?
+	private byte resultion=1; 
+	private byte dignum=-1;//
 	private byte filter=-1;
-	private byte unit=-1; //鍗曚綅
+	private byte unit=-1; //
 	private short sleep = 0;
 	public short getSleep() {
 		return sleep;
@@ -32,50 +32,7 @@ public class ScalerParam {
 	private short snr_num = 0;
 	
 	private String mdtstr;
-	public static Map<Integer, String> mtdmaps = new HashMap<Integer, String>() ;
-	public static Map<Integer, String> zerotrackmaps = new HashMap<Integer, String>() ;
-	public static Map<Integer, String> pwrzeromaps = new HashMap<Integer, String>() ;
-	public static Map<Integer, String> resmaps = new HashMap<Integer, String>() ;
-	public static Map<Integer, String> digmaps = new HashMap<Integer, String>() ;
 	
-	static {
-		mtdmaps.put(0, "OFF");
-		mtdmaps.put(1, "+-0.25d");
-		mtdmaps.put(2, "+-0.5d");
-		mtdmaps.put(3, "+-1.0d");
-		mtdmaps.put(4, "+-2.0d");
-		mtdmaps.put(5, "+-3.0d");
-		
-		zerotrackmaps.put(0, "OFF");
-		zerotrackmaps.put(1, "0.5d/s");
-		zerotrackmaps.put(2, "1.0d/s");
-		zerotrackmaps.put(3, "2.0d/s");
-		zerotrackmaps.put(4, "3.0d/s");
-		
-		pwrzeromaps.put(0, "OFF");
-		pwrzeromaps.put(1, "+-2%(NOV)");
-		pwrzeromaps.put(2, "+-5%(NOV)");
-		pwrzeromaps.put(3, "+-10%(NOV)");
-		pwrzeromaps.put(4, "+-20%(NOV)");
-		
-		resmaps.put(0, "1d");
-		resmaps.put(1, "2d");
-		resmaps.put(2, "5d");
-		resmaps.put(3, "10d");
-		resmaps.put(4, "20d");
-		resmaps.put(5, "50d");
-		resmaps.put(6, "100d");
-		
-		
-		digmaps.put(0, "xxxxxxx.");
-		digmaps.put(1, "xxxxxx.x");
-		digmaps.put(2, "xxxxx.xx");
-		digmaps.put(3, "xxxx.xxx");
-		digmaps.put(4, "xxx.xxxx");
-		digmaps.put(5, "xx.xxxxx");
-		digmaps.put(6, "x.xxxxxx");
-		
-	}
 	public ScalerParam()
 	{
 		
@@ -197,17 +154,6 @@ public class ScalerParam {
 				+ unit + ", mdtstr=" + mdtstr + "]";
 	}
 	
-	public boolean checkValid()
-	{
-		if(this.nov==0)this.nov=1000000;
-		if(this.mtd > mtdmaps.size() || this.mtd<0) this.mtd = 0;
-		if(this.zerotrack > zerotrackmaps.size() || this.zerotrack<0) this.zerotrack = 0;
-		if(this.pwr_zerotrack > pwrzeromaps.size() || this.pwr_zerotrack<0) this.pwr_zerotrack = 0;
-		if(this.resultion > resmaps.size() || this.resultion<0) this.resultion = 0;
-		if(this.dignum > digmaps.size() || this.dignum<0) this.dignum = 0;
-		
-		return true;
-	}
 	public boolean parseParaBuffer(byte[] buffer)
 	{
 		
