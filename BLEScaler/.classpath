@@ -6,7 +6,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/android-support-v4.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ble-scaler"/>
-	<classpathentry kind="lib" path="/ble-scaler/libs/bugly_1.2.3.8__release.jar"/>
+	<classpathentry kind="lib" path="libs/blelibrary.jar"/>
+	<classpathentry kind="lib" path="libs/bugly_1.2.3.8__release.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

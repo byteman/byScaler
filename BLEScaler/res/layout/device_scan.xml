@@ -20,7 +20,7 @@
 	        android:id="@+id/btn_serach"	
 	        android:layout_marginLeft="10dp"
 	        android:layout_weight="1"
-	        android:text="搜索" />
+	        android:text="start" />
 	     
 	    <Button
 	        style="@style/bybutton"
@@ -35,7 +35,7 @@
 	        android:id="@+id/btn_cancel"
 	    	android:layout_marginRight="10dp"
 	    	android:layout_weight="1"
-	        android:text="取消" />
+	        android:text="cancle" />
 
 	</LinearLayout>
 	

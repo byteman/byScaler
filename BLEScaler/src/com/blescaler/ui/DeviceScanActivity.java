@@ -255,16 +255,10 @@ public class DeviceScanActivity extends Activity   {
 		// fire an intent to display a dialog asking the user to grant
 		// permission to enable it.
 		Log.e(TAG, "OnResume");
-		
-		//WorkService.requestDisConnectAll();
-		/*if (!WorkService.adapterEnabled()) {
-			Intent enableBtIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-		}*/
+	
 
 		refreshList();
-		//scanLeDevice(true);
+		
 	}
 
 	@Override
@@ -317,11 +311,11 @@ public class DeviceScanActivity extends Activity   {
 		// TODO Auto-generated method stub
 		if(mScanning)
 		{
-			btn_serach.setText("停止搜索");
+			btn_serach.setText("stop");
 		}
 		else
 		{
-			btn_serach.setText("启动搜索");
+			btn_serach.setText("start");
 		}
 	}
 

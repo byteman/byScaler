@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/textView51"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/dignum" />
 
@@ -43,7 +43,7 @@
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/div" />
 
@@ -67,7 +67,7 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/nov" />
 
@@ -90,7 +90,7 @@
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/unit" />
 
@@ -114,7 +114,7 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/zeroinit" />
 
@@ -134,7 +134,7 @@
 
         <TextView
             android:id="@+id/textView21"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/handzero" />
 
@@ -154,7 +154,7 @@
 
         <TextView
             android:id="@+id/textView1"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/zerotrack" />
 
@@ -178,7 +178,7 @@
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/mtd" />
 
@@ -201,7 +201,7 @@
 
         <TextView
             android:id="@+id/textView23"
-           android:layout_width="100px"
+           android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/filter" />
 
@@ -222,9 +222,9 @@
 
         <TextView
             android:id="@+id/textView23"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="sleep time" />
+            android:text="休眠时间" />
 
         <EditText
             android:id="@+id/edit_sleep"
@@ -242,10 +242,10 @@
 
         <TextView
             android:id="@+id/textView24"
-            android:layout_width="100px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             
-            android:text="sensor number" />
+            android:text="传感器数" />
 
         <EditText
             android:id="@+id/edit_snr_num"

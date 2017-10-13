@@ -36,11 +36,23 @@ import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
 /**
- * 观察者模式
- * 
- * @author Administrator
- * 
+   # SDK主服务,提供了蓝牙称管理的所有接口
+   
+  	 - 提供蓝牙4.0设备的扫描和连接接口
+   	 - 蓝牙断线重连和信号检测
+   	 - 蓝牙BLE可靠性重发机制
+   	 - 基于蓝牙的数据分包处理机制
+ 	 - 提供称重协议发送和接收
+ 	 	+ 读取重量
+ 		+ 标定和角差
+ 	 	+ 称重参数设置
+ 		+ 称重状态显示[毛皮状态,稳定，零点]
+ 		+ 设备控制[led，去皮，清零等]
+ 		
+   	
  */
+
+
 public class WorkService extends Service {
 
 	// Service和workThread通信用mHandler
@@ -58,9 +70,14 @@ public class WorkService extends Service {
 	
 	private static HashMap<Integer,CmdObject> m_cmd_queue = new HashMap<Integer,CmdObject>();
 	private static Object cmd_lock = new Object();
+	private static Object scaler_lock = new Object();
 	
 	
-	
+	 //! A constructor.
+    /*!
+      A more elaborate description of the constructor.
+    */
+
 	/////////////////////////////////////////////////
 	private Thread reConnThread = new Thread(new Runnable() {
 		
@@ -102,7 +119,7 @@ public class WorkService extends Service {
 		}
 	});
 	
-	public static void recv_object(byte[] cmd)
+	private static void recv_object(byte[] cmd)
 	{
 		int reg_addr = cmd[3];
 		if(reg_addr == Global.REG_WEIGHT || reg_addr==Global.REG_BATTERY)
@@ -117,7 +134,7 @@ public class WorkService extends Service {
 		
 	}
 	
-	static public boolean addCmd(String addr,byte[] cmd)
+	private  static boolean addCmd(String addr,byte[] cmd)
 	{
 		int reg_addr = cmd[3]; 
 		CmdObject o = null;
@@ -322,6 +339,60 @@ public class WorkService extends Service {
 		}
 		
 	};
+	//读取某个称的寄存器.
+	private static boolean  read_registers(String addr, int reg_addr,int num)
+	{
+		//设备地址 1byte
+		//命令类型 0x3
+		//起始寄存器地址 reg_addr
+		//寄存器数量 2bytes(需要读取的寄存器数量)
+		//数据字节数 1byte (2*N)
+		//寄存器值 (2*N)字节.
+		//crc16
+		short u_reg_addr = (short)reg_addr;
+		short u_reg_num  = (short)num;
+		byte buffer[]={0x20,0x3,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
+		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
+		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
+		buffer[6] = (byte)(crc16&0xFF);
+		buffer[7] = (byte)((crc16>>8)&0xff);
+		
+		return write_buffer(addr,buffer);
+		
+	}
+	private static boolean  write_buffer(String address,byte[] value)
+	{
+		if(value[3] != 0 && value[3]!=47)
+		{
+			//addCmd(value);
+			
+			addCmd(address,value);
+		}
+		return write_buffer2(address,value);
+	}
+	//发送数据给连接了的设备.
+	private static boolean  write_buffer2(String address,byte[] value)
+	{
+		if(mBle == null) return false;
+	
+	
+		 Scaler dev = scalers.get(address);
+		 
+		 if(dev !=null && dev.isConnected())
+		 {
+			BleGattCharacteristic chars = dev.GetBleChar();
+			if(chars == null) return false;
+				
+			chars.setValue(value);
+			
+			return mBle.requestWriteCharacteristic(dev.getAddress(), chars, "false");
+		 }
+	
+		return true;
+		
+		
+		
+	}
 	public static String getFailType(int type)
 	{
 		String err = "unkown";
@@ -400,33 +471,6 @@ public class WorkService extends Service {
 			return WorkService.this;
 		}
 	}
-	//创建一个称对象.
-	public static Scaler CreateScaler(String address)
-	{
-		if(!scalers.containsKey(address)) //不包含这个地址才创建新的称台设备.
-		{
-			 Scaler scaler =  new Scaler(address);
-			 
-			 scalers.put(address,scaler);
-			 max_count++;
-			 return scaler;
-		}
-		return null;
-		
-	}
-	public static void ClearScalers()
-	{
-		scalers.clear();
-	}
-	
-	private static void loadScalerConfig(Context ctx)
-	{
-		
-		scalers.clear();
-		
-		max_count = 0;
-		
-	}
 	private boolean init()
 	{
 	
@@ -439,9 +483,7 @@ public class WorkService extends Service {
 		}
 		
 		scalers = new HashMap<String, Scaler>();
-		
-	
-		loadScalerConfig(this);
+
 		registerReceiver(mBleReceiver, BleService.getIntentFilter());
 	
 		mHandler = new MHandler(this);
@@ -514,8 +556,10 @@ public class WorkService extends Service {
 	}
 	
 	/**
-	 * 
-	 * @param handler
+	 * 注册观察对象，sdk有任何数据返回的时候会通知注册者
+	 * @param handler 注册的观察者
+	 * @return 没有返回
+
 	 */
 	public static void addHandler(Handler handler) {
 		if (!targetsHandler.contains(handler)) {
@@ -524,7 +568,7 @@ public class WorkService extends Service {
 	}
 	
 	/**
-	 * 
+	 * 删除观察对象
 	 * @param handler
 	 */
 	public static void delHandler(Handler handler) {
@@ -556,21 +600,44 @@ public class WorkService extends Service {
 		if(mBle != null)
 			mBle.stopScan();
 	}
-
-	//请求连接某个秤的蓝牙地址
+/**
+ * 请求连接某个秤的蓝牙地址
+ * @param address 蓝牙称的地址
+ * @return 请求是否成功，这里返回true 不表示立即成功,而需要调用hasConnected来判断是否真正的成功
+ */
+	
 	public static  boolean requestConnect(String address)
 	{
+		synchronized (cmd_lock) {
+			if(!scalers.containsKey(address))
+			{
+				scalers.put(address, new Scaler(address));
+			}
+		}
 		if(mBle == null) return false;
 		return mBle.requestConnect(address);
 	}
-	//请求断开某个秤的蓝牙地址
+	/**
+	 * 请求断开某个秤的蓝牙地址
+	 * @param address 蓝牙称的地址
+	 * @return 请求是否成功，这里返回true 不表示立即成功,而需要调用hasConnected来判断是否真正的成功
+	 */	
 	public static  void requestDisConnect(String address)
 	{
+		synchronized (cmd_lock) {
+			if(scalers.containsKey(address))
+			{
+				scalers.remove(address);
+			}
+		}
 		if(mBle == null) return ;
 		mBle.disconnect(address);
 	}
+	/**
+	 * 判断手机蓝牙BLE是否已经开启
+	 * @return true 开启 false 未开启
+	 */		
 	
-	//判断手机蓝牙是否启用
 	public static boolean adapterEnabled()
 	{
 		if(mBle == null) return false;
@@ -582,27 +649,7 @@ public class WorkService extends Service {
 		if(mBle == null) return false;
 		return mBle.hasConnected(address);
 	}
-	//读取某个称的寄存器.
-	private static boolean  read_registers(String addr, int reg_addr,int num)
-	{
-		//设备地址 1byte
-		//命令类型 0x3
-		//起始寄存器地址 reg_addr
-		//寄存器数量 2bytes(需要读取的寄存器数量)
-		//数据字节数 1byte (2*N)
-		//寄存器值 (2*N)字节.
-		//crc16
-		short u_reg_addr = (short)reg_addr;
-		short u_reg_num  = (short)num;
-		byte buffer[]={0x20,0x3,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
-		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
-		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
-		buffer[6] = (byte)(crc16&0xFF);
-		buffer[7] = (byte)((crc16>>8)&0xff);
-		
-		return write_buffer(addr,buffer);
-		
-	}
+	
 	
 	
 	public static boolean  read_all_ks(String address)
@@ -655,61 +702,8 @@ public class WorkService extends Service {
 		return write_buffer(address,reg.getResult());
 	
 	}
-	private static boolean  write_buffer(String address,byte[] value)
-	{
-		if(value[3] != 0 && value[3]!=47)
-		{
-			//addCmd(value);
-			
-			addCmd(address,value);
-		}
-		return write_buffer2(address,value);
-	}
-	//发送数据给连接了的设备.
-	private static boolean  write_buffer2(String address,byte[] value)
-	{
-		if(mBle == null) return false;
-	
-	
-		 Scaler dev = scalers.get(address);
-		 
-		 if(dev !=null && dev.isConnected())
-		 {
-			BleGattCharacteristic chars = dev.GetBleChar();
-			if(chars == null) return false;
-				
-			chars.setValue(value);
-			
-			return mBle.requestWriteCharacteristic(dev.getAddress(), chars, "false");
-		 }
-	
-		return true;
-		
-		
-		
-	}
-	
-	private static boolean requestValue(String address,String cmd)
-	{
-		if(mBle == null) return false;
-	
-		Scaler s = scalers.get(address);
-		if(s==null) return false;
-		BleGattCharacteristic chars = s.GetBleChar();
-		//BleGattCharacteristic chars = mChars.get(address);
-		if(chars == null) return false;
-		
-		chars.setValue(cmd);
-		
-		return mBle.requestWriteCharacteristic(address, chars, "false");
-	
-	}
-	//标定零点
-	//address 设备地址  
-	public static boolean requestCalibZero(String address) 
-	{
-		return requestValue(address, "CLZ;");
-	}
+
+
 	public static boolean requestReadAds(String address)
 	{
 		try{
@@ -849,12 +843,16 @@ public class WorkService extends Service {
 		
 		return Config.getInstance(pCtx).getDevAddress(index);
 	}
-	//淇敼鍦板潃搴忓彿鐨勭О鐨勮摑鐗欏湴鍧�
+
 	public static void setDeviceAddress(Context pCtx, int index,String address)
 	{
 		 Config.getInstance(pCtx).setDevAddress(index,address);
 		
 		 
+	}
+	public static int getDeviceCount(Context pCtx)
+	{
+		return Config.getInstance(pCtx).getScalerCount();	
 	}
 	public static void setDeviceName(Context pCtx, int index,String name)
 	{

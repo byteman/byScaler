@@ -3,6 +3,9 @@ package com.blescaler.ui;
 import java.lang.ref.WeakReference;
 
 
+
+
+
 import com.blescaler.ui.R;
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.utils.Utils;
@@ -12,6 +15,10 @@ import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +45,8 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 	private Spinner sp_div;
 	private Spinner sp_unit;
 	private Button btn_read, btn_write,btn_eeprom;
-	
+	private static final int MSG_TIMEOUT = 0x0001;
+	private static ProgressDialog progressDialog = null;
 	private String address = "C4:BE:84:22:91:E2";
 	private static Handler mHandler = null;
 	/* (non-Javadoc)
@@ -49,6 +57,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
+		popConnectProcessBar(this);
 		//WorkService.requestReadPar(address);
 	}
 
@@ -92,12 +101,59 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		
 		edt_nov = (EditText) findViewById(R.id.ed_nov);
 		//edt_unit = (EditText) findViewById(R.id.ed_unit);
-		address = getIntent().getStringExtra("address");
+		//address = getIntent().getStringExtra("address");
+		address = WorkService.getDeviceAddress(this, 0);
 		mHandler = new MHandler(this);
 	}
 
 	
-
+	private void popConnectProcessBar(Context ctx)
+	{
+		address = WorkService.getDeviceAddress(this, 0);
+		if(address == "")
+		{
+			showFailBox("没有连接的蓝牙秤，请先扫描！");
+			return;
+		}
+		if(WorkService.hasConnected(address)) return;
+		
+		if(progressDialog!=null && progressDialog.isShowing())
+		{
+			return;
+		}
+	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
+        
+	    //reloadScaler();
+	    WorkService.requestConnect(address);
+	  
+        
+        Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
+        
+	    mHandler.sendMessageDelayed(msg, 5000);
+	}
+	private void showFailBox(String msg)
+	{
+		 new AlertDialog.Builder(this).setTitle("prompt")//设置对话框标题  
+		  
+	     .setMessage(msg)//设置显示的内容  
+	  
+	     .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮  
+	  
+	          
+	  
+	         @Override  
+	  
+	         public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件  
+	  
+	             // TODO Auto-generated method stub  
+	  
+	            dialog.dismiss();
+	  
+	         }  
+	  
+	     }).show();//在按键响应事件中显示此对话框  
+	  
+	}
 	private boolean checknov(String nov, ScalerParam sp) {
 
 		if (nov.equals("")) {
@@ -116,18 +172,32 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 		
 		return true;
 	}
-
+	private void clear()
+	{
+	edit_zerotrack.setText("");
+	edit_zeroinit.setText("");
+	edit_handzero.setText("");
+	edit_mtd.setText("");
+	edit_filter.setText("");
+	edt_nov.setText("");
+	edit_sleep.setText("");
+	edit_srs_num.setText("");
+	
+	
+	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_read:
+			clear();
 			new Thread(new Runnable(){
 
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
 					try {
+						
 						WorkService.requestReadPar(address);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -227,7 +297,7 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 					Scaler scaler = (Scaler) msg.obj;
 					if(scaler==null)return;
 					theActivity.showParam(scaler.para);
-					Utils.Msgbox(theActivity, "读取成功");
+					//Utils.Msgbox(theActivity, "读取成功");
 					break;
 				}
 				case Global.MSG_SCALER_PAR_SET_RESULT:
@@ -246,9 +316,28 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 				case Global.MSG_BLE_FAILERESULT:
 				{
 					
-					String reason = WorkService.getFailReason(msg.arg1);
-					Utils.Msgbox(theActivity, "请求失败: " + reason);
+					//String reason = WorkService.getFailReason(msg.arg1);
+					//Utils.Msgbox(theActivity, "请求失败: " + reason);
 					break;
+				}
+				case Global.MSG_SCALER_CONNECT_OK:
+				{
+				
+					if(progressDialog!=null && progressDialog.isShowing())
+						progressDialog.dismiss(); //关闭进度条
+						//Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
+					
+					break;
+				}
+				case MSG_TIMEOUT:
+				{
+				
+					if(progressDialog!=null && progressDialog.isShowing())
+					{
+						progressDialog.dismiss(); //关闭进度条
+						theActivity.showFailBox("连接超时，点击重量显示可重新连接！");
+						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
+					}
 				}
 				case Global.MSG_SCALER_SAVE_EEPROM:
 				{

@@ -89,7 +89,7 @@ public class Register {
 		buffer.put(header);
 
 	}
-	static public  byte[] BeginRead(int reg_addr,int reg_num)
+	public  byte[] BeginRead(int reg_addr,int reg_num)
 	{
 		//�豸��ַ 1byte
 		//�������� 0x3

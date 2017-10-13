@@ -1,0 +1,4 @@
+/** @defgroup group1 The First Group
+ *  This is the first group
+ *  @{
+ */

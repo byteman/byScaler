@@ -54,7 +54,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	AutoBgButton btn_ng = null;
 	AutoBgButton btn_preset = null;
 	
-	Scaler scaler = null;
+	//Scaler scaler = null;
 	public int cont=0,cout_2s,cout_3s=0;
 	private static String address;
 	private static final int MSG_TIMEOUT = 0x0001;
@@ -71,8 +71,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	}
 	private void updateState()
 	{
-		   if(scaler == null) return;
-		   if(!scaler.isConnected())
+		 
+		   if(!WorkService.hasConnected(address))
 		   {
 			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
 		   }
@@ -111,25 +111,16 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		}
 		
 	};
-	 private class SureButtonListener implements android.content.DialogInterface.OnClickListener{  
-		  
-	        public void onClick(DialogInterface dialog, int which) {  
-	            //点击“确定按钮”取消对话框  
-	            dialog.cancel();  
-	        }  
-	          
-	    }  
+
 	private void popConnectProcessBar(Context ctx)
 	{
-		if(WorkService.getScalerCount() == 0)
+		address = WorkService.getDeviceAddress(this.getActivity(), 0);
+		if(address == "")
 		{
-			showFailBox("没有选择要连接的蓝牙秤，请先扫描！");
+			showFailBox("没有连接的蓝牙秤，请先扫描！");
 			return;
 		}
-		if(scaler != null)
-		{
-			if(scaler.isConnected()) return;
-		}
+		if(WorkService.hasConnected(address)) return;
 		
 		if(progressDialog!=null && progressDialog.isShowing())
 		{
@@ -138,12 +129,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
         
 	    //reloadScaler();
-	    WorkService.requestConnect(scaler.getAddress());
+	    WorkService.requestConnect(address);
 	  
         
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
         
-	    mHandler.sendMessageDelayed(msg, 2000);
+	    mHandler.sendMessageDelayed(msg, 5000);
 	}
     
 
@@ -224,21 +215,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		
 		mHandler.postDelayed(watchdog, 200);
 	}
-	private void reloadScaler()
-	{
-		address = WorkService.getDeviceAddress(this.getActivity(), 0);
-		//if(address == "") return;
-		WorkService.ClearScalers();
-		
-		scaler = WorkService.CreateScaler(address);
-	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		root = inflater.inflate(R.layout.activity_oneweight, container, false);
 		
-		
-		reloadScaler();
 		initUI();
 		initRes();
 	
