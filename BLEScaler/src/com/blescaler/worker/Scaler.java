@@ -212,6 +212,7 @@ public class Scaler {
 		int msgType = 0;
 		if(msg == null) return msgType;
 		
+		if(val.length < 5) return msgType;
 		msg.obj = this;
 		//地址  0x20 (1bytes)
 		//类型 0x03 (1bytes) 读取 (0x10 写入)
@@ -221,6 +222,10 @@ public class Scaler {
 		//CRC16
 		
 		if ((val[0] == 0x20) ){
+			if( (val[2]+5 ) != val.length) 
+			{
+				return msgType;
+			}
 			if(val[1] == 0x03)
 			{
 				int reg_num = (val[2]-2)/2;
