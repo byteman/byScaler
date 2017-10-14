@@ -988,6 +988,7 @@ public class WorkService extends Service {
 	//判断打印机是否已经连接
 	public static boolean hasConnectPrinter()
 	{
+		if(WorkService.workThread==null) return false;
 		return WorkService.workThread.isConnected();
 	}
 	//获取打印机的蓝牙地址
