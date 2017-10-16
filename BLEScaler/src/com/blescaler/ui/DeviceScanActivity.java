@@ -92,7 +92,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blescaler.ui.R;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.WorkService;
 

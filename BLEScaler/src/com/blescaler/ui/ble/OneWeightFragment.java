@@ -297,22 +297,29 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 			return 0;
 		}
+		return ch.CalcValue(P_AD, T_AD);
+//	    double a = 0.0014051;
+//	    double b = 0.0002369;
+//	    double c = 0.0000001019;
+//	    //const double d = 101.97;
+//	    //计算温度
+//	    double N2 = Math.log(T_AD);
+//	    double T1 =  1/(a+ b*N2 + c*N2*N2*N2)-273.2; //温度值
+//	    //计算
+//	    double R1 = (P_AD*P_AD) / 1000; //渗透压.
+//
+//	    double P  = ch.getG() * ( R1 - ch.getR0() ) + ch.getK() * ( T1 - ch.getT0() );
+//
+//
+//	    double H = P * ch.getC() + ch.getDiff();
+//	    if(H < 0) return -H;
+//	    return H;
+	}
+	double FilterValue(int index,double P_AD,double T_AD)
+	{
+		double v = CalcValue(index,P_AD, T_AD);
 		
-	    double a = 0.0014051;
-	    double b = 0.0002369;
-	    double c = 0.0000001019;
-	    //const double d = 101.97;
-	    //计算温度
-	    double N2 = Math.log(T_AD);
-	    double T1 =  1/(a+ b*N2 + c*N2*N2*N2)-273.2; //温度值
-	    //计算
-	    double R1 = (P_AD*P_AD) / 1000; //渗透压.
-
-	    double P  = ch.getG() * ( R1 - ch.getR0() ) + ch.getK() * ( T1 - ch.getT0() );
-
-
-	    double H = P * ch.getC();
-	    return H;
+		return v;
 	}
 	public boolean showChannels(Scaler sp,int channel)
 	{

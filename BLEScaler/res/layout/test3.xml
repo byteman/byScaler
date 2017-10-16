@@ -20,7 +20,7 @@
     </LinearLayout>
     
      <LinearLayout
-        android:id="@+id/ll55"
+        android:id="@+id/ll55x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -95,7 +95,7 @@
         android:orientation="horizontal" >
         
        <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/textView6x"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="G" />
@@ -114,7 +114,7 @@
          
         android:orientation="horizontal" >
          <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/textView6w"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="常数" />
@@ -122,6 +122,25 @@
         <EditText
             android:id="@+id/edit_C"
             android:text="0.10197"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+         android:id="@+id/ll3336"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+         
+        android:orientation="horizontal" >
+         <TextView
+            android:id="@+id/textView61"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="偏差修正" />
+
+        <EditText
+            android:id="@+id/edit_DIFF"
+            android:text="0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

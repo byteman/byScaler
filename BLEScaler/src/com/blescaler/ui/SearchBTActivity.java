@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.blescaler.worker.WorkService;
 import com.blescaler.worker.Global;
-import com.blescaler.ui.R;
+
 import com.lvrenyang.utils.DataUtils;
 
 public class SearchBTActivity extends Activity implements OnClickListener {

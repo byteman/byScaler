@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 
 import com.blescaler.db.Channel;
 import com.blescaler.db.Config;
-import com.blescaler.ui.R;
+
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.utils.FloatValue;
 import com.blescaler.utils.NumberValues;
@@ -38,7 +38,7 @@ public class CalcParamActivity extends Activity implements OnClickListener {
 
 	
 	
-	private EditText edit_R0,edit_T0,edit_K,edit_G,edit_C;
+	private EditText edit_R0,edit_T0,edit_K,edit_G,edit_C,edit_DIFF;
 	private int  channel;
 	private TextView lbl_chan;
 	private Channel chan = null;
@@ -84,6 +84,7 @@ public class CalcParamActivity extends Activity implements OnClickListener {
 		edit_R0 = (EditText) findViewById(R.id.edit_R0);	
 		edit_T0 = (EditText) findViewById(R.id.edit_T0);	
 		edit_C = (EditText) findViewById(R.id.edit_C);	
+		edit_DIFF = (EditText) findViewById(R.id.edit_DIFF);	
 		lbl_chan = (TextView) findViewById(R.id.lblchan);
 		lbl_chan.setText("通道" + channel + "配置") ;
 		if(chan != null)
@@ -130,6 +131,10 @@ public class CalcParamActivity extends Activity implements OnClickListener {
 					c.setT0(fv.value);
 				}
 				fv = NumberValues.GetFloatValue(edit_C.getText().toString());
+				if(fv.ok){
+					c.setC(fv.value);
+				}
+				fv = NumberValues.GetFloatValue(edit_DIFF.getText().toString());
 				if(fv.ok){
 					c.setC(fv.value);
 				}
