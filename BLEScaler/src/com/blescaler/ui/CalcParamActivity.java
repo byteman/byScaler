@@ -94,6 +94,7 @@ public class CalcParamActivity extends Activity implements OnClickListener {
 			edit_R0.setText("" + chan.getR0());
 			edit_T0.setText("" + chan.getT0());
 			edit_C.setText("" + chan.getC());
+			edit_DIFF.setText("" + chan.getDiff());
 		}
 		
 		btn_write = (Button) findViewById(R.id.btn_save);
@@ -136,7 +137,7 @@ public class CalcParamActivity extends Activity implements OnClickListener {
 				}
 				fv = NumberValues.GetFloatValue(edit_DIFF.getText().toString());
 				if(fv.ok){
-					c.setC(fv.value);
+					c.setDiff(fv.value);
 				}
 				Config.getInstance(this).setChannel(channel, c);
 				Toast.makeText(this, "保存成功!", Toast.LENGTH_SHORT).show();
