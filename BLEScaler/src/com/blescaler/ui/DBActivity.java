@@ -23,7 +23,7 @@ import com.blescaler.worker.WorkService;
 import com.blescaler.worker.Global;
 import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
-import com.blescaler.ui.R;
+
 import com.blescaler.utils.Utils;
 import com.lvrenyang.utils.DataUtils;
 

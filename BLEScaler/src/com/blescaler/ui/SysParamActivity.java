@@ -2,14 +2,6 @@ package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 
-
-
-
-
-
-
-
-import com.blescaler.ui.R;
 import com.blescaler.ui.ScalerParamActivity.MHandler;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;

@@ -48,7 +48,7 @@ import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
-import com.blescaler.ui.R;
+
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;

@@ -40,6 +40,7 @@ public class Config
 		chan.setG( mSharedPre.getFloat("channel"+index+".g", (float) -0.002256));
 		chan.setR0( mSharedPre.getFloat("channel"+index+".r0", (float) 8880.4));
 		chan.setT0( mSharedPre.getFloat("channel"+index+".t0", (float) 18.3));	
+		chan.setT0( mSharedPre.getFloat("channel"+index+".diff", (float) 0));	
 		return chan;
 	}
 	public void setChannel(int index, Channel chan)
@@ -49,6 +50,7 @@ public class Config
 		mEditor.putFloat("channel"+index+".g", chan.getG());
 		mEditor.putFloat("channel"+index+".r0", chan.getR0());
 		mEditor.putFloat("channel"+index+".t0", chan.getT0());
+		mEditor.putFloat("channel"+index+".diff",chan.getDiff());
 		
 		mEditor.commit();
 	}

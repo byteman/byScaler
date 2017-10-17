@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blescaler.ui.R;
 import com.blescaler.utils.FloatValue;
 import com.blescaler.utils.IntValue;
 import com.blescaler.utils.NumberValues;

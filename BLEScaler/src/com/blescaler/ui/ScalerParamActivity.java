@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 
 
 
-import com.blescaler.ui.R;
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
