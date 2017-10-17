@@ -34,7 +34,7 @@ public class Channel {
 	private double Filter(double v)
 	{
 		if(index >=5 ) index = 0;
-		buffer[index] = v;
+		buffer[index++] = v;
 		double sum = 0;
 		for(int i = 0; i < 5; i++)
 		{

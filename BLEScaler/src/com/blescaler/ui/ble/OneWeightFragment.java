@@ -60,7 +60,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	private void updateState()
 	{
-		   //showChannels2(2979.24f,4230.73f,2);
+		   showChannels2(2979.24f,4230.73f,2);
 		   if(!WorkService.hasConnectAll())
 		   {
 			 btn_reconn.setText("点击连接");
@@ -325,7 +325,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 		float zx = sp.all_zx[channel];
 		float wd = sp.all_wd[channel];
-		String v = String .format("%.2f",CalcValue(channel+1,2979.24,4230.73));
+		String v = String .format("%.2f",CalcValue(channel+1,zx, wd));
 		switch(channel)
 		{
 		case 0:
@@ -354,7 +354,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 //		float zx = sp.all_zx[channel];
 //		float wd = sp.all_wd[channel];
-		String v = String .format("%.2f",CalcValue(channel+1,2979.24,4230.73));
+		String v = String .format("%.3f",CalcValue(channel+1,2979.24,4230.73));
 		switch(channel)
 		{
 		case 0:
