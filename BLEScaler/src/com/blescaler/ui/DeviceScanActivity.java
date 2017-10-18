@@ -334,11 +334,11 @@ public class DeviceScanActivity extends Activity   {
 		// TODO Auto-generated method stub
 		if(mScanning)
 		{
-			btn_serach.setText("停止搜索");
+			btn_serach.setText("stop");
 		}
 		else
 		{
-			btn_serach.setText("启动搜索");
+			btn_serach.setText("research");
 		}
 	}
 

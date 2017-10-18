@@ -24,14 +24,14 @@
         <item>+-3.0d</item>
     </string-array>
     <string-array name="dignum">
-        <item>无</item>
-        <item>1位</item>
-        <item>2位</item>
-        <item>3位</item>
-        <item>4位</item>
-        <item>5位</item>
-        <item>6位</item>
-        <item>7位</item>
+        <item>none</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
     </string-array>
  	<string-array name="div">
         <item>1</item>

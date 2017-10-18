@@ -119,7 +119,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 		if(WorkService.getScalerCount() == 0)
 		{
-			showFailBox("没有选择要连接的蓝牙秤，请先扫描！");
+			showFailBox("No Scaler，Please search first！");
 			return;
 		}
 		if(WorkService.hasConnectAll()) return;
