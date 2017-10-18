@@ -60,7 +60,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	private void updateState()
 	{
-		   showChannels2(2979.24f,4230.73f,2);
+		   //showChannels2(2979.24f,4230.73f,2);
 		   if(!WorkService.hasConnectAll())
 		   {
 			 btn_reconn.setText("点击连接");

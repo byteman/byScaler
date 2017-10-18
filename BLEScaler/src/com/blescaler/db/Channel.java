@@ -1,6 +1,10 @@
 package com.blescaler.db;
 
 public class Channel {
+	public Channel()
+	{
+		first = true;
+	}
 	public float getR0() {
 		return R0;
 	}
@@ -35,11 +39,14 @@ public class Channel {
 	{
 		if(index >=5 ) index = 0;
 		buffer[index++] = v;
+		if(index < 5 && first) return v;
+		
 		double sum = 0;
 		for(int i = 0; i < 5; i++)
 		{
 			sum+=buffer[i];
 		}
+		first = false;
 		return sum / 5;
 	}
 	public double CalcValue(double P_AD,double T_AD)
@@ -59,10 +66,10 @@ public class Channel {
 	    double P  = G * ( R1 - R0 ) + K * ( T1 - T0 );
 
 
-	    double H = P * C + Diff;
+	    double H = Diff - P * C;
 	    
 	    H = Filter(H);
-	    if(H < 0) return -H;
+	    //if(H < 0) return -H;
 	    return H;
 	}
 	private double buffer[] = new double[5];
@@ -76,6 +83,7 @@ public class Channel {
 	private double B;
 	private double CC;
 	private float Diff;
+	private boolean first;
 	public float getDiff() {
 		return Diff;
 	}
