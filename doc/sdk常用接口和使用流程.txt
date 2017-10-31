@@ -1,0 +1,67 @@
+sdk中最重要的是blelibrary这个jar包中下
+com.blescaler.worker.WorkService这个类（也是一个service组件）
+
+这个类中提供了所有的操作接口，包括打开蓝牙，搜索设备，连接设备，读取重量，清零，去皮等基本功能和参数设置，标定等高级功能
+
+
+重要说明：
+对蓝牙秤的大部分操作函数都是异步方式，调用了WorkService中的操作函数后，Activity需要调用WorkService的addHandler(Handler handler)函数
+注册通知消息，sdk模块收到蓝牙秤的回应后，会通知已经注册的Activity。通知的消息中包含消息类型和携带的参数，具体参考
+
+demo程序中com.blescaler.ui.ble.OneWeightFragment这个类即可，这个类中包含了所有的基本操作示例
+
+
+
+其中基本功能接口和使用流程如下
+
+1.第一步，启用手机的蓝牙设备
+
+WorkService复位绑定成功后，会自动启用手机的蓝牙
+
+2.启动扫描ble蓝牙称设备
+
+/**
+	 * 启动扫描ble蓝牙设备
+	 */
+	public static void startScan()
+启动扫描之前需要调用WorkService的addHandler(Handler handler)函数，接收扫描结果，具体参考demo中com.blescaler.ui.DeviceScanActivity
+
+3.连接蓝牙秤
+/**
+ * 请求连接某个秤的蓝牙地址
+ * @param address 蓝牙称的地址
+ * @return 请求是否成功，这里返回true 不表示立即成功,而需要调用hasConnected来判断是否真正的成功
+ */
+	
+	public static  boolean requestConnect(String address)
+
+调用前注册消息，等待连接结果，收到Global.MSG_SCALER_CONNECT_OK消息后，表示连接成功，查看com.blescaler.ui.ble.OneWeightFragment示例
+
+4.读取重量
+
+/**
+	 * 读取某个秤的重量值
+	 * @param address 称的地址
+	 * @return
+	 */
+	
+	public static boolean requestReadWgt(String address)
+	
+调用前注册消息，等待重量结果，收到Global.MSG_BLE_WGTRESULT消息后，重量数据到达，查看com.blescaler.ui.ble.OneWeightFragment示例
+
+
+5.清零接口
+
+/**
+	 * 清零
+	 * @param address
+	 * @return
+	 */
+	public static boolean setZero(String address)
+
+
+
+6.去皮
+调用这个函数
+WorkService.common_msg(address,Global.REG_OPERATION,2);
+

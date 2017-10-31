@@ -140,9 +140,9 @@ public class Utils {
 	}
 	public static byte[] intToByte(int number) {
 		byte[] abyte = new byte[4];
-		// "&" 与（AND），对两个整型操作数中对应位执行布尔代数，两个位都为1时输出1，否则0。
+		// "&" 涓庯紙AND锛夛紝瀵逛袱涓暣鍨嬫搷浣滄暟涓搴斾綅鎵ц甯冨皵浠ｆ暟锛屼袱涓綅閮戒负1鏃惰緭鍑�1锛屽惁鍒�0銆�
 		abyte[0] = (byte) (0xff & number);
-		// ">>"右移位，若为正数则高位补0，若为负数则高位补1
+		// ">>"鍙崇Щ浣嶏紝鑻ヤ负姝ｆ暟鍒欓珮浣嶈ˉ0锛岃嫢涓鸿礋鏁板垯楂樹綅琛�1
 		abyte[1] = (byte) ((0xff00 & number) >> 8);
 		abyte[2] = (byte) ((0xff0000 & number) >> 16);
 		abyte[3] = (byte) ((0xff000000 & number) >> 24);
@@ -158,14 +158,14 @@ public class Utils {
 		Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
 	}
 	/**
-	 *基于位移的 byte[]转化成int
+	 *鍩轰簬浣嶇Щ鐨� byte[]杞寲鎴恑nt
 	 * @param byte[] bytes
 	 * @return int  number
 	 */
 
 	public static int bytesToWeight2(byte[] bytes) {
 		int number = bytes[2] & 0xFF;
-		// "|="按位或赋值。
+		// "|="鎸変綅鎴栬祴鍊笺��
 		number |= ((bytes[1] << 8) & 0xFF00);
 		number |= ((bytes[0] << 16) & 0xFF0000);
 		if((bytes[0]&0x80) == 0x80)
@@ -176,12 +176,20 @@ public class Utils {
 	}
 	public static int bytesToInt(byte[] bytes,int index){
 		int number = bytes[index+1] & 0xFF;
-		// "|="按位或赋值。
+		// "|="鎸変綅鎴栬祴鍊笺��
 		number |= ((bytes[index] << 8) & 0xFF00);
 		number |= ((bytes[index+3] << 16) & 0xFF0000);
 		number |= ((bytes[index+2] << 24) & 0xFF000000);	
 		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
 		return number;
+	}
+	public static short bytesToShort(byte[] bytes,int index){
+		int number = bytes[index+1] & 0xFF;
+		// "|="按位或赋值。
+		number |= ((bytes[index] << 8) & 0xFF00);
+
+		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
+		return (short) number;
 	}
 	public static int bytesToWeight(byte[] bytes) {
 		
@@ -190,7 +198,7 @@ public class Utils {
 	public static int bytesToString(byte[] bytes,int from, int to) throws Exception
 	{
 		int size = to - from;
-		if(size < 1) throw new Exception("长度不正确");
+		if(size < 1) throw new Exception("闀垮害涓嶆纭�");
 		byte[] tmp = new byte[size];
 		System.arraycopy(bytes, from, tmp, 0, size);
 		String s = new String(tmp);
@@ -199,7 +207,7 @@ public class Utils {
 	}
 	public static int bytesToInt(byte[] bytes) {
 		int number = bytes[0] & 0xFF;
-		// "|="按位或赋值。
+		// "|="鎸変綅鎴栬祴鍊笺��
 		number |= ((bytes[1] << 8) & 0xFF00);
 		number |= ((bytes[2] << 16) & 0xFF0000);
 		number |= ((bytes[3] << 24) & 0xFF000000);
@@ -207,14 +215,14 @@ public class Utils {
 		return number;
 	}
 	/**
-	 * 浮点转换为字节
+	 * 娴偣杞崲涓哄瓧鑺�
 	 * 
 	 * @param f
 	 * @return
 	 */
 	public static byte[] float2byte(float f) {
 		
-		// 把float转换为byte[]
+		// 鎶奻loat杞崲涓篵yte[]
 		int fbit = Float.floatToIntBits(f);
 		
 		byte[] b = new byte[4];  
@@ -222,14 +230,14 @@ public class Utils {
 	        b[i] = (byte) (fbit >> (24 - i * 8));  
 	    } 
 	    
-	    // 翻转数组
+	    // 缈昏浆鏁扮粍
 		int len = b.length;
-		// 建立一个与源数组元素类型相同的数组
+		// 寤虹珛涓�涓笌婧愭暟缁勫厓绱犵被鍨嬬浉鍚岀殑鏁扮粍
 		byte[] dest = new byte[len];
-		// 为了防止修改源数组，将源数组拷贝一份副本
+		// 涓轰簡闃叉淇敼婧愭暟缁勶紝灏嗘簮鏁扮粍鎷疯礉涓�浠藉壇鏈�
 		System.arraycopy(b, 0, dest, 0, len);
 		byte temp;
-		// 将顺位第i个与倒数第i个交换
+		// 灏嗛『浣嶇i涓笌鍊掓暟绗琲涓氦鎹�
 		for (int i = 0; i < len / 2; ++i) {
 			temp = dest[i];
 			dest[i] = dest[len - i - 1];
@@ -241,10 +249,10 @@ public class Utils {
 	}
 	
 	/**
-	 * 字节转换为浮点
+	 * 瀛楄妭杞崲涓烘诞鐐�
 	 * 
-	 * @param b 字节（至少4个字节）
-	 * @param index 开始位置
+	 * @param b 瀛楄妭锛堣嚦灏�4涓瓧鑺傦級
+	 * @param index 寮�濮嬩綅缃�
 	 * @return
 	 */
 	public static float byte2float(byte[] b, int index) {  

@@ -11,12 +11,12 @@ public class Scaler {
 	public ScalerParam para;
 	private String address;
 	private String name;
-	private boolean connected = false; // 地址已经连接
-	private boolean discovered = false; // 服务已经被发现
-	private int weight; //保存最后一次采集的重量
-	private int zeroValue; //保存上次标定的零点值
-	private int weightVlaue; //保存上次的砝码重量
-	private int loadValue; //保存上次砝码标定时的ad值 
+	private boolean connected = false; // 鍦板潃宸茬粡杩炴帴
+	private boolean discovered = false; // 鏈嶅姟宸茬粡琚彂鐜�
+	private int weight; //淇濆瓨鏈�鍚庝竴娆￠噰闆嗙殑閲嶉噺
+	private int zeroValue; //淇濆瓨涓婃鏍囧畾鐨勯浂鐐瑰��
+	private int weightVlaue; //淇濆瓨涓婃鐨勭牆鐮侀噸閲�
+	private int loadValue; //淇濆瓨涓婃鐮濈爜鏍囧畾鏃剁殑ad鍊� 
 	private BleGattCharacteristic characteristic;
 	private int rx_cnt = 0;
 	private long waitTime = 0;
@@ -29,7 +29,7 @@ public class Scaler {
 	}
 	private int dot_num = 0;
 	private boolean zero = false;
-	private boolean standstill = false; //重量稳定
+	private boolean standstill = false; //閲嶉噺绋冲畾
 	private boolean net_overflow = false; //Tare value too high
 	private boolean gross_overflow = false; //Scaling too sensitive
 	private boolean ad_overflow = false; //ADC overflow 
@@ -212,6 +212,8 @@ public class Scaler {
 		int msgType = 0;
 		if(msg == null) return msgType;
 		
+		
+		if(val.length < 5) return msgType;
 		msg.obj = this;
 		//地址  0x20 (1bytes)
 		//类型 0x03 (1bytes) 读取 (0x10 写入)
@@ -220,14 +222,18 @@ public class Scaler {
 		//数据 
 		//CRC16
 		
+
 		if ((val[0] == 0x20) ){
+			if( (val[2] + 5)!= val.length)  return msgType;
+		
 			if(val[1] == 0x03)
 			{
 				int reg_num = (val[2]-2)/2;
-				int reg_addr = (val[3]<<8)+val[4];
+				short reg_addr = Utils.bytesToShort(val,3);
 				
 				if(reg_addr == Global.REG_WEIGHT)
 				{
+					
 					byte w[] = { 0, 0, 0, 0 };
 					if(val.length <  15)
 					{
@@ -235,8 +241,8 @@ public class Scaler {
 					}
 					System.arraycopy(val, 5, w, 0, 4);
 					
-					parseState((short) ((val[9]<<8)+val[10]));
-					short dot = (short) ((val[11]<<8)+val[12]);
+					parseState(Utils.bytesToShort(val,9));
+					short dot = Utils.bytesToShort(val,11);
 					setWeight(Utils.bytesToWeight(w),dot);
 					this.dot_num = val[12];
 					
@@ -305,21 +311,22 @@ public class Scaler {
 				else if(reg_addr == Global.REG_BATTERY)
 				{
 					msgType = Global.MSG_SCALER_POWER_RESULT;
-					msg.arg1 = (val[5]<<8)+val[6];
+					
+					msg.arg1 = Utils.bytesToShort(val,5);
 				}
 				else if(reg_addr == Global.REG_SLEEP_S)
 				{
 					
-					para.setSleep((short) ((val[5]<<8)+val[6]));
-					para.setSnr_num((short) ((val[7]<<8)+val[8]));
+					para.setSleep(Utils.bytesToShort(val,5));
+					para.setSnr_num(Utils.bytesToShort(val,7));
 					msgType = Global.MSG_SCALER_PAR_GET_RESULT;
 					msg.arg1 = 0;			
 				}
 			}
 			else if(val[1] == 0x10)
 			{
-				//写入的通知.
-				int reg_addr = (val[2]<<8)+val[3];
+				//鍐欏叆鐨勯�氱煡.
+				int reg_addr = Utils.bytesToShort(val,2);
 				if(reg_addr == Global.REG_SLEEP_S)
 				{
 					msgType = Global.MSG_SCALER_PAR_SET_RESULT;
@@ -347,110 +354,6 @@ public class Scaler {
 				
 			}
 		}
-//		
-//		 else if ((val[0] == 'P') && (val[1] == 'A') && (val[2] == 'R')) {
-//
-//			if (val[3] == '?') // 参数读取的返回值.
-//			{
-//
-//				int ret = para.parseParaBuffer(val) ? 0 : 1;
-//				msgType = Global.MSG_SCALER_PAR_GET_RESULT;
-//				msg.arg1 = ret;				
-//
-//			} 
-//			else if (val[3] == ':') // 参数设置的返回值.
-//			{
-//				msgType = Global.MSG_SCALER_PAR_SET_RESULT;
-//				msg.arg1 = val[4] - '0';
-//				
-//			}
-//		} else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'Z')) {
-//
-//			if (val[3] == '?') // 参数读取的返回值.
-//			{
-//
-//				int ret = 0;
-//
-//				try {
-//					int zero = Utils.bytesToString(val, 4, val.length);
-//					this.zeroValue = zero;
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					ret = 1;
-//					e.printStackTrace();
-//				}
-//				msgType = Global.MSG_SCALER_ZERO_QUERY_RESULT;
-//				msg.arg1 = ret;
-//
-//			} 
-//			else if (val[3] == ':') // 参数设置的返回值.
-//			{
-//
-//				if (val[4] == '0') {
-//					try {
-//						int zero = Utils.bytesToString(val, 6, val.length);
-//						this.zeroValue = zero;
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				}
-//				msgType = Global.MSG_SCALER_ZERO_CALIB_RESULT;
-//				msg.arg1 = val[4] - '0';
-//
-//			}
-//
-//		}
-//
-//		else if ((val[0] == 'C') && (val[1] == 'L') && (val[2] == 'K')) {
-//
-//			if (val[3] == '?') // 参数读取的返回值.
-//			{
-//
-//				int ret = 0;
-//
-//				try {
-//				
-//					this.loadValue = Utils.bytesToString(val, 4, val.length);
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					ret = 1;
-//					e.printStackTrace();
-//				}
-//				msgType = Global.MSG_SCALER_K_QUERY_RESULT;
-//
-//				msg.obj = this;
-//				msg.arg1 = ret;
-//
-//			} 
-//			else if (val[3] == ':') // 参数设置的返回值.
-//			{
-//
-//				if (val[4] == '0') {
-//					try {
-//						this.loadValue = Utils.bytesToString(val, 6, val.length);
-//				
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				}
-//				msgType = Global.MSG_SCALER_K_CALIB_RESULT;
-//
-//				msg.arg1 = val[4] - '0';
-//
-//			}
-//
-//		} else if ((val[0] == 'S') && (val[1] == 'A') && (val[2] == 'V')) {
-//			if (val[3] == ':') {
-//				msgType = Global.MSG_SCALER_SAVE_EEPROM;
-//
-//				msg.arg1 = val[4] - '0';
-//
-//			}
-//		}
 
 		return msgType;
 	}
