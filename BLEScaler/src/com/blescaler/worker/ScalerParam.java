@@ -65,11 +65,20 @@ public class ScalerParam {
 		
 		return time;
 	}
+	public static short bytesToShort(byte[] bytes,int index){
+		int number = bytes[index+1] & 0xFF;
+		// "|="按位或赋值。
+		number |= ((bytes[index] << 8) & 0xFF00);
+
+		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
+		return (short) number;
+	}
 	public boolean SetNowTime()
 	{
 		Time t=new Time(); // or Time t=new Time("GMT+8"); 加上Time Zone资料。  
 		t.setToNow();
-		year_month = (short) (((t.year-2000)<<8)+t.month);  
+	
+		year_month = (short) (((t.year-2000)<<8)+t.month+1);  
 		day_hour = (short) ((t.monthDay<<8)+t.hour);  
 		min_second=(short) ((t.minute<<8)+t.second); 
 		return true;

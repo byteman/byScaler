@@ -66,7 +66,7 @@ public class Channel {
 	    double P  = G * ( R1 - R0 ) + K * ( T1 - T0 );
 
 
-	    double H = Diff - P * C;
+	    double H =  P * C + Diff;
 	    
 	    H = Filter(H);
 	    //if(H < 0) return -H;
