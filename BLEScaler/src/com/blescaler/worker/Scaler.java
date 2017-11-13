@@ -281,6 +281,7 @@ public class Scaler {
 						para.year_month = Utils.bytesToShort(val,5);
 						para.day_hour = Utils.bytesToShort(val,7);
 						para.min_second = Utils.bytesToShort(val,9);
+						para.rain = Utils.bytesToShort(val,11);
 						
 						msgType = Global.MSG_GET_PARAM5_RESULT;
 						msg.arg1 = Utils.bytesToShort(val,5);

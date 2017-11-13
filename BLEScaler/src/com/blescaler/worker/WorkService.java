@@ -927,7 +927,7 @@ public class WorkService extends Service {
 //		40043		时间（分、秒  10:9 = 0x0a09）
 
 
-		write_buffer(reg.BeginRead(Global.REG_TIME,3));
+		write_buffer(reg.BeginRead(Global.REG_TIME,4));
 		Thread.sleep(100);
 		
 		
@@ -953,7 +953,7 @@ public class WorkService extends Service {
 			//1st
 			reg.BeginWrite(Global.REG_TIME);
 			
-			reg.putShorts(s.year_month,s.day_hour, s.min_second);	
+			reg.putShorts(s.year_month,s.day_hour, s.min_second,s.rain);	
 			
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
