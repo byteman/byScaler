@@ -28,7 +28,7 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 	
 	private EditText edit_ver;
 	private EditText edit_time;
-	private EditText edit_rain;
+	private EditText edit_rain,edt_qx_addr;
 	private EditText edit_write_index,edit_read_index;
 	private Button 	 btn_gprs_test;
 	
@@ -75,7 +75,7 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 		edit_write_index = (EditText) findViewById(R.id.edit_write_index);
 		edit_read_index= (EditText) findViewById(R.id.edit_read_index);
 		edit_rain= (EditText) findViewById(R.id.edit_rain);
-	
+		edt_qx_addr= (EditText) findViewById(R.id.edit_qx_addr);
 		btn_read = (Button) findViewById(R.id.btn_read);
 		btn_read.setOnClickListener(this);
 		btn_write = (Button) findViewById(R.id.btn_save);
@@ -124,6 +124,8 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 					sp.write_index = (short) Integer.parseInt(edit_write_index.getText().toString());
 					sp.read_index = (short) Integer.parseInt(edit_read_index.getText().toString());
 					sp.rain = (short) Integer.parseInt(edit_rain.getText().toString());
+					sp.qx_addr = (short) Integer.parseInt(edt_qx_addr.getText().toString());
+					
 					sp.SetNowTime();
 									
 					WorkService.requestWriteParamValue2(address,sp);
@@ -172,6 +174,7 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 		
 		edit_time.setText(sp.GetTimeString());	
 		edit_rain.setText(""+sp.rain);
+		edt_qx_addr.setText(""+sp.qx_addr);
 	
 	}
 	static class MHandler extends Handler {

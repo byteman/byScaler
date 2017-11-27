@@ -15,7 +15,7 @@ public class ScalerParam {
 	public short write_index,read_index;
 	public short version;
 	public short year_month,day_hour,min_second;
-	public short rain;
+	public short rain,qx_addr;
 	public ScalerParam()
 	{
 		
