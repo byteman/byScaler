@@ -172,6 +172,9 @@ public class WorkService extends Service {
 			
 				
 				msg.obj = device;	//连接成功的蓝牙设备
+				msg.arg1 = intent.getExtras()
+						.getParcelable(BleService.EXTRA_RSSI);
+				
 				mHandler.sendMessage(msg);
 				
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
