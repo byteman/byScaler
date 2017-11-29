@@ -3,6 +3,7 @@
 	<name>BLEScaler</name>
 	<comment></comment>
 	<projects>
+		<project>ble-scaler</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

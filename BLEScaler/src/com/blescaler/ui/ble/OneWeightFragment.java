@@ -198,12 +198,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_preset.setOnClickListener(this);
 		//btn_still.setOnClickListener(this);
 		
-		btn_green_on.setOnClickListener(this);
-		btn_yellow_on.setOnClickListener(this);
-		btn_red_on.setOnClickListener(this);
-		btn_green_off.setOnClickListener(this);
-		btn_yellow_off.setOnClickListener(this);
-		btn_red_off.setOnClickListener(this);
+//		btn_green_on.setOnClickListener(this);
+//		btn_yellow_on.setOnClickListener(this);
+//		btn_red_on.setOnClickListener(this);
+//		btn_green_off.setOnClickListener(this);
+//		btn_yellow_off.setOnClickListener(this);
+//		btn_red_off.setOnClickListener(this);
 		
 	
 		
@@ -219,7 +219,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		root = inflater.inflate(R.layout.activity_oneweight, container, false);
+		root = inflater.inflate(R.layout.activity_oneweight_table, container, false);
 		
 		initUI();
 		initRes();
@@ -282,24 +282,24 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			//净重和毛重切换
 			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
-		case R.id.btn_green_light_on:
-			WorkService.CtrlLight(address,3);
-			break;
-		case R.id.btn_yellow_light_on:
-			WorkService.CtrlLight(address,5);
-			break;
-		case R.id.btn_red_light_on:
-			WorkService.CtrlLight(address,1);
-			break;
-		case R.id.btn_green_light_off:
-			WorkService.CtrlLight(address,4);
-			break;
-		case R.id.btn_yellow_light_off:
-			WorkService.CtrlLight(address,6);
-			break;
-		case R.id.btn_red_light_off:
-			WorkService.CtrlLight(address,2);
-			break;
+//		case R.id.btn_green_light_on:
+//			WorkService.CtrlLight(address,3);
+//			break;
+//		case R.id.btn_yellow_light_on:
+//			WorkService.CtrlLight(address,5);
+//			break;
+//		case R.id.btn_red_light_on:
+//			WorkService.CtrlLight(address,1);
+//			break;
+//		case R.id.btn_green_light_off:
+//			WorkService.CtrlLight(address,4);
+//			break;
+//		case R.id.btn_yellow_light_off:
+//			WorkService.CtrlLight(address,6);
+//			break;
+//		case R.id.btn_red_light_off:
+//			WorkService.CtrlLight(address,2);
+//			break;
 		case R.id.btn_preset:
 			inputTitleDialog();
 			break;
