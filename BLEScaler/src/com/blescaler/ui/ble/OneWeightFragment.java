@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.R;
 import com.blescaler.utils.Config;
+import com.blescaler.utils.IntValue;
+import com.blescaler.utils.NumberValues;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
@@ -114,7 +116,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	private void popConnectProcessBar(Context ctx)
 	{
-		address = WorkService.getDeviceAddress(this.getActivity(), 0);
+		address ="323232"; WorkService.getDeviceAddress(this.getActivity(), 0);
 		if(address == "")
 		{
 			showFailBox("没有连接的蓝牙秤，请先扫描！");
@@ -129,7 +131,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
         
 	    //reloadScaler();
-	    WorkService.requestConnect(address);
+	    if(!WorkService.requestConnect(address))
+	    {
+
+			if(progressDialog!=null && progressDialog.isShowing())
+				progressDialog.dismiss(); //关闭进度条
+			Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
+			return;
+	    }
 	  
         
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
@@ -241,10 +250,19 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	                    public void onClick(DialogInterface dialog, int which) {
 	                        String inputValue = inputServer.getText().toString();
-	                        if(WorkService.setPreTare(address,Integer.parseInt(inputValue)))
+	                        
+	                        IntValue wgt   =NumberValues.GetIntValue(inputValue);
+	        				
+	                        if(wgt.ok)
 	                        {
-	                        	
+		                        if(WorkService.setPreTare(address,wgt.value))
+	                        	{
+	 	                        	
+	 	                        }
 	                        }
+                        
+	                        
+	                       
 	                    }
 	                });
 	        builder.show();
@@ -402,6 +420,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				            break;
 				        case 4:
 				        	weight = String.format("%.4f",wf/10000).toString();
+				            break;
+				        case 5:
+				        	weight = String.format("%.5f",wf/100000).toString();
+				            break;
+				        case 6:
+				        	weight = String.format("%.6f",wf/100000).toString();
 				            break;
 				        default:
 				        	weight = String.format("%d",totalweight);

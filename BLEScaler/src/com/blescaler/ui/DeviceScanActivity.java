@@ -322,15 +322,18 @@ public class DeviceScanActivity extends Activity   {
 	// Adapter for holding devices found through scanning.
 	private class LeDeviceListAdapter extends BaseAdapter {
 		private ArrayList<BluetoothDevice> mLeDevices;
+		private HashMap<String,Integer> mRSSI;
 		private LayoutInflater mInflator;
 		 // 用来控制CheckBox的选中状况  
 	    private HashMap<Integer, Boolean> isSelected;  
 		public LeDeviceListAdapter() {
 			super();
 			mLeDevices = new ArrayList<BluetoothDevice>();
+			mRSSI = new HashMap<String,Integer>();
 			mInflator = DeviceScanActivity.this.getLayoutInflater();
 			isSelected = new HashMap<Integer, Boolean>(); 
 			initDate();
+			mRSSI.clear();
 		}
 		 // 初始化isSelected的数据  
 	    private void initDate() {  
@@ -338,6 +341,8 @@ public class DeviceScanActivity extends Activity   {
 	        for (int i = 0; i < mLeDevices.size(); i++) {  
 	            getIsSelected().put(i, false);  
 	        }  
+	        
+	       
 	    } 
 	    public List<String> getSelectAddress()
 	    {
@@ -355,11 +360,17 @@ public class DeviceScanActivity extends Activity   {
 		      }  
 	    	 return devs;
 	    }
-		public void addDevice(BluetoothDevice device) {
+		public void addDevice(BluetoothDevice device,int rssi) {
 			if (!mLeDevices.contains(device)) {
 				mLeDevices.add(device);
+				
 				initDate();
 			}
+			if(mRSSI!=null)
+			{
+				mRSSI.put(device.getAddress(), rssi);
+			}
+			
 		}
 
 		public BluetoothDevice getDevice(int position) {
@@ -399,6 +410,8 @@ public class DeviceScanActivity extends Activity   {
 						.findViewById(R.id.device_address);
 				viewHolder.deviceName = (TextView) view
 						.findViewById(R.id.device_name);
+				viewHolder.deviceRssi = (TextView) view
+						.findViewById(R.id.device_rssi);
 				
 				viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx); 
 				
@@ -422,6 +435,11 @@ public class DeviceScanActivity extends Activity   {
 			{
 				viewHolder.cb.setChecked(getIsSelected().get(i));
 			}
+			if(mRSSI!=null && mRSSI.containsKey(device.getAddress()))
+			{
+				
+				viewHolder.deviceRssi.setText("信号强度:" + mRSSI.get(device.getAddress())+"db");
+			}
 			} 
 			return view;
 		}
@@ -430,6 +448,7 @@ public class DeviceScanActivity extends Activity   {
 	static class ViewHolder {
 		TextView deviceName;
 		TextView deviceAddress;
+		TextView deviceRssi;
 		CheckBox cb;
 	}
 	
@@ -458,7 +477,7 @@ public class DeviceScanActivity extends Activity   {
 						return;
 						
 					}
-					theActivity.mLeDeviceListAdapter.addDevice(device);
+					theActivity.mLeDeviceListAdapter.addDevice(device,msg.arg1);
 					theActivity.mLeDeviceListAdapter.notifyDataSetChanged();
 					break;
 				}
