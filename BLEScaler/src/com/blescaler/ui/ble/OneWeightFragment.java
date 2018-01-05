@@ -265,7 +265,40 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			WorkService.common_msg(address,Global.REG_OPERATION,99);
 			break;
 		case R.id.btn_tare:
+			
 			WorkService.common_msg(address,Global.REG_OPERATION,2);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(!WorkService.setZero(address))
+			{
+				//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
+			}
+			
+//			new Thread(new Runnable(){
+//
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					WorkService.common_msg(address,Global.REG_OPERATION,2);
+//					try {
+//						Thread.sleep(100);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					if(!WorkService.setZero(address))
+//					{
+//						//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
+//					}
+//					
+//				}
+//				
+//			}).start();
+			
 			break;
 		case R.id.tv_weight:
 			popConnectProcessBar(this.getActivity());
