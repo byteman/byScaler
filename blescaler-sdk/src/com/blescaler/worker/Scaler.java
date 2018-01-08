@@ -265,7 +265,7 @@ public class Scaler {
 				}
 				else if(reg_addr == Global.REG_UNIT)
 				{
-					if(val.length < 17) return 0;;
+					if(val.length < 17) return 0;
 					para.setUnit(val[6]);
 					para.setPwr_zerotrack(val[8]);
 					para.setHand_zerotrack(val[10]);
@@ -277,6 +277,7 @@ public class Scaler {
 				
 				else if(reg_addr == Global.REG_SENSOR_DIFF_K1)
 				{
+					
 					allks[0]=(float)Utils.bytesToInt(val, 5)/1000.0f;
 					allks[1]=(float)Utils.bytesToInt(val, 9)/1000.0f;
 					msgType = Global.MSG_SCALER_K_QUERY_RESULT;

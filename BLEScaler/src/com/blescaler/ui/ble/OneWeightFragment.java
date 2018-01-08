@@ -116,7 +116,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 	private void popConnectProcessBar(Context ctx)
 	{
-		address ="323232"; WorkService.getDeviceAddress(this.getActivity(), 0);
+		address =WorkService.getDeviceAddress(this.getActivity(), 0);
 		if(address == "")
 		{
 			showFailBox("没有连接的蓝牙秤，请先扫描！");
