@@ -7,7 +7,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/bugly_1.2.3.8__release.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ble-scaler"/>
-	<classpathentry kind="lib" path="D:/proj/2015/byScaler/BLEScaler/libs/ble-scaler.jar"/>
+	<classpathentry kind="lib" path="libs/ble-scaler.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
