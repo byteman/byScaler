@@ -25,6 +25,7 @@
 		    android:layout_height="wrap_content"
 			android:layout_alignParentLeft="true"
 			android:orientation="vertical"
+			android:id="@+id/mytext"
 		    android:background="@color/lavenderblush"
 		    
 		    >
@@ -43,8 +44,18 @@
             android:layout_height="wrap_content"
             android:text="2222222222"
             android:textSize="12dp" />
+        
     </LinearLayout>
 
+     <TextView
+            android:id="@+id/device_rssi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="100%"
+            android:layout_marginLeft="20px"
+            android:layout_toRightOf="@id/mytext"
+            android:textSize="12dp" />
+     
     <CheckBox
         android:id="@+id/device_cbx"
         android:layout_width="wrap_content"

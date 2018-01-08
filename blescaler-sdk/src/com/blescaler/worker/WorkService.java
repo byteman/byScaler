@@ -170,11 +170,7 @@ public class WorkService extends Service {
 				final BluetoothDevice device = intent.getExtras()
 						.getParcelable(BleService.EXTRA_DEVICE);
 			
-				
 				msg.obj = device;	//连接成功的蓝牙设备
-				msg.arg1 = intent.getExtras()
-						.getParcelable(BleService.EXTRA_RSSI);
-				
 				mHandler.sendMessage(msg);
 				
 			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
@@ -210,8 +206,12 @@ public class WorkService extends Service {
 					final BluetoothDevice device = extras
 							.getParcelable(BleService.EXTRA_DEVICE);
 				
+					//intent.putExtra(BleService.EXTRA_RSSI, rssi);
+					int rssi = intent.getExtras().getInt(BleService.EXTRA_RSSI);
 					Message msg = mHandler.obtainMessage(Global.MSG_BLE_SCANRESULT);
+					
 					msg.obj = device;
+					msg.arg1 = rssi;
 					mHandler.sendMessage(msg);
 			} else if (BleService.BLE_NO_BT_ADAPTER.equals(action)) {
 				//手机不支持蓝牙

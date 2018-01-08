@@ -2,7 +2,7 @@
  * This XPG software is supplied to you by Xtreme Programming Group, Inc.
  * ("XPG") in consideration of your agreement to the following terms, and your
  * use, installation, modification or redistribution of this XPG software
- * constitutes acceptance of these terms.锟�If you do not agree with these terms,
+ * constitutes acceptance of these terms.閿燂拷If you do not agree with these terms,
  * please do not use, install, modify or redistribute this XPG software.
  * 
  * In consideration of your agreement to abide by the following terms, and
@@ -13,13 +13,13 @@
  * retain this notice and the following text and disclaimers in all such
  * redistributions of the XPG Software. Neither the name, trademarks, service
  * marks or logos of XPG Inc. may be used to endorse or promote products derived
- * from the XPG Software without specific prior written permission from XPG.锟�
+ * from the XPG Software without specific prior written permission from XPG.閿燂拷
  * Except as expressly stated in this notice, no other rights or licenses,
  * express or implied, are granted by XPG herein, including but not limited to
  * any patent rights that may be infringed by your derivative works or by other
  * works in which the XPG Software may be incorporated.
  * 
- * The XPG Software is provided by XPG on an "AS IS" basis.锟�XPG MAKES NO
+ * The XPG Software is provided by XPG on an "AS IS" basis.閿燂拷XPG MAKES NO
  * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
  * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE, REGARDING THE XPG SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
@@ -267,18 +267,24 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public boolean connect(String address) {
-		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-		BluetoothGatt gatt = device.connectGatt(mService, false, mGattCallback);
-		
-		if (gatt == null) {
-			mBluetoothGatts.remove(address);
-			return false;
-		} else {
-			// TODO: if state is 141, it can be connected again after about 15
-			// seconds
-			mBluetoothGatts.put(address, gatt);
-			return true;
+		try{
+			BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
+			BluetoothGatt gatt = device.connectGatt(mService, false, mGattCallback);
+			
+			if (gatt == null) {
+				mBluetoothGatts.remove(address);
+				return false;
+			} else {
+				// TODO: if state is 141, it can be connected again after about 15
+				// seconds
+				mBluetoothGatts.put(address, gatt);
+				return true;
+			}
 		}
+		catch(Exception e){
+			return false;
+		}
+	
 	}
 
 	@Override
