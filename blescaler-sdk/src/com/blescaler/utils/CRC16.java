@@ -2,7 +2,7 @@ package com.blescaler.utils;
 
 
 /** 
- * CRC16相关计算  
+ * CRC16鐩稿叧璁＄畻  
  
  * encode: utf-8 
  *  
@@ -23,43 +23,43 @@ public class CRC16 {
             (byte) 0x4C, (byte) 0x8C, (byte) 0x44, (byte) 0x84, (byte) 0x85, (byte) 0x45, (byte) 0x87, (byte) 0x47, (byte) 0x46, (byte) 0x86, (byte) 0x82, (byte) 0x42, (byte) 0x43, (byte) 0x83, (byte) 0x41, (byte) 0x81, (byte) 0x80, (byte) 0x40 };  
   
     /** 
-     * 计算CRC16校验 
+     * 璁＄畻CRC16鏍￠獙 
      *  
      * @param data 
-     *            需要计算的数组 
-     * @return CRC16校验值 
+     *            闇�瑕佽绠楃殑鏁扮粍 
+     * @return CRC16鏍￠獙鍊� 
      */  
     public static int calcCrc16(byte[] data) {  
         return calcCrc16(data, 0, data.length);  
     }  
   
     /** 
-     * 计算CRC16校验 
+     * 璁＄畻CRC16鏍￠獙 
      *  
      * @param data 
-     *            需要计算的数组 
+     *            闇�瑕佽绠楃殑鏁扮粍 
      * @param offset 
-     *            起始位置 
+     *            璧峰浣嶇疆 
      * @param len 
-     *            长度 
-     * @return CRC16校验值 
+     *            闀垮害 
+     * @return CRC16鏍￠獙鍊� 
      */  
     public static int calcCrc16(byte[] data, int offset, int len) {  
         return calcCrc16(data, offset, len, 0xffff);  
     }  
   
     /** 
-     * 计算CRC16校验 
+     * 璁＄畻CRC16鏍￠獙 
      *  
      * @param data 
-     *            需要计算的数组 
+     *            闇�瑕佽绠楃殑鏁扮粍 
      * @param offset 
-     *            起始位置 
+     *            璧峰浣嶇疆 
      * @param len 
-     *            长度 
+     *            闀垮害 
      * @param preval 
-     *            之前的校验值 
-     * @return CRC16校验值 
+     *            涔嬪墠鐨勬牎楠屽�� 
+     * @return CRC16鏍￠獙鍊� 
      */  
     public static int calcCrc16(byte[] data, int offset, int len, int preval) {  
         int ucCRCHi = (preval & 0xff00) >> 8;  
@@ -72,5 +72,20 @@ public class CRC16 {
         }  
         return ((ucCRCHi & 0x00ff) << 8) | (ucCRCLo & 0x00ff) & 0xffff;  
     }  
-    
+	public static short bytesToShort(byte[] bytes,int index){
+		int number = bytes[index] & 0xFF;
+		// "|="按位或赋值。
+		number |= ((bytes[index+1] << 8) & 0xFF00);
+
+		//int number = (bytes[index+2] <<24)+ (bytes[index+3] <<16)+(bytes[index]<<8)+bytes[index+1];
+		return (short) number;
+	}
+    public static boolean isValid(byte[] data)
+	{
+		if(data.length < 3) return false;
+		short crc16 = (short)calcCrc16(data,0,data.length-2);
+		short sum = bytesToShort(data, data.length-2);
+		return crc16==sum;
+		
+	}
 }

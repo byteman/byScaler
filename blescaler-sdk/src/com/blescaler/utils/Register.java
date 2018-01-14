@@ -18,43 +18,43 @@ public class Register {
             (byte) 0x4C, (byte) 0x8C, (byte) 0x44, (byte) 0x84, (byte) 0x85, (byte) 0x45, (byte) 0x87, (byte) 0x47, (byte) 0x46, (byte) 0x86, (byte) 0x82, (byte) 0x42, (byte) 0x43, (byte) 0x83, (byte) 0x41, (byte) 0x81, (byte) 0x80, (byte) 0x40 };  
   
     /** 
-     * ����CRC16У�� 
+     * 锟斤拷锟斤拷CRC16校锟斤拷 
      *  
      * @param data 
-     *            ��Ҫ��������� 
-     * @return CRC16У��ֵ 
+     *            锟斤拷要锟斤拷锟斤拷锟斤拷锟斤拷锟� 
+     * @return CRC16校锟斤拷值 
      */  
     public static int calcCrc16(byte[] data) {  
         return calcCrc16(data, 0, data.length);  
     }  
   
     /** 
-     * ����CRC16У�� 
+     * 锟斤拷锟斤拷CRC16校锟斤拷 
      *  
      * @param data 
-     *            ��Ҫ��������� 
+     *            锟斤拷要锟斤拷锟斤拷锟斤拷锟斤拷锟� 
      * @param offset 
-     *            ��ʼλ�� 
+     *            锟斤拷始位锟斤拷 
      * @param len 
-     *            ���� 
-     * @return CRC16У��ֵ 
+     *            锟斤拷锟斤拷 
+     * @return CRC16校锟斤拷值 
      */  
     public static int calcCrc16(byte[] data, int offset, int len) {  
         return calcCrc16(data, offset, len, 0xffff);  
     }  
   
     /** 
-     * ����CRC16У�� 
+     * 锟斤拷锟斤拷CRC16校锟斤拷 
      *  
      * @param data 
-     *            ��Ҫ��������� 
+     *            锟斤拷要锟斤拷锟斤拷锟斤拷锟斤拷锟� 
      * @param offset 
-     *            ��ʼλ�� 
+     *            锟斤拷始位锟斤拷 
      * @param len 
-     *            ���� 
+     *            锟斤拷锟斤拷 
      * @param preval 
-     *            ֮ǰ��У��ֵ 
-     * @return CRC16У��ֵ 
+     *            之前锟斤拷校锟斤拷值 
+     * @return CRC16校锟斤拷值 
      */  
     public static int calcCrc16(byte[] data, int offset, int len, int preval) {  
         int ucCRCHi = (preval & 0xff00) >> 8;  
@@ -73,12 +73,12 @@ public class Register {
 	}
 	public  void BeginWrite(int reg_addr)
 	{
-		///�豸��ַ 1byte
-		//�������� 0x10
-		//��ʼ�Ĵ�����ַ reg_addr 2bytes
-		//�Ĵ������� 2bytes(��Ҫд��ļĴ�������)
-		//�����ֽ��� 1byte (2*N)
-		//�Ĵ���ֵ (2*N)�ֽ�.
+		///锟借备锟斤拷址 1byte
+		//锟斤拷锟斤拷锟斤拷锟斤拷 0x10
+		//锟斤拷始锟侥达拷锟斤拷锟斤拷址 reg_addr 2bytes
+		//锟侥达拷锟斤拷锟斤拷锟斤拷 2bytes(锟斤拷要写锟斤拷募拇锟斤拷锟斤拷锟斤拷锟�)
+		//锟斤拷锟斤拷锟街斤拷锟斤拷 1byte (2*N)
+		//锟侥达拷锟斤拷值 (2*N)锟街斤拷.
 		//crc16
 		reg_num = 0;
 		short u_reg_addr = (short)reg_addr;
@@ -91,10 +91,10 @@ public class Register {
 	}
 	public  byte[] BeginRead(int reg_addr,int reg_num)
 	{
-		//�豸��ַ 1byte
-		//�������� 0x3
-		//��ʼ�Ĵ�����ַ reg_addr2 bytes
-		//�Ĵ������� 2bytes(��Ҫ��ȡ�ļĴ�������)
+		//锟借备锟斤拷址 1byte
+		//锟斤拷锟斤拷锟斤拷锟斤拷 0x3
+		//锟斤拷始锟侥达拷锟斤拷锟斤拷址 reg_addr2 bytes
+		//锟侥达拷锟斤拷锟斤拷锟斤拷 2bytes(锟斤拷要锟斤拷取锟侥寄达拷锟斤拷锟斤拷锟斤拷)
 		//crc16
 		
 		short u_reg_addr = (short)reg_addr;
@@ -157,4 +157,5 @@ public class Register {
 		return out;
 		
 	}
+	
 }

@@ -197,31 +197,6 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 			mService.bleCharacteristicNotification(address, descriptor
 						.getCharacteristic().getUuid().toString(), true,
 						status);
-		
-			
-		/*	RequestType type = mService.getCurrentRequestType();
-			if (type == RequestType.CHARACTERISTIC_NOTIFICATION
-					|| type == RequestType.CHARACTERISTIC_INDICATION
-					|| type == RequestType.CHARACTERISTIC_STOP_NOTIFICATION) {
-				if (status != BluetoothGatt.GATT_SUCCESS) {
-					mService.requestProcessed(address,
-							RequestType.CHARACTERISTIC_NOTIFICATION, false);
-					return;
-				}
-				if (type == RequestType.CHARACTERISTIC_NOTIFICATION) {
-					mService.bleCharacteristicNotification(address, descriptor
-							.getCharacteristic().getUuid().toString(), true,
-							status);
-				} else if (type == RequestType.CHARACTERISTIC_INDICATION) {
-					mService.bleCharacteristicIndication(address, descriptor
-							.getCharacteristic().getUuid().toString(), status);
-				} else {
-					mService.bleCharacteristicNotification(address, descriptor
-							.getCharacteristic().getUuid().toString(), false,
-							status);
-				}
-				return;
-			}*/
 		};
 	};
 

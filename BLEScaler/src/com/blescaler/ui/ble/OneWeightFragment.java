@@ -143,7 +143,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
         
         Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
         
-	    mHandler.sendMessageDelayed(msg, 5000);
+	    mHandler.sendMessageDelayed(msg, 10000);
 	}
     
 
@@ -352,7 +352,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 //			WorkService.CtrlLight(address,2);
 //			break;
 		case R.id.btn_preset:
-			inputTitleDialog();
+			//inputTitleDialog();
+			address =WorkService.getDeviceAddress(this.getActivity(), 0);
+			
+			WorkService.requestDisConnect(address);
 			break;
 		case R.id.btn_sleep:
 			WorkService.common_msg(address,Global.REG_OPERATION,12);

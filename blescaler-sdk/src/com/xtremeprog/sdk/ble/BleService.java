@@ -2,7 +2,7 @@
  * This XPG software is supplied to you by Xtreme Programming Group, Inc.
  * ("XPG") in consideration of your agreement to the following terms, and your
  * use, installation, modification or redistribution of this XPG software
- * constitutes acceptance of these terms.锟� If you do not agree with these terms,
+ * constitutes acceptance of these terms.閿燂拷 If you do not agree with these terms,
  * please do not use, install, modify or redistribute this XPG software.
  * 
  * In consideration of your agreement to abide by the following terms, and
@@ -13,13 +13,13 @@
  * retain this notice and the following text and disclaimers in all such
  * redistributions of the XPG Software. Neither the name, trademarks, service
  * marks or logos of XPG Inc. may be used to endorse or promote products derived
- * from the XPG Software without specific prior written permission from XPG.锟�
+ * from the XPG Software without specific prior written permission from XPG.閿燂拷
  * Except as expressly stated in this notice, no other rights or licenses,
  * express or implied, are granted by XPG herein, including but not limited to
  * any patent rights that may be infringed by your derivative works or by other
  * works in which the XPG Software may be incorporated.
  * 
- * The XPG Software is provided by XPG on an "AS IS" basis.锟� XPG MAKES NO
+ * The XPG Software is provided by XPG on an "AS IS" basis.閿燂拷 XPG MAKES NO
  * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
  * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE, REGARDING THE XPG SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
@@ -339,7 +339,7 @@ public class BleService extends Service {
 				Log.e(TAG, "-processrequest type " + requestType + " address "
 						+ address + " [success: " + success + "]");
 			}
-			//mTimeoutQueue.offer(success?0:1); //提供数据并且唤醒.
+			//mTimeoutQueue.offer(success?0:1); //鎻愪緵鏁版嵁骞朵笖鍞ら啋.
 			
 		}
 
@@ -386,7 +386,7 @@ public class BleService extends Service {
 	{
 	
 		BleRequest tmpRequest = mRequestQueue.take();
-	 //如果mRequestQueue没有数据就会阻塞.直到有数据会被唤醒.
+	 //濡傛灉mRequestQueue娌℃湁鏁版嵁灏变細闃诲.鐩村埌鏈夋暟鎹細琚敜閱�.
 
 		synchronized (this) {
 			mCurrentRequest = tmpRequest;
@@ -435,39 +435,9 @@ public class BleService extends Service {
 			
 		}
 		else {
-			Log.e(TAG,"wait -processrequest type " + mCurrentRequest.type
+			Log.v(TAG,"wait -processrequest type " + mCurrentRequest.type
 					+ " address " + mCurrentRequest.address);
-			
-//			mTimeoutQueue.clear();
-//			Integer v = mTimeoutQueue.poll(100,TimeUnit.MILLISECONDS);
-//			if(v == null)
-//			{
-//				//timeout
-//				Log.e(TAG,"timeout stop -processrequest type " + mCurrentRequest.type
-//						+ " address " + mCurrentRequest.address);
-//				//mRequestQueue.clear();
-//				if(mCurrentRequest.type==BleRequest.RequestType.WRITE_CHARACTERISTIC||
-//						mCurrentRequest.type==BleRequest.RequestType.READ_CHARACTERISTIC	)
-//				{
-//					byte[] val = mCurrentRequest.characteristic.getValue();
-//					if(val.length > 4)
-//					{
-//						int reg_addr = (val[2]<<8)+val[3];
-//						if(reg_addr != 0)
-//							continue;
-//					}
-//					
-//				}
-//			}
-//			else
-			{
-				Log.e(TAG,"stop -processrequest type " + mCurrentRequest.type
-						+ " address " + mCurrentRequest.address);
 				return;
-			}
-		
-			
-			
 		}
 	}
 

@@ -622,12 +622,21 @@ public class WorkService extends Service {
 	public static  boolean requestConnect(String address)
 	{
 		synchronized (cmd_lock) {
+			if(scalers == null)
+			{
+				Log.e("WorkService", "scalers==null");
+				return false;
+			}
 			if(!scalers.containsKey(address))
 			{
 				scalers.put(address, new Scaler(address));
 			}
 		}
-		if(mBle == null) return false;
+		if(mBle == null) 
+		{
+			Log.e("WorkService", "mBle==null");
+			return false;
+		}
 		return mBle.requestConnect(address);
 	}
 	/**

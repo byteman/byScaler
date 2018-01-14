@@ -3,6 +3,7 @@ package com.blescaler.worker;
 import android.os.Message;
 import android.util.Log;
 
+import com.blescaler.utils.CRC16;
 import com.blescaler.utils.Utils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 
@@ -225,7 +226,10 @@ public class Scaler {
 
 		if ((val[0] == 0x20) ){
 			if( (val[2] + 5)!= val.length)  return msgType;
-		
+			if(!CRC16.isValid(val))
+			{
+				return msgType; 
+			}
 			if(val[1] == 0x03)
 			{
 				int reg_num = (val[2]-2)/2;
@@ -326,7 +330,7 @@ public class Scaler {
 			}
 			else if(val[1] == 0x10)
 			{
-				//鍐欏叆鐨勯�氱煡.
+				
 				int reg_addr = Utils.bytesToShort(val,2);
 				if(reg_addr == Global.REG_SLEEP_S)
 				{
