@@ -3,7 +3,7 @@ package com.blescaler.worker;
 import android.os.Message;
 import android.util.Log;
 
-import com.blescaler.utils.CRC16;
+import com.blescaler.utils.CheckSum;
 import com.blescaler.utils.Utils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 
@@ -226,7 +226,7 @@ public class Scaler {
 
 		if ((val[0] == 0x20) ){
 			if( (val[2] + 5)!= val.length)  return msgType;
-			if(!CRC16.isValid(val))
+			if(!CheckSum.isValid(val))
 			{
 				return msgType; 
 			}

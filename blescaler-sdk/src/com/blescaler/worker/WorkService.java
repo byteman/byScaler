@@ -24,7 +24,6 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.blescaler.utils.CRC16;
 import com.blescaler.utils.Register;
 import com.blescaler.utils.Utils;
 import com.blescaler.utils.Config;
@@ -348,7 +347,7 @@ public class WorkService extends Service {
 		
 	};
 	//读取某个称的寄存器.
-	private static boolean  read_registers(String addr, int reg_addr,int num)
+	private static boolean  read_registers2(String addr, int reg_addr,int num)
 	{
 		//设备地址 1byte
 		//命令类型 0x3
@@ -361,7 +360,7 @@ public class WorkService extends Service {
 		short u_reg_num  = (short)num;
 		byte buffer[]={0x20,0x3,(byte)((u_reg_addr>>8)&0xff),(byte)(u_reg_addr&0xFF),(byte)((u_reg_num>>8)&0xff),(byte)(u_reg_num&0xFF),0,0};
 		//byte buffer[]={0x20,0x3,0,0x20,0,1,(byte) 0x83,0x71};
-		short crc16 = (short)CRC16.calcCrc16(buffer,0,buffer.length-2);
+		short crc16 = 0;//(short)CRC16.calcCrc16(buffer,0,buffer.length-2);
 		buffer[6] = (byte)(crc16&0xFF);
 		buffer[7] = (byte)((crc16>>8)&0xff);
 		
@@ -822,13 +821,21 @@ public class WorkService extends Service {
 	
 	public static boolean requestReadPar(String address) throws InterruptedException
 	{
-		read_registers(address,Global.REG_DOTNUM,1); //小数点位数
+		Register reg = new Register();
+		
+		write_buffer(address,reg.BeginRead(Global.REG_DOTNUM,1));
+		
+		
 		Thread.sleep(50);
-		read_registers(address,Global.REG_DIV1,5); //分度数
+		write_buffer(address,reg.BeginRead(Global.REG_DIV1,5));//分度数
+		
+		//read_registers(address,Global.REG_DIV1,5); //分度数
 		Thread.sleep(50);
-		read_registers(address,Global.REG_UNIT,6);//单位
+		write_buffer(address,reg.BeginRead(Global.REG_UNIT,6));//单位
+		//read_registers(address,Global.REG_UNIT,6);//单位
 		Thread.sleep(50);
-		read_registers(address,Global.REG_SLEEP_S,2);//休眠时间
+		write_buffer(address,reg.BeginRead(Global.REG_SLEEP_S,2));//休眠时间
+		//read_registers(address,Global.REG_SLEEP_S,2);//休眠时间
 		return true;
 	}
 	/**
@@ -901,7 +908,12 @@ public class WorkService extends Service {
 	 */
 	public static boolean readPower(String address)
 	{
-		return read_registers(address,(short)Global.REG_BATTERY, (short)1);
+		Register reg = new Register();
+		
+		return write_buffer(address,reg.BeginRead(Global.REG_BATTERY,1));
+		
+		
+		//return read_registers(address,(short)Global.REG_BATTERY, (short)1);
 	}
 	/**
 	 * 读取某个秤的重量值
@@ -911,7 +923,19 @@ public class WorkService extends Service {
 	
 	public static boolean requestReadWgt(String address)
 	{
-		return read_registers(address,(short)Global.REG_WEIGHT, (short)4);
+		Register reg = new Register();
+		
+		return write_buffer(address,reg.BeginRead(Global.REG_WEIGHT, 1));
+		
+		//return read_registers(address,(short)Global.REG_WEIGHT, (short)7);
+	}
+	public static boolean requestReadWgtV2(String address)
+	{
+		Register reg = new Register();
+		
+		return write_buffer(address,reg.BeginRead(Global.REG_WEIGHT_V2, 7));
+		
+		//return read_registers(address,(short)Global.REG_WEIGHT, (short)7);
 	}
 	
 	

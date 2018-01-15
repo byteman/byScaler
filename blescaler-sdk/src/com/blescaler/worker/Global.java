@@ -100,7 +100,7 @@ public class Global {
 	
 	public static final int CMD_CONNECT_SCALER=100314;
 	
-	public static final int REG_WEIGHT = 0; /*!< 重量数据 */
+	public static final int REG_WEIGHT =0; /*!< 重量数据 */
 	public static final int REG_OPERATION = 2;
 	public static final int REG_DOTNUM = 3;
 	public static final int REG_TARE = 6;
@@ -130,6 +130,7 @@ public class Global {
 	public static final int REG_AD_CHAN3 = 53;
 	public static final int REG_AD_CHAN4 = 55;
 	
+	public static final int REG_WEIGHT_V2 = 100;
 	
 	
 	public static String toast_success = "Done";

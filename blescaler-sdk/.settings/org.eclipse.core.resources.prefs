@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-encoding//src/com/blescaler/utils/CRC16.java=UTF-8
+encoding//src/com/blescaler/utils/CheckSum.java=UTF-8
 encoding//src/com/blescaler/utils/Register.java=UTF-8
 encoding//src/com/blescaler/utils/Utils.java=UTF-8
 encoding//src/com/blescaler/worker/Global.java=UTF-8
