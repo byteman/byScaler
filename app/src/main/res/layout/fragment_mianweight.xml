@@ -1,0 +1,200 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/weight_bg"
+    android:orientation="vertical"
+    android:weightSum="4"
+     >
+
+    <RelativeLayout
+       
+        android:layout_width="match_parent"
+        android:layout_height="113.5dp" >
+
+        <TextView
+            android:id="@+id/button1"
+            android:layout_width="130dp"
+            android:layout_height="34dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:background="@drawable/oval_shape3"
+            android:text="称名:00546" />
+
+        <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button2"
+            android:layout_width="33.5dp"
+            android:layout_height="33.5sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="50dp"
+            android:background="@drawable/bt2_oval_shape"
+            android:text="打印"
+            android:textSize="14sp" />
+
+        <com.blescaler.ui.ble.AutoBgButton
+             android:id="@+id/button3"
+            android:layout_width="66dp"
+            android:layout_height="31sp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="100dp"
+            android:background="@drawable/bt_oval_shape"
+            android:text="N/G"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button4"
+            android:layout_width="66dp"
+            android:layout_height="31sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bt_oval_shape"
+            android:text="N/G"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button5"
+            android:layout_width="66dp"
+            android:layout_height="31sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="120dp"
+            android:background="@drawable/bt_oval_shape"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+        <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button6"
+            android:layout_width="28dp"
+            android:layout_height="14sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+              android:layout_marginRight="70dp"
+            android:background="@drawable/bt_oval_shape"
+            
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+ <LinearLayout
+         android:background="@drawable/gray_oval_shape"
+           
+        android:layout_width="183dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center_horizontal"
+       android:layout_centerInParent="true" >
+
+       <TextView
+           android:id="@+id/textView1"
+           android:layout_width="158dp"
+           android:layout_height="40dp"
+           android:layout_gravity="center_vertical"
+           android:layout_marginLeft="5dp"
+           android:background="@drawable/white_oval_shape"
+           android:gravity="center"
+           android:text="1000.00"
+           android:textSize="15sp"
+           android:textStyle="bold" />
+
+       <TextView
+           android:id="@+id/textView2"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center_vertical"
+           android:layout_marginTop="5dp"
+           android:text="kg"
+           android:textSize="15sp" />
+
+    </LinearLayout>
+    
+ <RelativeLayout
+     android:layout_alignParentBottom="true"
+      
+        android:layout_width="match_parent"
+        android:layout_height="120dp" >
+     <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button7"
+            android:layout_width="66dp"
+            android:layout_height="31sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="70dp"
+            android:background="@drawable/bt_oval_shape"
+            android:text="累计"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+     <com.blescaler.ui.ble.AutoBgButton
+            android:id="@+id/button8"
+            android:layout_width="66dp"
+            android:layout_height="31sp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="70dp"
+            android:background="@drawable/bt_oval_shape"
+            android:text="清除"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+     <LinearLayout
+     
+         android:layout_width="200dp"
+         android:layout_height="fill_parent"
+         android:orientation="vertical"
+         android:layout_centerHorizontal="true"
+         android:weightSum="4"
+       >
+
+         <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="累计                  10kg(100)"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+          <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="数量                        100"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+           <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="单重                        200g"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+            <TextView
+            
+             android:layout_width="wrap_content"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:text="扣重                        10g"
+             android:textSize="18sp" 
+             android:singleLine="true"
+             android:textColor="@color/white"/>
+        
+     </LinearLayout>
+
+    </RelativeLayout>
+   
+
+</RelativeLayout>

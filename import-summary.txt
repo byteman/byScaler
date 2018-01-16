@@ -1,0 +1,53 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* doc/
+* doc/Doxyfile
+* doc/html2chm/
+* doc/html2chm/FAQ.chm
+* doc/html2chm/Menu.dll
+* doc/html2chm/Menu.ini
+* doc/html2chm/Misc/
+* doc/html2chm/Misc/ItsBugFix.reg
+* doc/html2chm/Presets/
+* doc/html2chm/Presets/已下载的网站.ini
+* doc/html2chm/Presets/已保存的页面.ini
+* doc/html2chm/Presets/帮助.ini
+* doc/html2chm/Toc.ini
+* doc/html2chm/htm2chm.exe
+* doc/html2chm/帮助.htm
+* doc/html2chm/建站无忧jz5u.com说明.txt
+* proguard-project.txt
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => blescaler/src/main/AndroidManifest.xml
+* libs/bugly_1.2.3.8__release.jar => blescaler/libs/bugly_1.2.3.8__release.jar
+* libs/commons-codec-1.8.jar => blescaler/libs/commons-codec-1.8.jar
+* res/ => blescaler/src/main/res/
+* src/ => blescaler/src/main/java/
+* src/index.md => blescaler/src/main/resources/index.md
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
