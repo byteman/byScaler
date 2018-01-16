@@ -2,7 +2,6 @@
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
@@ -13,19 +12,12 @@ buildscript {
     }
 }
 
-allprojects {//整个工程
+allprojects {
     repositories {
         jcenter()
-        mavenCentral()
-        maven {url "https://jitpack.io" }
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
     }
-}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.android.support:appcompat-v7:25.0.0'
 }

@@ -1,2 +1,2 @@
-include ':blescaler-sdk'
-include ':BLEScaler'
+include ':app'
+include ':blescaler'
