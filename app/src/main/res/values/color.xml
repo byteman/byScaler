@@ -260,6 +260,8 @@
     <color name="dodgerblue">#1E90FF</color>
     <!-- 闪兰色 -->
     <color name="midnightblue">#191970</color>
+    <!--称重重量使用的背景-->
+    <color name="big_stone">#102440</color>
     <!-- 中灰兰色 -->
     <color name="aqua">#00FFFF</color>
     <!-- 浅绿色 -->
@@ -278,6 +280,9 @@
     <color name="darkcyan">#008B8B</color>
     <!-- 暗青色 -->
     <color name="teal">#008080</color>
+
+    <color name="venice_blue">#255177</color>
+
     <!-- 水鸭色 -->
     <color name="green">#008000</color>
     <!-- 绿色 -->
@@ -293,14 +298,15 @@
     <!-- 海军色 -->
     <color name="black">#000000</color>
     <!-- 黑色 -->
-    
+
+    <color name="transparent">#00000000</color>
     <color name="common_bg">#cbdde6</color>
     <color name="title_bg">#ddedf3</color>
     <color name="weight_bg">#245a7d</color>
-      <color name="oval_shape_bg1">#dae2e7</color>
-       <color name="set_item_click">#a8e8ff</color>
-        <color name="set_item_unclick">#f0f8fe</color>
-   
-     <drawable name="main_login_normal">#ff6501</drawable>
+    <color name="oval_shape_bg1">#dae2e7</color>
+    <color name="set_item_click">#a8e8ff</color>
+    <color name="set_item_unclick">#f0f8fe</color>
+
+    <drawable name="main_login_normal">#ff6501</drawable>
 
 </resources>

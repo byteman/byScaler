@@ -1,200 +1,328 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/weight_bg"
+    android:background="@color/big_stone"
     android:orientation="vertical"
-    android:weightSum="4"
-    tools:context=".DeviceScanActivity" >
+    tools:context=".DeviceScanActivity"
+    >
+  <!--顶部-->
+  <LinearLayout
+      android:id="@+id/power"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:gravity="center"
+      >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+      <com.blescaler.ui.ble.BatteryState
+          android:id="@+id/bs_power"
+          android:layout_width="@dimen/x80"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x10"
+          />
+
+      <com.blescaler.ui.ble.AutoBgButton
+          android:id="@+id/btn_switch"
+          android:layout_marginLeft="@dimen/x20"
+          android:background="@drawable/bt_oval_shape"
+          android:text="N/G"
+          android:textColor="@color/white"
+          android:textStyle="bold"
+          style="@style/bybutton"
+          />
+
+      <com.blescaler.ui.ble.AutoBgButton
+          android:id="@+id/btn_preset"
+          android:layout_marginLeft="@dimen/x20"
+          android:background="@drawable/bt_oval_shape"
+          android:text="PT"
+          style="@style/bybutton"
+          />
+
+      <com.blescaler.ui.ble.AutoBgButton
+          android:id="@+id/btn_tare"
+          android:layout_marginLeft="@dimen/x20"
+          android:background="@drawable/bt_oval_shape"
+          android:text="Tare"
+          android:textStyle="bold"
+          style="@style/bybutton"
+          />
+    </LinearLayout>
+
 
     <LinearLayout
-        android:id="@+id/power"
-        android:layout_width="400dp"
-        android:layout_height="50dp" >
+        android:id="@+id/power2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/x20"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/y30"
+        >
 
-        <com.blescaler.ui.ble.BatteryState
-            android:id="@+id/bs_power"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content" />
+      <com.blescaler.ui.ble.AutoBgButton
+          android:id="@+id/btn_zero1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/bt_oval_shape"
+          android:text="0"
+          android:textColor="@color/white"
+          android:textSize="14sp"
+          android:textStyle="bold"
+          />
 
-        <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_switch"
-            style="@style/bybutton"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/bt_oval_shape"
-            android:text="N/G"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+      <com.blescaler.ui.ble.AutoBgButton
+          android:id="@+id/btn_still"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x20"
+          android:background="@drawable/bt_oval_shape"
+          android:text="~"
+          android:textColor="@color/white"
+          android:textSize="14sp"
+          android:textStyle="bold"
+          />
 
-        <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_preset"
-            style="@style/bybutton"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/bt_oval_shape"
-            android:text="PT" />
+      <com.blescaler.ui.ble.AutoBgButton
+          android:id="@+id/btn_ng"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x20"
+          android:background="@drawable/bt_oval_shape"
+          android:text="Gross"
+          android:textColor="@color/white"
+          android:textSize="14sp"
+          android:textStyle="bold"
+          />
 
-        <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_tare"
-            style="@style/bybutton"
-            android:background="@drawable/bt_oval_shape"
-            android:text="Tare"
-            android:textStyle="bold" />
+    </LinearLayout>
+
+  </LinearLayout>
+  <!--中部-->
+  <LinearLayout
+      android:id="@+id/mainlayout"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_gravity="center_horizontal"
+      android:layout_weight="3"
+      android:gravity="center"
+      android:orientation="vertical"
+      >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="校验标准值："
+          android:textColor="@color/white"
+          android:textSize="@dimen/x35"
+          />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="0kg"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x35"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x45"
+          android:text="净重(kg)"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x45"
+          />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/mainlayout"
-        android:layout_width="360.5dp"
-        android:layout_height="152dp"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="2"
-        android:background="@drawable/gray_oval_shape" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+      <TextView
+          android:id="@+id/tv_weight"
+          android:singleLine="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="5dp"
+          android:gravity="center"
+          android:text="0.0001"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x120"
+          android:textStyle="bold"
+          />
 
-        <TextView
-            android:id="@+id/tv_weight"
-            android:layout_width="320dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/white_oval_shape"
-            android:gravity="center"
-            android:text=""
-            android:textColor="@color/grey"
-            android:textSize="45sp"
-            android:textStyle="bold" />
+      <TextView
+          android:id="@+id/textView2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginTop="10dp"
+          android:text=""
+          android:textColor="@color/white"
+          android:textSize="32sp"
+          />
+    </LinearLayout>
 
+    <!--重量数字下面的图标-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+      <ImageView
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
+          android:src="@drawable/ico_a"
+          />
+      <ImageView
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
+          android:src="@drawable/ico_b"
+          />
+      <ImageView
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
+          android:src="@drawable/ico_c"
+          />
+      <ImageView
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
+          android:src="@drawable/ico_d"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+      <LinearLayout
+          android:gravity="center"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          >
         <TextView
-            android:id="@+id/textView2"
+            android:textColor="@color/gray"
+            android:text="扣重"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="10dp"
-            android:text=""
-            android:textColor="@color/white"
-            android:textSize="32sp" />
-    </LinearLayout>
+            />
+        <TextView
+            android:text="0.0000 kg"
+            android:textColor="@color/deepskyblue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+      </LinearLayout>
 
+      <LinearLayout
+          android:gravity="center"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          >
+        <TextView
+            android:textColor="@color/gray"
+            android:text="累计"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:text="0.9998 (1)kg"
+            android:textSize="@dimen/x45"
+            android:textColor="@color/yellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+      </LinearLayout>
+
+    </LinearLayout>
+  </LinearLayout>
+  <!--底部-->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      >
     <com.blescaler.ui.ble.AutoBgButton
         android:id="@+id/btn_zero"
-        style="@style/bybutton"
         android:layout_alignRight="@+id/btn_save"
         android:layout_below="@+id/mainlayout"
         android:background="@drawable/bt_oval_shape"
         android:text="zero"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        style="@style/bybutton"
+        />
 
-    <LinearLayout
-        android:id="@+id/power2"
-        android:layout_width="80dp"
-        android:layout_height="200dp"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="12dp"
-        android:layout_toRightOf="@+id/mainlayout"
-        android:orientation="vertical" >
-
-        <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_zero1"
-            android:layout_width="66dp"
-            android:layout_height="31sp"
-            android:background="@drawable/bt_oval_shape"
-            android:text="0"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_still"
-            android:layout_width="66dp"
-            android:layout_height="31sp"
-            android:background="@drawable/bt_oval_shape"
-            android:text="~"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <com.blescaler.ui.ble.AutoBgButton
-            android:id="@+id/btn_ng"
-            android:layout_width="66dp"
-            android:layout_height="31sp"
-            android:background="@drawable/bt_oval_shape"
-            android:text="Gross"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
 
     <com.blescaler.ui.ble.AutoBgButton
         android:id="@+id/btn_print"
-        style="@style/bybutton"
         android:layout_alignBaseline="@+id/btn_sleep"
         android:layout_alignBottom="@+id/btn_sleep"
         android:layout_toRightOf="@+id/btn_sleep"
         android:background="@drawable/bt_oval_shape"
-        android:text="poweroff" />
+        android:text="poweroff"
+        style="@style/bybutton"
+        />
 
     <com.blescaler.ui.ble.AutoBgButton
         android:id="@+id/btn_sleep"
-        style="@style/bybutton"
         android:layout_alignBaseline="@+id/btn_zero"
         android:layout_alignBottom="@+id/btn_zero"
         android:layout_marginLeft="42dp"
         android:layout_toRightOf="@+id/btn_zero"
         android:background="@drawable/bt_oval_shape"
-        android:text="sleep" />
+        android:text="sleep"
+        style="@style/bybutton"
+        />
 
     <com.blescaler.ui.ble.AutoBgButton
         android:id="@+id/btn_wake"
-        style="@style/bybutton"
         android:layout_alignBaseline="@+id/btn_print"
         android:layout_alignBottom="@+id/btn_print"
         android:layout_toRightOf="@+id/btn_print"
         android:background="@drawable/bt_oval_shape"
-        android:text="wake" />
+        android:text="wake"
+        style="@style/bybutton"
+        />
 
     <com.blescaler.ui.ble.AutoBgButton
         android:id="@+id/btn_unit"
-        style="@style/bybutton"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/mainlayout"
         android:background="@drawable/bt_oval_shape"
-        android:text="unit" />
+        android:text="unit"
+        style="@style/bybutton"
+        />
 
     <com.blescaler.ui.ble.AutoBgButton
         android:id="@+id/btn_save"
-        style="@style/bybutton"
         android:layout_alignBottom="@+id/mainlayout"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="31dp"
         android:background="@drawable/bt_oval_shape"
-        android:text="save" />
+        android:text="save"
+        style="@style/bybutton"
+        />
+  </LinearLayout>
 
-    <TextView
-        android:id="@+id/txtCalcWet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_unit"
-        android:layout_alignEnd="@+id/btn_unit"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="10dp"
-        android:text="calcValue" />
 
-    <TextView
-        android:id="@+id/txtTare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/txtCalcWet"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/btn_save"
-        android:text="tare" />
-
-    <TextView
-        android:id="@+id/txtState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/txtTare"
-        android:layout_alignStart="@+id/btn_sleep"
-        android:layout_marginStart="17dp"
-        android:text="state" />
-
-</RelativeLayout>
+</LinearLayout>

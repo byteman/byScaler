@@ -181,8 +181,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
 		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
 		tv_unit = (TextView) root.findViewById(R.id.textView2);
-		txtCalcWet = root.findViewById(R.id.txtCalcWet);
-		txtTare = root.findViewById(R.id.txtTare);
+		//txtCalcWet = root.findViewById(R.id.txtCalcWet);
+		//txtTare = root.findViewById(R.id.txtTare);
 
 		btn_power=(BatteryState)root.findViewById(R.id.bs_power);
 		btn_red_on = (AutoBgButton) root.findViewById(R.id.btn_red_light_on);
