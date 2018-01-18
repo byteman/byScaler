@@ -18,6 +18,8 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:support-v4:26.0.0'
+    compile 'com.android.support:appcompat-v7:26.0.0'
     compile files('libs/commons-codec-1.8.jar')
     compile files('libs/printerlibs.jar')
 }
