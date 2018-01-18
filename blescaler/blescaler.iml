@@ -96,6 +96,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="__local_jars__:G.\proj\byScaler\blescaler\libs\printerlibs.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:G.\proj\byScaler\blescaler\libs\commons-codec-1.8.jar:unspecified@jar" level="project" />
   </component>
 </module>
