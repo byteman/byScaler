@@ -132,8 +132,22 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	
 		//ActionBar actionBar=getActionBar();
 		 //actionBar.setDisplayShowHomeEnabled(true);
-	
-		
+
+		//当工具栏发生变化的时候
+		getWindow().getDecorView()
+				.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+					@Override public void onSystemUiVisibilityChange(int visibility) {
+						if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+							getWindow().getDecorView()
+									.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+											| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+											| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+											| View.SYSTEM_UI_FLAG_FULLSCREEN
+											| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+											| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+						}
+					}
+				});
 
 	}
 
@@ -305,5 +319,20 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         }
         return super.onKeyDown(keyCode, event);
 }
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			getWindow().getDecorView().setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+							| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+							| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+							| View.SYSTEM_UI_FLAG_FULLSCREEN
+							| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+							| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+			);
+		}
+	}
 
 }

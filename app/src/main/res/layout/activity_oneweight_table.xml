@@ -163,7 +163,7 @@
           android:gravity="center"
           android:text="0.0001"
           android:textColor="@color/white"
-          android:textSize="@dimen/x120"
+          android:textSize="@dimen/x150"
           android:textStyle="bold"
           />
 
