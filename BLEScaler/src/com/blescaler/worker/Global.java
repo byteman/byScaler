@@ -84,7 +84,7 @@ public class Global {
 	public static final int MSG_GET_CHANNELS_RESULT=100065;	//读取秤参数的响应
 	public static final int MSG_GET_GPRS_SIGNAL_RESULT=100066;	//读取秤参数的响应
 	public static final int MSG_GET_DEV_STATUS_RESULT=100067;	//读取秤参数的响应
-	
+	public static final int MSG_GET_PARAM6_RESULT=100068;	//读取秤参数的响应
 	
 	public static final int MSG_SET_PARAM1_RESULT=100065;	//读取秤参数的响应
 	public static final int MSG_SET_PARAM2_RESULT=100066;	//读取秤参数的响应
@@ -180,6 +180,8 @@ public class Global {
 	public static final int REG_GPRS_TEST =38;
 	public static final int REG_GPRS_SIGNAL =39;
 	public static final int REG_TIME =40;
+	public static final int REG_NET_MODE =45;
+	public static final int REG_SEND_MODE =46;
 
 	
 	

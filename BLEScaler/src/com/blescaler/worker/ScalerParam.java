@@ -7,6 +7,7 @@ public class ScalerParam {
 	
 	public int hostip;
 	public int hostport;
+	public short dev_status;
 	public short dev_id;
 	public short heart;
 	public short channel;
@@ -16,6 +17,7 @@ public class ScalerParam {
 	public short version;
 	public short year_month,day_hour,min_second;
 	public short rain,qx_addr;
+	public short net_mode,send_mode;
 	public ScalerParam()
 	{
 		

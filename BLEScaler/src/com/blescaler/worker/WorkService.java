@@ -930,6 +930,8 @@ public class WorkService extends Service {
 		write_buffer(reg.BeginRead(Global.REG_TIME,5));
 		Thread.sleep(100);
 		
+		write_buffer(reg.BeginRead(Global.REG_NET_MODE,2));
+		Thread.sleep(100);
 		
 		
 		return true;
@@ -964,6 +966,13 @@ public class WorkService extends Service {
 			
 			write_buffer(reg.getResult());
 			Thread.sleep(200);
+			//3nd
+			reg.BeginWrite(Global.REG_NET_MODE);
+			reg.putShorts(s.net_mode, s.send_mode);
+			
+			write_buffer(reg.getResult());
+			Thread.sleep(200);
+			
 			
 		
 		

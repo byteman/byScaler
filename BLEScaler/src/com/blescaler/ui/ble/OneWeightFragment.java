@@ -383,25 +383,49 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	{
 		dev_signal.setText("信号强度:"+signal+"%");
 	}
-	public void showStatus(int status)
+	String GetStateString(short status)
 	{
 		String status_text = "";
-		if((status&0x1)==0){
-			status_text+="未连接";
+		if(((status>>0)&0x1)==0){
+			status_text+="Uninit";
 		}
-		if((status&0x2)==0){
-			status_text+="GPRS初始化失败";
+		if(((status>>1)&0x1)==0){
+			status_text+="|Disconnect";
 		}
-		if((status&0x4)==0){
-			status_text+="发送失败";
+		if(((status>>2)&0x1)==0){
+			status_text+="|Offline";
 		}
-		if((status&0x8)==0){
-			status_text+="太阳能电压故障";
-		}
-		if((status&0x16)==0){
-			status_text+="DC电压故障";
-		}
-		
+		byte mode = (byte) ((status >>3)&0x7);
+		 if(mode == 0){
+			 status_text+="|CAP Mode";
+	    }
+	    else if(mode == 1){
+	    	status_text+="|GPS Mode";
+	    }
+	    else if(mode == 2){
+	    	status_text+="|Dtu Mode";
+	    }
+	    else if(mode == 3){
+	    	status_text+="|Angle mode";
+	    }
+		 if(((status>>6)&0x1)==0){
+				status_text+="|Config";
+			}else
+			{
+				status_text+="|Nor";
+			}
+		 if(((status>>7)&0x1)==1){
+				status_text+="|DC";
+			}
+	    ////0 --cap 1--gps 2 --dtu 3--ang
+	   
+	  
+	    return status_text;
+	}
+	public void showStatus(int status)
+	{
+	
+		dev_status.setText(GetStateString((short)status));
 	}
 	static class MHandler extends Handler {
 
@@ -477,6 +501,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					theActivity.showSignal(msg.arg1);
 					break;
 				case Global.MSG_GET_DEV_STATUS_RESULT:
+					Toast.makeText(theActivity.getActivity(), "status="+msg.arg1, Toast.LENGTH_LONG).show();
+					
 					theActivity.showStatus(msg.arg1);
 					break;
 			}

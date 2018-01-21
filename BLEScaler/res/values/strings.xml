@@ -15,7 +15,8 @@
      limitations under the License.
 -->
 <resources>
-
+	<string name="netmode">网络模式</string>
+	<string name="sendmode">发送模式</string>
     <string name="app_name">尾矿调试</string>
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="label_data">Data:</string>

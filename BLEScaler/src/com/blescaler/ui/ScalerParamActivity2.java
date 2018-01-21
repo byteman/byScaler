@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class ScalerParamActivity2 extends Activity implements OnClickListener {
 
@@ -31,6 +32,7 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 	private EditText edit_rain,edt_qx_addr;
 	private EditText edit_write_index,edit_read_index;
 	private Button 	 btn_gprs_test;
+	private Spinner sp_net_mode,sp_send_mode = null;
 	
 
 	private Button btn_read, btn_write,btn_back,btn_sync_time;
@@ -82,7 +84,10 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 		btn_write.setOnClickListener(this);
 		btn_sync_time = (Button) findViewById(R.id.btn_sync_time);
 		btn_sync_time.setOnClickListener(this);
-		
+		sp_net_mode = (Spinner)findViewById(R.id.sp_net_mode);
+		sp_send_mode = (Spinner)findViewById(R.id.sp_send_mode);
+		sp_net_mode.setSelection(1);
+		sp_send_mode.setSelection(1);
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_back.setOnClickListener(this);
 		
@@ -125,7 +130,8 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 					sp.read_index = (short) Integer.parseInt(edit_read_index.getText().toString());
 					sp.rain = (short) Integer.parseInt(edit_rain.getText().toString());
 					sp.qx_addr = (short) Integer.parseInt(edt_qx_addr.getText().toString());
-					
+					sp.net_mode = (short) sp_net_mode.getSelectedItemId();
+					sp.send_mode = (short) sp_send_mode.getSelectedItemId();
 					sp.SetNowTime();
 									
 					WorkService.requestWriteParamValue2(address,sp);
@@ -169,13 +175,31 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 		edit_read_index.setText("" + sp.read_index);
 	
 	}
+	private void showModeParam(ScalerParam sp)
+	{
+		if(sp.net_mode <0 || sp.net_mode > 1)
+		{
+			Toast.makeText(this, sp.net_mode+"", Toast.LENGTH_LONG).show();
+		}else
+		{
+			sp_net_mode.setSelection(sp.net_mode);
+		}
+		if(sp.send_mode <0 || sp.send_mode > 1)
+		{
+			Toast.makeText(this, sp.send_mode+"", Toast.LENGTH_LONG).show();
+		}else
+		{
+			 sp_send_mode.setSelection(sp.send_mode);
+		}
+	   
+	}
 	private void showTimeParam(ScalerParam sp)
 	{
 		
 		edit_time.setText(sp.GetTimeString());	
 		edit_rain.setText(""+sp.rain);
 		edt_qx_addr.setText(""+sp.qx_addr);
-	
+	  
 	}
 	static class MHandler extends Handler {
 
@@ -207,6 +231,15 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 					//Utils.Msgbox(theActivity, "读取成功");
 					break;
 				}
+				case Global.MSG_GET_PARAM6_RESULT:
+				{
+					Scaler scaler = (Scaler) msg.obj;
+					if(scaler==null)return;
+					theActivity.showModeParam(scaler.para);
+					//Utils.Msgbox(theActivity, "读取成功");
+					break;
+				}
+				
 				case Global.MSG_SCALER_PAR_SET_RESULT:
 				{
 					//设置参数的返回

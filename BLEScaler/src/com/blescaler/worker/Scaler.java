@@ -288,6 +288,15 @@ public class Scaler {
 						msg.arg1 = Utils.bytesToShort(val,5);
 						break;
 					}
+					case Global.REG_NET_MODE:
+					{
+						para.net_mode = Utils.bytesToShort(val,5);
+						para.send_mode = Utils.bytesToShort(val,7);
+						
+						msgType = Global.MSG_GET_PARAM6_RESULT;
+						
+						break;
+					}
 					case Global.REG_GPRS_SIGNAL:
 					{
 						msgType = Global.MSG_GET_GPRS_SIGNAL_RESULT;
