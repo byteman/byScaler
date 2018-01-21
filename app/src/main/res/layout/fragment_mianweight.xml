@@ -39,6 +39,7 @@
       >
 
     <LinearLayout
+        android:background="@drawable/ico_fill"
         android:layout_weight="1"
         android:orientation="vertical"
         android:layout_width="0dp"

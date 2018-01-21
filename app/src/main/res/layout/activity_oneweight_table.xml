@@ -108,6 +108,7 @@
   </LinearLayout>
   <!--中部-->
   <LinearLayout
+      android:background="@drawable/fill_bitmap_black"
       android:id="@+id/mainlayout"
       android:layout_width="match_parent"
       android:layout_height="0dp"
