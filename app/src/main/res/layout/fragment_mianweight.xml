@@ -227,12 +227,12 @@
         <ImageView
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x60"
-            android:src="@drawable/ico_a"
+            android:src="@drawable/ico_a_click"
             />
         <ImageView
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x60"
-            android:src="@drawable/ico_b"
+            android:src="@drawable/ico_b_click"
             />
         <ImageView
             android:layout_width="@dimen/x60"

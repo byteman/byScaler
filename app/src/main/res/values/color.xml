@@ -189,6 +189,9 @@
     <color name="lightskyblue">#87CEFA</color>
     <!-- 亮天蓝色 -->
     <color name="skyblue">#87CEEB</color>
+
+    <color name="bleu_de_france">#3399F5</color>
+
     <!-- 天蓝色 -->
     <color name="gray">#808080</color>
     <!-- 灰色 -->
@@ -206,6 +209,7 @@
     <color name="chartreuse">#7FFF00</color>
     <!-- 黄绿色 -->
     <color name="lawngreen">#7CFC00</color>
+
     <!-- 草绿色 -->
     <color name="mediumslateblue">#7B68EE</color>
     <!-- 中暗蓝色 -->
@@ -224,6 +228,10 @@
     <color name="dimgray">#696969</color>
     <!-- 暗灰色 -->
     <color name="dimgrey">#696969</color>
+
+    <color name="mako">#434751</color>
+
+    <color name="mirage">#363A46</color>
 
     <color name="cinder">#26292F</color>
     <!-- 暗灰色 -->
@@ -272,6 +280,8 @@
     <color name="cyan">#00FFFF</color>
     <!-- 青色 -->
     <color name="springgreen">#00FF7F</color>
+
+    <color name="bright_turquoise">#28E9E8</color>
     <!-- 春绿色 -->
     <color name="lime">#00FF00</color>
     <!-- 酸橙色 -->
