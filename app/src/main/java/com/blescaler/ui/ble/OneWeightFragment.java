@@ -318,7 +318,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 //					
 //				}
 //				
-//			}).start();
+//			}).activity_start();
 			
 			break;
 		case R.id.tv_weight:

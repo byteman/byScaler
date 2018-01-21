@@ -75,4 +75,8 @@
 	<string name="clearzero">清零</string>
 	<string name="discard_tare">去皮</string>
 	<string name="switch_ng">净重/毛重</string>
+
+  <!--启动界面-->
+  <string name="start_copyright">©2015-2017</string>
+  <string name="start_company">Omniteaching Software Technology(Xiamen)Co.Ltd.)</string>
 </resources>

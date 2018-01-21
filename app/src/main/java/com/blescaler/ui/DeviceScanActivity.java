@@ -315,7 +315,7 @@ public class DeviceScanActivity extends Activity   {
 		}
 		else
 		{
-			btn_serach.setText("start");
+			btn_serach.setText("activity_start");
 		}
 	}
 

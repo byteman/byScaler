@@ -119,9 +119,9 @@ public class CalibActivity extends Activity {
 				//scaler4
 			}else if(v.getId() == R.id.Button05)
 			{
-				//start.
+				//activity_start.
 				if(isStarted){
-					btnStart.setText("start");
+					btnStart.setText("activity_start");
 					WorkService.auto_k(address,5);
 				}else{
 					btnStart.setText("stop");

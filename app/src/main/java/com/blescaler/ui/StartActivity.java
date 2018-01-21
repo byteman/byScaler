@@ -4,22 +4,16 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 
 import com.blescaler.utils.Utils;
-import com.blescaler.ui.R;
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.worker.WorkService;
 import com.blescaler.worker.Global;
 
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 public class StartActivity extends Activity {
 
@@ -32,7 +26,7 @@ public class StartActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		//requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
-		setContentView(R.layout.start);
+		setContentView(R.layout.activity_start);
 		initView();
 		//getWindow().setFlags(
 		//		WindowManager.LayoutParams.FLAG_FULLSCREEN,
