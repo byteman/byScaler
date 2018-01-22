@@ -967,6 +967,10 @@ public class WorkService extends Service {
 
 		
 	}
+	public static boolean discardTare(String address)
+	{
+		return common_msg(address,Global.REG_OPERATION,2);
+	}
 	/**
 	 * 清零
 	 * @param address

@@ -21,7 +21,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,19 +39,14 @@ import com.blescaler.worker.WorkService;
 
 public class OneWeightFragment extends BaseFragment implements View.OnClickListener {
 	View root;
-	AutoBgButton btn_save = null;
-	AutoBgButton btn_print = null;
-	AutoBgButton btn_tare = null;
-	AutoBgButton btn_zero = null;
-	AutoBgButton btn_swtich = null;
-	AutoBgButton btn_red_on = null;
-	AutoBgButton btn_yellow_on = null;
-	AutoBgButton btn_green_on = null;
-	AutoBgButton btn_red_off = null;
-	AutoBgButton btn_yellow_off = null;
-	AutoBgButton btn_green_off = null;
-	AutoBgButton btn_is_zero = null;
-	AutoBgButton btn_sleep,btn_wakeup,btn_unit,btn_still = null;
+	ImageView btn_save = null;
+	ImageView btn_print = null;
+	Button btn_tare = null;
+	Button btn_zero = null;
+	Button btn_swtich = null;
+
+	ImageView btn_is_zero = null;
+	Button btn_unit,btn_still = null;
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
 	TextView txtCalcWet=null,txtTare=null;
@@ -172,52 +169,28 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	}
 	private void initUI()
 	{
-		btn_save  = (AutoBgButton) root.findViewById(R.id.btn_save);
-		btn_print = (AutoBgButton) root.findViewById(R.id.btn_print);
-		btn_tare  = (AutoBgButton) root.findViewById(R.id.btn_tare);
-		btn_swtich = (AutoBgButton) root.findViewById(R.id.btn_switch);
+		btn_save  = (ImageView) root.findViewById(R.id.btn_save);
+		btn_print = (ImageView) root.findViewById(R.id.btn_print);
+		btn_tare  = (Button) root.findViewById(R.id.btn_tare);
+		btn_swtich = (Button) root.findViewById(R.id.btn_switch);
 		tv_weight = (TextView) root.findViewById(R.id.tv_weight);
-		btn_zero = (AutoBgButton) root.findViewById(R.id.btn_zero);
+		btn_zero = (Button) root.findViewById(R.id.btn_zero);
 		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
 		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
 		tv_unit = (TextView) root.findViewById(R.id.textView2);
-		//txtCalcWet = root.findViewById(R.id.txtCalcWet);
-		//txtTare = root.findViewById(R.id.txtTare);
 
-		btn_power=(BatteryState)root.findViewById(R.id.bs_power);
-		btn_red_on = (AutoBgButton) root.findViewById(R.id.btn_red_light_on);
-		btn_yellow_on = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_on);
-		btn_green_on = (AutoBgButton) root.findViewById(R.id.btn_green_light_on);
-		btn_red_off = (AutoBgButton) root.findViewById(R.id.btn_red_light_off);
-		btn_yellow_off = (AutoBgButton) root.findViewById(R.id.btn_yellow_light_off);
-		btn_green_off = (AutoBgButton) root.findViewById(R.id.btn_green_light_off);
-		btn_is_zero = (AutoBgButton) root.findViewById(R.id.btn_zero1);
-		btn_sleep = (AutoBgButton) root.findViewById(R.id.btn_sleep);
-		btn_wakeup = (AutoBgButton) root.findViewById(R.id.btn_wake);
-		btn_unit = (AutoBgButton) root.findViewById(R.id.btn_unit);
-		btn_still = (AutoBgButton) root.findViewById(R.id.btn_still);
-		btn_sleep.setOnClickListener(this);
-		btn_wakeup.setOnClickListener(this);
+
+		btn_unit = (Button) root.findViewById(R.id.btn_unit);
+
 		btn_unit.setOnClickListener(this);
 		
-		btn_power.setPowerQuantity(1);
+
 		btn_save.setOnClickListener(this);
 		btn_print.setOnClickListener(this);
 		btn_tare.setOnClickListener(this);
 		tv_weight.setOnClickListener(this);
 		btn_zero.setOnClickListener(this);
 		btn_swtich.setOnClickListener(this);
-		btn_preset.setOnClickListener(this);
-		//btn_still.setOnClickListener(this);
-		
-//		btn_green_on.setOnClickListener(this);
-//		btn_yellow_on.setOnClickListener(this);
-//		btn_red_on.setOnClickListener(this);
-//		btn_green_off.setOnClickListener(this);
-//		btn_yellow_off.setOnClickListener(this);
-//		btn_red_off.setOnClickListener(this);
-		
-	
 		
 	}
 	private void initRes()
@@ -286,8 +259,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			WorkService.common_msg(address,Global.REG_OPERATION,99);
 			break;
 		case R.id.btn_tare:
-			
-			WorkService.common_msg(address,Global.REG_OPERATION,2);
+			WorkService.discardTare(address);
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -298,28 +271,6 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			{
 				//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
 			}
-			
-//			new Thread(new Runnable(){
-//
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					WorkService.common_msg(address,Global.REG_OPERATION,2);
-//					try {
-//						Thread.sleep(100);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					if(!WorkService.setZero(address))
-//					{
-//						//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
-//					}
-//					
-//				}
-//				
-//			}).activity_start();
-			
 			break;
 		case R.id.tv_weight:
 			popConnectProcessBar(this.getActivity());
@@ -336,24 +287,6 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			//净重和毛重切换
 			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
-//		case R.id.btn_green_light_on:
-//			WorkService.CtrlLight(address,3);
-//			break;
-//		case R.id.btn_yellow_light_on:
-//			WorkService.CtrlLight(address,5);
-//			break;
-//		case R.id.btn_red_light_on:
-//			WorkService.CtrlLight(address,1);
-//			break;
-//		case R.id.btn_green_light_off:
-//			WorkService.CtrlLight(address,4);
-//			break;
-//		case R.id.btn_yellow_light_off:
-//			WorkService.CtrlLight(address,6);
-//			break;
-//		case R.id.btn_red_light_off:
-//			WorkService.CtrlLight(address,2);
-//			break;
 		case R.id.btn_preset:
 			inputTitleDialog();
 			break;
@@ -446,24 +379,24 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					theActivity.tv_weight.setText(d.getDispalyWeight());
 					if(d.isZero())
 					{
-						theActivity.btn_is_zero.setText(">0<");
+						//theActivity.btn_is_zero.setText(">0<");
 					}else
 					{
-						theActivity.btn_is_zero.setText("");
+						//theActivity.btn_is_zero.setText("");
 					}
 					if(d.isStandstill())
 					{
-						theActivity.btn_still.setText("--");
+						//theActivity.btn_still.setText("--");
 					}else
 					{
-						theActivity.btn_still.setText("~~");
+						//theActivity.btn_still.setText("~~");
 					}
 					if(d.isGross())
 					{
-						theActivity.btn_ng.setText("Net");
+						//theActivity.btn_ng.setText("Net");
 					}else
 					{
-						theActivity.btn_ng.setText("Gross");
+						//theActivity.btn_ng.setText("Gross");
 					}
 
 					theActivity.tv_unit.setText(d.getUnit());

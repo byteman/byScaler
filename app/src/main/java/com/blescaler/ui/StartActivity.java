@@ -1,7 +1,11 @@
 package com.blescaler.ui;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.view.View;
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import com.blescaler.utils.Utils;
 import com.blescaler.ui.ble.MainActivity;
@@ -21,6 +25,25 @@ public class StartActivity extends Activity {
 
 	private static Handler mHandler = null;
 	private static final int REQUEST_ENABLE_BT = 1;
+	protected void switchLanguage(String language) {
+		Resources resources = getResources();
+		Configuration config = resources.getConfiguration();
+		DisplayMetrics dm = resources.getDisplayMetrics();
+		switch (language) {
+			case "zh":
+				config.locale = Locale.CHINESE;
+				resources.updateConfiguration(config, dm);
+				break;
+			case "en":
+				config.locale = Locale.ENGLISH;
+				resources.updateConfiguration(config, dm);
+				break;
+			default:
+				config.locale = Locale.US;
+				resources.updateConfiguration(config, dm);
+				break;
+		}
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -28,11 +51,8 @@ public class StartActivity extends Activity {
 		//requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
 		setContentView(R.layout.activity_start);
 		initView();
-		//getWindow().setFlags(
-		//		WindowManager.LayoutParams.FLAG_FULLSCREEN,
-		//		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
+		switchLanguage("en");
 		mHandler = new MHandler(this);
 		WorkService.addHandler(mHandler);
 		Utils.setDiscoverableTimeout(10);
