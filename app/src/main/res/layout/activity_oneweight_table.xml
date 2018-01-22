@@ -134,7 +134,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="0kg"
             android:textColor="@color/bleu_de_france"
             android:textSize="@dimen/x45"
             />
@@ -181,17 +181,20 @@
           android:orientation="horizontal"
           >
         <ImageView
+            android:id="@+id/img_still"
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x32"
             android:background="@drawable/ico_a_selecotor"
             />
         <ImageView
+            android:id="@+id/img_tare"
             android:layout_marginLeft="@dimen/x5"
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x32"
             android:background="@drawable/ico_b_selecotor"
             />
         <ImageView
+            android:id="@+id/img_zero"
             android:layout_marginLeft="@dimen/x5"
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x32"

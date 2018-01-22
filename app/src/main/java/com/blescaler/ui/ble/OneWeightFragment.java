@@ -45,7 +45,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	Button btn_zero = null;
 	Button btn_swtich = null;
 
-	ImageView btn_is_zero = null;
+	ImageView img_zero = null;
+	ImageView img_still = null;
+	ImageView img_tare = null;
+
 	Button btn_unit,btn_still = null;
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
@@ -125,7 +128,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 			return;
 		}
-	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
+	    progressDialog =ProgressDialog.show(ctx, ctx.getString(R.string.prompt_title), ctx.getString(R.string.connect_ble));
 
 	    if(!WorkService.requestConnect(address))
 	    {
@@ -179,7 +182,9 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
 		tv_unit = (TextView) root.findViewById(R.id.textView2);
 
-
+		img_zero = (ImageView) root.findViewById(R.id.img_zero);
+		img_still = (ImageView) root.findViewById(R.id.img_still);
+		img_tare = (ImageView) root.findViewById(R.id.img_tare);
 		btn_unit = (Button) root.findViewById(R.id.btn_unit);
 
 		btn_unit.setOnClickListener(this);
@@ -278,6 +283,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_zero:
 			//清零
+			img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a));
 			if(!WorkService.setZero(address))
 			{
 				Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
@@ -285,6 +291,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_switch:
 			//净重和毛重切换
+			img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a_click));
 			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
 		case R.id.btn_preset:

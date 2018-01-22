@@ -75,12 +75,13 @@
 	<string name="zero">清零</string>
 	<string name="tare">去皮</string>
     <string name="net">净重</string>
-	<string name="switch_ng">N/G</string>
+	<string name="switch_ng">净重/毛重</string>
     <string name="acc">累计</string>
     <string name="calibration_value">校验标准值:</string>
     <string name="prompt_scan">没有连接的蓝牙秤，请先扫描！</string>
     <string name="prompt_title">提示</string>
     <string name="ok">确定</string>
+    <string name="connect_ble">蓝牙称正在连接</string>
     <string name="prompt_conn_timeout">连接超时，点击重量显示可重新连接</string>
   <!--启动界面-->
   <string name="start_copyright">©2015-2017</string>

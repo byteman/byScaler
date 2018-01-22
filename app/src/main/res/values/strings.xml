@@ -82,7 +82,7 @@
     <string name="prompt_title">Prompt</string>
     <string name="ok">OK</string>
     <string name="prompt_conn_timeout">Connection timeout, clicking weight display can be reconnected</string>
-
+    <string name="connect_ble">Bluetooth scale is connectings</string>
   <!--启动界面-->
   <string name="start_copyright">©2015-2017</string>
   <string name="start_company">Omniteaching Software Technology(Xiamen)Co.Ltd.)</string>
