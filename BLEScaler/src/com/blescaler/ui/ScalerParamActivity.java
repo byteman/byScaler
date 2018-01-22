@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 
 
 
+
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.utils.Utils;
 import com.blescaler.worker.Global;
@@ -21,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class ScalerParamActivity extends Activity implements OnClickListener {
 
@@ -137,17 +139,20 @@ public class ScalerParamActivity extends Activity implements OnClickListener {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-
 					ScalerParam sp = new ScalerParam();
-					sp.SetHostString(edit_hostip.getText().toString());
-					
-					sp.hostport = Integer.parseInt(edit_port.getText().toString());
-					sp.dev_id = (short) Integer.parseInt(edit_id.getText().toString());
-					sp.heart = (short) Integer.parseInt(edit_heart.getText().toString());
-					sp.channel = (short) Integer.parseInt(edit_channel.getText().toString());
-					sp.send_time_s = (short) Integer.parseInt(edit_send_time_s.getText().toString());
-					sp.acquire_s = (short) Integer.parseInt(edit_acquire_s.getText().toString());
-									
+					try{
+						
+						sp.SetHostString(edit_hostip.getText().toString());
+						
+						sp.hostport = Integer.parseInt(edit_port.getText().toString());
+						sp.dev_id = (short) Integer.parseInt(edit_id.getText().toString());
+						sp.heart = (short) Integer.parseInt(edit_heart.getText().toString());
+						sp.channel = (short) Integer.parseInt(edit_channel.getText().toString());
+						sp.send_time_s = (short) Integer.parseInt(edit_send_time_s.getText().toString());
+						sp.acquire_s = (short) Integer.parseInt(edit_acquire_s.getText().toString());
+					} catch (Exception e) {
+						Toast.makeText(ScalerParamActivity.this, "输入格式有误", Toast.LENGTH_LONG).show();
+					}	
 					WorkService.requestWriteParamValue1(address,sp);
 		
 				}

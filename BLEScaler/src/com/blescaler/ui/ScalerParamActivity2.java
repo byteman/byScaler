@@ -124,15 +124,20 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-
 					ScalerParam sp = new ScalerParam();
-					sp.write_index = (short) Integer.parseInt(edit_write_index.getText().toString());
-					sp.read_index = (short) Integer.parseInt(edit_read_index.getText().toString());
-					sp.rain = (short) Integer.parseInt(edit_rain.getText().toString());
-					sp.qx_addr = (short) Integer.parseInt(edt_qx_addr.getText().toString());
-					sp.net_mode = (short) sp_net_mode.getSelectedItemId();
-					sp.send_mode = (short) sp_send_mode.getSelectedItemId();
-					sp.SetNowTime();
+					try {
+						
+						sp.write_index = (short) Integer.parseInt(edit_write_index.getText().toString());
+						sp.read_index = (short) Integer.parseInt(edit_read_index.getText().toString());
+						sp.rain = (short) Integer.parseInt(edit_rain.getText().toString());
+						sp.qx_addr = (short) Integer.parseInt(edt_qx_addr.getText().toString());
+						sp.net_mode = (short) sp_net_mode.getSelectedItemId();
+						sp.send_mode = (short) sp_send_mode.getSelectedItemId();
+						sp.SetNowTime();
+					} catch (Exception e) {
+						Toast.makeText(ScalerParamActivity2.this, "输入格式有误", Toast.LENGTH_LONG).show();
+					}
+					
 									
 					WorkService.requestWriteParamValue2(address,sp);
 		
