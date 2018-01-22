@@ -16,7 +16,7 @@
 -->
 <resources>
 
-    <string name="app_name">Bluetooth scale</string>
+    <string name="app_name">蓝牙称</string>
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="label_data">Data:</string>
     <string name="label_device_address">Device address:</string>
@@ -68,21 +68,20 @@
     <string name="dignum">小数点数</string>
     <string name="div">分度值    </string>
     <string name="nov">满量程  </string>
-	<string name="unit">Unit </string>
+	<string name="unit">单位</string>
 	<string name="filter">滤波等级 </string>
-	<string name="write">Save</string>
-	<string name="read">Read</string>
-	<string name="zero">Zero</string>
-	<string name="tare">Tare</string>
-    <string name="net">Net</string>
+	<string name="write">保存</string>
+	<string name="read">读取</string>
+	<string name="zero">清零</string>
+	<string name="tare">去皮</string>
+    <string name="net">净重</string>
 	<string name="switch_ng">N/G</string>
-    <string name="acc">ACC: </string>
-    <string name="calibration_value">Calibration Value:</string>
-    <string name="prompt_scan">You have not yet chosen the Bluetooth device, please search first</string>
-    <string name="prompt_title">Prompt</string>
-    <string name="ok">OK</string>
-    <string name="prompt_conn_timeout">Connection timeout, clicking weight display can be reconnected</string>
-
+    <string name="acc">累计</string>
+    <string name="calibration_value">校验标准值:</string>
+    <string name="prompt_scan">没有连接的蓝牙秤，请先扫描！</string>
+    <string name="prompt_title">提示</string>
+    <string name="ok">确定</string>
+    <string name="prompt_conn_timeout">连接超时，点击重量显示可重新连接</string>
   <!--启动界面-->
   <string name="start_copyright">©2015-2017</string>
   <string name="start_company">Omniteaching Software Technology(Xiamen)Co.Ltd.)</string>

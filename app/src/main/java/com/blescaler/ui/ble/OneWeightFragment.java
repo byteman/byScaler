@@ -116,7 +116,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		address =WorkService.getDeviceAddress(this.getActivity(), 0);
 		if(address == "")
 		{
-			showFailBox("没有连接的蓝牙秤，请先扫描！");
+			showFailBox(ctx.getString(R.string.prompt_scan));
 			return;
 		}
 		if(WorkService.hasConnected(address)) return;
@@ -132,7 +132,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
 			if(progressDialog!=null && progressDialog.isShowing())
 				progressDialog.dismiss(); //关闭进度条
-			Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
 			return;
 	    }
 	  
@@ -312,11 +312,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	
 	private void showFailBox(String msg)
 	{
-		 new AlertDialog.Builder(this.getActivity()).setTitle("prompt")//设置对话框标题  
+		 new AlertDialog.Builder(this.getActivity()).setTitle(this.getString(R.string.prompt_title))//设置对话框标题
 		  
 	     .setMessage(msg)//设置显示的内容  
 	  
-	     .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮  
+	     .setPositiveButton(this.getString(R.string.ok),new DialogInterface.OnClickListener() {//添加确定按钮
 	  
 	          
 	  
@@ -436,7 +436,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					if(progressDialog!=null && progressDialog.isShowing())
 					{
 						progressDialog.dismiss(); //关闭进度条
-						theActivity.showFailBox("连接超时，点击重量显示可重新连接！");
+						theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
 						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
 					}
 				}

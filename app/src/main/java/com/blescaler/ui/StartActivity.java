@@ -52,7 +52,7 @@ public class StartActivity extends Activity {
 		setContentView(R.layout.activity_start);
 		initView();
 
-		switchLanguage("en");
+		switchLanguage("zh");
 		mHandler = new MHandler(this);
 		WorkService.addHandler(mHandler);
 		Utils.setDiscoverableTimeout(10);
