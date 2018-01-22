@@ -119,6 +119,7 @@
 
 
           <TextView
+              android:id="@+id/tv_oneweight_net_title"
               android:layout_centerHorizontal="true"
               android:layout_gravity="center"
               android:layout_width="wrap_content"
@@ -127,6 +128,16 @@
               android:textColor="@color/bleu_de_france"
               android:textSize="@dimen/x45"
               />
+        <TextView
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_toRightOf="@+id/tv_oneweight_net_title"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/bleu_de_france"
+            android:textSize="@dimen/x45"
+            />
 
       </RelativeLayout>
 
@@ -274,16 +285,16 @@
           android:id="@+id/btn_print"
           android:layout_gravity="center"
           android:src="@drawable/print"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
           />
       <ImageView
           android:id="@+id/btn_save"
           android:layout_gravity="center"
           android:layout_marginLeft="@dimen/x10"
           android:src="@drawable/printset"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
           />
     </LinearLayout>
     <!--菜单按钮-->
