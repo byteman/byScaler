@@ -125,7 +125,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="@string/net"
-              android:textColor="@color/bleu_de_france"
+              android:textColor="@color/white"
               android:textSize="@dimen/x45"
               />
         <TextView
@@ -134,7 +134,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text=""
             android:textColor="@color/bleu_de_france"
             android:textSize="@dimen/x45"
             />
@@ -156,7 +156,7 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="0.0001"
-            android:textColor="@color/bleu_de_france"
+            android:textColor="@color/white"
             android:textSize="@dimen/x150"
             android:textStyle="bold"
             />
@@ -181,34 +181,38 @@
           android:orientation="horizontal"
           >
         <ImageView
+            android:id="@+id/img_still"
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x32"
-            android:background="@drawable/ico_a_selecotor"
+            android:src="@drawable/still_state_list"
+
             />
         <ImageView
+            android:id="@+id/img_tare"
             android:layout_marginLeft="@dimen/x5"
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x32"
-            android:background="@drawable/ico_b_selecotor"
+            android:src="@drawable/tare_state_list"
             />
         <ImageView
+            android:id="@+id/img_zero"
             android:layout_marginLeft="@dimen/x5"
             android:layout_width="@dimen/x60"
             android:layout_height="@dimen/x32"
-            android:background="@drawable/ico_c_selecotor"
+            android:src="@drawable/zero_state_list"
             />
-        <ImageView
-            android:layout_marginLeft="@dimen/x5"
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x32"
-            android:background="@drawable/ico_d_selecotor"
-            />
-        <ImageView
-            android:layout_marginLeft="@dimen/x5"
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x32"
-            android:background="@drawable/ico_e_selecotor"
-            />
+        <!--<ImageView-->
+            <!--android:layout_marginLeft="@dimen/x5"-->
+            <!--android:layout_width="@dimen/x60"-->
+            <!--android:layout_height="@dimen/x32"-->
+            <!--android:background="@drawable/ico_d_selecotor"-->
+            <!--/>-->
+        <!--<ImageView-->
+            <!--android:layout_marginLeft="@dimen/x5"-->
+            <!--android:layout_width="@dimen/x60"-->
+            <!--android:layout_height="@dimen/x32"-->
+            <!--android:background="@drawable/ico_e_selecotor"-->
+            <!--/>-->
       </LinearLayout>
 
       <LinearLayout
@@ -226,14 +230,15 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="@string/tare"
-              android:textColor="@color/gray"
+              android:textColor="@color/white"
               />
           <TextView
+              android:id="@+id/txtTare"
               android:layout_marginLeft="@dimen/x2"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="0.0000 kg"
-              android:textColor="@color/bright_turquoise"
+              android:textColor="@color/white"
               />
         </LinearLayout>
 
@@ -246,13 +251,13 @@
           <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="@string/acc"
+              android:text=""
               android:textColor="@color/gray"
               />
           <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="0.9998 (1)kg"
+              android:text=""
               android:textColor="@color/yellow"
               android:textSize="@dimen/x45"
               />
@@ -271,88 +276,105 @@
   </LinearLayout>
   <!--底部-->
   <LinearLayout
-      android:layout_weight="1"
       android:layout_width="match_parent"
       android:layout_height="0dp"
+      android:layout_weight="1"
       >
     <LinearLayout
-        android:paddingLeft="@dimen/x50"
-        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/x50"
         >
       <ImageView
           android:id="@+id/btn_print"
+          android:layout_width="@dimen/x60"
+          android:layout_height="@dimen/x60"
           android:layout_gravity="center"
           android:src="@drawable/print"
-          android:layout_width="@dimen/x60"
-          android:layout_height="@dimen/x60"
           />
-      <ImageView
-          android:id="@+id/btn_save"
-          android:layout_gravity="center"
-          android:layout_marginLeft="@dimen/x10"
-          android:src="@drawable/printset"
-          android:layout_width="@dimen/x60"
-          android:layout_height="@dimen/x60"
-          />
+      <!--<ImageView-->
+          <!--android:id="@+id/btn_save"-->
+          <!--android:layout_width="@dimen/x60"-->
+          <!--android:layout_height="@dimen/x60"-->
+          <!--android:layout_gravity="center"-->
+          <!--android:layout_marginLeft="@dimen/x10"-->
+          <!--android:src="@drawable/printset"-->
+          <!--/>-->
     </LinearLayout>
     <!--菜单按钮-->
     <LinearLayout
-        android:gravity="center"
-        android:layout_width="@dimen/x720"
+        android:layout_width="@dimen/x850"
         android:layout_height="match_parent"
+        android:gravity="right|center_vertical"
+        android:paddingRight="@dimen/x50"
         >
       <Button
+          android:id="@+id/btn_save"
+          android:layout_width="@dimen/x150"
+          android:layout_height="wrap_content"
+          android:background="@drawable/btn_gray_selector"
           android:elevation="1dp"
+          android:singleLine="true"
+          android:text="@string/save"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x36"
+          android:textStyle="bold"
+          />
+      <Button
           android:id="@+id/btn_switch"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x5"
           android:background="@drawable/btn_gray_selector"
-          android:text="@string/switch_ng"
+          android:elevation="1dp"
           android:singleLine="true"
+          android:text="@string/switch_ng"
           android:textColor="@color/white"
-          android:textSize="@dimen/x30"
+          android:textSize="@dimen/x36"
+          android:textStyle="bold"
           />
 
       <Button
           android:id="@+id/btn_tare"
-          android:elevation="1dp"
-          android:layout_marginLeft="@dimen/x5"
           android:layout_width="@dimen/x150"
           android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x5"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
           android:singleLine="true"
           android:text="@string/tare"
           android:textColor="@color/white"
-          android:background="@drawable/btn_gray_selector"
-          android:textSize="@dimen/x30"
+          android:textSize="@dimen/x36"
+          android:textStyle="bold"
           />
       <Button
           android:id="@+id/btn_zero"
-          android:layout_marginLeft="@dimen/x5"
-          android:elevation="1dp"
           android:layout_width="@dimen/x150"
           android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x5"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
           android:singleLine="true"
           android:text="@string/zero"
-          android:background="@drawable/btn_gray_selector"
           android:textColor="@color/white"
-          android:textSize="@dimen/x30"
+          android:textSize="@dimen/x36"
+          android:textStyle="bold"
           />
       <Button
           android:id="@+id/btn_unit"
-          android:layout_marginLeft="@dimen/x3"
-          android:elevation="1dp"
           android:layout_width="@dimen/x150"
           android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/x3"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
+          android:gravity="center"
           android:singleLine="true"
           android:text="@string/unit"
-          android:gravity="center"
-          android:background="@drawable/btn_gray_selector"
           android:textColor="@color/white"
-          android:textSize="@dimen/x30"
+          android:textSize="@dimen/x36"
+          android:textStyle="bold"
           />
-
 
 
     </LinearLayout>

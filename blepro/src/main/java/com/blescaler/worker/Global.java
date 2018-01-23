@@ -179,7 +179,7 @@ public class Global {
 	public static final int REG_AD_CHAN3 = 53;
 	public static final int REG_AD_CHAN4 = 55;
 	
-	public static final int REG_WEIGHT_V2 = 99;
+	public static final int REG_WEIGHT_V2 = 100;
 	
 	
 	public static String toast_success = "Done";

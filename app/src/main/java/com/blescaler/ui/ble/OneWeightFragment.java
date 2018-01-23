@@ -39,17 +39,20 @@ import com.blescaler.worker.WorkService;
 
 public class OneWeightFragment extends BaseFragment implements View.OnClickListener {
 	View root;
-	ImageView btn_save = null;
+	Button btn_save = null;
 	ImageView btn_print = null;
 	Button btn_tare = null;
 	Button btn_zero = null;
 	Button btn_swtich = null;
 
-	ImageView btn_is_zero = null;
+	ImageView img_zero = null;
+	ImageView img_still = null;
+	ImageView img_tare = null;
+
 	Button btn_unit,btn_still = null;
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
-	TextView txtCalcWet=null,txtTare=null;
+	TextView txtTare=null;
 	AutoBgButton btn_ng = null;
 	AutoBgButton btn_preset = null;
 	
@@ -62,12 +65,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	protected static final String TAG = "weight_activity";
 	private static String unit="g";
 	
-	public boolean connectAll()
-	{
-		boolean need_connect = false;
-	
-		return !need_connect;
-	}
+
 	private void updateState()
 	{
 		 
@@ -78,45 +76,45 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		   else
 		   {
 			   //87CEEB
-			   tv_weight.setTextColor(Color.rgb(0xFF, 0x00, 0x00));  
+			   tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
 		   }
 		
 	}
-	private Runnable watchdog = new Runnable()
-	{
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			 
-			
-			   if(cont++ >= 1)
-			   {
-				   
-				   WorkService.requestReadWgtV2(address);
-				   cont = 0;
-			   }
-			   if(cout_2s++ > 10)
-			   {
-				   updateState();
-				   WorkService.readPower(address);
-				   cout_2s = 0;
-			   }
-			   if(cout_3s > 0)
-			   {
-				   cout_3s--;
-			   }
-			   mHandler.postDelayed(this, 200);  
-		}
-		
-	};
+	//private Runnable watchdog = new Runnable()
+	//{
+	//
+	//	@Override
+	//	public void run() {
+	//		// TODO Auto-generated method stub
+	//
+	//
+	//		   if(cont++ >= 1)
+	//		   {
+	//
+	//			   WorkService.requestReadWgtV2(address);
+	//			   cont = 0;
+	//		   }
+	//		   if(cout_2s++ > 10)
+	//		   {
+	//			   updateState();
+	//			   WorkService.readPower(address);
+	//			   cout_2s = 0;
+	//		   }
+	//		   if(cout_3s > 0)
+	//		   {
+	//			   cout_3s--;
+	//		   }
+	//		   mHandler.postDelayed(this, 200);
+	//	}
+	//
+	//};
 
 	private void popConnectProcessBar(Context ctx)
 	{
 		address =WorkService.getDeviceAddress(this.getActivity(), 0);
 		if(address == "")
 		{
-			showFailBox("没有连接的蓝牙秤，请先扫描！");
+			showFailBox(ctx.getString(R.string.prompt_scan));
 			return;
 		}
 		if(WorkService.hasConnected(address)) return;
@@ -125,14 +123,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 			return;
 		}
-	    progressDialog =ProgressDialog.show(ctx, "bleScaler", "connecting scaler");     
+	    progressDialog =ProgressDialog.show(ctx, ctx.getString(R.string.prompt_title), ctx.getString(R.string.connect_ble));
 
 	    if(!WorkService.requestConnect(address))
 	    {
 
 			if(progressDialog!=null && progressDialog.isShowing())
 				progressDialog.dismiss(); //关闭进度条
-			Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
 			return;
 	    }
 	  
@@ -148,7 +146,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		// TODO Auto-generated method stub
 		super.onStop();
 		//super.onPause();
-		mHandler.removeCallbacks(watchdog);
+		//mHandler.removeCallbacks(watchdog);
 
 		WorkService.delHandler(mHandler);
 		Log.e(TAG, "onStop");
@@ -158,9 +156,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		// TODO Auto-generated method stub
 		super.onResume();
 		WorkService.addHandler(mHandler);
-		mHandler.postDelayed(watchdog, 200);
-		//WorkService.connectPrinter(null);
-		
+		//mHandler.postDelayed(watchdog, 200);
+
 		updateState();
 		tv_unit.setText(unit);
 		
@@ -169,7 +166,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	}
 	private void initUI()
 	{
-		btn_save  = (ImageView) root.findViewById(R.id.btn_save);
+		btn_save  = (Button) root.findViewById(R.id.btn_save);
 		btn_print = (ImageView) root.findViewById(R.id.btn_print);
 		btn_tare  = (Button) root.findViewById(R.id.btn_tare);
 		btn_swtich = (Button) root.findViewById(R.id.btn_switch);
@@ -178,8 +175,10 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
 		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
 		tv_unit = (TextView) root.findViewById(R.id.textView2);
-
-
+		txtTare = (TextView)root.findViewById(R.id.txtTare);
+		img_zero = (ImageView) root.findViewById(R.id.img_zero);
+		img_still = (ImageView) root.findViewById(R.id.img_still);
+		img_tare = (ImageView) root.findViewById(R.id.img_tare);
 		btn_unit = (Button) root.findViewById(R.id.btn_unit);
 
 		btn_unit.setOnClickListener(this);
@@ -198,7 +197,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		mHandler = new MHandler(this);
 		
 		
-		mHandler.postDelayed(watchdog, 200);
+		//mHandler.postDelayed(watchdog, 200);
 	}
 
 	@Override
@@ -278,6 +277,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_zero:
 			//清零
+			img_still.getDrawable().setLevel(0);
+			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a));
 			if(!WorkService.setZero(address))
 			{
 				Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
@@ -285,6 +286,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_switch:
 			//净重和毛重切换
+			img_still.getDrawable().setLevel(1);
+			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a_click));
 			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
 		case R.id.btn_preset:
@@ -312,11 +315,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	
 	private void showFailBox(String msg)
 	{
-		 new AlertDialog.Builder(this.getActivity()).setTitle("prompt")//设置对话框标题  
+		 new AlertDialog.Builder(this.getActivity()).setTitle(this.getString(R.string.prompt_title))//设置对话框标题
 		  
 	     .setMessage(msg)//设置显示的内容  
 	  
-	     .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮  
+	     .setPositiveButton(this.getString(R.string.ok),new DialogInterface.OnClickListener() {//添加确定按钮
 	  
 	          
 	  
@@ -332,6 +335,18 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	  
 	     }).show();//在按键响应事件中显示此对话框  
 	  
+	}
+	public void set_zero_state(boolean bZero)
+	{
+		img_zero.getDrawable().setLevel(bZero?1:0);
+	}
+	public void set_still_state(boolean bStill)
+	{
+		img_still.getDrawable().setLevel(bStill?1:0);
+	}
+	public void set_tare_state(boolean bTare)
+	{
+		img_tare.getDrawable().setLevel(bTare?1:0);
 	}
 
 	public static Fragment newFragment() {
@@ -369,39 +384,22 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					{
 						return;
 					}
-					if(theActivity.cout_3s > 0)
-					{
-						return;
-					}
+					theActivity.updateState();
+					//if(theActivity.cout_3s > 0)
+					//{
+					//	return;
+					//}
 					WorkService.requestReadWgtV2(address);
 
 
 					theActivity.tv_weight.setText(d.getDispalyWeight());
-					if(d.isZero())
-					{
-						//theActivity.btn_is_zero.setText(">0<");
-					}else
-					{
-						//theActivity.btn_is_zero.setText("");
-					}
-					if(d.isStandstill())
-					{
-						//theActivity.btn_still.setText("--");
-					}else
-					{
-						//theActivity.btn_still.setText("~~");
-					}
-					if(d.isGross())
-					{
-						//theActivity.btn_ng.setText("Net");
-					}else
-					{
-						//theActivity.btn_ng.setText("Gross");
-					}
-
+					theActivity.set_zero_state(d.isZero());
+				  theActivity.set_still_state(d.isStandstill());
+				  theActivity.set_tare_state(!d.isGross());
 					theActivity.tv_unit.setText(d.getUnit());
 					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()));
-					theActivity.txtCalcWet.setText(Utils.FormatFloatValue(d.getCalcWeight(), d.GetDotNum()));
+					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));
+					theActivity.tv_weight.setText(d.getDispalyWeight());
 					break;
 				}
 				case Global.MSG_BLE_DISCONNECTRESULT:
@@ -436,7 +434,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					if(progressDialog!=null && progressDialog.isShowing())
 					{
 						progressDialog.dismiss(); //关闭进度条
-						theActivity.showFailBox("连接超时，点击重量显示可重新连接！");
+						theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
 						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
 					}
 				}
