@@ -65,17 +65,16 @@
       >
     <!--侧滑按钮-->
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="@dimen/x50"
         android:layout_height="match_parent"
         android:gravity="center"
-        >
+        android:orientation="horizontal">
+
       <ImageButton
-          android:layout_gravity="center"
-          android:background="@drawable/ico_right_slide"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          />
+          android:layout_gravity="center"
+          android:background="@drawable/ico_right_slide" />
     </LinearLayout>
 
     <LinearLayout

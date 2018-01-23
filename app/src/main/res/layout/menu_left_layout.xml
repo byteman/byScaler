@@ -37,7 +37,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line2"
-        android:text="main"
+        android:text="@string/menu_weight"
         android:textColor="@color/white"
         android:textSize="18sp" />
      <View
@@ -50,12 +50,12 @@
         android:layout_below="@+id/menu_one_scaler"
     />
       <TextView
-        android:id="@+id/menu_four_scaler"
+        android:id="@+id/menu_count"
         android:padding="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line3"
-        android:text="four"
+        android:text="@string/menu_count"
         android:textColor="@color/white"
         android:textSize="18sp" />
       
@@ -66,7 +66,7 @@
         android:background="#1f3a4e"
         android:layout_alignParentLeft="true"
        
-        android:layout_below="@+id/menu_four_scaler"
+        android:layout_below="@+id/menu_count"
     />
     <TextView
         android:id="@+id/menu_data_report"
