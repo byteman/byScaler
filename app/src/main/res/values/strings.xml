@@ -74,6 +74,7 @@
 	<string name="read">Read</string>
 	<string name="zero">Zero</string>
 	<string name="tare">Tare</string>
+  <string name="discard_tare">Tare</string>
     <string name="net">Net</string>
 	<string name="switch_ng">N/G</string>
     <string name="acc">ACC: </string>
@@ -84,6 +85,7 @@
     <string name="prompt_conn_timeout">Connection timeout, clicking weight display can be reconnected</string>
     <string name="connect_ble">Bluetooth scale is connectings</string>
   <!--启动界面-->
+  <string name="welcome">Welcome to Bluetooth Scale</string>
   <string name="start_copyright">©2015-2017</string>
-  <string name="start_company">Omniteaching Software Technology(Xiamen)Co.Ltd.)</string>
+  <string name="start_company">WeiZhi Software Technology(Chongqing)Co.Ltd.)</string>
 </resources>

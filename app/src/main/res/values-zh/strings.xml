@@ -32,7 +32,7 @@
     <string name="unknown_service">Unknown service</string>
 	<string name="calibzero">calib zero</string>
 	<string name="calibwgt">calib span</string>
-	<string name="save">save</string>
+	<string name="save">存重</string>
 	<string name="ret">return</string>
 	<string name="connprt">connect printer</string>
 	<string name="connoldprt">match printer</string>
@@ -73,7 +73,8 @@
 	<string name="write">保存</string>
 	<string name="read">读取</string>
 	<string name="zero">清零</string>
-	<string name="tare">去皮</string>
+	<string name="discard_tare">去皮</string>
+  <string name="tare">皮重</string>
     <string name="net">净重</string>
 	<string name="switch_ng">净重/毛重</string>
     <string name="acc">累计</string>
@@ -84,6 +85,7 @@
     <string name="connect_ble">蓝牙称正在连接</string>
     <string name="prompt_conn_timeout">连接超时，点击重量显示可重新连接</string>
   <!--启动界面-->
+  <string name="welcome">欢迎使用蓝牙称</string>
   <string name="start_copyright">©2015-2017</string>
-  <string name="start_company">Omniteaching Software Technology(Xiamen)Co.Ltd.)</string>
+  <string name="start_company">WeiZhi Software Technology(Chongqing)Co.Ltd.)</string>
 </resources>

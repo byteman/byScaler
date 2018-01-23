@@ -269,10 +269,10 @@ public class Scaler {
 		
 
 		if ((val[0] == 0x20) ){
-			if( (val[2] + 5)!= val.length)  return msgType;
+			//if( (val[2] + 5)!= val.length)  return msgType;
 			if(!CheckSum.isValid(val))
 			{
-				return msgType; 
+				//return msgType;
 			}
 			if(val[1] == Global.CMD_READ_REGS)
 			{
