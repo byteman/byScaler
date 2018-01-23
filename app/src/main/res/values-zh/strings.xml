@@ -98,4 +98,11 @@
     <string name="zero_failed">清零失败，净重状态不允许清零</string>
     <string name="menu_weight">计重模式</string>
     <string name="menu_count">计数模式</string>
+  <!--左侧滑动目录-->
+  <string name="menu_title_weight">计重</string>
+  <string name="menu_his">历史资料</string>
+  <string name="menu_set">设置</string>
+  <string name="menu_set_manager">设备管理</string>
+  <string name="menu_version">版本选择</string>
+  <string name="menu_more">更多</string>
 </resources>

@@ -25,5 +25,5 @@ proguard/
 /app/.idea
 /.idea
 
-.iml
+*.iml
 

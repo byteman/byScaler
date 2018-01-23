@@ -2,23 +2,9 @@ package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 
-
-
-
-
-
-
-
-
-
-import com.blescaler.ui.R;
-import com.blescaler.ui.ScalerParamActivity.MHandler;
-import com.blescaler.utils.Utils;
+import com.blescaler.util.Utils;
 import com.blescaler.worker.Global;
-import com.blescaler.worker.Scaler;
-import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
-import com.tencent.bugly.crashreport.CrashReport;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,12 +14,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 public class SysParamActivity extends Activity implements OnClickListener {
 

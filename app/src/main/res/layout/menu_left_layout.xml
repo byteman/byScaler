@@ -1,189 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/cinder"
     android:orientation="vertical"
-    android:background="#233d50" >
-<View
-    android:id="@+id/line1" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp"
-    />
-    <TextView
-        android:id="@+id/menu_serach"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/line1"
-        android:text="search"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-    <View
-    android:id="@+id/line2" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-       
-        android:layout_below="@+id/menu_serach"
-    />
-    <TextView
-        android:id="@+id/menu_one_scaler"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/line2"
-        android:text="@string/menu_weight"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-     <View
-    android:id="@+id/line3" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-       
-        android:layout_below="@+id/menu_one_scaler"
-    />
-      <TextView
-        android:id="@+id/menu_count"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/line3"
-        android:text="@string/menu_count"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-      
-       <View
-       android:id="@+id/line10" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-       
-        android:layout_below="@+id/menu_count"
-    />
-    <TextView
-        android:id="@+id/menu_data_report"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/line10"
-        android:text="report"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-      
-       <View
-       android:id="@+id/line11" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-       
-        android:layout_below="@+id/menu_data_report"
-    />
-<!-- 底部 -->
-<View
-    android:id="@+id/line8" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-    />
- <TextView
-        android:id="@+id/menu_setting"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/line8"
-        android:text="debug"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-<View
-    android:id="@+id/line4" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-          android:layout_above="@+id/menu_setting"
-        
-    />
- <TextView
-        android:id="@+id/menu_print"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/line4"
-        android:text="printer"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
- <View
-    android:id="@+id/line5" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@+id/menu_print"
-       
-    />
- <TextView
-        android:id="@+id/menu_calib"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/line5"
-        android:text="calibrate"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
- <View
-    android:id="@+id/line6" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@+id/menu_calib"
-       
-    />
- <TextView
-        android:id="@+id/menu_para"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/line6"
-        android:text="setting"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
- <View
-    android:id="@+id/line7" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@+id/menu_para"
-       
-    />
-<!--  <TextView
-        android:id="@+id/leftmenu6"
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/line7"
-        android:text="打印设置"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-  <View
-    android:id="@+id/line9" 
-     android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#1f3a4e"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@+id/leftmenu6"
-       
-    /> -->
-</RelativeLayout>
+    >
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_weight"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_title_weight"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/weight_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_count"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_count"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/count_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_history"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_his"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/his_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_set"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_set"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/set_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_device"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_set_manager"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/set_manager_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_version"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_version"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/version_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+  <com.blescaler.view.ImageTextView
+      android:id="@+id/tv_menu_more"
+      android:layout_marginLeft="@dimen/x30"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/y120"
+      android:layout_below="@+id/line1"
+      android:layout_gravity="center|left"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/menu_more"
+      android:textColor="@drawable/tv_bg_selecotr"
+      android:textSize="@dimen/x40"
+      android:drawablePadding="@dimen/x30"
+      app:drawable="@drawable/more_selecotor"
+      app:drawableHeight="@dimen/y20"
+      app:drawableWidth="@dimen/y20"
+      app:position="1"
+      />
+
+</LinearLayout>

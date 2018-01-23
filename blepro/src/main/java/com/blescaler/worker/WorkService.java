@@ -24,9 +24,9 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.blescaler.utils.Register;
-import com.blescaler.utils.Utils;
-import com.blescaler.utils.Config;
+import com.blescaler.util.Register;
+import com.blescaler.util.Utils;
+import com.blescaler.util.Config;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 import com.xtremeprog.sdk.ble.BleGattService;
 import com.xtremeprog.sdk.ble.BleRequest.FailReason;

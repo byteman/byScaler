@@ -7,7 +7,7 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 
-import com.blescaler.utils.Utils;
+import com.blescaler.util.Utils;
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.worker.WorkService;
 import com.blescaler.worker.Global;

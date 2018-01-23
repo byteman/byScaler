@@ -1,4 +1,4 @@
-package com.blescaler.utils;
+package com.blescaler.util;
 public class CheckSum {  
 	public static byte calc(byte[] data, int offset, int length)
 	{

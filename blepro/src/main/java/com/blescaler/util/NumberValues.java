@@ -1,4 +1,4 @@
-package com.blescaler.utils;
+package com.blescaler.util;
 
 public class NumberValues {
 	static public FloatValue GetFloatValue(String edit)

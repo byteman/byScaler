@@ -2,13 +2,7 @@ package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 
-
-
-
-
-import com.blescaler.ui.R;
-import com.blescaler.ui.ble.MainActivity;
-import com.blescaler.utils.Utils;
+import com.blescaler.util.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.ScalerParam;
@@ -19,7 +13,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
