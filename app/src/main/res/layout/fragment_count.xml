@@ -397,14 +397,15 @@
           android:layout_weight="1"
           android:layout_width="0dp"
           android:layout_height="match_parent"
+          android:paddingRight="@dimen/x5"
           >
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x60"
-            android:src="@drawable/printset"
-            app:civ_border_width="1px"
-            app:civ_border_color="@color/arsenic"/>
+        <!--<de.hdodenhof.circleimageview.CircleImageView-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:layout_width="@dimen/x60"-->
+            <!--android:layout_height="@dimen/x60"-->
+            <!--android:src="@drawable/printset"-->
+            <!--app:civ_border_width="1px"-->
+            <!--app:civ_border_color="@color/arsenic"/>-->
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_marginLeft="@dimen/x10"
@@ -422,83 +423,79 @@
           android:gravity="center"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
+          android:paddingRight="@dimen/x50"
           >
         <Button
             android:elevation="1dp"
-            android:id="@+id/btn_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/y40"
+            android:id="@+id/btn_save"
+
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y70"
+
+            android:textStyle="bold"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="70dp"
+
             android:background="@drawable/btn_gray_selector"
-            android:text="@string/switch_ng"
+            android:text="@string/save"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/x30"
+            android:textSize="@dimen/x36"
             />
-
+          <Button
+              android:layout_marginLeft="@dimen/x5"
+              android:id="@+id/btn_switch"
+              android:elevation="1dp"
+              android:layout_width="@dimen/x150"
+              android:layout_height="@dimen/y70"
+              android:singleLine="true"
+              android:background="@drawable/btn_gray_selector"
+              android:text="@string/switch_ng"
+              android:textColor="@color/white"
+              android:textSize="@dimen/x36"
+              />
         <Button
             android:id="@+id/btn_tare"
             android:elevation="1dp"
             android:layout_marginLeft="@dimen/x5"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y70"
             android:singleLine="true"
             android:text="@string/discard_tare"
             android:textColor="@color/white"
             android:background="@drawable/btn_gray_selector"
-            android:textSize="@dimen/x30"
+            android:textSize="@dimen/x36"
+
             />
         <Button
-            android:layout_marginLeft="@dimen/x5"
+
             android:id="@+id/btn_zero"
             android:elevation="1dp"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
+            android:layout_marginLeft="@dimen/x5"
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y70"
             android:singleLine="true"
             android:text="@string/zero"
             android:background="@drawable/btn_gray_selector"
             android:textColor="@color/white"
-            android:textSize="@dimen/x30"
+            android:textSize="@dimen/x36"
             />
         <Button
-            android:layout_marginLeft="@dimen/x5"
+
             android:id="@+id/btn_switch_unit"
             android:elevation="1dp"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
+            android:layout_marginLeft="@dimen/x5"
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y70"
             android:singleLine="true"
             android:text="@string/unit"
             android:gravity="center"
             android:background="@drawable/btn_gray_selector"
             android:textColor="@color/white"
-            android:textSize="@dimen/x30"
-            />
-        <Button
-            android:layout_marginLeft="@dimen/x5"
-            android:id="@+id/btn_save"
-            android:elevation="1dp"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
-            android:singleLine="true"
-            android:background="@drawable/btn_gray_selector"
-            android:text="@string/save"
-            android:textColor="@color/white"
-            android:textSize="@dimen/x30"
+            android:textSize="@dimen/x36"
             />
 
-        <com.blescaler.ui.ble.AutoBgButton
-            android:layout_marginLeft="@dimen/x5"
-            android:elevation="1dp"
-            android:id="@+id/button7"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
-            android:background="@drawable/btn_gray_selector"
-            android:text="累计"
-            android:textColor="@color/white"
-            android:textSize="@dimen/x30"
-            />
+
       </LinearLayout>
 
     </LinearLayout>
