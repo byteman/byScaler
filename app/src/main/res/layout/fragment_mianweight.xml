@@ -2,405 +2,480 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/big_stone"
+    android:background="@color/cinder"
     android:orientation="vertical"
      >
   <!--顶部-->
   <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/y55"
+      android:elevation="1dp"
+      android:layout_weight="1"
       android:orientation="horizontal"
+      android:background="@color/mirage"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
       >
     <TextView
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-    <TextView
+        android:layout_marginLeft="@dimen/x30"
         android:layout_gravity="center_vertical"
+        android:text="@string/app_name"
         android:textColor="@color/white"
-        android:text="omnio...00001"
+        android:textSize="@dimen/x35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
-    <ImageView
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ico_greencircle"
-        android:layout_width="@dimen/x25"
-        android:layout_height="@dimen/x25"
-        />
-  </LinearLayout>
-  <!--上部-->
-  <LinearLayout
-      android:orientation="horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="3"
-      >
-
     <LinearLayout
-        android:background="@drawable/ico_fill"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        >
-      <LinearLayout
-          android:layout_gravity="center"
-          android:orientation="horizontal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          >
-        <TextView
-            android:textColor="@color/white"
-            android:text="校验标准值:"
-            android:textSize="@dimen/x45"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:textSize="@dimen/x45"
-            android:textColor="@color/white"
-            tools:text="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:textColor="@color/white"
-            android:textSize="@dimen/x45"
-            android:text="数量(个)"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-      </LinearLayout>
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          >
-        <TextView
-            android:layout_gravity="center"
-            android:textSize="@dimen/x60"
-            android:textColor="@color/white"
-            android:text="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-      </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        >
-      <LinearLayout
-          android:orientation="horizontal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          >
-        <Button
-            android:background="@drawable/bt_oval_shape"
-            android:text="采样"
-            android:textColor="@color/white"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
-            />
-        <Button
-            android:layout_marginLeft="@dimen/x5"
-            android:background="@drawable/bt_oval_shape"
-            android:text="清除计数"
-            android:textColor="@color/white"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
-            />
-      </LinearLayout>
-      <LinearLayout
-          android:layout_marginTop="@dimen/y5"
-          android:orientation="horizontal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          >
-        <Button
-            android:background="@drawable/bt_oval_shape"
-            android:text="单重记忆"
-            android:textColor="@color/white"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
-            />
-        <Button
-            android:layout_marginLeft="@dimen/x5"
-            android:background="@drawable/bt_oval_shape"
-            android:text="单重"
-            android:textColor="@color/white"
-            android:layout_width="@dimen/x90"
-            android:layout_height="@dimen/y40"
-            />
-      </LinearLayout>
-    </LinearLayout>
-
-  </LinearLayout>
-
-  <!--下部-->
-  <LinearLayout
-      android:orientation="horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="4"
-      >
-
-    <LinearLayout
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        >
-      <TextView
-          android:layout_gravity="center"
-          android:text="净重(kg)"
-          android:textColor="@color/white"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <TextView
-          android:textColor="@color/white"
-          android:id="@+id/textView1"
-          android:layout_width="158dp"
-          android:layout_height="40dp"
-          android:gravity="center"
-          android:layout_gravity="center"
-          android:text="1000.00"
-          android:textSize="15sp"
-          android:textStyle="bold"
-          />
-      <LinearLayout
-          android:gravity="center"
-          android:orientation="horizontal"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          >
-        <TextView
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:text="扣重"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:text="0.00001"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:textColor="@color/white"
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="kg"
-            android:textSize="15sp"
-            />
-      </LinearLayout>
-    </LinearLayout>
-
-    <!--中间的小图标-->
-    <LinearLayout
         android:orientation="horizontal"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        >
-      <LinearLayout
-          android:layout_gravity="center_vertical"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:gravity="center"
-          android:orientation="horizontal"
-          >
-        <ImageView
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x60"
-            android:src="@drawable/ico_a_click"
-            />
-        <ImageView
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x60"
-            android:src="@drawable/ico_b_click"
-            />
-        <ImageView
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x60"
-            android:src="@drawable/ico_c"
-            />
-        <ImageView
-            android:layout_width="@dimen/x60"
-            android:layout_height="@dimen/x60"
-            android:src="@drawable/ico_d"
-            />
-      </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
         >
       <TextView
-          android:layout_gravity="center"
-          android:text="单重(kg)"
-          android:textColor="@color/white"
+          android:layout_weight="1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           />
       <TextView
-          android:textColor="@color/white"
-          android:layout_width="158dp"
-          android:layout_height="40dp"
-          android:gravity="center"
-          android:layout_gravity="center"
-          android:text="0.01"
-          android:textSize="15sp"
-          android:textStyle="bold"
-          />
-      <LinearLayout
-          android:gravity="center"
-          android:orientation="horizontal"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          >
-        <TextView
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:text="累计"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:text="0"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="0(个)"
-            android:textSize="15sp"
-            />
-      </LinearLayout>
-    </LinearLayout>
-  </LinearLayout>
-
-  <!--底部菜单-->
-  <LinearLayout
-      android:orientation="horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/y70"
-      >
-    <LinearLayout
-        android:gravity="center"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        >
-      <de.hdodenhof.circleimageview.CircleImageView
-          xmlns:app="http://schemas.android.com/apk/res-auto"
-          android:layout_width="@dimen/x50"
-          android:layout_height="@dimen/x50"
-          android:src="@drawable/ico_print_add"
-          app:civ_border_width="1px"
-          app:civ_border_color="@color/arsenic"/>
-
-      <de.hdodenhof.circleimageview.CircleImageView
-          xmlns:app="http://schemas.android.com/apk/res-auto"
-          android:layout_width="@dimen/x50"
-          android:layout_height="@dimen/x50"
-          android:src="@drawable/ico_print"
-          app:civ_border_width="1px"
-          app:civ_border_color="@color/arsenic"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        >
-      <com.blescaler.ui.ble.AutoBgButton
-          android:id="@+id/btn_main_jingzhong"
-          android:layout_width="wrap_content"
-          android:layout_height="@dimen/y40"
-          android:layout_alignParentLeft="true"
-          android:layout_centerVertical="true"
-          android:layout_marginLeft="70dp"
-          android:background="@drawable/bt_oval_shape"
-          android:text="净重/毛重"
-          android:singleLine="true"
-          android:textColor="@color/white"
           android:textSize="@dimen/x30"
+          android:layout_gravity="center_vertical"
+          android:textColor="@color/white"
+          android:text="00001"
+          android:maxEms="10"
+          android:singleLine="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           />
+      <ImageView
+          android:layout_gravity="center_vertical"
+          android:src="@drawable/ico_connected"
+          android:layout_width="@dimen/x25"
+          android:layout_height="@dimen/x25"
+          />
+    </LinearLayout>
+
+  </LinearLayout>
+  <!--中部-->
+  <LinearLayout
+      android:layout_weight="4"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginTop="@dimen/y25"
+      android:orientation="horizontal"
+      >
+    <!--侧滑按钮-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="@dimen/x50"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        >
+      <ImageButton
+          android:layout_gravity="center"
+          android:background="@drawable/ico_right_slide"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+    <!--中间-->
+    <LinearLayout
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        >
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="3"
+          >
+
+        <LinearLayout
+            android:background="@drawable/fill_bitmap_black"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            >
+          <LinearLayout
+              android:layout_gravity="center"
+              android:orientation="horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              >
+            <TextView
+                android:textColor="@color/bleu_de_france"
+                android:text="校验标准值:"
+                android:textSize="@dimen/x45"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:textSize="@dimen/x45"
+                android:textColor="@color/bleu_de_france"
+                tools:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:textColor="@color/bleu_de_france"
+                android:textSize="@dimen/x45"
+                android:text="数量(个)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+          </LinearLayout>
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              >
+            <TextView
+                android:layout_gravity="center"
+                android:textSize="@dimen/x60"
+                android:textColor="@color/bleu_de_france"
+                android:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+          </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            >
+          <LinearLayout
+              android:orientation="horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              >
+            <Button
+                android:background="@drawable/btn_gray_selector"
+                android:text="采样"
+                android:textColor="@color/white"
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/y40"
+                />
+            <Button
+                android:layout_marginLeft="@dimen/x5"
+                android:background="@drawable/btn_gray_selector"
+                android:text="清除计数"
+                android:textColor="@color/white"
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/y40"
+                />
+          </LinearLayout>
+          <LinearLayout
+              android:layout_marginTop="@dimen/y5"
+              android:orientation="horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              >
+            <Button
+                android:background="@drawable/btn_gray_selector"
+                android:text="单重记忆"
+                android:textColor="@color/white"
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/y40"
+                />
+            <Button
+                android:layout_marginLeft="@dimen/x5"
+                android:background="@drawable/btn_gray_selector"
+                android:text="单重"
+                android:textColor="@color/white"
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/y40"
+                />
+          </LinearLayout>
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <!--下部-->
+      <LinearLayout
+          android:background="@drawable/fill_bitmap_black"
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="4"
+          >
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            >
+          <TextView
+              android:layout_gravity="center"
+              android:text="净重(kg)"
+              android:textColor="@color/bleu_de_france"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              />
+          <TextView
+              android:textColor="@color/bleu_de_france"
+              android:id="@+id/textView1"
+              android:layout_width="158dp"
+              android:layout_height="40dp"
+              android:gravity="center"
+              android:layout_gravity="center"
+              android:text="1000.00"
+              android:textSize="15sp"
+              android:textStyle="bold"
+              />
+          <LinearLayout
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              >
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:text="扣重"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:text="0.00001"
+                android:textColor="@color/bright_turquoise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:textColor="@color/bright_turquoise"
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="kg"
+                android:textSize="15sp"
+                />
+          </LinearLayout>
+        </LinearLayout>
+
+        <!--中间的小图标-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            >
+          <LinearLayout
+              android:layout_gravity="center_vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="horizontal"
+              >
+            <ImageView
+                android:layout_width="@dimen/x60"
+                android:layout_height="@dimen/x32"
+                android:background="@drawable/ico_a_selecotor"
+                />
+            <ImageView
+                android:layout_marginLeft="@dimen/x5"
+                android:layout_width="@dimen/x60"
+                android:layout_height="@dimen/x32"
+                android:background="@drawable/ico_b_selecotor"
+                />
+            <ImageView
+                android:layout_marginLeft="@dimen/x5"
+                android:layout_width="@dimen/x60"
+                android:layout_height="@dimen/x32"
+                android:background="@drawable/ico_c_selecotor"
+                />
+            <ImageView
+                android:layout_marginLeft="@dimen/x5"
+                android:layout_width="@dimen/x60"
+                android:layout_height="@dimen/x32"
+                android:background="@drawable/ico_d_selecotor"
+                />
+            <ImageView
+                android:layout_marginLeft="@dimen/x5"
+                android:layout_width="@dimen/x60"
+                android:layout_height="@dimen/x32"
+                android:background="@drawable/ico_e_selecotor"
+                />
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            >
+          <TextView
+              android:layout_gravity="center"
+              android:text="单重(kg)"
+              android:textColor="@color/bleu_de_france"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              />
+          <TextView
+              android:textColor="@color/bleu_de_france"
+              android:layout_width="158dp"
+              android:layout_height="40dp"
+              android:gravity="center"
+              android:layout_gravity="center"
+              android:text="0.01"
+              android:textSize="15sp"
+              android:textStyle="bold"
+              />
+          <LinearLayout
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              >
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:text="累计"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:text="0"
+                android:textColor="@color/yellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:textColor="@color/yellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0(个)"
+                android:textSize="15sp"
+                />
+          </LinearLayout>
+        </LinearLayout>
+      </LinearLayout>
+    </LinearLayout>
+    <!--右侧-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="@dimen/x50"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        >
+    </LinearLayout>
+  </LinearLayout>
+    <!--底部菜单-->
+  <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y70"
+        >
+      <LinearLayout
+          android:gravity="center"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          >
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="@dimen/x50"
+            android:layout_height="@dimen/x50"
+            android:src="@drawable/printset"
+            app:civ_border_width="1px"
+            app:civ_border_color="@color/arsenic"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="@dimen/x50"
+            android:layout_height="@dimen/x50"
+            android:src="@drawable/print"
+            app:civ_border_width="1px"
+            app:civ_border_color="@color/arsenic"/>
+      </LinearLayout>
+
+      <LinearLayout
+          android:orientation="horizontal"
+          android:gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          >
+        <com.blescaler.ui.ble.AutoBgButton
+            android:elevation="1dp"
+            android:id="@+id/btn_main_jingzhong"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y40"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="70dp"
+            android:background="@drawable/btn_gray_selector"
+            android:text="净重/毛重"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x30"
+            />
 
         <Button
+            android:elevation="1dp"
             android:layout_marginLeft="@dimen/x5"
             android:layout_width="@dimen/x90"
             android:layout_height="@dimen/y40"
             android:singleLine="true"
             android:text="扣重"
             android:textColor="@color/white"
-            android:background="@drawable/bt_oval_shape"
+            android:background="@drawable/btn_gray_selector"
             android:textSize="@dimen/x30"
             />
         <Button
+            android:elevation="1dp"
             android:layout_width="@dimen/x90"
             android:layout_height="@dimen/y40"
             android:singleLine="true"
             android:text="归零"
-            android:background="@drawable/bt_oval_shape"
+            android:background="@drawable/btn_gray_selector"
             android:textColor="@color/white"
             android:textSize="@dimen/x30"
             />
         <TextView
+            android:elevation="1dp"
             android:layout_width="@dimen/x90"
             android:layout_height="@dimen/y40"
             android:singleLine="true"
             android:text="单位"
             android:gravity="center"
-            android:background="@drawable/bt_oval_shape"
+            android:background="@drawable/btn_gray_selector"
             android:textColor="@color/white"
             android:textSize="@dimen/x30"
             />
         <Button
+            android:elevation="1dp"
             android:layout_width="@dimen/x90"
             android:layout_height="@dimen/y40"
             android:singleLine="true"
-            android:background="@drawable/bt_oval_shape"
+            android:background="@drawable/btn_gray_selector"
             android:text="扣重"
             android:textColor="@color/white"
             android:textSize="@dimen/x30"
             />
 
         <com.blescaler.ui.ble.AutoBgButton
+            android:elevation="1dp"
             android:id="@+id/button7"
             android:layout_width="@dimen/x90"
             android:layout_height="@dimen/y40"
-            android:background="@drawable/bt_oval_shape"
+            android:background="@drawable/btn_gray_selector"
             android:text="累计"
             android:textColor="@color/white"
             android:textSize="@dimen/x30"
             />
-    </LinearLayout>
+      </LinearLayout>
 
+    </LinearLayout>
   </LinearLayout>
 
-</LinearLayout>
