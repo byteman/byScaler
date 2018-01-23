@@ -88,4 +88,14 @@
   <string name="welcome">Welcome to Bluetooth Scale</string>
   <string name="start_copyright">©2015-2017</string>
   <string name="start_company">WeiZhi Software Technology(Chongqing)Co.Ltd.)</string>
+    <string name="sample">sample</string>
+    <string name="reset_count">U.W clear</string>
+    <string name="one_weight">unit weight</string>
+    <string name="one_weight_save"> U.W save</string>
+    <string name="quantity">quantity</string>
+    <string name="input">Please input weight</string>
+    <string name="saveok">Save OK</string>
+    <string name="zero_failed">Can not zero in net mode</string>
+    <string name="menu_weight">Weight mode</string>
+    <string name="menu_count">Count mode</string>
 </resources>

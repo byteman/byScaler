@@ -29,7 +29,7 @@ import android.widget.Toast;
 public class MainActivity extends BaseActivity implements OnTouchListener, OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	TextView menu_serach, menu_one_scaler, menu_print, //
-			menu_calib, menu_para, menu_data_report, menu_setting, menu_four_scaler, prevLeftMenu;
+			menu_calib, menu_para, menu_data_report, menu_setting, menu_count, prevLeftMenu;
 	GestureDetector simpleGestureListener;
 	
 	/*
@@ -120,7 +120,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		menu_para = (TextView) findViewById(R.id.menu_para);
 		menu_data_report = (TextView) findViewById(R.id.menu_data_report);
 		menu_setting = (TextView) findViewById(R.id.menu_setting);
-		menu_four_scaler = (TextView) findViewById(R.id.menu_four_scaler);
+		menu_count = (TextView) findViewById(R.id.menu_count);
 		menu_serach.setOnClickListener(this);
 		menu_one_scaler.setOnClickListener(this);
 		menu_print.setOnClickListener(this);
@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		menu_para.setOnClickListener(this);
 		menu_data_report.setOnClickListener(this);
 		menu_setting.setOnClickListener(this);
-		menu_four_scaler.setOnClickListener(this);
+		menu_count.setOnClickListener(this);
 	
 		//ActionBar actionBar=getActionBar();
 		 //actionBar.setDisplayShowHomeEnabled(true);
@@ -207,12 +207,12 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 			//StartActivity(SysParamActivity.class, null);
 			goToFragment(9);
 			break;
-		case R.id.menu_four_scaler:
-//			if (prevLeftMenu != null)
-//				prevLeftMenu.setBackgroundColor(color.transparent);
-//			menu_four_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-//			prevLeftMenu = menu_four_scaler;
-//			goToFragment(3);
+		case R.id.menu_count:
+			if (prevLeftMenu != null)
+				prevLeftMenu.setBackgroundColor(color.transparent);
+			menu_count.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+			prevLeftMenu = menu_count;
+			goToFragment(3);
 			
 			break;
 		}
@@ -220,14 +220,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 	}
 
 	private void goToFragment(int pos) {
-		// 璺宠浆涓嶅悓鐨勯〉闈?
+
 		Fragment newFragment = null;
 		if(pos ==  1)
 		{
-			//newFragment = WeightDataFragment.newFragment();
-//		   Intent intent = new Intent(this, DBActivity.class);
-//		   startActivity(intent); 
-//		   return;
+
 		}
 		if(pos == 2)
 		{
@@ -236,13 +233,13 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
 		   startActivity(intent); 
 		   return;
 		}
+		if(pos == 3)
+		{
+			newFragment = OneCountFragment.newFragment();
+		}
 		if(pos == 4)
 		{
-		
-//		   Intent intent = new Intent(this, PairedScalerActivity.class);
-//		   intent.putExtra("act", "param");
-//		   startActivity(intent); 
-		   
+
 		   Intent intent = new Intent(MainActivity.this, ScalerParamActivity.class);
 		   intent.putExtra("address","00");
 		   startActivity(intent);
