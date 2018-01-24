@@ -8,7 +8,7 @@ public class CountRecord {
 
  	private String id; 		//记录编号
     private String count; 		//计数个数
-	private String perWeight; //单位重量
+	private String uw; //单位重量
 	private String totalWeight; //总重量
     private long time; //计数时间
  	 
@@ -29,13 +29,13 @@ public class CountRecord {
 		this.count = _count;
 	}
 	
-	public void setPerWeight(String wet) {
+	public void setUw(String wet) {
 		// TODO Auto-generated method stub
-		this.perWeight = wet;
+		this.uw = wet;
 	}
 	
-	public String getPerWeight() {
-		return perWeight;
+	public String getUw() {
+		return uw;
 	}
 	public void setTotalWeight(String wet) {
 		// TODO Auto-generated method stub

@@ -145,7 +145,7 @@ public class WeightDao {
 	 * 保存一条过磅记录
 	 * @param user
 	 */
-	public void saveWeight(WeightRecord item){
+	public boolean saveWeight(WeightRecord item){
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_GROSS, item.getGross());
@@ -156,8 +156,9 @@ public class WeightDao {
 		values.put(COLUMN_TIME, time);
 		item.setTime(time);
 		if(db.isOpen()){
-			db.replace(TABLE_NAME, null, values);
+			return db.replace(TABLE_NAME, null, values)!=-1;
 			
 		}
+		return false;
 	}
 }

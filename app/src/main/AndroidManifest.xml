@@ -74,7 +74,8 @@ limitations under the License.
         android:label="@string/title_activity_weight">
     </activity>
     <activity
-        android:name=".ScalerParamActivity"
+        android:name=".ConfigActivity"
+        android:screenOrientation="landscape"
         android:label="@string/title_activity_weight">
     </activity>
     <activity

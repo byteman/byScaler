@@ -95,6 +95,7 @@
     <string name="quantity">数量</string>
     <string name="input">请输入重量</string>
     <string name="saveok">保存成功</string>
+    <string name="savefail">保存失败</string>
     <string name="zero_failed">清零失败，净重状态不允许清零</string>
     <string name="menu_weight">计重模式</string>
     <string name="menu_count">计数模式</string>
@@ -105,4 +106,7 @@
   <string name="menu_set_manager">设备管理</string>
   <string name="menu_version">版本选择</string>
   <string name="menu_more">更多</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_en">英文</string>
+    <string name="language">语言选择</string>
 </resources>
