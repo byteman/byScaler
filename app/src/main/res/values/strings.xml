@@ -98,4 +98,11 @@
     <string name="zero_failed">Can not zero in net mode</string>
     <string name="menu_weight">Weight mode</string>
     <string name="menu_count">Count mode</string>
+
+    <string name="menu_title_weight">weight</string>
+  <string name="menu_his">history</string>
+  <string name="menu_set">set</string>
+  <string name="menu_set_manager">device</string>
+  <string name="menu_version">version</string>
+  <string name="menu_more">more</string>
 </resources>

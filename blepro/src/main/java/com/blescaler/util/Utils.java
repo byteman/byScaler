@@ -1,8 +1,6 @@
-package com.blescaler.utils;
+package com.blescaler.util;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

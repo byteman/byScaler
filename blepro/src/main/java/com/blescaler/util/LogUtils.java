@@ -1,4 +1,4 @@
-package com.blescaler.utils;
+package com.blescaler.util;
 
 import android.util.Log;
 

@@ -1,9 +1,7 @@
 package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
-import java.util.Timer;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -19,11 +17,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blescaler.ui.R;
-import com.blescaler.utils.FloatValue;
-import com.blescaler.utils.IntValue;
-import com.blescaler.utils.NumberValues;
-import com.blescaler.utils.Utils;
+import com.blescaler.util.FloatValue;
+import com.blescaler.util.IntValue;
+import com.blescaler.util.NumberValues;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.WorkService;

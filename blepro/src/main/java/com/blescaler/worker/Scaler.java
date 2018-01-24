@@ -1,10 +1,9 @@
 package com.blescaler.worker;
 
 import android.os.Message;
-import android.util.Log;
 
-import com.blescaler.utils.CheckSum;
-import com.blescaler.utils.Utils;
+import com.blescaler.util.CheckSum;
+import com.blescaler.util.Utils;
 import com.xtremeprog.sdk.ble.BleGattCharacteristic;
 
 public class Scaler {

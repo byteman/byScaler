@@ -23,9 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blescaler.ui.R;
-import com.blescaler.utils.IntValue;
-import com.blescaler.utils.NumberValues;
-import com.blescaler.utils.Utils;
+import com.blescaler.util.IntValue;
+import com.blescaler.util.NumberValues;
+import com.blescaler.util.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.WorkService;
