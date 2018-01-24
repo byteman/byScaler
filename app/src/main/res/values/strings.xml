@@ -105,4 +105,9 @@
   <string name="menu_set_manager">device</string>
   <string name="menu_version">version</string>
   <string name="menu_more">more</string>
+  <!--历史记录查询-->
+  <string name="his_filter">filter</string>
+  <string name="his_next_page">next page</string>
+  <string name="his_previous_page">previous page</string>
+  <string name="his_time">time</string>
 </resources>

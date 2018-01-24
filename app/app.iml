@@ -104,6 +104,7 @@
     <orderEntry type="library" exported="" name="com.android.support:support-vector-drawable-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-v4-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:/Users/Jing/Android/BLEScaler/app/libs/bugly_1.2.3.8__release.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.scwang.smartrefresh:SmartRefreshLayout-1.0.4-7" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:animated-vector-drawable-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:appcompat-v7-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-core-utils-26.0.0" level="project" />
