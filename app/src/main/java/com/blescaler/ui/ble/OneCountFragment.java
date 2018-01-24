@@ -44,13 +44,15 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 
 	Button btn_switch_unit,btn_still = null;
 	BatteryState btn_power = null;
-	TextView tv_weight = null,tv_unit=null;
+	TextView tv_weight = null,tv_quantity=null;
 	TextView txtTare=null;
 
 	Button btn_sample,btn_reset_count,btn_save_uw,btn_preset_uw;
 	
 	//Scaler scaler = null;
 	public int cont=0,cout_2s,cout_3s=0;
+	private int  uw = 0;
+	private boolean enable_uw = false;
 	private static String address;
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
@@ -140,7 +142,7 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 		btn_reset_count= (Button) root.findViewById(R.id.btn_reset_uw);
 		btn_save_uw = (Button) root.findViewById(R.id.btn_save_uw);
 		btn_preset_uw = (Button) root.findViewById(R.id.btn_preset_uw);
-
+		tv_quantity = (TextView) root.findViewById(R.id.tv_quantity);
 
 
 		img_zero = (ImageView) root.findViewById(R.id.img_zero);
@@ -334,7 +336,22 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 			mActivity = new WeakReference<OneCountFragment>(activity);
 			
 		}
-		
+		public void calc(OneCountFragment theActivity,Scaler d)
+		{
+			int quantity = 0;
+			if(d.isGross())
+			{
+				//毛重状态下的 物品个数 = (内部重量 )/单位重量
+				quantity = (d.getCalcWeight() / theActivity.uw);
+			}
+			else
+			{
+				//净重状态下的 物品个数 = (内部重量 - 你发的皮重)/单位重量
+				quantity = (d.getCalcWeight() - d.getTare() / theActivity.uw);
+
+			}
+			theActivity.tv_quantity.setText("" + quantity);
+		}
 		@Override
 		public void handleMessage(Message msg) {
 			OneCountFragment theActivity = mActivity.get();
@@ -353,8 +370,6 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 					}
 					theActivity.updateState();
 
-					WorkService.requestReadWgtV2(address);
-
 
 					theActivity.tv_weight.setText(d.getDispalyWeight());
 					theActivity.set_zero_state(d.isZero());
@@ -364,6 +379,7 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()));
 					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));
 					theActivity.tv_weight.setText(d.getDispalyWeight());
+					calc(theActivity,d);
 					break;
 				}
 				case Global.MSG_BLE_DISCONNECTRESULT:

@@ -160,14 +160,26 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
     mDrawerLayout.closeDrawers();
     switch (v.getId()) {
       case R.id.tv_menu_weight:
+        if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
+        goToFragment(7);
+        tvMenuWeight.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+        prevLeftMenu = tvMenuWeight;
         break;
       case R.id.tv_menu_count:
+        if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
+        tvMenuCount.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+        prevLeftMenu = tvMenuCount;
+        goToFragment(3);
         break;
       case R.id.tv_menu_history:
         break;
       case R.id.tv_menu_set:
         break;
       case R.id.tv_menu_device:
+        if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
+        goToFragment(2);
+        tvMenuDevice.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+        prevLeftMenu = tvMenuDevice;
         break;
       case R.id.tv_menu_version:
         break;
@@ -175,18 +187,8 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         break;
 
       default:break;
-      //case R.id.menu_serach:
-      //  if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
-      //  goToFragment(2);
-      //  menu_serach.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-      //  prevLeftMenu = menu_serach;
-      //  break;
-      //case R.id.menu_one_scaler:
-      //  if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
-      //  goToFragment(7);
-      //  menu_one_scaler.setBackgroundColor(getResources().getColor(R.color.set_item_click));
-      //  prevLeftMenu = menu_one_scaler;
-      //  break;
+
+
       //case R.id.menu_print:
       //  //			if (prevLeftMenu != null)
       //  //				prevLeftMenu.setBackgroundColor(color.transparent);

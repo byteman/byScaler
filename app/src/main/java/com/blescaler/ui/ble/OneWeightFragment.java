@@ -378,17 +378,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 						return;
 					}
 					theActivity.updateState();
-					//if(theActivity.cout_3s > 0)
-					//{
-					//	return;
-					//}
-					WorkService.requestReadWgtV2(address);
-
 
 					theActivity.tv_weight.setText(d.getDispalyWeight());
 					theActivity.set_zero_state(d.isZero());
-				  theActivity.set_still_state(d.isStandstill());
-				  theActivity.set_tare_state(!d.isGross());
+					  theActivity.set_still_state(d.isStandstill());
+					  theActivity.set_tare_state(!d.isGross());
 					theActivity.tv_unit.setText(d.getUnit());
 					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()));
 					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));

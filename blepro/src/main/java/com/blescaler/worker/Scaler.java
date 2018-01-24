@@ -16,16 +16,23 @@ public class Scaler {
 	private float weight; //显示重量
 	private String sWeight; //显示重量的字符串.
 
-	public float getTare() {
+	public int getTare() {
 		return tare;
 	}
 
-	public void setTare(float tare) {
+	public void setTare(int tare) {
 		this.tare = tare;
 	}
+	public int getNet() {
+		return net;
+	}
 
-	private float tare; //皮重
-	private float net; //净重
+	public void setNet(int net) {
+		this.net = net;
+	}
+	private int tare; //皮重
+	private int net; //净重
+	private int calcWeight; //内部重量.
 
 	public String getDispalyWeight() {
 		return sWeight;
@@ -35,15 +42,15 @@ public class Scaler {
 		this.sWeight = sWeight;
 	}
 
-	public float getCalcWeight() {
+	public int getCalcWeight() {
 		return calcWeight;
 	}
 
-	public void setCalcWeight(float calcWeight) {
+	public void setCalcWeight(int calcWeight) {
 		this.calcWeight = calcWeight;
 	}
 
-	private float calcWeight; //内部重量.
+
 
 
 	private int loadValue; //
@@ -379,9 +386,9 @@ public class Scaler {
 						return 0;
 					}
 					parseState(Utils.bytesToShort(val,17));
-					this.calcWeight = Utils.Int2Float(Utils.bytesToInt(val, 5), this.dot_num);
+					this.calcWeight = Utils.bytesToInt(val, 5);
 
-					this.tare = Utils.Int2Float(Utils.bytesToInt(val, 13), this.dot_num);
+					this.tare = Utils.bytesToInt(val, 13);
 
 					int iWeight = Utils.bytesToInt(val, 9);
 					this.weight = Utils.Int2Float(iWeight, this.dot_num);
