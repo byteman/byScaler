@@ -7,6 +7,7 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 
+import com.blescaler.db.Config;
 import com.blescaler.util.Utils;
 import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.worker.WorkService;
@@ -51,8 +52,8 @@ public class StartActivity extends Activity {
 		//requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
 		setContentView(R.layout.activity_start);
 		initView();
-
-		switchLanguage("zh");
+		String lang = Config.getInstance(this).getLanguage();
+		switchLanguage(lang);
 		mHandler = new MHandler(this);
 		WorkService.addHandler(mHandler);
 		Utils.setDiscoverableTimeout(10);

@@ -22,7 +22,7 @@
       android:drawablePadding="@dimen/x30"
       app:drawable="@drawable/weight_selecotor"
       app:drawableHeight="@dimen/y20"
-      app:drawableWidth="@dimen/y20"
+      app:drawableWidth="@dimen/x20"
       app:position="1"
       />
 
@@ -45,44 +45,24 @@
       app:position="1"
       />
 
-  <com.blescaler.view.ImageTextView
-      android:id="@+id/tv_menu_history"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
-      android:layout_height="@dimen/y120"
-      android:layout_below="@+id/line1"
-      android:layout_gravity="center|left"
-      android:gravity="center"
-      android:padding="5dp"
-      android:text="@string/menu_his"
-      android:textColor="@drawable/tv_bg_selecotr"
-      android:textSize="@dimen/x40"
-      android:drawablePadding="@dimen/x30"
-      app:drawable="@drawable/his_selecotor"
-      app:drawableHeight="@dimen/y20"
-      app:drawableWidth="@dimen/y20"
-      app:position="1"
-      />
-
-
-  <com.blescaler.view.ImageTextView
-      android:id="@+id/tv_menu_set"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
-      android:layout_height="@dimen/y120"
-      android:layout_below="@+id/line1"
-      android:layout_gravity="center|left"
-      android:gravity="center"
-      android:padding="5dp"
-      android:text="@string/menu_set"
-      android:textColor="@drawable/tv_bg_selecotr"
-      android:textSize="@dimen/x40"
-      android:drawablePadding="@dimen/x30"
-      app:drawable="@drawable/set_selecotor"
-      app:drawableHeight="@dimen/y20"
-      app:drawableWidth="@dimen/y20"
-      app:position="1"
-      />
+  <!--<com.blescaler.view.ImageTextView-->
+      <!--android:id="@+id/tv_menu_history"-->
+      <!--android:layout_marginLeft="@dimen/x30"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="@dimen/y120"-->
+      <!--android:layout_below="@+id/line1"-->
+      <!--android:layout_gravity="center|left"-->
+      <!--android:gravity="center"-->
+      <!--android:padding="5dp"-->
+      <!--android:text="@string/menu_his"-->
+      <!--android:textColor="@drawable/tv_bg_selecotr"-->
+      <!--android:textSize="@dimen/x40"-->
+      <!--android:drawablePadding="@dimen/x30"-->
+      <!--app:drawable="@drawable/his_selecotor"-->
+      <!--app:drawableHeight="@dimen/y20"-->
+      <!--app:drawableWidth="@dimen/y20"-->
+      <!--app:position="1"-->
+      <!--/>-->
 
   <com.blescaler.view.ImageTextView
       android:id="@+id/tv_menu_device"
@@ -102,9 +82,8 @@
       app:drawableWidth="@dimen/y20"
       app:position="1"
       />
-
   <com.blescaler.view.ImageTextView
-      android:id="@+id/tv_menu_version"
+      android:id="@+id/tv_menu_set"
       android:layout_marginLeft="@dimen/x30"
       android:layout_width="wrap_content"
       android:layout_height="@dimen/y120"
@@ -112,33 +91,54 @@
       android:layout_gravity="center|left"
       android:gravity="center"
       android:padding="5dp"
-      android:text="@string/menu_version"
+      android:text="@string/menu_set"
       android:textColor="@drawable/tv_bg_selecotr"
       android:textSize="@dimen/x40"
       android:drawablePadding="@dimen/x30"
-      app:drawable="@drawable/version_selecotor"
+      app:drawable="@drawable/set_selecotor"
       app:drawableHeight="@dimen/y20"
       app:drawableWidth="@dimen/y20"
       app:position="1"
       />
 
-  <com.blescaler.view.ImageTextView
-      android:id="@+id/tv_menu_more"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
-      android:layout_height="@dimen/y120"
-      android:layout_below="@+id/line1"
-      android:layout_gravity="center|left"
-      android:gravity="center"
-      android:padding="5dp"
-      android:text="@string/menu_more"
-      android:textColor="@drawable/tv_bg_selecotr"
-      android:textSize="@dimen/x40"
-      android:drawablePadding="@dimen/x30"
-      app:drawable="@drawable/more_selecotor"
-      app:drawableHeight="@dimen/y20"
-      app:drawableWidth="@dimen/y20"
-      app:position="1"
-      />
+
+
+  <!--<com.blescaler.view.ImageTextView-->
+      <!--android:id="@+id/tv_menu_version"-->
+      <!--android:layout_marginLeft="@dimen/x30"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="@dimen/y120"-->
+      <!--android:layout_below="@+id/line1"-->
+      <!--android:layout_gravity="center|left"-->
+      <!--android:gravity="center"-->
+      <!--android:padding="5dp"-->
+      <!--android:text="@string/menu_version"-->
+      <!--android:textColor="@drawable/tv_bg_selecotr"-->
+      <!--android:textSize="@dimen/x40"-->
+      <!--android:drawablePadding="@dimen/x30"-->
+      <!--app:drawable="@drawable/version_selecotor"-->
+      <!--app:drawableHeight="@dimen/y20"-->
+      <!--app:drawableWidth="@dimen/y20"-->
+      <!--app:position="1"-->
+      <!--/>-->
+
+  <!--<com.blescaler.view.ImageTextView-->
+      <!--android:id="@+id/tv_menu_more"-->
+      <!--android:layout_marginLeft="@dimen/x30"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="@dimen/y120"-->
+      <!--android:layout_below="@+id/line1"-->
+      <!--android:layout_gravity="center|left"-->
+      <!--android:gravity="center"-->
+      <!--android:padding="5dp"-->
+      <!--android:text="@string/menu_more"-->
+      <!--android:textColor="@drawable/tv_bg_selecotr"-->
+      <!--android:textSize="@dimen/x40"-->
+      <!--android:drawablePadding="@dimen/x30"-->
+      <!--app:drawable="@drawable/more_selecotor"-->
+      <!--app:drawableHeight="@dimen/y20"-->
+      <!--app:drawableWidth="@dimen/y20"-->
+      <!--app:position="1"-->
+      <!--/>-->
 
 </LinearLayout>

@@ -45,7 +45,7 @@ public class CountDao {
 			for (CountRecord item : wtList) {
 				ContentValues values = new ContentValues();
 				values.put(COLUMN_COUNT, item.getCount());				
-                values.put(COLUMN_PER_WEIGHT, item.getPerWeight());
+                values.put(COLUMN_PER_WEIGHT, item.getUw());
                 values.put(COLUMN_TOTAL_WEIGHT, item.getTotalWeight());
                 values.put(COLUMN_TIME, item.getTime());
                 
@@ -74,7 +74,7 @@ public class CountDao {
 		        
 				CountRecord item = new CountRecord();
 				item.setCount(count);
-				item.setPerWeight(perw);
+				item.setUw(perw);
 				item.setTotalWeight(totalw);
 				item.setTime(times);
 				item.setID(wetid);
@@ -108,7 +108,7 @@ public class CountDao {
 			        
 					
 					item.setCount(count);
-					item.setPerWeight(perw);
+					item.setUw(perw);
 					item.setTotalWeight(totalw);
 					item.setTime(times);
 					item.setID(wetid);
@@ -145,19 +145,19 @@ public class CountDao {
 	 * 保存一条过磅记录
 	 * @param user
 	 */
-	public void saveOne(CountRecord item){
+	public boolean saveOne(CountRecord item){
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_COUNT, item.getCount());
-		values.put(COLUMN_PER_WEIGHT, item.getPerWeight());
+		values.put(COLUMN_PER_WEIGHT, item.getUw());
 		values.put(COLUMN_TOTAL_WEIGHT, item.getTotalWeight());
-		//item.setID(String.valueOf(++maxid));
 		long time=System.currentTimeMillis();
 		values.put(COLUMN_TIME, time);
 		item.setTime(time);
 		if(db.isOpen()){
-			db.replace(TABLE_NAME, null, values);
+			return db.replace(TABLE_NAME, null, values)!=-1;
 			
 		}
+		return false;
 	}
 }

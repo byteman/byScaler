@@ -90,14 +90,15 @@
   <string name="start_company">WeiZhi Software Technology(Chongqing)Co.Ltd.)</string>
     <string name="sample">sample</string>
     <string name="reset_count">U.W clear</string>
-    <string name="one_weight">unit weight</string>
+    <string name="one_weight">U.W</string>
     <string name="one_weight_save"> U.W save</string>
     <string name="quantity">quantity</string>
     <string name="input">Please input weight</string>
-    <string name="saveok">Save OK</string>
+    <string name="saveok">Save ok</string>
+    <string name="savefail">Save fail</string>
     <string name="zero_failed">Can not zero in net mode</string>
-    <string name="menu_weight">Weight mode</string>
-    <string name="menu_count">Count mode</string>
+    <string name="menu_weight">weight</string>
+    <string name="menu_count">count</string>
 
     <string name="menu_title_weight">weight</string>
   <string name="menu_his">history</string>
@@ -105,9 +106,14 @@
   <string name="menu_set_manager">device</string>
   <string name="menu_version">version</string>
   <string name="menu_more">more</string>
+
   <!--历史记录查询-->
   <string name="his_filter">filter</string>
   <string name="his_next_page">next page</string>
   <string name="his_previous_page">previous page</string>
   <string name="his_time">time</string>
+    <string name="lang_zh">chinese</string>
+    <string name="lang_en">english</string>
+    <string name="language">language</string>
+
 </resources>

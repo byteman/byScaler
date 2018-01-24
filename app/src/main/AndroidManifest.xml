@@ -66,8 +66,11 @@ limitations under the License.
 
     <activity
         android:name=".ScalerParamActivity"
-        android:label="@string/title_activity_weight">
+        android:label="@string/title_activity_characteristic">
     </activity>
+    <activity
+        android:name=".ConfigActivity"
+        android:screenOrientation="landscape"/>
     <activity
         android:name=".CalibActivity"
         android:label="@string/calibwgt">
@@ -101,7 +104,5 @@ limitations under the License.
         android:screenOrientation="landscape">
 
     </activity>
-
   </application>
-
 </manifest>

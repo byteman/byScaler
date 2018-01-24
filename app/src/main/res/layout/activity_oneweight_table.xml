@@ -44,10 +44,13 @@
           android:layout_height="wrap_content"
           />
       <ImageView
+          android:id="@+id/img_conn_state"
+          android:layout_marginLeft="@dimen/x20"
+          android:layout_marginRight="@dimen/x50"
           android:layout_gravity="center_vertical"
-          android:src="@drawable/ico_connected"
-          android:layout_width="@dimen/x25"
-          android:layout_height="@dimen/x25"
+          android:src="@drawable/conn_state_list"
+          android:layout_width="@dimen/x32"
+          android:layout_height="@dimen/x32"
           />
     </LinearLayout>
 
@@ -308,18 +311,7 @@
         android:gravity="right|center_vertical"
         android:paddingRight="@dimen/x50"
         >
-      <Button
-          android:id="@+id/btn_save"
-          android:layout_width="@dimen/x150"
-          android:layout_height="wrap_content"
-          android:background="@drawable/btn_gray_selector"
-          android:elevation="1dp"
-          android:singleLine="true"
-          android:text="@string/save"
-          android:textColor="@color/white"
-          android:textSize="@dimen/x36"
-          android:textStyle="bold"
-          />
+
       <Button
           android:id="@+id/btn_switch"
           android:layout_width="wrap_content"
@@ -374,7 +366,19 @@
           android:textSize="@dimen/x36"
           android:textStyle="bold"
           />
-
+      <Button
+          android:id="@+id/btn_save"
+          android:layout_width="@dimen/x150"
+          android:layout_height="wrap_content"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
+          android:singleLine="true"
+          android:text="@string/save"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x36"
+          android:layout_marginLeft="@dimen/x5"
+          android:textStyle="bold"
+          />
 
     </LinearLayout>
   </LinearLayout>
