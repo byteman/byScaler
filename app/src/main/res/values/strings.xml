@@ -118,5 +118,8 @@
     <string name="lang_en">english</string>
     <string name="language">language</string>
     <string name="back">back</string>
+    <string name="total">total</string>
+    <string name="uw">u.w</string>
+    <string name="count">count</string>
 
 </resources>

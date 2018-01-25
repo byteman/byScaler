@@ -116,4 +116,7 @@
     <string name="lang_en">英文</string>
     <string name="language">语言选择</string>
     <string name="back">返回</string>
+    <string name="total">总重</string>
+    <string name="uw">单重</string>
+    <string name="count">个数</string>
 </resources>

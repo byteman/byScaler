@@ -78,7 +78,7 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_history);
+		setContentView(R.layout.activity_count_history);
 		history = findViewById(R.id.listView);
         btn_previous_page = findViewById(R.id.btn_previous_page);
         btn_next_page = findViewById(R.id.btn_next_page);
@@ -218,9 +218,9 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 	static class ViewHolder {
 		//TextView tv_index;
 		TextView tv_time;
-		TextView tv_gross;
-		TextView tv_tare;
-		TextView tv_net;
+		TextView tv_total;
+		TextView tv_uw;
+		TextView tv_count;
 
 	}
 
