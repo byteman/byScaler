@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
+import com.blescaler.ui.HistoryWeightActivity;
 import com.blescaler.ui.R;
 import com.blescaler.util.IntValue;
 import com.blescaler.util.NumberValues;
@@ -39,7 +41,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	Button btn_tare = null;
 	Button btn_zero = null;
 	Button btn_swtich = null;
-
+	Button btn_history = null;
 	ImageView img_zero = null;
 	ImageView img_still = null;
 	ImageView img_tare = null;
@@ -180,7 +182,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		img_conn =  root.findViewById(R.id.img_conn_state);
         img_conn.getDrawable().setLevel(0);
 		btn_unit = (Button) root.findViewById(R.id.btn_unit);
-
+		btn_history = root.findViewById(R.id.btn_history);
 		btn_unit.setOnClickListener(this);
 		
 
@@ -190,6 +192,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		tv_weight.setOnClickListener(this);
 		btn_zero.setOnClickListener(this);
 		btn_swtich.setOnClickListener(this);
+		btn_history.setOnClickListener(this);
 		
 	}
 	private void initRes()
@@ -249,6 +252,12 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		{
 		case R.id.btn_still:
 			
+			break;
+		case R.id.btn_history:
+			Intent intent = new Intent(this.getActivity(), HistoryWeightActivity.class);
+
+			startActivity(intent);
+
 			break;
 		case R.id.btn_save:
 			if(saveWeight())

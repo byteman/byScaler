@@ -86,6 +86,32 @@ public class WeightDao {
 		}
 		return items;
 	}
+	public List<WeightRecord> getPageWeightList(int page, int page_size) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		List<WeightRecord> items = new ArrayList<WeightRecord>();
+		if (db.isOpen()) {
+			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " limit " +  page_size +  " offset " +  page*page_size , null);
+			while (cursor.moveToNext()) {
+				String gross = cursor.getString(cursor.getColumnIndex(COLUMN_GROSS));
+				String tare = cursor.getString(cursor.getColumnIndex(COLUMN_TARE));
+				String net = cursor.getString(cursor.getColumnIndex(COLUMN_NET));
+				long   times = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME));
+				String wetid = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+
+				WeightRecord item = new WeightRecord();
+				item.setGross(gross);
+				item.setTare(tare);
+				item.setNet(net);
+				item.setTime(times);
+				item.setID(wetid);
+
+				//maxid = Integer.parseInt(wetid);
+				items.add(item);
+			}
+			cursor.close();
+		}
+		return items;
+	}
 	//获取最近一条过磅记录
 	public  boolean getWeightRecord(WeightRecord item) {
 		boolean ok = false;

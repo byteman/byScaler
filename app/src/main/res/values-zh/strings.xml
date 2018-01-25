@@ -106,7 +106,7 @@
   <string name="menu_set_manager">设备管理</string>
   <string name="menu_version">版本选择</string>
   <string name="menu_more">更多</string>
-
+    <string name="history">历史数据</string>
   <string name="his_filter">筛选</string>
   <string name="his_next_page">下一页</string>
   <string name="his_previous_page">上一页</string>
@@ -115,4 +115,5 @@
     <string name="lang_zh">中文</string>
     <string name="lang_en">英文</string>
     <string name="language">语言选择</string>
+    <string name="back">返回</string>
 </resources>

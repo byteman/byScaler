@@ -108,6 +108,7 @@
   <string name="menu_more">more</string>
 
   <!--历史记录查询-->
+    <string name="history">history</string>
     <string name="gross">gross</string>
   <string name="his_filter">filter</string>
   <string name="his_next_page">next</string>
@@ -116,5 +117,6 @@
     <string name="lang_zh">chinese</string>
     <string name="lang_en">english</string>
     <string name="language">language</string>
+    <string name="back">back</string>
 
 </resources>

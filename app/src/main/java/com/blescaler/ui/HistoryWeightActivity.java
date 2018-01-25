@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.blescaler.db.Config;
+import com.blescaler.db.WeightDao;
 import com.blescaler.db.WeightRecord;
 import com.blescaler.util.Utils;
 import com.blescaler.worker.Global;
@@ -45,6 +46,8 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 
 
 	private ListView history;
+    WeightDao dao = null;
+    private Button btn_previous_page,btn_next_page,btn_back;
 	private WeightListAdapter mWeightListAdapter = null;
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onResume()
@@ -77,31 +80,76 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_history);
 		history = findViewById(R.id.listView);
-		mWeightListAdapter = new WeightListAdapter();
+        btn_previous_page = findViewById(R.id.btn_previous_page);
+        btn_next_page = findViewById(R.id.btn_next_page);
+        btn_back = findViewById(R.id.btn_back);
+        dao = new WeightDao(this);
+		mWeightListAdapter = new WeightListAdapter(dao);
 		//lv_Devices.setListAdapter(mLeDeviceListAdapter);
 		history.setAdapter(mWeightListAdapter);
+        btn_next_page.setOnClickListener(this);
+        btn_previous_page.setOnClickListener(this);
+        btn_back.setOnClickListener(this);
 
-	}
+
+    }
 	private class WeightListAdapter extends BaseAdapter {
 		private ArrayList<WeightRecord> items;
 
 		private LayoutInflater mInflator;
-
-
-		public WeightListAdapter() {
+        private  WeightDao mDao = null ;
+        private int m_page = 0,m_page_size = 5;
+        private  boolean m_isEnd = false;
+        public WeightListAdapter(WeightDao dao) {
 			super();
+            mDao = dao;
 			items = new ArrayList<WeightRecord>();
 
 			mInflator = HistoryWeightActivity.this.getLayoutInflater();
 
-			initData();
+            getData(mDao, 0);
 
 		}
 		// 初始化isSelected的数据
-		private void initData() {
+		private int getData(WeightDao dao,int page) {
+            clear();
+            List<WeightRecord> wlist = dao.getPageWeightList(page,m_page_size);
+            for(int i = 0; i < wlist.size(); i++)
+            {
+                addItem(wlist.get(i));
+            }
 
+            notifyDataSetChanged();
+            if(wlist.size() > 0)
+            {
+                m_isEnd = false;
+            }else
+            {
+                m_isEnd = true;
+            }
+            return  wlist.size();
 		}
+        public void next()
+        {
+            if(!m_isEnd)
+            {
+                ++m_page;
+            }
+            if(getData(mDao,m_page) == 0)
+            {
 
+            }
+
+        }
+        public void prev()
+        {
+            if(m_page>0)
+            {
+                m_page--;
+                getData(mDao,m_page);
+            }
+
+        }
 		public void addItem(WeightRecord item) {
 			if (!items.contains(item)) {
 				items.add(item);
@@ -138,8 +186,8 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 			if (view == null) {
 				view = mInflator.inflate(R.layout.listview_weight_item, null);
 				viewHolder = new HistoryWeightActivity.ViewHolder();
-				viewHolder.tv_index = view
-						.findViewById(R.id.index);
+//				viewHolder.tv_index = view
+//						.findViewById(R.id.index);
 				viewHolder.tv_time =  view
 						.findViewById(R.id.time);
 				viewHolder.tv_gross =  view
@@ -157,7 +205,7 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 
 			WeightRecord item = items.get(i);
 			final String date = item.getFormatDate();
-			viewHolder.tv_time.setText(item.getID());
+			//viewHolder.tv_index.setText(item.getID());
 			viewHolder.tv_time.setText(date);
 			viewHolder.tv_gross.setText(item.getGross());
 			viewHolder.tv_tare.setText(item.getTare());
@@ -168,7 +216,7 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 	}
 
 	static class ViewHolder {
-		TextView tv_index;
+		//TextView tv_index;
 		TextView tv_time;
 		TextView tv_gross;
 		TextView tv_tare;
@@ -180,14 +228,14 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.btn_read:
-
-
-			break;
-		case R.id.btn_save:
+		case R.id.btn_next_page:
+            mWeightListAdapter.next();
 
 			break;
-		case R.id.btn_eeprom:
+		case R.id.btn_previous_page:
+            mWeightListAdapter.prev();
+            break;
+		case R.id.btn_back:
 			
 			finish();
 			//WorkService.requestSaveParam(address);

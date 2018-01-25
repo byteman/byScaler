@@ -33,6 +33,20 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           />
+      <Button
+          android:id="@+id/btn_history"
+          android:layout_gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
+          android:singleLine="true"
+          android:text="@string/history"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x30"
+          android:textStyle="bold"
+          android:layout_marginRight="@dimen/x100"
+          />
       <TextView
           android:textSize="@dimen/x30"
           android:layout_gravity="center_vertical"
