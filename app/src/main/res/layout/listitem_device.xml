@@ -14,48 +14,83 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/lavenderblush"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/mirage"
+    android:orientation="horizontal"
     >
 
-    <LinearLayout
-           android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:orientation="vertical"
-			android:id="@+id/mytext"
-		    android:background="@color/lavenderblush"
-		    
-		    >
-    
+  <LinearLayout
+      android:layout_weight="1"
+      android:id="@+id/mytext"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:background="@color/mirage"
+      android:orientation="vertical"
+      >
+    <TextView
+        android:textColor="@color/white"
+        android:id="@+id/device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2222222222"
+        android:textSize="@dimen/x30"
+        />
 
-        <TextView
-            android:id="@+id/device_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2222222222"
-            android:textSize="24dp" />
+    <TextView
+        android:textColor="@color/white"
+        android:id="@+id/device_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2222222222"
+        android:textSize="@dimen/x25"
+        />
 
-        <TextView
-            android:id="@+id/device_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="2222222222"
-            android:textSize="12dp" />
-        
-    </LinearLayout>
+  </LinearLayout>
 
-     <TextView
-            android:id="@+id/device_rssi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="100%"
-            android:layout_marginLeft="20px"
-            android:layout_toRightOf="@id/mytext"
-            android:textSize="12dp" />
-     
+  <LinearLayout
+      android:layout_gravity="center"
+      android:gravity="right"
+      android:layout_weight="1"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      >
+    <ProgressBar
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/x25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        style="?android:attr/progressBarStyleSmall"
+        android:indeterminateDrawable="@drawable/progressbar_small"/>
+
+    <com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/recycler_item_sb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        tools:ignore="RtlHardcoded"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:orientation="horizontal"
+      android:layout_weight="1"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      >
+    <TextView
+        android:id="@+id/device_rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20px"
+        android:layout_toRightOf="@id/mytext"
+        android:text="100%"
+        android:textSize="12dp"
+        />
+
     <CheckBox
         android:id="@+id/device_cbx"
         android:layout_width="wrap_content"
@@ -64,6 +99,9 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        />
+  </LinearLayout>
 
-</RelativeLayout>
+
+</LinearLayout>
