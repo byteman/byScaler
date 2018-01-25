@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     >
   <!--顶部-->
+
   <LinearLayout
       android:layout_weight="1"
       android:orientation="horizontal"
@@ -51,7 +52,6 @@
           />
     </LinearLayout>
   </LinearLayout>
-
   <!--中部-->
   <LinearLayout
       android:layout_weight="4"
@@ -108,7 +108,7 @@
             android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/tare"
+            android:text="@string/gross"
             android:textColor="@color/white"
             android:textSize="@dimen/x45"
             />
@@ -118,7 +118,7 @@
             android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/switch_ng"
+            android:text="@string/tare"
             android:textColor="@color/white"
             android:textSize="@dimen/x45"
             />
@@ -134,16 +134,12 @@
             />
 
       </LinearLayout>
-      <!--列表-->
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:gravity="center"
           >
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/refreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
           <ListView
               android:id="@+id/listView"
               android:layout_width="match_parent"
@@ -152,18 +148,7 @@
               android:overScrollMode="never"
               tools:listitem="@android:layout/simple_list_item_2"
               />
-
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
       </LinearLayout>
-
-    </LinearLayout>
-    <!--中间 右侧-->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="@dimen/x50"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        >
     </LinearLayout>
 
   </LinearLayout>
@@ -182,7 +167,7 @@
         >
       <Button
           android:id="@+id/btn_previous_page"
-          android:layout_width="@dimen/x150"
+          android:layout_width="@dimen/x200"
           android:layout_height="wrap_content"
           android:layout_marginLeft="@dimen/x3"
           android:background="@drawable/btn_gray_selector"
@@ -218,7 +203,7 @@
           />
       <Button
           android:id="@+id/btn_next_page"
-          android:layout_width="@dimen/x150"
+          android:layout_width="@dimen/x200"
           android:layout_height="wrap_content"
           android:layout_marginLeft="@dimen/x3"
           android:background="@drawable/btn_gray_selector"

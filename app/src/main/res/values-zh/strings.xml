@@ -111,7 +111,7 @@
   <string name="his_next_page">下一页</string>
   <string name="his_previous_page">上一页</string>
   <string name="his_time">时间</string>
-
+    <string name="gross">毛重</string>
     <string name="lang_zh">中文</string>
     <string name="lang_en">英文</string>
     <string name="language">语言选择</string>

@@ -108,9 +108,10 @@
   <string name="menu_more">more</string>
 
   <!--历史记录查询-->
+    <string name="gross">gross</string>
   <string name="his_filter">filter</string>
-  <string name="his_next_page">next page</string>
-  <string name="his_previous_page">previous page</string>
+  <string name="his_next_page">next</string>
+  <string name="his_previous_page">prev</string>
   <string name="his_time">time</string>
     <string name="lang_zh">chinese</string>
     <string name="lang_en">english</string>

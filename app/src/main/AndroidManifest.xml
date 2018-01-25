@@ -72,6 +72,9 @@ limitations under the License.
         android:name=".ConfigActivity"
         android:screenOrientation="landscape"/>
     <activity
+        android:name=".HistoryWeightActivity"
+        android:screenOrientation="landscape"/>
+    <activity
         android:name=".CalibActivity"
         android:label="@string/calibwgt">
     </activity>
