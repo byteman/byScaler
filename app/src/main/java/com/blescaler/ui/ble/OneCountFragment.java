@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.blescaler.db.CountDao;
 import com.blescaler.db.CountRecord;
+import com.blescaler.ui.HistoryCountActivity;
 import com.blescaler.ui.R;
 import com.blescaler.util.IntValue;
 import com.blescaler.util.NumberValues;
@@ -45,12 +47,13 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 	ImageView img_tare = null;
 	ImageView img_conn=null;
 	Button btn_switch_unit,btn_still = null;
+	Button btn_history=null;
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_quantity=null,tv_uw=null;
 	TextView txtTare=null;
     CountDao dao = null;
     Button btn_sample,btn_reset_count,btn_save_uw,btn_preset_uw;
-	
+
 	//Scaler scaler = null;
 	public int cont=0,cout_2s,cout_3s=0;
 	private int  uw = 0;
@@ -178,13 +181,14 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 		btn_save_uw = (Button) root.findViewById(R.id.btn_save_uw);
 		btn_preset_uw = (Button) root.findViewById(R.id.btn_preset_uw);
 		tv_quantity = (TextView) root.findViewById(R.id.tv_quantity);
-
+		btn_history = root.findViewById(R.id.btn_history);
 
 		img_zero =  root.findViewById(R.id.img_zero);
 		img_still = root.findViewById(R.id.img_still);
 		img_tare =  root.findViewById(R.id.img_tare);
 		img_conn =  root.findViewById(R.id.img_conn_state);
 		img_conn.getDrawable().setLevel(0);
+		btn_history.setOnClickListener(this);
 		btn_switch_unit.setOnClickListener(this);
 		btn_save.setOnClickListener(this);
 		btn_print.setOnClickListener(this);
@@ -254,6 +258,12 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 		{
 		case R.id.btn_still:
 			
+			break;
+		case R.id.btn_history:
+			Intent intent = new Intent(this.getActivity(), HistoryCountActivity.class);
+
+			startActivity(intent);
+
 			break;
 		case R.id.btn_save:
 			if(saveWeight())

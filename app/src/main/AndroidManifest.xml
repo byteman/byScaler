@@ -78,6 +78,12 @@ limitations under the License.
         android:label="@string/title_activity_weight"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
     <activity
+        android:name=".HistoryCountActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+    <activity
         android:name=".CalibActivity"
         android:label="@string/calibwgt">
     </activity>

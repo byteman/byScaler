@@ -78,7 +78,7 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_count_history);
+		setContentView(R.layout.activity_history);
 		history = findViewById(R.id.listView);
         btn_previous_page = findViewById(R.id.btn_previous_page);
         btn_next_page = findViewById(R.id.btn_next_page);
@@ -190,11 +190,11 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 //						.findViewById(R.id.index);
 				viewHolder.tv_time =  view
 						.findViewById(R.id.time);
-				viewHolder.tv_gross =  view
+				viewHolder.tv_total =  view
 						.findViewById(R.id.gross);
-				viewHolder.tv_tare = view
+				viewHolder.tv_uw = view
 						.findViewById(R.id.tare);
-				viewHolder.tv_net = view
+				viewHolder.tv_count = view
 						.findViewById(R.id.net);
 
 
@@ -207,9 +207,9 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 			final String date = item.getFormatDate();
 			//viewHolder.tv_index.setText(item.getID());
 			viewHolder.tv_time.setText(date);
-			viewHolder.tv_gross.setText(item.getGross());
-			viewHolder.tv_tare.setText(item.getTare());
-			viewHolder.tv_net.setText(item.getNet());
+			viewHolder.tv_total.setText(item.getGross());
+			viewHolder.tv_uw.setText(item.getTare());
+			viewHolder.tv_count.setText(item.getNet());
 
 			return view;
 		}

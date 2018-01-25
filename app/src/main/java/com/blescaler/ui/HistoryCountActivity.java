@@ -48,7 +48,7 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 
 
 	private ListView history;
-    WeightDao dao = null;
+    CountDao dao = null;
     private Button btn_previous_page,btn_next_page,btn_back;
 	private WeightListAdapter mWeightListAdapter = null;
 	/* (non-Javadoc)
@@ -80,12 +80,12 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_history);
+		setContentView(R.layout.activity_count_history);
 		history = findViewById(R.id.listView);
         btn_previous_page = findViewById(R.id.btn_previous_page);
         btn_next_page = findViewById(R.id.btn_next_page);
         btn_back = findViewById(R.id.btn_back);
-        dao = new WeightDao(this);
+        dao = new CountDao(this);
 		mWeightListAdapter = new WeightListAdapter(dao);
 		//lv_Devices.setListAdapter(mLeDeviceListAdapter);
 		history.setAdapter(mWeightListAdapter);
@@ -99,10 +99,10 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 		private ArrayList<CountRecord> items;
 
 		private LayoutInflater mInflator;
-        private  CountRecord mDao = null ;
+        private  CountDao mDao = null ;
         private int m_page = 0,m_page_size = 5;
         private  boolean m_isEnd = false;
-        public WeightListAdapter(CountRecord dao) {
+        public WeightListAdapter(CountDao dao) {
 			super();
             mDao = dao;
 			items = new ArrayList<CountRecord>();
@@ -115,7 +115,7 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 		// 初始化isSelected的数据
 		private int getData(CountDao dao, int page) {
             clear();
-            List<CountRecord> wlist = dao.getPageWeightList(page,m_page_size);
+            List<CountRecord> wlist = dao.getPageCountList(page,m_page_size);
             for(int i = 0; i < wlist.size(); i++)
             {
                 addItem(wlist.get(i));

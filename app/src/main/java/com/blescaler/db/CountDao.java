@@ -86,6 +86,32 @@ public class CountDao {
 		}
 		return items;
 	}
+	public List<CountRecord> getPageCountList(int page, int page_size) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		List<CountRecord> items = new ArrayList<CountRecord>();
+		if (db.isOpen()) {
+			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " limit " +  page_size +  " offset " +  page*page_size, null);
+			while (cursor.moveToNext()) {
+				String count = cursor.getString(cursor.getColumnIndex(COLUMN_COUNT));
+				String perw = cursor.getString(cursor.getColumnIndex(COLUMN_PER_WEIGHT));
+				String totalw = cursor.getString(cursor.getColumnIndex(COLUMN_TOTAL_WEIGHT));
+				long   times = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME));
+				String wetid = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+
+				CountRecord item = new CountRecord();
+				item.setCount(count);
+				item.setUw(perw);
+				item.setTotalWeight(totalw);
+				item.setTime(times);
+				item.setID(wetid);
+
+				//maxid = Integer.parseInt(wetid);
+				items.add(item);
+			}
+			cursor.close();
+		}
+		return items;
+	}
 	//获取最近一条过磅记录
 	public  boolean getCountRecord(CountRecord item) {
 		boolean ok = false;
