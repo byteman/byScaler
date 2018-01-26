@@ -35,7 +35,7 @@
 	<string name="save">保存</string>
     <string name="save_wet">存重</string>
 	<string name="ret">return</string>
-	<string name="connprt">connect printer</string>
+	<string name="connprt">连接打印机</string>
 	<string name="connoldprt">match printer</string>
 	<string name="cancle">取消</string>
 	<string name="fama">input calib value</string>

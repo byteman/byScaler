@@ -60,6 +60,22 @@ limitations under the License.
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         >
     </activity>
+    <activity
+        android:name=".SearchBTActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        >
+    </activity>
+    <activity
+        android:name=".ConnectBTPairedActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        >
+    </activity>
 
     <service
         android:name="com.xtremeprog.sdk.ble.BleService"

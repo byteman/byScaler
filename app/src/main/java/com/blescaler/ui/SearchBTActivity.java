@@ -1,9 +1,13 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.SearchableInfo;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -15,22 +19,35 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.blescaler.worker.Global;
+import com.blescaler.worker.WorkService;
 import com.lvrenyang.utils.DataUtils;
+
+import static android.bluetooth.BluetoothDevice.DEVICE_TYPE_CLASSIC;
 
 public class SearchBTActivity extends Activity implements OnClickListener {
 
-	private LinearLayout linearlayoutdevices;
-	private ProgressBar progressBarSearchStatus;
-	private ProgressDialog dialog;
+	private SearchBTActivity.BtDeviceListAdapter mLeDeviceListAdapter;
 
+	private ProgressDialog dialog;
+	private Handler mHandler2;
+	private Button btn_serach;
+	private ListView lv_Devices;
 	private BroadcastReceiver broadcastReceiver = null;
 	private IntentFilter intentFilter = null;
 
@@ -40,19 +57,49 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_searchbt);
+		setContentView(R.layout.printer_scan);
+		lv_Devices =  findViewById(R.id.lv_scan);
+		btn_serach =  findViewById(R.id.btn_serach);
+		mHandler = new Handler();
 
-		findViewById(R.id.buttonSearch).setOnClickListener(this);
-		progressBarSearchStatus = (ProgressBar) findViewById(R.id.progressBarSearchStatus);
-		linearlayoutdevices = (LinearLayout) findViewById(R.id.linearlayoutdevices);
+
 		dialog = new ProgressDialog(this);
 
 		initBroadcast();
+		// Initializes list view adapter.
+		mLeDeviceListAdapter = new SearchBTActivity.BtDeviceListAdapter();
+		//lv_Devices.setListAdapter(mLeDeviceListAdapter);
+		lv_Devices.setAdapter(mLeDeviceListAdapter);
+		lv_Devices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-		mHandler = new MHandler(this);
-		WorkService.addHandler(mHandler);
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+									int position, long id) {
+				// TODO Auto-generated method stub
+				SearchBTActivity.ViewHolder holder = (SearchBTActivity.ViewHolder) view.getTag();
+				holder.cb.toggle();
+				if(mLeDeviceListAdapter.getIsSelected().size() > position)
+					mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
+
+				if (holder.cb.isChecked() == true) {
+
+				} else {
+
+				}
+			}
+		});
+
+		findViewById(R.id.btn_save).setOnClickListener(this);
+		findViewById(R.id.btn_save).setOnClickListener(this);
+		findViewById(R.id.btn_cancel).setOnClickListener(this);
+
+		mHandler2 = new SearchBTActivity.MHandler(this);
+		WorkService.addHandler(mHandler2);
 	}
-
+	private void refreshList() {
+		mLeDeviceListAdapter.clear();
+		mLeDeviceListAdapter.notifyDataSetChanged();
+	}
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -65,6 +112,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (arg0.getId()) {
 		case R.id.buttonSearch: {
+			refreshList();
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 			if (null == adapter) {
 				finish();
@@ -83,7 +131,6 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 			}
 
 			adapter.cancelDiscovery();
-			linearlayoutdevices.removeAllViews();
 			adapter.startDiscovery();
 			break;
 		}
@@ -109,6 +156,10 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 						name = "BT";
 					else if (name.equals(address))
 						name = "BT";
+//					if(device.getType() == DEVICE_TYPE_CLASSIC)
+//					{
+//
+//					}
 					Button button = new Button(context);
 					button.setText(name + ": " + address);
 					button.setGravity(android.view.Gravity.CENTER_VERTICAL
@@ -118,22 +169,22 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 						public void onClick(View arg0) {
 							// TODO Auto-generated method stub
 							// 只有没有连接且没有在用，这个才能改变状态
-							dialog.setMessage(Global.toast_connecting + " "
-									+ address);
-							dialog.setIndeterminate(true);
-							dialog.setCancelable(false);
-							dialog.show();
+//							dialog.setMessage(Global.toast_connecting + " "
+//									+ address);
+//							dialog.setIndeterminate(true);
+//							dialog.setCancelable(false);
+//							dialog.show();
 							WorkService.workThread.connectBt(address);
 						}
 					});
 					button.getBackground().setAlpha(100);
-					linearlayoutdevices.addView(button);
+					mLeDeviceListAdapter.addDevice(device,0);
 				} else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED
 						.equals(action)) {
-					progressBarSearchStatus.setIndeterminate(true);
+
 				} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
 						.equals(action)) {
-					progressBarSearchStatus.setIndeterminate(false);
+
 				}
 
 			}
@@ -149,6 +200,137 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 	private void uninitBroadcast() {
 		if (broadcastReceiver != null)
 			unregisterReceiver(broadcastReceiver);
+	}
+	private class BtDeviceListAdapter extends BaseAdapter {
+		private ArrayList<BluetoothDevice> mLeDevices;
+		private HashMap<String,Integer> mRSSI;
+		private LayoutInflater mInflator;
+		// 用来控制CheckBox的选中状况
+		private HashMap<Integer, Boolean> isSelected;
+		public BtDeviceListAdapter() {
+			super();
+			mLeDevices = new ArrayList<BluetoothDevice>();
+			mRSSI = new HashMap<String,Integer>();
+			mInflator = SearchBTActivity.this.getLayoutInflater();
+			isSelected = new HashMap<Integer, Boolean>();
+			initDate();
+			mRSSI.clear();
+		}
+		// 初始化isSelected的数据
+		private void initDate() {
+			getIsSelected().clear();
+			for (int i = 0; i < mLeDevices.size(); i++) {
+				getIsSelected().put(i, false);
+			}
+
+
+		}
+
+		public void addDevice(BluetoothDevice device,int rssi) {
+			if (!mLeDevices.contains(device)) {
+				mLeDevices.add(device);
+
+				initDate();
+			}
+			if(mRSSI!=null)
+			{
+				mRSSI.put(device.getAddress(), rssi);
+			}
+
+		}
+		public List<String> getSelectAddress()
+		{
+
+
+			List<String> devs = new ArrayList<String>();
+
+			for (int i = 0; i < mLeDevices.size(); i++) {
+				HashMap<Integer, Boolean> sel = getIsSelected();
+
+				if( sel.get(i))
+				{
+					devs.add(mLeDevices.get(i).getAddress());
+				}
+			}
+			return devs;
+		}
+		public BluetoothDevice getDevice(int position) {
+			return mLeDevices.get(position);
+		}
+
+		public void clear() {
+			mLeDevices.clear();
+			getIsSelected().clear();
+		}
+
+		@Override
+		public int getCount() {
+			return mLeDevices.size();
+		}
+
+		@Override
+		public Object getItem(int i) {
+			return mLeDevices.get(i);
+		}
+
+		@Override
+		public long getItemId(int i) {
+			return i;
+		}
+		public  HashMap<Integer, Boolean> getIsSelected() {
+			return isSelected;
+		}
+		@Override
+		public View getView(int i, View view, ViewGroup viewGroup) {
+			DeviceScanActivity.ViewHolder viewHolder;
+			// General ListView optimization code.
+			if (view == null) {
+				view = mInflator.inflate(R.layout.listitem_device, null);
+				viewHolder = new DeviceScanActivity.ViewHolder();
+				viewHolder.deviceAddress = (TextView) view
+						.findViewById(R.id.device_address);
+				viewHolder.deviceName = (TextView) view
+						.findViewById(R.id.device_name);
+				viewHolder.deviceRssi = (TextView) view
+						.findViewById(R.id.device_rssi);
+
+				viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx);
+
+				view.setTag(viewHolder);
+			} else {
+				viewHolder = (DeviceScanActivity.ViewHolder) view.getTag();
+			}
+
+			BluetoothDevice device = mLeDevices.get(i);
+			final String deviceName = device.getName();
+			if (deviceName != null && deviceName.length() > 0)
+				viewHolder.deviceName.setText(deviceName);
+			else
+				viewHolder.deviceName.setText(R.string.unknown_device);
+			viewHolder.deviceAddress.setText(device.getAddress());
+			if(getIsSelected().get(i) == null)
+			{
+				viewHolder.cb.setChecked(false);
+			}
+			else {
+				{
+					viewHolder.cb.setChecked(getIsSelected().get(i));
+				}
+				if(mRSSI!=null && mRSSI.containsKey(device.getAddress()))
+				{
+
+					viewHolder.deviceRssi.setText("信号强度:" + mRSSI.get(device.getAddress())+"db");
+				}
+			}
+			return view;
+		}
+	}
+
+	static class ViewHolder {
+		TextView deviceName;
+		TextView deviceAddress;
+		TextView deviceRssi;
+		CheckBox cb;
 	}
 
 	static class MHandler extends Handler {

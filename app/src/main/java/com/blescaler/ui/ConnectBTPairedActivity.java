@@ -1,4 +1,4 @@
-package com.example.bluetooth.le;
+package com.blescaler.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.blescaler.db.Config;
 import com.blescaler.ui.R;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.WorkService;
@@ -95,12 +96,10 @@ public class ConnectBTPairedActivity extends Activity implements
 			// Loop through paired devices
 			for (BluetoothDevice device : pairedDevices) {
 				// Add the name and address to an array adapter to show in a
-				// ListView
+
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put(ICON, android.R.drawable.stat_sys_data_bluetooth);
-				// Toast.makeText(this,
-				// ""+device.getBluetoothClass().getMajorDeviceClass(),
-				// Toast.LENGTH_LONG).show();
+
 				map.put(PRINTERNAME, device.getName());
 				map.put(PRINTERMAC, device.getAddress());
 				list.add(map);
@@ -135,7 +134,7 @@ public class ConnectBTPairedActivity extends Activity implements
 				theActivity.dialog.cancel();
 				theActivity.finish();
 				String addr = (String)(msg.obj);
-				WorkService.setPrinterAddress(theActivity,addr);
+				Config.getInstance(theActivity).setPrinterAddress(addr);
 				break;
 			}
 
