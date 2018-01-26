@@ -476,8 +476,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 				}
 				case Global.MSG_SCALER_POWER_RESULT:
 				{
-					int result = msg.arg1;
-					theActivity.btn_power.refreshPower((float)result/1000.0f);
+//					int result = msg.arg1;
+//					theActivity.btn_power.refreshPower((float)result/1000.0f);
 					break;
 				}
 			}

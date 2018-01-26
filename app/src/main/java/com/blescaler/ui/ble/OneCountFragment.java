@@ -298,9 +298,6 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 			break;
 		case R.id.btn_zero:
 			//清零
-			img_still.getDrawable().setLevel(0);
-			img_conn.getDrawable().setLevel(0);
-			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a));
 			if(!WorkService.setZero(address))
 			{
 				Utils.Msgbox(this.getActivity(), getString(R.string.zero_failed));
@@ -308,9 +305,6 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 			break;
 		case R.id.btn_switch:
 			//净重和毛重切换
-			img_conn.getDrawable().setLevel(1);
-			img_still.getDrawable().setLevel(1);
-			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a_click));
 			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
 		case R.id.btn_preset:
@@ -476,8 +470,8 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 
 				case Global.MSG_SCALER_POWER_RESULT:
 				{
-					int result = msg.arg1;
-					theActivity.btn_power.refreshPower((float)result/1000.0f);
+					//int result = msg.arg1;
+					//theActivity.btn_power.refreshPower((float)result/1000.0f);
 					break;
 				}
 			}

@@ -12,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
@@ -23,7 +24,7 @@ public class CountDao {
 	public static final String COLUMN_COUNT= "count";
     public static final String COLUMN_PER_WEIGHT = "per_weight";
     public static final String COLUMN_TOTAL_WEIGHT= "total_weight";
-    public static final String COLUMN_TIME = "time";
+    public static final String COLUMN_TIME = "wt_time";
  
 
 	private DbOpenHelper dbHelper;
@@ -38,7 +39,7 @@ public class CountDao {
 	 * 
 	 * @param contactList
 	 */
-	public void saveWeightList(List<CountRecord> wtList) {
+	public void saveCountList(List<CountRecord> wtList) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		if (db.isOpen()) {
 			db.delete(TABLE_NAME, null, null);
@@ -181,7 +182,13 @@ public class CountDao {
 		values.put(COLUMN_TIME, time);
 		item.setTime(time);
 		if(db.isOpen()){
-			return db.replace(TABLE_NAME, null, values)!=-1;
+			try {
+				long ret = db.replaceOrThrow(TABLE_NAME, null, values);
+				return ret != -1;
+			}catch (SQLException e){
+				e.printStackTrace();
+				return false;
+			}
 			
 		}
 		return false;
