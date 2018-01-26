@@ -90,7 +90,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
@@ -100,11 +99,13 @@
     <orderEntry type="library" exported="" name="com.jakewharton:butterknife-8.8.1" level="project" />
     <orderEntry type="library" exported="" name="com.jakewharton:butterknife-annotations:8.8.1@jar" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\works\byScaler\app\libs\MineAlert.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.kyleduo.switchbutton:library-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="de.hdodenhof:circleimageview-2.2.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\works\byScaler\app\libs\bugly_1.2.3.8__release.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-fragment-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-vector-drawable-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-v4-26.0.0" level="project" />
+    <orderEntry type="library" exported="" name="com.scwang.smartrefresh:SmartRefreshLayout-1.0.4-7" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:animated-vector-drawable-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:appcompat-v7-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-core-utils-26.0.0" level="project" />

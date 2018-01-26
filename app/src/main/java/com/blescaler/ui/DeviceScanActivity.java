@@ -361,7 +361,7 @@ public class DeviceScanActivity extends Activity   {
 			if (!mLeDevices.contains(device)) {
 				mLeDevices.add(device);
 				
-				initDate();
+				//initDate();
 			}
 			if(mRSSI!=null)
 			{

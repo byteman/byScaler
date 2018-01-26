@@ -56,8 +56,9 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 
 	//Scaler scaler = null;
 	public int cont=0,cout_2s,cout_3s=0;
-	private int  uw = 0;
+	private float  uw = 0;
 	private boolean enable_uw = false;
+	private int bGetUw = 0;
 	private static String address;
 	private static final int MSG_TIMEOUT = 0x0001;
 	private static ProgressDialog progressDialog = null;
@@ -256,8 +257,10 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 		cout_3s = 5;
 		switch(arg0.getId())
 		{
-		case R.id.btn_still:
-			
+		case R.id.btn_sample:
+			//单位重量重新更新.
+			bGetUw = 1;
+
 			break;
 		case R.id.btn_history:
 			Intent intent = new Intent(this.getActivity(), HistoryCountActivity.class);
@@ -309,12 +312,6 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 			break;
 		case R.id.btn_preset:
 			inputTitleDialog();
-			break;
-		case R.id.btn_sleep:
-			WorkService.common_msg(address,Global.REG_OPERATION,12);
-			break;
-		case R.id.btn_wake:
-			WorkService.common_msg(address,Global.REG_OPERATION,13);
 			break;
 		case R.id.btn_unit:
 			WorkService.common_msg(address,Global.REG_OPERATION,14);
@@ -394,17 +391,22 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 		public void calc(OneCountFragment theActivity,Scaler d)
 		{
 			int quantity = 0;
-			if(d.isGross())
+			//bGetUw==2 单位重量已经被更新，可以刷新.
+			if(theActivity.bGetUw == 2)
 			{
-				//毛重状态下的 物品个数 = (内部重量 )/单位重量
-				quantity = (d.getCalcWeight() / theActivity.uw);
-			}
-			else
-			{
-				//净重状态下的 物品个数 = (内部重量 - 你发的皮重)/单位重量
-				quantity = (d.getCalcWeight() - d.getTare() / theActivity.uw);
+				if(d.isGross())
+				{
+					//毛重状态下的 物品个数 = (内部重量 )/单位重量
+					quantity = (int)(d.getCalcWeight() / theActivity.uw);
+				}
+				else
+				{
+					//净重状态下的 物品个数 = (内部重量 - 你发的皮重)/单位重量
+					quantity = (int)(d.getCalcWeight() - d.getTare() / theActivity.uw);
 
+				}
 			}
+
 			theActivity.tv_quantity.setText("" + quantity);
 		}
 		@Override
@@ -428,9 +430,15 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 
 					theActivity.tv_weight.setText(d.getDispalyWeight());
 					theActivity.set_zero_state(d.isZero());
-				  	theActivity.set_still_state(d.isStandstill());
-				  	theActivity.set_tare_state(!d.isGross());
-					//theActivity.tv_unit.setText(d.getUnit());
+					theActivity.set_still_state(d.isStandstill());
+					theActivity.set_tare_state(!d.isGross());
+					if(theActivity.bGetUw == 1)
+					{
+						theActivity.uw =  d.getCalcWeight();
+						theActivity.bGetUw = 2;
+					}
+
+
 					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()));
 					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));
 					theActivity.tv_weight.setText(d.getDispalyWeight());
