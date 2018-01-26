@@ -32,7 +32,8 @@
     <string name="unknown_service">Unknown service</string>
 	<string name="calibzero">calib zero</string>
 	<string name="calibwgt">calib span</string>
-	<string name="save">存重</string>
+	<string name="save">保存</string>
+    <string name="save_wet">存重</string>
 	<string name="ret">return</string>
 	<string name="connprt">connect printer</string>
 	<string name="connoldprt">match printer</string>
@@ -54,6 +55,8 @@
     <string name="select">选择设备</string>
     <string name="calibK">标定系数</string>
     <string name="search">搜索</string>
+    <string name="stop">停止</string>
+
     <string name="inputbtmachint">输入mac</string>
     <string name="connectbtmacaddress">连接蓝牙地址</string>
     <string name="contentdescription">内容描述</string>
@@ -119,4 +122,5 @@
     <string name="total">总重</string>
     <string name="uw">单重</string>
     <string name="count">个数</string>
+    <string name="start">启动搜素</string>
 </resources>

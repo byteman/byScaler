@@ -33,6 +33,7 @@
 	<string name="calibzero">calib zero</string>
 	<string name="calibwgt">calib span</string>
 	<string name="save">save</string>
+    <string name="save_wet">save</string>
 	<string name="ret">return</string>
 	<string name="connprt">connect printer</string>
 	<string name="connoldprt">match printer</string>
@@ -53,7 +54,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="select">选择设备</string>
     <string name="calibK">标定系数</string>
-    <string name="search">搜索</string>
+    <string name="search">search</string>
+    <string name="stop">stop</string>
+
     <string name="inputbtmachint">输入mac</string>
     <string name="connectbtmacaddress">连接蓝牙地址</string>
     <string name="contentdescription">内容描述</string>
@@ -121,5 +124,6 @@
     <string name="total">total</string>
     <string name="uw">u.w</string>
     <string name="count">count</string>
+    <string name="start">start</string>
 
 </resources>
