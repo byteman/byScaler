@@ -104,15 +104,12 @@ public class DeviceScanActivity extends Activity   {
 	private boolean mScanning;
 	private Handler mHandler;
 	private Handler mHandler2;
-	private String mAddress;
 	private Button btn_serach;
 	private ListView lv_Devices;
 	private static final int REQUEST_ENABLE_BT = 1;
-	private ProgressDialog progressDialog = null;
+
 	private String TAG = "DeviceScan";
-	private Timer pTimer = null;
-	private int checkNum = 0;
-	// Stops scanning after 10 seconds.
+
 	private static final long SCAN_PERIOD = 10000;
 
 	
@@ -172,8 +169,8 @@ public class DeviceScanActivity extends Activity   {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.device_scan);
 		//getActionBar().setTitle(R.string.title_devices);
-		lv_Devices = (ListView) findViewById(R.id.lv_scan);
-		btn_serach = (Button) findViewById(R.id.btn_serach);
+		lv_Devices =  findViewById(R.id.lv_scan);
+		btn_serach =  findViewById(R.id.btn_serach);
 		mHandler = new Handler();
 		
 		
@@ -194,9 +191,9 @@ public class DeviceScanActivity extends Activity   {
 					mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
 				
 				 if (holder.cb.isChecked() == true) {  
-		             checkNum++;  
+
 		         } else {  
-		             checkNum--;  
+
 		         }  
 			}
 		});
@@ -311,11 +308,11 @@ public class DeviceScanActivity extends Activity   {
 		// TODO Auto-generated method stub
 		if(mScanning)
 		{
-			btn_serach.setText("stop");
+			btn_serach.setText(this.getText(R.string.stop));
 		}
 		else
 		{
-			btn_serach.setText("activity_start");
+			btn_serach.setText(this.getText(R.string.search));
 		}
 	}
 

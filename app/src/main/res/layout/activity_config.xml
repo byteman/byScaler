@@ -1,0 +1,121 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cinder"
+    android:orientation="vertical"
+    tools:context=".DeviceScanActivity"
+    >
+  <!--顶部-->
+  <LinearLayout
+      android:layout_weight="1"
+      android:orientation="horizontal"
+      android:background="@color/mirage"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      >
+    <TextView
+        android:layout_marginLeft="@dimen/x30"
+        android:layout_gravity="center_vertical"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+      <TextView
+          android:layout_weight="1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          />
+      <TextView
+          android:textSize="@dimen/x30"
+          android:layout_gravity="center_vertical"
+          android:textColor="@color/white"
+          android:text="00001"
+          android:maxEms="10"
+          android:singleLine="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          />
+      <ImageView
+          android:id="@+id/img_conn_state"
+          android:layout_marginLeft="@dimen/x20"
+          android:layout_marginRight="@dimen/x50"
+          android:layout_gravity="center_vertical"
+          android:src="@drawable/conn_state_list"
+          android:layout_width="@dimen/x32"
+          android:layout_height="@dimen/x32"
+          />
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+
+  <!--中部-->
+  <LinearLayout
+      android:layout_weight="4"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginTop="@dimen/y25"
+      android:orientation="horizontal"
+      >
+    <!--侧滑按钮-->
+    <LinearLayout
+        android:layout_width="@dimen/x50"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+      <ImageButton
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:background="@drawable/ico_right_slide" />
+    </LinearLayout>
+
+
+    <LinearLayout
+          android:id="@+id/ll5"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal" >
+        <TextView android:text="@string/language"
+            android:layout_width="wrap_content"
+            android:textColor="@color/aliceblue"
+            android:layout_height="wrap_content" />
+        <RadioGroup
+            android:id="@+id/radioGroupID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+          <RadioButton
+              android:id="@+id/zhGroupID"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/aliceblue"
+              android:text="@string/lang_zh"
+              />
+          <RadioButton
+              android:id="@+id/enGroupID"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/aliceblue"
+              android:text="@string/lang_en"/>
+        </RadioGroup>
+
+    </LinearLayout>
+
+  </LinearLayout>
+  <!--底部-->
+
+
+
+</LinearLayout>

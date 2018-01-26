@@ -61,7 +61,7 @@ public class WorkService extends Service {
 
 	// Service和workThread通信用mHandler
 	private BleService mService = null;
-	
+	public static WorkThread workThread = null; //打印服务工作线程
 	private static Handler mHandler = null;
 	private static Context  myCtx = null;
 	private static List<Handler> targetsHandler = new ArrayList<Handler>(5); 
@@ -480,6 +480,8 @@ public class WorkService extends Service {
 		
 		Log.v("DrawerService", "onCreate");
 		myCtx = this;
+		workThread = new WorkThread(mHandler);
+		workThread.start();
 		//reConnThread.start();
 		
 		return false;
@@ -522,8 +524,9 @@ public class WorkService extends Service {
 	
 	@Override
 	public void onDestroy() {
-	
-	
+
+		workThread.quit();
+		workThread = null;
 		Log.v("DrawerService", "onDestroy");
 	}
 	
@@ -1036,8 +1039,20 @@ public class WorkService extends Service {
 		return write_buffer(address,reg.getResult());
 		
 	}
-	
 
+	//连接指定地址的打印机
+	public static boolean connectPrinter(String address)
+	{
+		if(WorkService.workThread.isConnected()) return true;
+		if(address.isEmpty()) return false;
+		WorkService.workThread.connectBt(address);
+
+		return true;
+	}
+	public static boolean hasConnectPrinter()
+	{
+		return WorkService.workThread.isConnected();
+	}
 }
 /** @} */ // end of group1
 

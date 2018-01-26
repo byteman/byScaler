@@ -12,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
@@ -23,7 +24,7 @@ public class CountDao {
 	public static final String COLUMN_COUNT= "count";
     public static final String COLUMN_PER_WEIGHT = "per_weight";
     public static final String COLUMN_TOTAL_WEIGHT= "total_weight";
-    public static final String COLUMN_TIME = "time";
+    public static final String COLUMN_TIME = "wt_time";
  
 
 	private DbOpenHelper dbHelper;
@@ -38,14 +39,14 @@ public class CountDao {
 	 * 
 	 * @param contactList
 	 */
-	public void saveWeightList(List<CountRecord> wtList) {
+	public void saveCountList(List<CountRecord> wtList) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		if (db.isOpen()) {
 			db.delete(TABLE_NAME, null, null);
 			for (CountRecord item : wtList) {
 				ContentValues values = new ContentValues();
 				values.put(COLUMN_COUNT, item.getCount());				
-                values.put(COLUMN_PER_WEIGHT, item.getPerWeight());
+                values.put(COLUMN_PER_WEIGHT, item.getUw());
                 values.put(COLUMN_TOTAL_WEIGHT, item.getTotalWeight());
                 values.put(COLUMN_TIME, item.getTime());
                 
@@ -74,11 +75,37 @@ public class CountDao {
 		        
 				CountRecord item = new CountRecord();
 				item.setCount(count);
-				item.setPerWeight(perw);
+				item.setUw(perw);
 				item.setTotalWeight(totalw);
 				item.setTime(times);
 				item.setID(wetid);
 				
+				//maxid = Integer.parseInt(wetid);
+				items.add(item);
+			}
+			cursor.close();
+		}
+		return items;
+	}
+	public List<CountRecord> getPageCountList(int page, int page_size) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		List<CountRecord> items = new ArrayList<CountRecord>();
+		if (db.isOpen()) {
+			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " limit " +  page_size +  " offset " +  page*page_size, null);
+			while (cursor.moveToNext()) {
+				String count = cursor.getString(cursor.getColumnIndex(COLUMN_COUNT));
+				String perw = cursor.getString(cursor.getColumnIndex(COLUMN_PER_WEIGHT));
+				String totalw = cursor.getString(cursor.getColumnIndex(COLUMN_TOTAL_WEIGHT));
+				long   times = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME));
+				String wetid = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+
+				CountRecord item = new CountRecord();
+				item.setCount(count);
+				item.setUw(perw);
+				item.setTotalWeight(totalw);
+				item.setTime(times);
+				item.setID(wetid);
+
 				//maxid = Integer.parseInt(wetid);
 				items.add(item);
 			}
@@ -108,7 +135,7 @@ public class CountDao {
 			        
 					
 					item.setCount(count);
-					item.setPerWeight(perw);
+					item.setUw(perw);
 					item.setTotalWeight(totalw);
 					item.setTime(times);
 					item.setID(wetid);
@@ -145,19 +172,25 @@ public class CountDao {
 	 * 保存一条过磅记录
 	 * @param user
 	 */
-	public void saveOne(CountRecord item){
+	public boolean saveOne(CountRecord item){
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_COUNT, item.getCount());
-		values.put(COLUMN_PER_WEIGHT, item.getPerWeight());
+		values.put(COLUMN_PER_WEIGHT, item.getUw());
 		values.put(COLUMN_TOTAL_WEIGHT, item.getTotalWeight());
-		//item.setID(String.valueOf(++maxid));
 		long time=System.currentTimeMillis();
 		values.put(COLUMN_TIME, time);
 		item.setTime(time);
 		if(db.isOpen()){
-			db.replace(TABLE_NAME, null, values);
+			try {
+				long ret = db.replaceOrThrow(TABLE_NAME, null, values);
+				return ret != -1;
+			}catch (SQLException e){
+				e.printStackTrace();
+				return false;
+			}
 			
 		}
+		return false;
 	}
 }

@@ -21,9 +21,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.blescaler.ui.CalibActivity;
+import com.blescaler.ui.ConfigActivity;
+import com.blescaler.ui.ConnectBTPairedActivity;
 import com.blescaler.ui.DeviceScanActivity;
 import com.blescaler.ui.R;
 import com.blescaler.ui.ScalerParamActivity;
+import com.blescaler.ui.SearchBTActivity;
 import com.blescaler.ui.SysParamActivity;
 import com.blescaler.view.ImageTextView;
 
@@ -42,11 +45,11 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
    */
   @BindView(R.id.tv_menu_weight) ImageTextView tvMenuWeight;
   @BindView(R.id.tv_menu_count) ImageTextView tvMenuCount;
-  @BindView(R.id.tv_menu_history) ImageTextView tvMenuHistory;
+ // @BindView(R.id.tv_menu_history) ImageTextView tvMenuHistory;
   @BindView(R.id.tv_menu_set) ImageTextView tvMenuSet;
   @BindView(R.id.tv_menu_device) ImageTextView tvMenuDevice;
-  @BindView(R.id.tv_menu_version) ImageTextView tvMenuVersion;
-  @BindView(R.id.tv_menu_more) ImageTextView tvMenuMore;
+  //@BindView(R.id.tv_menu_version) ImageTextView tvMenuVersion;
+  @BindView(R.id.tv_menu_printer) ImageTextView tvMenuPrinter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
@@ -153,8 +156,8 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         });
   }
   @OnClick({
-      R.id.tv_menu_weight, R.id.tv_menu_count, R.id.tv_menu_history, R.id.tv_menu_set,
-      R.id.tv_menu_device, R.id.tv_menu_version, R.id.tv_menu_more
+      R.id.tv_menu_weight, R.id.tv_menu_count,
+      R.id.tv_menu_device, R.id.tv_menu_set,R.id.tv_menu_printer
   })
   @Override public void onClick(View v) {
     mDrawerLayout.closeDrawers();
@@ -171,19 +174,29 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         prevLeftMenu = tvMenuCount;
         goToFragment(3);
         break;
-      case R.id.tv_menu_history:
-        break;
-      case R.id.tv_menu_set:
-        break;
+//      case R.id.tv_menu_history:
+//        break;
+//      case R.id.tv_menu_set:
+//        break;
       case R.id.tv_menu_device:
         if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
         goToFragment(2);
         tvMenuDevice.setBackgroundColor(getResources().getColor(R.color.set_item_click));
         prevLeftMenu = tvMenuDevice;
         break;
-      case R.id.tv_menu_version:
-        break;
-      case R.id.tv_menu_more:
+      case R.id.tv_menu_set:
+          if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
+          tvMenuSet.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+          prevLeftMenu = tvMenuSet;
+          goToFragment(4);
+
+          break;
+
+      case R.id.tv_menu_printer:
+        if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
+        tvMenuSet.setBackgroundColor(getResources().getColor(R.color.set_item_click));
+        prevLeftMenu = tvMenuSet;
+        goToFragment(5);
         break;
 
       default:break;
@@ -250,7 +263,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
     }
     if (pos == 4) {
 
-      Intent intent = new Intent(MainActivity.this, ScalerParamActivity.class);
+      Intent intent = new Intent(MainActivity.this, ConfigActivity.class);
       intent.putExtra("address", "00");
       startActivity(intent);
 
@@ -258,7 +271,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
     }
     if (pos == 5) {
 
-      Intent intent = new Intent(this, ScalerParamActivity.class);
+      Intent intent = new Intent(this, SearchBTActivity.class);
       startActivity(intent);
       return;
     }

@@ -39,7 +39,7 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 			+ CountDao.COLUMN_COUNT + " TEXT, "
 			+ CountDao.COLUMN_PER_WEIGHT + " TEXT, "
 			+ CountDao.COLUMN_TOTAL_WEIGHT  + " TEXT, "
-			+ WeightDao.COLUMN_TIME  + " TEXT); ";
+			+ CountDao.COLUMN_TIME  + " TEXT); ";
 					
 			
 	

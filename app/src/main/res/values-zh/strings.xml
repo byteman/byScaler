@@ -32,9 +32,10 @@
     <string name="unknown_service">Unknown service</string>
 	<string name="calibzero">calib zero</string>
 	<string name="calibwgt">calib span</string>
-	<string name="save">存重</string>
+	<string name="save">保存</string>
+    <string name="save_wet">存重</string>
 	<string name="ret">return</string>
-	<string name="connprt">connect printer</string>
+	<string name="connprt">连接打印机</string>
 	<string name="connoldprt">match printer</string>
 	<string name="cancle">取消</string>
 	<string name="fama">input calib value</string>
@@ -54,6 +55,8 @@
     <string name="select">选择设备</string>
     <string name="calibK">标定系数</string>
     <string name="search">搜索</string>
+    <string name="stop">停止</string>
+
     <string name="inputbtmachint">输入mac</string>
     <string name="connectbtmacaddress">连接蓝牙地址</string>
     <string name="contentdescription">内容描述</string>
@@ -95,6 +98,7 @@
     <string name="quantity">数量</string>
     <string name="input">请输入重量</string>
     <string name="saveok">保存成功</string>
+    <string name="savefail">保存失败</string>
     <string name="zero_failed">清零失败，净重状态不允许清零</string>
     <string name="menu_weight">计重模式</string>
     <string name="menu_count">计数模式</string>
@@ -105,4 +109,18 @@
   <string name="menu_set_manager">设备管理</string>
   <string name="menu_version">版本选择</string>
   <string name="menu_more">更多</string>
+    <string name="history">历史数据</string>
+  <string name="his_filter">筛选</string>
+  <string name="his_next_page">下一页</string>
+  <string name="his_previous_page">上一页</string>
+  <string name="his_time">时间</string>
+    <string name="gross">毛重</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_en">英文</string>
+    <string name="language">语言选择</string>
+    <string name="back">返回</string>
+    <string name="total">总重</string>
+    <string name="uw">单重</string>
+    <string name="count">个数</string>
+    <string name="start">启动搜素</string>
 </resources>

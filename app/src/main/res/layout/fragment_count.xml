@@ -28,10 +28,25 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         >
+
       <TextView
           android:layout_weight="1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          />
+      <Button
+          android:id="@+id/btn_history"
+          android:layout_gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
+          android:singleLine="true"
+          android:text="@string/history"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x30"
+          android:textStyle="bold"
+          android:layout_marginRight="@dimen/x100"
           />
       <TextView
           android:textSize="@dimen/x30"
@@ -44,10 +59,13 @@
           android:layout_height="wrap_content"
           />
       <ImageView
+          android:id="@+id/img_conn_state"
+          android:layout_marginLeft="@dimen/x20"
+          android:layout_marginRight="@dimen/x50"
           android:layout_gravity="center_vertical"
-          android:src="@drawable/ico_connected"
-          android:layout_width="@dimen/x25"
-          android:layout_height="@dimen/x25"
+          android:src="@drawable/conn_state_list"
+          android:layout_width="@dimen/x32"
+          android:layout_height="@dimen/x32"
           />
     </LinearLayout>
 
@@ -188,15 +206,15 @@
                 android:layout_width="@dimen/x200"
                 android:layout_height="@dimen/y80"
                 />
+
             <Button
                 android:id="@+id/btn_preset_uw"
+                android:layout_width="@dimen/x200"
+                android:layout_height="@dimen/y80"
                 android:layout_marginLeft="@dimen/x5"
                 android:background="@drawable/btn_gray_selector"
                 android:text="@string/one_weight"
-                android:textColor="@color/white"
-                android:layout_width="@dimen/x200"
-                android:layout_height="@dimen/y80"
-                />
+                android:textColor="@color/white" />
           </LinearLayout>
         </LinearLayout>
 
@@ -426,23 +444,7 @@
           android:layout_height="match_parent"
           android:paddingRight="@dimen/x50"
           >
-        <Button
-            android:elevation="1dp"
-            android:id="@+id/btn_save"
 
-            android:layout_width="@dimen/x150"
-            android:layout_height="@dimen/y80"
-
-            android:textStyle="bold"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-
-            android:background="@drawable/btn_gray_selector"
-            android:text="@string/save"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/x36"
-            />
           <Button
               android:layout_marginLeft="@dimen/x5"
               android:id="@+id/btn_switch"
@@ -496,7 +498,23 @@
             android:textSize="@dimen/x36"
             />
 
+        <Button
+            android:elevation="1dp"
+            android:id="@+id/btn_save"
 
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y80"
+
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/x5"
+            android:background="@drawable/btn_gray_selector"
+            android:text="@string/save"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x36"
+            />
       </LinearLayout>
 
     </LinearLayout>

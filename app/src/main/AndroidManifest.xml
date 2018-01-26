@@ -38,8 +38,8 @@ limitations under the License.
 
   <uses-permission android:name="android.permission.BLUETOOTH"/>
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -47,14 +47,34 @@ limitations under the License.
   <uses-permission android:name="android.permission.READ_LOGS"/>
 
   <application
-      android:name="com.blescaler.ui.BleApplication"
+      android:name="com.blescaler.application.BleApplication"
       android:icon="@drawable/ic_launcher"
       android:label="@string/app_name"
       android:theme="@style/AppTheme"
       >
     <activity
         android:name=".DeviceScanActivity"
-        android:label="@string/app_name">
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        >
+    </activity>
+    <activity
+        android:name=".SearchBTActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        >
+    </activity>
+    <activity
+        android:name=".ConnectBTPairedActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        >
     </activity>
 
     <service
@@ -65,37 +85,32 @@ limitations under the License.
         android:enabled="true"/>
 
     <activity
-        android:name=".CharacteristicActivity"
+        android:name=".ScalerParamActivity"
         android:label="@string/title_activity_characteristic">
     </activity>
     <activity
-        android:name=".WeightActivity"
-        android:configChanges="orientation|keyboardHidden"
-        android:label="@string/title_activity_weight">
-    </activity>
+        android:name=".ConfigActivity"
+        android:screenOrientation="landscape"/>
     <activity
-        android:name=".ScalerParamActivity"
-        android:label="@string/title_activity_weight">
-    </activity>
+        android:name=".HistoryWeightActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+    <activity
+        android:name=".HistoryCountActivity"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|keyboardHidden"
+        android:label="@string/title_activity_weight"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
     <activity
         android:name=".CalibActivity"
         android:label="@string/calibwgt">
     </activity>
-    <activity
-        android:name=".ConnectBTPairedActivity"
-        android:label="@string/search">
-    </activity>
+
     <activity
         android:name=".PairedScalerActivity"
         android:label="@string/search">
-    </activity>
-    <activity
-        android:name=".SearchBTActivity"
-        android:label="@string/calibwgt">
-    </activity>
-    <activity
-        android:name=".DBActivity"
-        android:label="@string/calibwgt">
     </activity>
 
     <activity
@@ -121,31 +136,5 @@ limitations under the License.
         android:screenOrientation="landscape">
 
     </activity>
-
-    <activity
-        android:name="com.blescaler.ui.ble.FlourWeightFragment"
-        android:label="@string/calibwgt"
-        android:screenOrientation="portrait">
-    </activity>
-
-    <activity
-        android:name="com.blescaler.ui.ble.OneWeightFragment"
-        android:label="@string/calibwgt"
-        android:screenOrientation="portrait"
-        >
-    </activity>
-    <activity
-        android:name="com.blescaler.ui.ble.WeightCountFragment"
-        android:label="@string/calibwgt"
-        android:screenOrientation="portrait">
-    </activity>
-    <activity
-        android:name="com.blescaler.ui.ble.SettingActivity"
-        android:label="@string/calibwgt"
-        android:screenOrientation="portrait">
-    </activity>
-
-
   </application>
-
 </manifest>

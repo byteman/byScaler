@@ -84,11 +84,10 @@
 	    <Button
 					android:background="@drawable/history_item_bg"
 	        style="@style/bybutton"
-	        android:id="@id/btn_save"	
 	        android:layout_marginLeft="10dp"
 	        android:layout_marginRight="10dp"
 	        android:layout_weight="1"
-	        android:text="@string/save" />
+	        android:text="@string/connprt" />
 	    
 	    <Button
 					android:background="@drawable/history_item_bg"

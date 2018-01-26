@@ -89,4 +89,13 @@ public class Config
 		mEditor.putString("unit", unit);
 		mEditor.commit();
 	}
+	public boolean setLanguage(String lang)
+	{
+		mEditor.putString("lang", lang);
+		return mEditor.commit();
+	}
+	public String getLanguage()
+	{
+		return mSharedPre.getString("lang","en");
+	}
 }

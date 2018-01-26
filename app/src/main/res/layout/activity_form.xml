@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/weight_bg"
     android:padding="10dp" >
-	
+
      <TextView
       android:id="@+id/tx_title"
       android:layout_alignParentTop="true"
@@ -77,7 +77,7 @@
       android:layout_below="@id/listheader"
       android:choiceMode="singleChoice"
       android:listSelector="@drawable/list_selector_color"/>
-     /> 
+
      
       <Button
 	        style="@style/bybutton"
