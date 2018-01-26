@@ -350,10 +350,10 @@ public class WorkService extends Service {
 
 	private static boolean  write_buffer(String address,byte[] value)
 	{
-//		if(value[3] != Global.REG_WEIGHT && value[3] != Global.REG_BATTERY)
-//		{
-//			addCmd(address,value);
-//		}
+		if(value[3] != Global.REG_WEIGHT && value[3] != Global.REG_BATTERY)
+		{
+			addCmd(address,value);
+		}
 		return write_buffer2(address,value);
 	}
 	//发送数据给连接了的设备.
