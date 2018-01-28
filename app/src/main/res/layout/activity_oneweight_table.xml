@@ -331,7 +331,7 @@
         >
 
       <Button
-          android:id="@+id/btn_switch"
+          android:id="@+id/btn_switch_ng"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="@dimen/x5"
@@ -371,7 +371,7 @@
           android:textStyle="bold"
           />
       <Button
-          android:id="@+id/btn_unit"
+          android:id="@+id/btn_switch_unit"
           android:layout_width="@dimen/x150"
           android:layout_height="wrap_content"
           android:layout_marginLeft="@dimen/x3"

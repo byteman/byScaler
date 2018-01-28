@@ -453,7 +453,7 @@
 
           <Button
               android:layout_marginLeft="@dimen/x5"
-              android:id="@+id/btn_switch"
+              android:id="@+id/btn_switch_ng"
               android:elevation="1dp"
               android:layout_width="@dimen/x150"
               android:layout_height="@dimen/y80"

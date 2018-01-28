@@ -1,7 +1,5 @@
 package com.blescaler.ui.ble;
 
-
-
 import java.lang.ref.WeakReference;
 
 import android.app.AlertDialog;
@@ -35,465 +33,401 @@ import com.blescaler.worker.Scaler;
 import com.blescaler.worker.WorkService;
 
 public class OneWeightFragment extends BaseFragment implements View.OnClickListener {
-	View root;
-	Button btn_save = null;
-	ImageView btn_print = null;
-	Button btn_tare = null;
-	Button btn_zero = null;
-	Button btn_swtich = null;
-	Button btn_history = null;
-	ImageView img_zero = null;
-	ImageView img_still = null;
-	ImageView img_tare = null;
-	ImageView img_conn=null;
-	Button btn_unit,btn_still = null;
-	BatteryState btn_power = null;
-	TextView tv_weight = null,tv_unit=null;
-	TextView txtTare=null;
-	TextView txtNG = null;
-	TextView txtState = null;
-	AutoBgButton btn_ng = null;
-	AutoBgButton btn_preset = null;
-	
-	//Scaler scaler = null;
-	public int cont=0,cout_2s,cout_3s=0;
-	private static String address;
-	private static final int MSG_TIMEOUT = 0x0001;
-	private static ProgressDialog progressDialog = null;
-	private static Handler mHandler = null;
-	protected static final String TAG = "weight_activity";
-	private static String unit="g";
-	private boolean isGross = true;
-	WeightDao dao = null;
+  View root;
+  Button btn_save = null;
+  ImageView btn_print = null;
+  Button btn_tare = null;
+  Button btn_zero = null;
+  Button btn_switch_ng = null;
+  Button btn_switch_unit = null;
+  Button btn_history = null;
+  ImageView img_zero = null;
+  ImageView img_still = null;
+  ImageView img_tare = null;
+  ImageView img_conn = null;
+  TextView tv_weight = null, tv_unit = null;
+  TextView txtTare = null;
+  TextView txtNG = null;
+  TextView txtState = null;
 
-	private void setOnline(boolean online)
-	{
-		if(online)
-		{
-			img_conn.getDrawable().setLevel(1);
-			//87CEEB
-			tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
-			cout_3s = 3;
-		}
-		else
-		{
-			img_conn.getDrawable().setLevel(0);
-			tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
-		}
-
-	}
-	private void updateState()
-	{
-
-		if(cout_3s > 0)
-		{
-			cout_3s--;
-		}
-		if(cout_3s == 0)
-		{
-			setOnline(false);
-		}
-
-	}
-	private Runnable watchdog = new Runnable()
-	{
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-
-			updateState();
-			mHandler.postDelayed(this, 1000);
-		}
-
-	};
-
-	private void popConnectProcessBar(Context ctx)
-	{
-		address =WorkService.getDeviceAddress(this.getActivity(), 0);
-		if(address == "")
-		{
-			showFailBox(ctx.getString(R.string.prompt_scan));
-			return;
-		}
-		if(WorkService.hasConnected(address)) return;
-		
-		if(progressDialog!=null && progressDialog.isShowing())
-		{
-			return;
-		}
-	    progressDialog =ProgressDialog.show(ctx, ctx.getString(R.string.prompt_title), ctx.getString(R.string.connect_ble));
-
-	    if(!WorkService.requestConnect(address))
-	    {
-
-			if(progressDialog!=null && progressDialog.isShowing())
-				progressDialog.dismiss(); //关闭进度条
-			//Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
-			return;
-	    }
-	  
-        
-        Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
-        
-	    mHandler.sendMessageDelayed(msg, 5000);
-	}
-	public void onPause()
-	{
-		super.onPause();
-		mHandler.removeCallbacks(watchdog);
-
-		WorkService.delHandler(mHandler);
-	}
-
-	@Override
-	public void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		//super.onPause();
-		mHandler.removeCallbacks(watchdog);
-
-		WorkService.delHandler(mHandler);
-		Log.e(TAG, "onStop");
-	}
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		WorkService.addHandler(mHandler);
-		mHandler.postDelayed(watchdog, 1000);
-
-		updateState();
-		tv_unit.setText(unit);
-		
-		
-		popConnectProcessBar(this.getActivity());
-	}
-	private void initUI()
-	{
-		btn_save  = (Button) root.findViewById(R.id.btn_save);
-		btn_print = (ImageView) root.findViewById(R.id.btn_print);
-		btn_tare  = (Button) root.findViewById(R.id.btn_tare);
-		btn_swtich = (Button) root.findViewById(R.id.btn_switch);
-		tv_weight = (TextView) root.findViewById(R.id.tv_weight);
-		btn_zero = (Button) root.findViewById(R.id.btn_zero);
-		btn_ng = (AutoBgButton) root.findViewById(R.id.btn_ng);
-		btn_preset = (AutoBgButton) root.findViewById(R.id.btn_preset);
-		tv_unit = (TextView) root.findViewById(R.id.textView2);
-		txtTare = (TextView)root.findViewById(R.id.txtTare);
-		img_zero = (ImageView) root.findViewById(R.id.img_zero);
-		txtState = root.findViewById(R.id.id_state);
-		img_still = (ImageView) root.findViewById(R.id.img_still);
-		img_tare = (ImageView) root.findViewById(R.id.img_tare);
-		img_conn =  root.findViewById(R.id.img_conn_state);
-        img_conn.getDrawable().setLevel(0);
-		btn_unit = (Button) root.findViewById(R.id.btn_unit);
-		btn_history = root.findViewById(R.id.btn_history);
-		btn_unit.setOnClickListener(this);
-		
-		txtNG = root.findViewById(R.id.tv_oneweight_net_title);
-		btn_save.setOnClickListener(this);
-		btn_print.setOnClickListener(this);
-		btn_tare.setOnClickListener(this);
-		tv_weight.setOnClickListener(this);
-		btn_zero.setOnClickListener(this);
-		btn_swtich.setOnClickListener(this);
-		btn_history.setOnClickListener(this);
-		
-	}
-	private void initRes()
-	{
-		mHandler = new MHandler(this);
-		
-		
-		//mHandler.postDelayed(watchdog, 200);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-		root = inflater.inflate(R.layout.activity_oneweight_table, container, false);
-		
-		initUI();
-		initRes();
-		dao = new WeightDao(this.getActivity());
-		return root;
-	}
-
-	 private void inputTitleDialog() {
-
-	        final EditText inputServer = new EditText(this.getActivity());
-	        inputServer.setFocusable(true);
-
-	        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-	        builder.setTitle("请输入").setIcon(
-	        		android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(
-	                "取消", null);
-	        builder.setPositiveButton("确定",
-	                new DialogInterface.OnClickListener() {
-
-	                    public void onClick(DialogInterface dialog, int which) {
-	                        String inputValue = inputServer.getText().toString();
-	                        
-	                        IntValue wgt   =NumberValues.GetIntValue(inputValue);
-	        				
-	                        if(wgt.ok)
-	                        {
-		                        if(WorkService.setPreTare(address,wgt.value))
-	                        	{
-	 	                        	
-	 	                        }
-	                        }
-                        
-	                        
-	                       
-	                    }
-	                });
-	        builder.show();
-	    }
-	@Override
-	public void onClick(View arg0) {
-		cout_3s = 5;
-		switch(arg0.getId())
-		{
-		case R.id.btn_still:
-			
-			break;
-		case R.id.btn_history:
-			Intent intent = new Intent(this.getActivity(), HistoryWeightActivity.class);
-
-			startActivity(intent);
-
-			break;
-		case R.id.btn_save:
-			if(saveWeight())
-			{
-				Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
-			}
-			else{
-				Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
-			}
-
-			break;
-		case R.id.btn_print:
-			WorkService.common_msg(address,Global.REG_OPERATION,99);
-			break;
-		case R.id.btn_tare:
-			WorkService.discardTare(address);
-
-			//try {
-			//	Thread.sleep(100);
-			//} catch (InterruptedException e) {
-			//	// TODO Auto-generated catch block
-			//	e.printStackTrace();
-			//}
-			//if(!WorkService.setZero(address))
-			//{
-			//	//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
-			//}
-			break;
-		case R.id.tv_weight:
-			popConnectProcessBar(this.getActivity());
-			
-			break;
-		case R.id.btn_zero:
-			//清零
-			if(!WorkService.setZero(address))
-			{
-				Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
-			}
-			break;
-		case R.id.btn_switch:
-			//净重和毛重切换
-			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a_click));
-			WorkService.common_msg(address,Global.REG_OPERATION,5);
-			break;
-		case R.id.btn_preset:
-			inputTitleDialog();
-			break;
-		case R.id.btn_sleep:
-			WorkService.common_msg(address,Global.REG_OPERATION,12);
-			break;
-		case R.id.btn_wake:
-			WorkService.common_msg(address,Global.REG_OPERATION,13);
-			break;
-		case R.id.btn_unit:
-			WorkService.common_msg(address,Global.REG_OPERATION,14);
-			break;
-		
-		}
-		
-	}
-	private boolean saveWeight() {
-		// TODO Auto-generated method stub
-		//净重的时候 毛重=显示重量+皮重
-		//毛重的时候 毛重=显示重量
-
-		WeightRecord rec = new WeightRecord();
+  public boolean  bStop = false;
+  public int  online_cout_3s = 0;
+  private static String address;
 
 
-		if(isGross)
-		{
-			rec.setGross(tv_weight.getText().toString());
-			rec.setNet(tv_weight.getText().toString());
-			rec.setTare("0");
-		}
-		else
-		{
-			rec.setGross(tv_weight.getText().toString());
-			rec.setNet(tv_weight.getText().toString());
-			rec.setTare(txtTare.getText().toString());
-		}
+  private static ProgressDialog progressDialog = null;
+  private static Handler mHandler = null;
+  protected static final String TAG = "weight_activity";
+  private static String unit = "g";
+  private boolean isGross = true;
+  WeightDao dao = null;
 
-		if(dao == null) return false;
+  private void setOnline(boolean online) {
+    if (online) {
+      img_conn.getDrawable().setLevel(1);
+      //87CEEB
+      tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
+      online_cout_3s = 30;
+    } else {
+      online_cout_3s = 0;
+      img_conn.getDrawable().setLevel(0);
+      tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
+    }
+  }
 
-		return dao.saveWeight(rec);
-	}
+  private void updateState() {
 
+    if (online_cout_3s > 0) {
+      online_cout_3s--;
+    }
+    if (online_cout_3s == 0) {
+      setOnline(false);
+    }
+  }
 
-	private void showFailBox(String msg)
-	{
-		 new AlertDialog.Builder(this.getActivity()).setTitle(this.getString(R.string.prompt_title))//设置对话框标题
-		  
-	     .setMessage(msg)//设置显示的内容  
-	  
-	     .setPositiveButton(this.getString(R.string.ok),new DialogInterface.OnClickListener() {//添加确定按钮
-	  
-	          
-	  
-	         @Override  
-	  
-	         public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件  
-	  
-	             // TODO Auto-generated method stub  
-	  
-	            dialog.dismiss();
-	  
-	         }  
-	  
-	     }).show();//在按键响应事件中显示此对话框  
-	  
-	}
-	public void set_zero_state(boolean bZero)
-	{
-		img_zero.getDrawable().setLevel(bZero?1:0);
-	}
-	public void set_still_state(boolean bStill)
-	{
-		img_still.getDrawable().setLevel(bStill?1:0);
-	}
-	public void set_tare_state(boolean bTare)
-	{
-		img_tare.getDrawable().setLevel(bTare?1:0);
-	}
+  private void reReadWgt() {
 
-	public static Fragment newFragment() {
-		OneWeightFragment f = new OneWeightFragment();
-		Bundle bundle = new Bundle();
+    if (!bStop) {
+      if (WorkService.hasConnected(address)) {
+        WorkService.common_msg(address, Global.REG_OPERATION, 6);
+      }
+    }
+  }
 
+  private Runnable watchdog = new Runnable() {
 
-		f.setArguments(bundle);
-		return f;
-	}
+    @Override public void run() {
+      // TODO Auto-generated method stub
 
-	static class MHandler extends Handler {
+      reReadWgt();
+      updateState();
+      mHandler.postDelayed(this, 100);
+    }
+  };
 
-		WeakReference<OneWeightFragment> mActivity;
-		
+  private void popConnectProcessBar(Context ctx) {
+    address = WorkService.getDeviceAddress(this.getActivity(), 0);
+    if (address == "") {
+      showFailBox(ctx.getString(R.string.prompt_scan));
+      return;
+    }
+    if (WorkService.hasConnected(address)) return;
 
-		MHandler(OneWeightFragment activity) {
-			mActivity = new WeakReference<OneWeightFragment>(activity);
-			
-		}
-		
-		@Override
-		public void handleMessage(Message msg) {
-			OneWeightFragment theActivity = mActivity.get();
-			switch (msg.what) {
+    if (progressDialog != null && progressDialog.isShowing()) {
+      return;
+    }
+    progressDialog = ProgressDialog.show(ctx, ctx.getString(R.string.prompt_title),
+        ctx.getString(R.string.connect_ble));
 
+    if (!WorkService.requestConnect(address)) {
 
-				case Global.MSG_BLE_WGTRESULT_V2:
-				{
+      if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss(); //关闭进度条
+      //Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
+      return;
+    }
 
-					Scaler d = (Scaler) msg.obj;
+    Message msg = mHandler.obtainMessage(Constant.MSG_TIMEOUT);
 
+    mHandler.sendMessageDelayed(msg, 5000);
+  }
 
-					if(d==null)
-					{
-						return;
-					}
-					theActivity.setOnline(true);
+  public void onPause() {
+    super.onPause();
+    mHandler.removeCallbacks(watchdog);
 
+    WorkService.delHandler(mHandler);
+  }
 
-					String dspwet = d.getDispalyWeight();
-					if(d.isGross_overflow())
-					{
-						dspwet = "-------";
-					}
-					theActivity.tv_weight.setText(dspwet);
-					theActivity.set_zero_state(d.isZero());
-					theActivity.set_still_state(d.isStandstill());
-					theActivity.set_tare_state(!d.isGross()); //皮重状态就是净重状态.
-					theActivity.tv_unit.setText(d.getUnit());
-					theActivity.txtState.setText("" + d.getState());
-					theActivity.txtNG.setText(d.isGross()? theActivity.getText(R.string.gross):theActivity.getText(R.string.net));
-					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
+  @Override public void onStop() {
+    // TODO Auto-generated method stub
+    super.onStop();
+    //super.onPause();
+    mHandler.removeCallbacks(watchdog);
 
-					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));
+    WorkService.delHandler(mHandler);
+    Log.e(TAG, "onStop");
+  }
 
-					break;
-				}
-				case Global.MSG_BLE_DISCONNECTRESULT:
-				{
-					//String addr =(String)msg.obj;
-					//Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+  @Override public void onResume() {
+    // TODO Auto-generated method stub
+    super.onResume();
+    WorkService.addHandler(mHandler);
+    mHandler.postDelayed(watchdog, 100);
 
-					theActivity.setOnline(false);
+    updateState();
+    tv_unit.setText(unit);
 
-					break;
-				}
-				case Global.MSG_BLE_FAILERESULT:
-				{
+    popConnectProcessBar(this.getActivity());
+  }
 
-					//Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1) +"  " + WorkService.getFailType(msg.arg2), Toast.LENGTH_SHORT).show();
-					break;
-				}
-				
-				case Global.MSG_SCALER_CONNECT_OK:
-				{
-				
-					if(progressDialog!=null && progressDialog.isShowing())
-						progressDialog.dismiss(); //关闭进度条
-						//Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
-					
-					break;
-				}
-				case MSG_TIMEOUT:
-				{
-				
-					if(progressDialog!=null && progressDialog.isShowing())
-					{
-						progressDialog.dismiss(); //关闭进度条
-						theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
-						//Toast.makeText(theActivity.getActivity(),"timeout",Toast.LENGTH_SHORT).show();
-					}
-				}
-				case Global.MSG_SCALER_CTRL_RESULT:
-				{
-					//Toast.makeText(theActivity.getActivity(), "success!", Toast.LENGTH_SHORT).show();
-					break;
-				}
-				case Global.MSG_SCALER_POWER_RESULT:
-				{
-//					int result = msg.arg1;
-//					theActivity.btn_power.refreshPower((float)result/1000.0f);
-					break;
-				}
-			}
-			
-		}
-	}
-	
+  private void initUI() {
 
+    //--------------------------------
+    tv_weight = root.findViewById(R.id.tv_weight);
+    tv_unit =  root.findViewById(R.id.textView2);
+    txtTare =  root.findViewById(R.id.txtTare);
+    txtState = root.findViewById(R.id.id_state);
+    txtNG = root.findViewById(R.id.tv_oneweight_net_title);
+    tv_weight.setOnClickListener(this);
 
+    //----------------------------------------------------------
+    img_zero = (ImageView) root.findViewById(R.id.img_zero);
+    img_still = (ImageView) root.findViewById(R.id.img_still);
+    img_tare = (ImageView) root.findViewById(R.id.img_tare);
+    img_conn = root.findViewById(R.id.img_conn_state);
+    img_conn.getDrawable().setLevel(0);
+
+    // Buttons
+    btn_switch_unit = root.findViewById(R.id.btn_switch_unit);
+    btn_switch_unit.setOnClickListener(this);
+
+    btn_switch_ng =  root.findViewById(R.id.btn_switch_ng);
+    btn_switch_ng.setOnClickListener(this);
+
+    btn_tare = root.findViewById(R.id.btn_tare);
+    btn_tare.setOnClickListener(this);
+
+    btn_zero = root.findViewById(R.id.btn_zero);
+    btn_zero.setOnClickListener(this);
+
+    btn_save = root.findViewById(R.id.btn_save);
+    btn_save.setOnClickListener(this);
+
+    btn_print = root.findViewById(R.id.btn_print);
+    btn_print.setOnClickListener(this);
+
+    btn_history = root.findViewById(R.id.btn_history);
+    btn_history.setOnClickListener(this);
+    //----------------------------------------
+
+  }
+
+  private void initRes() {
+    mHandler = new MHandler(this);
+
+  }
+
+  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+
+    root = inflater.inflate(R.layout.activity_oneweight_table, container, false);
+
+    initUI();
+    initRes();
+    dao = new WeightDao(this.getActivity());
+    return root;
+  }
+
+  public void SendDelayMsg(int code,long time)
+  {
+    bStop = true;
+    mHandler.sendEmptyMessageDelayed(code,time);
+  }
+  @Override public void onClick(View arg0) {
+
+    switch (arg0.getId()) {
+
+      case R.id.btn_history:
+        Intent intent = new Intent(this.getActivity(), HistoryWeightActivity.class);
+
+        startActivity(intent);
+
+        break;
+      case R.id.btn_save:
+        if (saveWeight()) {
+          Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
+        } else {
+          Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
+        }
+
+        break;
+
+      case R.id.btn_tare:
+        SendDelayMsg(Constant.MSG_DISCARD_TARE,300);
+
+        break;
+      case R.id.tv_weight:
+        popConnectProcessBar(this.getActivity());
+
+        break;
+      case R.id.btn_zero:
+        SendDelayMsg(Constant.MSG_SET_ZERO,300);
+        break;
+      case R.id.btn_switch_unit:
+        //净重和毛重切换
+        SendDelayMsg(Constant.MSG_SWITCH_UNIT,300);
+        break;
+      case R.id.btn_switch_ng:
+        //单位切换
+        SendDelayMsg(Constant.MSG_SWITCH_NG,300);
+        break;
+
+    }
+  }
+
+  private boolean saveWeight() {
+    // TODO Auto-generated method stub
+    //净重的时候 毛重=显示重量+皮重
+    //毛重的时候 毛重=显示重量
+
+    WeightRecord rec = new WeightRecord();
+
+    if (isGross) {
+      rec.setGross(tv_weight.getText().toString());
+      rec.setNet(tv_weight.getText().toString());
+      rec.setTare("0");
+    } else {
+      rec.setGross(tv_weight.getText().toString());
+      rec.setNet(tv_weight.getText().toString());
+      rec.setTare(txtTare.getText().toString());
+    }
+
+    if (dao == null) return false;
+
+    return dao.saveWeight(rec);
+  }
+  public void SendCtrlMsg(String address, int code)
+  {
+    WorkService.common_msg(address, Global.REG_OPERATION, code);
+    bStop = false;
+  }
+  private void showFailBox(String msg) {
+    new AlertDialog.Builder(this.getActivity()).setTitle(
+        this.getString(R.string.prompt_title))//设置对话框标题
+
+        .setMessage(msg)//设置显示的内容
+
+        .setPositiveButton(this.getString(R.string.ok),
+            new DialogInterface.OnClickListener() {//添加确定按钮
+
+              @Override
+
+              public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+
+                // TODO Auto-generated method stub
+
+                dialog.dismiss();
+              }
+            }).show();//在按键响应事件中显示此对话框
+  }
+
+  public void set_zero_state(boolean bZero) {
+    img_zero.getDrawable().setLevel(bZero ? 1 : 0);
+  }
+
+  public void set_still_state(boolean bStill) {
+    img_still.getDrawable().setLevel(bStill ? 1 : 0);
+  }
+
+  public void set_tare_state(boolean bTare) {
+    img_tare.getDrawable().setLevel(bTare ? 1 : 0);
+  }
+
+  public static Fragment newFragment() {
+    OneWeightFragment f = new OneWeightFragment();
+    Bundle bundle = new Bundle();
+
+    f.setArguments(bundle);
+    return f;
+  }
+
+  static class MHandler extends Handler {
+
+    WeakReference<OneWeightFragment> mActivity;
+
+    MHandler(OneWeightFragment activity) {
+      mActivity = new WeakReference<OneWeightFragment>(activity);
+    }
+
+    @Override public void handleMessage(Message msg) {
+      OneWeightFragment theActivity = mActivity.get();
+      switch (msg.what) {
+        case Constant.MSG_TIMEOUT: {
+
+          if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss(); //关闭进度条
+            theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+          }
+        }
+        case Constant.MSG_SET_ZERO:
+        {
+          theActivity.SendCtrlMsg(address, 1);
+          break;
+        }
+        case Constant.MSG_SWITCH_UNIT:
+        {
+          theActivity.SendCtrlMsg(address, 14);
+          break;
+        }
+        case Constant.MSG_DISCARD_TARE:
+        {
+          theActivity.SendCtrlMsg(address, 2);
+          break;
+        }
+        case Constant.MSG_SWITCH_NG:
+        {
+          theActivity.SendCtrlMsg(address, 5);
+          break;
+        }
+        case Global.MSG_BLE_WGTRESULT_V2: {
+
+          Scaler d = (Scaler) msg.obj;
+
+          if (d == null) {
+            return;
+          }
+
+          theActivity.setOnline(true);
+
+          String display = d.getDispalyWeight();
+          if (d.isGross_overflow()) {
+            display = "-------";
+          }
+          theActivity.tv_weight.setText(display);
+          theActivity.set_zero_state(d.isZero());
+          theActivity.set_still_state(d.isStandstill());
+          theActivity.set_tare_state(!d.isGross()); //皮重状态就是净重状态.
+          theActivity.tv_unit.setText(d.getUnit());
+          theActivity.txtState.setText("" + d.getState());
+          theActivity.txtNG.setText(d.isGross() ? theActivity.getText(R.string.gross)
+              : theActivity.getText(R.string.net));
+          theActivity.txtTare.setText(
+              Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
+
+          break;
+        }
+        case Global.MSG_BLE_DISCONNECTRESULT: {
+
+          theActivity.setOnline(false);
+
+          break;
+        }
+        case Global.MSG_BLE_FAILERESULT: {
+
+          //Toast.makeText(theActivity.getActivity(), WorkService.getFailReason(msg.arg1) +"  " + WorkService.getFailType(msg.arg2), Toast.LENGTH_SHORT).show();
+          break;
+        }
+
+        case Global.MSG_SCALER_CONNECT_OK: {
+
+          if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss(); //关闭进度条
+          }
+          //Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
+
+          break;
+        }
+
+        case Global.MSG_SCALER_CTRL_RESULT: {
+          //Toast.makeText(theActivity.getActivity(), "success!", Toast.LENGTH_SHORT).show();
+          break;
+        }
+        case Global.MSG_SCALER_POWER_RESULT: {
+          //					int result = msg.arg1;
+          //					theActivity.btn_power.refreshPower((float)result/1000.0f);
+          break;
+        }
+      }
+    }
+  }
 };

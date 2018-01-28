@@ -40,15 +40,15 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
   ImageView btn_print = null;
   Button btn_tare = null;
   Button btn_zero = null;
-  Button btn_swtich = null;
+  Button btn_switch_ng = null;
+  Button btn_switch_unit = null;
 
   ImageView img_zero = null;
   ImageView img_still = null;
   ImageView img_tare = null;
   ImageView img_conn = null;
-  Button btn_switch_unit, btn_still = null;
-  Button btn_history = null;
-  BatteryState btn_power = null;
+
+  Button    btn_history = null;
   TextView tv_weight = null, tv_quantity = null, tv_uw = null;
   TextView txtTare = null;
   TextView tv_ng = null;
@@ -56,11 +56,9 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
   CountDao dao = null;
   Button btn_sample, btn_reset_count, btn_save_uw, btn_preset_uw;
 
-  public int cont = 0, cout_2s, cout_3s = 0;
+  public int online_count_3s = 0;
   private float uw = 0;
-  public int   sample_count = 1;
-  private boolean enable_uw = false;
-  private int bGetUw = 0;
+  private boolean bStop = false;
   private static String address;
   private static final int MSG_TIMEOUT = 0x0001;
   private static ProgressDialog progressDialog = null;
@@ -73,8 +71,9 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
       img_conn.getDrawable().setLevel(1);
       //87CEEB
       tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
-      cout_3s = 3;
+      online_count_3s = 30;
     } else {
+      online_count_3s = 0;
       img_conn.getDrawable().setLevel(0);
       tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
     }
@@ -82,21 +81,28 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
 
   private void updateState() {
 
-    if (cout_3s > 0) {
-      cout_3s--;
+    if (online_count_3s > 0) {
+      online_count_3s--;
     }
-    if (cout_3s == 0) {
+    if (online_count_3s == 0) {
       setOnline(false);
     }
   }
+  private void reReadWgt() {
 
+    if (!bStop) {
+      if (WorkService.hasConnected(address)) {
+        WorkService.common_msg(address, Global.REG_OPERATION, 6);
+      }
+    }
+  }
   private Runnable watchdog = new Runnable() {
 
     @Override public void run() {
       // TODO Auto-generated method stub
-
+      reReadWgt();
       updateState();
-      mHandler.postDelayed(this, 1000);
+      mHandler.postDelayed(this, 100);
     }
   };
 
@@ -140,7 +146,7 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
     // TODO Auto-generated method stub
     super.onResume();
     WorkService.addHandler(mHandler);
-    mHandler.postDelayed(watchdog, 1000);
+    mHandler.postDelayed(watchdog, 100);
 
     updateState();
 
@@ -148,45 +154,61 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
   }
 
   private void initUI() {
-    btn_save = (Button) root.findViewById(R.id.btn_save);
-    btn_print = (ImageView) root.findViewById(R.id.btn_print);
-    btn_tare = (Button) root.findViewById(R.id.btn_tare);
-    btn_swtich = (Button) root.findViewById(R.id.btn_switch);
-    tv_weight = (TextView) root.findViewById(R.id.tv_weight);
-    tv_uw = root.findViewById(R.id.tv_uw);
-    txtTare = root.findViewById(R.id.tv_tare);
-    btn_zero = (Button) root.findViewById(R.id.btn_zero);
-    btn_switch_unit = (Button) root.findViewById(R.id.btn_switch_unit);
 
-    btn_sample = (Button) root.findViewById(R.id.btn_sample);
-    btn_reset_count = (Button) root.findViewById(R.id.btn_reset_uw);
-    btn_save_uw = (Button) root.findViewById(R.id.btn_save_uw);
-    btn_preset_uw = (Button) root.findViewById(R.id.btn_preset_uw);
-    tv_quantity = (TextView) root.findViewById(R.id.tv_quantity);
-    tv_ng = root.findViewById(R.id.tv_ng);
-    tv_calc_weight = root.findViewById(R.id.tv_calc_weight);
-    btn_history = root.findViewById(R.id.btn_history);
 
     img_zero = root.findViewById(R.id.img_zero);
     img_still = root.findViewById(R.id.img_still);
     img_tare = root.findViewById(R.id.img_tare);
     img_conn = root.findViewById(R.id.img_conn_state);
     img_conn.getDrawable().setLevel(0);
-    btn_history.setOnClickListener(this);
-    btn_switch_unit.setOnClickListener(this);
-    btn_save.setOnClickListener(this);
-    btn_print.setOnClickListener(this);
-    btn_tare.setOnClickListener(this);
+
+    tv_weight = root.findViewById(R.id.tv_weight);
     tv_weight.setOnClickListener(this);
 
+    tv_uw = root.findViewById(R.id.tv_uw);
+    txtTare = root.findViewById(R.id.tv_tare);
+    tv_quantity = root.findViewById(R.id.tv_quantity);
+    tv_ng = root.findViewById(R.id.tv_ng);
+    tv_calc_weight = root.findViewById(R.id.tv_calc_weight);
+
+
+
+    btn_save = (Button) root.findViewById(R.id.btn_save);
+    btn_save.setOnClickListener(this);
+
+    btn_print = (ImageView) root.findViewById(R.id.btn_print);
+    btn_print.setOnClickListener(this);
+
+    btn_tare = (Button) root.findViewById(R.id.btn_tare);
+    btn_tare.setOnClickListener(this);
+
+    btn_switch_ng = (Button) root.findViewById(R.id.btn_switch_ng);
+    btn_switch_ng.setOnClickListener(this);
+
+    btn_history = root.findViewById(R.id.btn_history);
+    btn_history.setOnClickListener(this);
+
+
+    btn_switch_unit = (Button) root.findViewById(R.id.btn_switch_unit);
+    btn_switch_unit.setOnClickListener(this);
+
+    btn_zero = (Button) root.findViewById(R.id.btn_zero);
     btn_zero.setOnClickListener(this);
-    btn_swtich.setOnClickListener(this);
+
+    btn_sample = (Button) root.findViewById(R.id.btn_sample);
     btn_sample.setOnClickListener(this);
+
+    btn_reset_count = (Button) root.findViewById(R.id.btn_reset_uw);
     btn_reset_count.setOnClickListener(this);
+
+    btn_save_uw = (Button) root.findViewById(R.id.btn_save_uw);
     btn_save_uw.setOnClickListener(this);
+
+    btn_preset_uw = (Button) root.findViewById(R.id.btn_preset_uw);
     btn_preset_uw.setOnClickListener(this);
 
     _counter.load(this.getActivity());
+
   }
 
   private void initRes() {
@@ -255,15 +277,44 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
     });
     builder.show();
   }
+  public void SendDelayMsg(int code,long time)
+  {
+    bStop = true;
+    mHandler.sendEmptyMessageDelayed(code,time);
+  }
+  public void Display(Scaler d)
+  {
 
+    setOnline(true);
+    WorkService.requestReadWgtV2(d.getAddress());
+    String dspwet = d.getDispalyWeight() + d.getUnit();
+    if (d.isGross_overflow()) {
+      dspwet = "-------";
+    }
+    set_zero_state(d.isZero());
+    set_still_state(d.isStandstill());
+    set_tare_state(!d.isGross());
+    tv_ng.setText(d.isGross()? getText(R.string.gross):getText(R.string.net));
+    tv_calc_weight.setText("" + d.getCalcWeight());
+
+    //皮重是传出来的
+    txtTare.setText(
+        Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
+    //显示重量是传出来的.
+    tv_weight.setText(dspwet);
+    tv_uw.setText(_counter.getUw() + d.getUnit());
+    tv_quantity.setText("" + _counter.calcCount(d));
+
+
+  }
   @Override public void onClick(View arg0) {
-    cout_3s = 5;
+
     switch (arg0.getId()) {
       case R.id.btn_save_uw:
-        _counter.saveUw();
+        _counter.saveUw(this.getActivity());
         break;
       case R.id.btn_reset_uw:
-        _counter.resetUw();
+        _counter.resetUw(this.getActivity());
         break;
       case R.id.btn_sample:
         //单位重量重新更新.
@@ -288,27 +339,26 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
         WorkService.common_msg(address, Global.REG_OPERATION, 99);
         break;
       case R.id.btn_tare:
-        WorkService.discardTare(address);
+        SendDelayMsg(Constant.MSG_DISCARD_TARE,300);
+
         break;
       case R.id.tv_weight:
         popConnectProcessBar(this.getActivity());
 
         break;
       case R.id.btn_zero:
-        //清零
-        if (!WorkService.setZero(address)) {
-          Utils.Msgbox(this.getActivity(), getString(R.string.zero_failed));
-        }
-        break;
-      case R.id.btn_switch:
-        //净重和毛重切换
-        WorkService.common_msg(address, Global.REG_OPERATION, 5);
+        SendDelayMsg(Constant.MSG_SET_ZERO,300);
         break;
       case R.id.btn_preset_uw:
         inputTitleDialog();
         break;
-      case R.id.btn_unit:
-        WorkService.common_msg(address, Global.REG_OPERATION, 14);
+      case R.id.btn_switch_unit:
+        //净重和毛重切换
+        SendDelayMsg(Constant.MSG_SWITCH_UNIT,300);
+        break;
+      case R.id.btn_switch_ng:
+        //单位切换
+        SendDelayMsg(Constant.MSG_SWITCH_NG,300);
         break;
     }
   }
@@ -365,7 +415,11 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
     f.setArguments(bundle);
     return f;
   }
-
+  public void SendCtrlMsg(String address, int code)
+  {
+    WorkService.common_msg(address, Global.REG_OPERATION, code);
+    bStop = false;
+  }
   static class MHandler extends Handler {
 
     WeakReference<OneCountFragment> mActivity;
@@ -374,15 +428,30 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
       mActivity = new WeakReference<OneCountFragment>(activity);
     }
 
-    public void calc(OneCountFragment theActivity, Scaler d) {
-
-      theActivity.tv_quantity.setText("" +theActivity._counter.calcCount(d));
-    }
 
     @Override public void handleMessage(Message msg) {
       OneCountFragment theActivity = mActivity.get();
       switch (msg.what) {
-
+        case Constant.MSG_SET_ZERO:
+        {
+          theActivity.SendCtrlMsg(address, 1);
+          break;
+        }
+        case Constant.MSG_SWITCH_UNIT:
+        {
+          theActivity.SendCtrlMsg(address, 14);
+          break;
+        }
+        case Constant.MSG_DISCARD_TARE:
+        {
+          theActivity.SendCtrlMsg(address, 2);
+          break;
+        }
+        case Constant.MSG_SWITCH_NG:
+        {
+          theActivity.SendCtrlMsg(address, 5);
+          break;
+        }
         case Global.MSG_BLE_WGTRESULT_V2: {
 
           Scaler d = (Scaler) msg.obj;
@@ -390,36 +459,11 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
           if (d == null) {
             return;
           }
-          theActivity.setOnline(true);
+          theActivity.Display(d);
 
-          String dspwet = d.getDispalyWeight() + d.getUnit();
-          if (d.isGross_overflow()) {
-            dspwet = "-------";
-          }
-          theActivity.set_zero_state(d.isZero());
-          theActivity.set_still_state(d.isStandstill());
-          theActivity.set_tare_state(!d.isGross());
-          theActivity.tv_ng.setText(d.isGross()? theActivity.getText(R.string.gross):theActivity.getText(R.string.net));
-          theActivity.tv_calc_weight.setText("" + d.getCalcWeight());
-          //if (theActivity.bGetUw == 1) {
-          //  if(theActivity.sample_count <=0 )
-          //    theActivity.sample_count = 1;
-          //  theActivity.uw = d.getCalcWeight() / theActivity.sample_count;
-          //  theActivity.bGetUw = 2;
-          //}
-
-          //皮重是传出来的
-          theActivity.txtTare.setText(
-              Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
-          //显示重量是传出来的.
-          theActivity.tv_weight.setText(dspwet);
-          theActivity.tv_uw.setText("" + theActivity.uw + d.getUnit());
-          calc(theActivity, d);
           break;
         }
         case Global.MSG_BLE_DISCONNECTRESULT: {
-          //String addr =(String)msg.obj;
-          //Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
           theActivity.setOnline(false);
           break;
         }

@@ -12,4 +12,20 @@ public class UwInfo {
   }
   boolean isValid;
   float weight;
+
+  public boolean isValid() {
+    return isValid;
+  }
+
+  public void setValid(boolean valid) {
+    isValid = valid;
+  }
+
+  public float getWeight() {
+    return weight;
+  }
+
+  public void setWeight(float weight) {
+    this.weight = weight;
+  }
 }
