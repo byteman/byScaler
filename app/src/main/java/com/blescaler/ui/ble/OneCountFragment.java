@@ -1,7 +1,7 @@
 package com.blescaler.ui.ble;
 
-
-
+import com.blescaler.db.Config;
+import com.blescaler.util.FloatValue;
 import java.lang.ref.WeakReference;
 
 import android.app.AlertDialog;
@@ -35,458 +35,420 @@ import com.blescaler.worker.Scaler;
 import com.blescaler.worker.WorkService;
 
 public class OneCountFragment extends BaseFragment implements View.OnClickListener {
-	View root;
-	Button btn_save = null;
-	ImageView btn_print = null;
-	Button btn_tare = null;
-	Button btn_zero = null;
-	Button btn_swtich = null;
+  View root;
+  Button btn_save = null;
+  ImageView btn_print = null;
+  Button btn_tare = null;
+  Button btn_zero = null;
+  Button btn_swtich = null;
 
-	ImageView img_zero = null;
-	ImageView img_still = null;
-	ImageView img_tare = null;
-	ImageView img_conn=null;
-	Button btn_switch_unit,btn_still = null;
-	Button btn_history=null;
-	BatteryState btn_power = null;
-	TextView tv_weight = null,tv_quantity=null,tv_uw=null;
-	TextView txtTare=null;
-    CountDao dao = null;
-    Button btn_sample,btn_reset_count,btn_save_uw,btn_preset_uw;
+  ImageView img_zero = null;
+  ImageView img_still = null;
+  ImageView img_tare = null;
+  ImageView img_conn = null;
+  Button btn_switch_unit, btn_still = null;
+  Button btn_history = null;
+  BatteryState btn_power = null;
+  TextView tv_weight = null, tv_quantity = null, tv_uw = null;
+  TextView txtTare = null;
+  TextView tv_ng = null;
+  TextView tv_calc_weight = null;
+  CountDao dao = null;
+  Button btn_sample, btn_reset_count, btn_save_uw, btn_preset_uw;
 
-	//Scaler scaler = null;
-	public int cont=0,cout_2s,cout_3s=0;
-	private float  uw = 0;
-	private boolean enable_uw = false;
-	private int bGetUw = 0;
-	private static String address;
-	private static final int MSG_TIMEOUT = 0x0001;
-	private static ProgressDialog progressDialog = null;
-	private static Handler mHandler = null;
-	protected static final String TAG = "weight_activity";
-	private static String unit="g";
-	
+  public int cont = 0, cout_2s, cout_3s = 0;
+  private float uw = 0;
+  public int   sample_count = 1;
+  private boolean enable_uw = false;
+  private int bGetUw = 0;
+  private static String address;
+  private static final int MSG_TIMEOUT = 0x0001;
+  private static ProgressDialog progressDialog = null;
+  private static Handler mHandler = null;
+  protected static final String TAG = "weight_activity";
+  private static String unit = "g";
+  public  Counter _counter = new Counter();
+  private void setOnline(boolean online) {
+    if (online) {
+      img_conn.getDrawable().setLevel(1);
+      //87CEEB
+      tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
+      cout_3s = 3;
+    } else {
+      img_conn.getDrawable().setLevel(0);
+      tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
+    }
+  }
 
-	private void updateState()
-	{
+  private void updateState() {
 
-		if(!WorkService.hasConnected(address))
-		{
-			img_conn.getDrawable().setLevel(0);
-			tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
-		}
-		else
-		{
-			img_conn.getDrawable().setLevel(1);
-			//87CEEB
-			tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
-		}
+    if (cout_3s > 0) {
+      cout_3s--;
+    }
+    if (cout_3s == 0) {
+      setOnline(false);
+    }
+  }
 
-	}
-	private Runnable watchdog = new Runnable()
-	{
+  private Runnable watchdog = new Runnable() {
 
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
+    @Override public void run() {
+      // TODO Auto-generated method stub
 
+      updateState();
+      mHandler.postDelayed(this, 1000);
+    }
+  };
 
-//			   if(cont++ >= 1)
-//			   {
-//
-//				   WorkService.requestReadWgtV2(address);
-//				   cont = 0;
-//			   }
-//			   if(cout_2s++ > 10)
-//			   {
-//				   updateState();
-//				   WorkService.readPower(address);
-//				   cout_2s = 0;
-//			   }
-//			   if(cout_3s > 0)
-//			   {
-//				   cout_3s--;
-//			   }
-			updateState();
-			mHandler.postDelayed(this, 1000);
-		}
+  private void popConnectProcessBar(Context ctx) {
+    address = WorkService.getDeviceAddress(this.getActivity(), 0);
+    if (address == "") {
+      showFailBox(ctx.getString(R.string.prompt_scan));
+      return;
+    }
+    if (WorkService.hasConnected(address)) return;
 
-	};
+    if (progressDialog != null && progressDialog.isShowing()) {
+      return;
+    }
+    progressDialog = ProgressDialog.show(ctx, ctx.getString(R.string.prompt_title),
+        ctx.getString(R.string.connect_ble));
 
-	private void popConnectProcessBar(Context ctx)
-	{
-		address =WorkService.getDeviceAddress(this.getActivity(), 0);
-		if(address == "")
-		{
-			showFailBox(ctx.getString(R.string.prompt_scan));
-			return;
-		}
-		if(WorkService.hasConnected(address)) return;
-		
-		if(progressDialog!=null && progressDialog.isShowing())
-		{
-			return;
-		}
-	    progressDialog =ProgressDialog.show(ctx, ctx.getString(R.string.prompt_title), ctx.getString(R.string.connect_ble));
+    if (!WorkService.requestConnect(address)) {
 
-	    if(!WorkService.requestConnect(address))
-	    {
+      if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss(); //关闭进度条
+      //Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
+      return;
+    }
 
-			if(progressDialog!=null && progressDialog.isShowing())
-				progressDialog.dismiss(); //关闭进度条
-			//Toast.makeText(this.getActivity(),"连接错误",Toast.LENGTH_SHORT).show();
-			return;
-	    }
-	  
-        
-        Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
-        
-	    mHandler.sendMessageDelayed(msg, 5000);
-	}
-    
+    Message msg = mHandler.obtainMessage(MSG_TIMEOUT);
 
-	@Override
-	public void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		//super.onPause();
-		mHandler.removeCallbacks(watchdog);
+    mHandler.sendMessageDelayed(msg, 5000);
+  }
 
-		WorkService.delHandler(mHandler);
-		Log.e(TAG, "onStop");
-	}
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		WorkService.addHandler(mHandler);
-		mHandler.postDelayed(watchdog, 1000);
+  @Override public void onStop() {
+    // TODO Auto-generated method stub
+    super.onStop();
+    //super.onPause();
+    mHandler.removeCallbacks(watchdog);
 
-		updateState();
+    WorkService.delHandler(mHandler);
+    Log.e(TAG, "onStop");
+  }
 
-		popConnectProcessBar(this.getActivity());
-	}
-	private void initUI()
-	{
-		btn_save  = (Button) root.findViewById(R.id.btn_save);
-		btn_print = (ImageView) root.findViewById(R.id.btn_print);
-		btn_tare  = (Button) root.findViewById(R.id.btn_tare);
-		btn_swtich = (Button) root.findViewById(R.id.btn_switch);
-		tv_weight = (TextView) root.findViewById(R.id.tv_weight);
-        tv_uw = root.findViewById(R.id.tv_uw);
-		btn_zero = (Button) root.findViewById(R.id.btn_zero);
-		btn_switch_unit = (Button) root.findViewById(R.id.btn_switch_unit);
+  @Override public void onResume() {
+    // TODO Auto-generated method stub
+    super.onResume();
+    WorkService.addHandler(mHandler);
+    mHandler.postDelayed(watchdog, 1000);
 
-		btn_sample = (Button) root.findViewById(R.id.btn_sample);
-		btn_reset_count= (Button) root.findViewById(R.id.btn_reset_uw);
-		btn_save_uw = (Button) root.findViewById(R.id.btn_save_uw);
-		btn_preset_uw = (Button) root.findViewById(R.id.btn_preset_uw);
-		tv_quantity = (TextView) root.findViewById(R.id.tv_quantity);
-		btn_history = root.findViewById(R.id.btn_history);
+    updateState();
 
-		img_zero =  root.findViewById(R.id.img_zero);
-		img_still = root.findViewById(R.id.img_still);
-		img_tare =  root.findViewById(R.id.img_tare);
-		img_conn =  root.findViewById(R.id.img_conn_state);
-		img_conn.getDrawable().setLevel(0);
-		btn_history.setOnClickListener(this);
-		btn_switch_unit.setOnClickListener(this);
-		btn_save.setOnClickListener(this);
-		btn_print.setOnClickListener(this);
-		btn_tare.setOnClickListener(this);
-		tv_weight.setOnClickListener(this);
-		btn_zero.setOnClickListener(this);
-		btn_swtich.setOnClickListener(this);
-		btn_sample.setOnClickListener(this);
-		btn_reset_count.setOnClickListener(this);
-		btn_save_uw.setOnClickListener(this);
-		btn_preset_uw.setOnClickListener(this);
+    popConnectProcessBar(this.getActivity());
+  }
 
+  private void initUI() {
+    btn_save = (Button) root.findViewById(R.id.btn_save);
+    btn_print = (ImageView) root.findViewById(R.id.btn_print);
+    btn_tare = (Button) root.findViewById(R.id.btn_tare);
+    btn_swtich = (Button) root.findViewById(R.id.btn_switch);
+    tv_weight = (TextView) root.findViewById(R.id.tv_weight);
+    tv_uw = root.findViewById(R.id.tv_uw);
+    txtTare = root.findViewById(R.id.tv_tare);
+    btn_zero = (Button) root.findViewById(R.id.btn_zero);
+    btn_switch_unit = (Button) root.findViewById(R.id.btn_switch_unit);
 
-		
-	}
-	private void initRes()
-	{
-		mHandler = new MHandler(this);
-	}
+    btn_sample = (Button) root.findViewById(R.id.btn_sample);
+    btn_reset_count = (Button) root.findViewById(R.id.btn_reset_uw);
+    btn_save_uw = (Button) root.findViewById(R.id.btn_save_uw);
+    btn_preset_uw = (Button) root.findViewById(R.id.btn_preset_uw);
+    tv_quantity = (TextView) root.findViewById(R.id.tv_quantity);
+    tv_ng = root.findViewById(R.id.tv_ng);
+    tv_calc_weight = root.findViewById(R.id.tv_calc_weight);
+    btn_history = root.findViewById(R.id.btn_history);
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    img_zero = root.findViewById(R.id.img_zero);
+    img_still = root.findViewById(R.id.img_still);
+    img_tare = root.findViewById(R.id.img_tare);
+    img_conn = root.findViewById(R.id.img_conn_state);
+    img_conn.getDrawable().setLevel(0);
+    btn_history.setOnClickListener(this);
+    btn_switch_unit.setOnClickListener(this);
+    btn_save.setOnClickListener(this);
+    btn_print.setOnClickListener(this);
+    btn_tare.setOnClickListener(this);
+    tv_weight.setOnClickListener(this);
 
-		root = inflater.inflate(R.layout.fragment_count, container, false);
-		
-		initUI();
-		initRes();
-        dao = new CountDao(this.getActivity());
-		return root;
-	}
+    btn_zero.setOnClickListener(this);
+    btn_swtich.setOnClickListener(this);
+    btn_sample.setOnClickListener(this);
+    btn_reset_count.setOnClickListener(this);
+    btn_save_uw.setOnClickListener(this);
+    btn_preset_uw.setOnClickListener(this);
 
-	 private void inputTitleDialog() {
+    _counter.load(this.getActivity());
+  }
 
-	        final EditText inputServer = new EditText(this.getActivity());
-	        inputServer.setFocusable(true);
+  private void initRes() {
+    mHandler = new MHandler(this);
+  }
 
-	        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-	        builder.setTitle(this.getString(R.string.input)).setIcon(
-	        		android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(
-	                this.getString(R.string.cancle), null);
-	        builder.setPositiveButton(this.getString(R.string.ok),
-	                new DialogInterface.OnClickListener() {
+  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
 
-	                    public void onClick(DialogInterface dialog, int which) {
-	                        String inputValue = inputServer.getText().toString();
-	                        
-	                        IntValue wgt   =NumberValues.GetIntValue(inputValue);
-	        				
-	                        if(wgt.ok)
-	                        {
-		                        if(WorkService.setPreTare(address,wgt.value))
-	                        	{
-	 	                        	
-	 	                        }
-	                        }
-                        
-	                        
-	                       
-	                    }
-	                });
-	        builder.show();
-	    }
-	@Override
-	public void onClick(View arg0) {
-		cout_3s = 5;
-		switch(arg0.getId())
-		{
-		case R.id.btn_sample:
-			//单位重量重新更新.
-			bGetUw = 1;
+    root = inflater.inflate(R.layout.fragment_count, container, false);
 
-			break;
-		case R.id.btn_history:
-			Intent intent = new Intent(this.getActivity(), HistoryCountActivity.class);
+    initUI();
+    initRes();
+    dao = new CountDao(this.getActivity());
+    return root;
+  }
 
-			startActivity(intent);
+  private void inputSampleDialog() {
 
-			break;
-		case R.id.btn_save:
-			if(saveWeight())
-            {
-                Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
-            }
-            else{
-                Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
-            }
+    final EditText inputServer = new EditText(this.getActivity());
+    inputServer.setFocusable(true);
 
-			break;
-		case R.id.btn_print:
-			WorkService.common_msg(address,Global.REG_OPERATION,99);
-			break;
-		case R.id.btn_tare:
-			WorkService.discardTare(address);
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+    builder.setTitle(this.getString((R.string.input_sample)))
+        .setIcon(android.R.drawable.ic_dialog_info)
+        .setView(inputServer)
+        .setNegativeButton(this.getString(R.string.cancle), null);
+    builder.setPositiveButton(this.getString(R.string.ok), new DialogInterface.OnClickListener() {
 
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(!WorkService.setZero(address))
-			{
-				//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
-			}
-			break;
-		case R.id.tv_weight:
-			popConnectProcessBar(this.getActivity());
-			
-			break;
-		case R.id.btn_zero:
-			//清零
-			if(!WorkService.setZero(address))
-			{
-				Utils.Msgbox(this.getActivity(), getString(R.string.zero_failed));
-			}
-			break;
-		case R.id.btn_switch:
-			//净重和毛重切换
-			WorkService.common_msg(address,Global.REG_OPERATION,5);
-			break;
-		case R.id.btn_preset:
-			inputTitleDialog();
-			break;
-		case R.id.btn_unit:
-			WorkService.common_msg(address,Global.REG_OPERATION,14);
-			break;
-		
-		}
-		
-	}
+      public void onClick(DialogInterface dialog, int which) {
+        String inputValue = inputServer.getText().toString();
 
-	private boolean saveWeight() {
-		// TODO Auto-generated method stub
+        IntValue count = NumberValues.GetIntValue(inputValue);
 
-        CountRecord rec = new CountRecord();
+        if (count.ok) {
+          //通知去采样重量和计算单重.
+          _counter.sampleUw(count.value);
 
-        rec.setCount(tv_quantity.getText().toString());
-        rec.setUw(tv_uw.getText().toString());
-        rec.setTotalWeight(tv_weight.getText().toString());
-        if(dao == null) return false;
+        }
+      }
+    });
+    builder.show();
+  }
+  private void inputTitleDialog() {
 
-        return dao.saveOne(rec);
-	}
-	
-	private void showFailBox(String msg)
-	{
-		 new AlertDialog.Builder(this.getActivity()).setTitle(this.getString(R.string.prompt_title))//设置对话框标题
-		  
-	     .setMessage(msg)//设置显示的内容  
-	  
-	     .setPositiveButton(this.getString(R.string.ok),new DialogInterface.OnClickListener() {//添加确定按钮
-	  
-	          
-	  
-	         @Override  
-	  
-	         public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件  
-	  
-	             // TODO Auto-generated method stub  
-	  
-	            dialog.dismiss();
-	  
-	         }  
-	  
-	     }).show();//在按键响应事件中显示此对话框  
-	  
-	}
-	public void set_zero_state(boolean bZero)
-	{
-		img_zero.getDrawable().setLevel(bZero?1:0);
-	}
-	public void set_still_state(boolean bStill)
-	{
-		img_still.getDrawable().setLevel(bStill?1:0);
-	}
-	public void set_tare_state(boolean bTare)
-	{
-		img_tare.getDrawable().setLevel(bTare?1:0);
-	}
+    final EditText inputServer = new EditText(this.getActivity());
+    inputServer.setFocusable(true);
 
-	public static Fragment newFragment() {
-		OneCountFragment f = new OneCountFragment();
-		Bundle bundle = new Bundle();
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+    builder.setTitle(this.getString(R.string.input))
+        .setIcon(android.R.drawable.ic_dialog_info)
+        .setView(inputServer)
+        .setNegativeButton(this.getString(R.string.cancle), null);
+    builder.setPositiveButton(this.getString(R.string.ok), new DialogInterface.OnClickListener() {
 
+      public void onClick(DialogInterface dialog, int which) {
+        String inputValue = inputServer.getText().toString();
 
-		f.setArguments(bundle);
-		return f;
-	}
+        FloatValue wgt = NumberValues.GetFloatValue(inputValue);
 
-	static class MHandler extends Handler {
+        if (wgt.ok) {
+          _counter.inputUw(wgt.value);
 
-		WeakReference<OneCountFragment> mActivity;
-		
+        }
+      }
+    });
+    builder.show();
+  }
 
-		MHandler(OneCountFragment activity) {
-			mActivity = new WeakReference<OneCountFragment>(activity);
-			
-		}
-		public void calc(OneCountFragment theActivity,Scaler d)
-		{
-			int quantity = 0;
-			//bGetUw==2 单位重量已经被更新，可以刷新.
-			if(theActivity.bGetUw == 2)
-			{
-				if(d.isGross())
-				{
-					//毛重状态下的 物品个数 = (内部重量 )/单位重量
-					quantity = (int)(d.getCalcWeight() / theActivity.uw);
-				}
-				else
-				{
-					//净重状态下的 物品个数 = (内部重量 - 你发的皮重)/单位重量
-					quantity = (int)(d.getCalcWeight() - d.getTare() / theActivity.uw);
+  @Override public void onClick(View arg0) {
+    cout_3s = 5;
+    switch (arg0.getId()) {
+      case R.id.btn_save_uw:
+        _counter.saveUw();
+        break;
+      case R.id.btn_reset_uw:
+        _counter.resetUw();
+        break;
+      case R.id.btn_sample:
+        //单位重量重新更新.
+        inputSampleDialog();
 
-				}
-			}
+        break;
+      case R.id.btn_history:
+        Intent intent = new Intent(this.getActivity(), HistoryCountActivity.class);
 
-			theActivity.tv_quantity.setText("" + quantity);
-		}
-		@Override
-		public void handleMessage(Message msg) {
-			OneCountFragment theActivity = mActivity.get();
-			switch (msg.what) {
+        startActivity(intent);
 
+        break;
+      case R.id.btn_save:
+        if (saveWeight()) {
+          Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
+        } else {
+          Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
+        }
 
-				case Global.MSG_BLE_WGTRESULT_V2:
-				{
+        break;
+      case R.id.btn_print:
+        WorkService.common_msg(address, Global.REG_OPERATION, 99);
+        break;
+      case R.id.btn_tare:
+        WorkService.discardTare(address);
+        break;
+      case R.id.tv_weight:
+        popConnectProcessBar(this.getActivity());
 
-					Scaler d = (Scaler) msg.obj;
+        break;
+      case R.id.btn_zero:
+        //清零
+        if (!WorkService.setZero(address)) {
+          Utils.Msgbox(this.getActivity(), getString(R.string.zero_failed));
+        }
+        break;
+      case R.id.btn_switch:
+        //净重和毛重切换
+        WorkService.common_msg(address, Global.REG_OPERATION, 5);
+        break;
+      case R.id.btn_preset_uw:
+        inputTitleDialog();
+        break;
+      case R.id.btn_unit:
+        WorkService.common_msg(address, Global.REG_OPERATION, 14);
+        break;
+    }
+  }
 
+  private boolean saveWeight() {
+    // TODO Auto-generated method stub
 
-					if(d==null)
-					{
-						return;
-					}
-					theActivity.updateState();
+    CountRecord rec = new CountRecord();
 
+    rec.setCount(tv_quantity.getText().toString());
+    rec.setUw(tv_uw.getText().toString());
+    rec.setTotalWeight(tv_weight.getText().toString());
+    if (dao == null) return false;
 
-					theActivity.tv_weight.setText(d.getDispalyWeight());
-					theActivity.set_zero_state(d.isZero());
-					theActivity.set_still_state(d.isStandstill());
-					theActivity.set_tare_state(!d.isGross());
-					if(theActivity.bGetUw == 1)
-					{
-						theActivity.uw =  d.getCalcWeight();
-						theActivity.bGetUw = 2;
-					}
+    return dao.saveOne(rec);
+  }
 
+  private void showFailBox(String msg) {
+    new AlertDialog.Builder(this.getActivity()).setTitle(
+        this.getString(R.string.prompt_title))//设置对话框标题
 
-					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()));
-					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));
-					theActivity.tv_weight.setText(d.getDispalyWeight());
-					calc(theActivity,d);
-					break;
-				}
-				case Global.MSG_BLE_DISCONNECTRESULT:
-				{
-					String addr =(String)msg.obj;
-					Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+        .setMessage(msg)//设置显示的内容
 
-					break;
-				}
-				case Global.MSG_BLE_FAILERESULT:
-				{
-					break;
-				}
-				
-				case Global.MSG_SCALER_CONNECT_OK:
-				{
-				
-					if(progressDialog!=null && progressDialog.isShowing())
-						progressDialog.dismiss(); //关闭进度条
+        .setPositiveButton(this.getString(R.string.ok),
+            new DialogInterface.OnClickListener() {//添加确定按钮
 
-					break;
-				}
-				case MSG_TIMEOUT:
-				{
-				
-					if(progressDialog!=null && progressDialog.isShowing())
-					{
-						progressDialog.dismiss(); //关闭进度条
-						theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+              @Override
 
-					}
-				}
+              public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
 
-				case Global.MSG_SCALER_POWER_RESULT:
-				{
-					//int result = msg.arg1;
-					//theActivity.btn_power.refreshPower((float)result/1000.0f);
-					break;
-				}
-			}
-			
-		}
-	}
-	
+                // TODO Auto-generated method stub
 
+                dialog.dismiss();
+              }
+            }).show();//在按键响应事件中显示此对话框
+  }
 
+  public void set_zero_state(boolean bZero) {
+    img_zero.getDrawable().setLevel(bZero ? 1 : 0);
+  }
+
+  public void set_still_state(boolean bStill) {
+    img_still.getDrawable().setLevel(bStill ? 1 : 0);
+  }
+
+  public void set_tare_state(boolean bTare) {
+    img_tare.getDrawable().setLevel(bTare ? 1 : 0);
+  }
+
+  public static Fragment newFragment() {
+    OneCountFragment f = new OneCountFragment();
+    Bundle bundle = new Bundle();
+
+    f.setArguments(bundle);
+    return f;
+  }
+
+  static class MHandler extends Handler {
+
+    WeakReference<OneCountFragment> mActivity;
+
+    MHandler(OneCountFragment activity) {
+      mActivity = new WeakReference<OneCountFragment>(activity);
+    }
+
+    public void calc(OneCountFragment theActivity, Scaler d) {
+
+      theActivity.tv_quantity.setText("" +theActivity._counter.calcCount(d));
+    }
+
+    @Override public void handleMessage(Message msg) {
+      OneCountFragment theActivity = mActivity.get();
+      switch (msg.what) {
+
+        case Global.MSG_BLE_WGTRESULT_V2: {
+
+          Scaler d = (Scaler) msg.obj;
+
+          if (d == null) {
+            return;
+          }
+          theActivity.setOnline(true);
+
+          String dspwet = d.getDispalyWeight() + d.getUnit();
+          if (d.isGross_overflow()) {
+            dspwet = "-------";
+          }
+          theActivity.set_zero_state(d.isZero());
+          theActivity.set_still_state(d.isStandstill());
+          theActivity.set_tare_state(!d.isGross());
+          theActivity.tv_ng.setText(d.isGross()? theActivity.getText(R.string.gross):theActivity.getText(R.string.net));
+          theActivity.tv_calc_weight.setText("" + d.getCalcWeight());
+          //if (theActivity.bGetUw == 1) {
+          //  if(theActivity.sample_count <=0 )
+          //    theActivity.sample_count = 1;
+          //  theActivity.uw = d.getCalcWeight() / theActivity.sample_count;
+          //  theActivity.bGetUw = 2;
+          //}
+
+          //皮重是传出来的
+          theActivity.txtTare.setText(
+              Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
+          //显示重量是传出来的.
+          theActivity.tv_weight.setText(dspwet);
+          theActivity.tv_uw.setText("" + theActivity.uw + d.getUnit());
+          calc(theActivity, d);
+          break;
+        }
+        case Global.MSG_BLE_DISCONNECTRESULT: {
+          //String addr =(String)msg.obj;
+          //Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+          theActivity.setOnline(false);
+          break;
+        }
+        case Global.MSG_BLE_FAILERESULT: {
+          break;
+        }
+
+        case Global.MSG_SCALER_CONNECT_OK: {
+
+          if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss(); //关闭进度条
+          }
+
+          break;
+        }
+        case MSG_TIMEOUT: {
+
+          if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss(); //关闭进度条
+            theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+          }
+        }
+
+        case Global.MSG_SCALER_POWER_RESULT: {
+          //int result = msg.arg1;
+          //theActivity.btn_power.refreshPower((float)result/1000.0f);
+          break;
+        }
+      }
+    }
+  }
 };

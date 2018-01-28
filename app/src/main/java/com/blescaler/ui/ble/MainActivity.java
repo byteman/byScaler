@@ -196,7 +196,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         if (prevLeftMenu != null) prevLeftMenu.setBackgroundColor(color.transparent);
         tvMenuSet.setBackgroundColor(getResources().getColor(R.color.set_item_click));
         prevLeftMenu = tvMenuSet;
-        goToFragment(5);
+        //goToFragment(5);
         break;
 
       default:break;

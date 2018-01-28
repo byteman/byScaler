@@ -96,6 +96,8 @@ import com.blescaler.ui.R;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.WorkService;
 
+import static android.bluetooth.BluetoothDevice.DEVICE_TYPE_LE;
+
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
@@ -179,6 +181,8 @@ public class DeviceScanActivity extends Activity   {
 		mLeDeviceListAdapter = new LeDeviceListAdapter();
 		//lv_Devices.setListAdapter(mLeDeviceListAdapter);
 		lv_Devices.setAdapter(mLeDeviceListAdapter);
+
+
 		lv_Devices.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -186,15 +190,18 @@ public class DeviceScanActivity extends Activity   {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				ViewHolder holder = (ViewHolder) view.getTag();
-				holder.cb.toggle();
-				if(mLeDeviceListAdapter.getIsSelected().size() > position)
-					mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
-				
-				 if (holder.cb.isChecked() == true) {  
-
-		         } else {  
-
-		         }  
+				String address = holder.deviceAddress.getText().toString();
+				WorkService.setDeviceAddress(DeviceScanActivity.this, 0,address);
+				finish();
+				//holder.cb.toggle();
+				//if(mLeDeviceListAdapter.getIsSelected().size() > position)
+				//	mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
+				//
+				// if (holder.cb.isChecked() == true) {
+        //
+		     //    } else {
+        //
+		     //    }
 			}
 		});
 		
@@ -358,6 +365,7 @@ public class DeviceScanActivity extends Activity   {
 	    	 return devs;
 	    }
 		public void addDevice(BluetoothDevice device,int rssi) {
+
 			if (!mLeDevices.contains(device)) {
 				mLeDevices.add(device);
 				
@@ -410,8 +418,8 @@ public class DeviceScanActivity extends Activity   {
 				viewHolder.deviceRssi = (TextView) view
 						.findViewById(R.id.device_rssi);
 				
-				viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx); 
-				
+				//viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx);
+				//
 				view.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) view.getTag();
@@ -424,20 +432,13 @@ public class DeviceScanActivity extends Activity   {
 			else
 				viewHolder.deviceName.setText(R.string.unknown_device);
 			viewHolder.deviceAddress.setText(device.getAddress());
-			if(getIsSelected().get(i) == null)	
-			{
-				viewHolder.cb.setChecked(false); 
-			}
-			else {
-			{
-				viewHolder.cb.setChecked(getIsSelected().get(i));
-			}
-			if(mRSSI!=null && mRSSI.containsKey(device.getAddress()))
-			{
-				
-				viewHolder.deviceRssi.setText("信号强度:" + mRSSI.get(device.getAddress())+"db");
-			}
-			} 
+
+				if(mRSSI!=null && mRSSI.containsKey(device.getAddress()))
+				{
+
+					viewHolder.deviceRssi.setText("信号强度:" + mRSSI.get(device.getAddress())+"db");
+				}
+
 			return view;
 		}
 	}
@@ -446,7 +447,7 @@ public class DeviceScanActivity extends Activity   {
 		TextView deviceName;
 		TextView deviceAddress;
 		TextView deviceRssi;
-		CheckBox cb;
+		//CheckBox cb;
 	}
 	
 	static class MHandler extends Handler {

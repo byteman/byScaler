@@ -90,7 +90,7 @@ public class WeightDao {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		List<WeightRecord> items = new ArrayList<WeightRecord>();
 		if (db.isOpen()) {
-			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " limit " +  page_size +  " offset " +  page*page_size , null);
+			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " order by wt_time desc limit " +  page_size +  " offset " +  page*page_size , null);
 			while (cursor.moveToNext()) {
 				String gross = cursor.getString(cursor.getColumnIndex(COLUMN_GROSS));
 				String tare = cursor.getString(cursor.getColumnIndex(COLUMN_TARE));

@@ -22,8 +22,8 @@ limitations under the License.
     package="com.blescaler.ui">
 
   <uses-sdk
-      android:minSdkVersion="17"
-      android:targetSdkVersion="17"/>
+      android:minSdkVersion="18"
+      android:targetSdkVersion="21"/>
   <!--
   Declare this required feature if you want to make the app available to BLE-capable
   devices only.  If you want to make your app available to devices that don't support BLE,

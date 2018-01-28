@@ -15,7 +15,7 @@
 		<TextView
 			android:layout_marginLeft="@dimen/x30"
 			android:layout_gravity="center_vertical"
-			android:text="@string/app_name"
+			android:text="@string/search_title"
 			android:textColor="@color/white"
 			android:textSize="@dimen/x35"
 			android:layout_width="wrap_content"
@@ -35,18 +35,18 @@
 				android:textSize="@dimen/x30"
 				android:layout_gravity="center_vertical"
 				android:textColor="@color/white"
-				android:text="00001"
+				android:text=""
 				android:maxEms="10"
 				android:singleLine="true"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				/>
-			<ImageView
-				android:layout_gravity="center_vertical"
-				android:src="@drawable/ico_connected"
-				android:layout_width="@dimen/x25"
-				android:layout_height="@dimen/x25"
-				/>
+			<!--<ImageView-->
+				<!--android:layout_gravity="center_vertical"-->
+				<!--android:src="@drawable/ico_connected"-->
+				<!--android:layout_width="@dimen/x25"-->
+				<!--android:layout_height="@dimen/x25"-->
+				<!--/>-->
 		</LinearLayout>
 	</LinearLayout>
 

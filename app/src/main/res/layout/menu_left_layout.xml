@@ -9,14 +9,14 @@
 
   <com.blescaler.view.ImageTextView
       android:id="@+id/tv_menu_weight"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
+      android:paddingLeft="30dp"
       android:layout_height="@dimen/y120"
       android:layout_below="@+id/line1"
       android:layout_gravity="center|left"
       android:gravity="center"
       android:padding="5dp"
-      android:text="@string/menu_title_weight"
+      android:text="@string/menu_weight"
       android:textColor="@drawable/tv_bg_selecotr"
       android:textSize="@dimen/x40"
       android:drawablePadding="@dimen/x30"
@@ -25,11 +25,15 @@
       app:drawableWidth="@dimen/x20"
       app:position="1"
       />
-
+  <ImageView
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="#808080"
+      />
   <com.blescaler.view.ImageTextView
       android:id="@+id/tv_menu_count"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
+
+      android:layout_width="match_parent"
       android:layout_height="@dimen/y120"
       android:layout_below="@+id/line1"
       android:layout_gravity="center|left"
@@ -44,7 +48,11 @@
       app:drawableWidth="@dimen/y20"
       app:position="1"
       />
-
+  <ImageView
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="#808080"
+      />
   <!--<com.blescaler.view.ImageTextView-->
       <!--android:id="@+id/tv_menu_history"-->
       <!--android:layout_marginLeft="@dimen/x30"-->
@@ -66,8 +74,8 @@
 
   <com.blescaler.view.ImageTextView
       android:id="@+id/tv_menu_device"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
+
+      android:layout_width="match_parent"
       android:layout_height="@dimen/y120"
       android:layout_below="@+id/line1"
       android:layout_gravity="center|left"
@@ -80,12 +88,17 @@
       app:drawable="@drawable/set_manager_selecotor"
       app:drawableHeight="@dimen/y20"
       app:drawableWidth="@dimen/y20"
+
       app:position="1"
+      />
+  <ImageView
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="#808080"
       />
   <com.blescaler.view.ImageTextView
       android:id="@+id/tv_menu_set"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="@dimen/y120"
       android:layout_below="@+id/line1"
       android:layout_gravity="center|left"
@@ -98,9 +111,14 @@
       app:drawable="@drawable/set_selecotor"
       app:drawableHeight="@dimen/y20"
       app:drawableWidth="@dimen/y20"
+
       app:position="1"
       />
-
+  <ImageView
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="#808080"
+      />
 
 
   <!--<com.blescaler.view.ImageTextView-->
@@ -124,14 +142,13 @@
 
   <com.blescaler.view.ImageTextView
       android:id="@+id/tv_menu_printer"
-      android:layout_marginLeft="@dimen/x30"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="@dimen/y120"
       android:layout_below="@+id/line1"
       android:layout_gravity="center|left"
       android:gravity="center"
       android:padding="5dp"
-      android:text="@string/menu_more"
+      android:text="@string/menu_printer"
       android:textColor="@drawable/tv_bg_selecotr"
       android:textSize="@dimen/x40"
       android:drawablePadding="@dimen/x30"
@@ -140,5 +157,9 @@
       app:drawableWidth="@dimen/y20"
       app:position="1"
       />
-
+  <ImageView
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="#808080"
+      />
 </LinearLayout>

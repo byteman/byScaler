@@ -102,10 +102,11 @@
     <string name="zero_failed">清零失败，净重状态不允许清零</string>
     <string name="menu_weight">计重模式</string>
     <string name="menu_count">计数模式</string>
+  <string name="menu_printer">打印设置</string>
   <!--左侧滑动目录-->
   <string name="menu_title_weight">计重</string>
   <string name="menu_his">历史资料</string>
-  <string name="menu_set">设置</string>
+  <string name="menu_set">系统设置</string>
   <string name="menu_set_manager">设备管理</string>
   <string name="menu_version">版本选择</string>
   <string name="menu_more">更多</string>
@@ -123,4 +124,10 @@
     <string name="uw">单重</string>
     <string name="count">个数</string>
     <string name="start">启动搜素</string>
+  <string name="title_config">系统配置</string>
+  <string name="search_title">搜索设备</string>
+  <string name="weight_history">称重历史</string>
+  <string name="count_history">计数历史</string>
+  <string name="input_sample">请输入样本个数</string>
+
 </resources>

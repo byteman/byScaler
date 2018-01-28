@@ -204,7 +204,7 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 			}
 
 			WeightRecord item = items.get(i);
-			final String date = item.getFormatDate();
+			final String date = item.getFormatDate() + " " +item.getFormatTime();
 			//viewHolder.tv_index.setText(item.getID());
 			viewHolder.tv_time.setText(date);
 			viewHolder.tv_total.setText(item.getGross());

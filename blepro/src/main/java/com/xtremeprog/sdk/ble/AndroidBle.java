@@ -96,6 +96,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	}
 	public boolean hasConnected(String address)
 	{
+
 		return (mBluetoothGatts.get(address)!=null)?true:false;
 	}
 	private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -267,6 +268,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		if (mBluetoothGatts.containsKey(address)) {
 			
 			BluetoothGatt gatt = mBluetoothGatts.remove(address);
+
 			if (gatt != null) {
 				
 				gatt.disconnect();

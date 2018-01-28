@@ -50,6 +50,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	BatteryState btn_power = null;
 	TextView tv_weight = null,tv_unit=null;
 	TextView txtTare=null;
+	TextView txtNG = null;
+	TextView txtState = null;
 	AutoBgButton btn_ng = null;
 	AutoBgButton btn_preset = null;
 	
@@ -63,21 +65,35 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 	private static String unit="g";
 	private boolean isGross = true;
 	WeightDao dao = null;
+
+	private void setOnline(boolean online)
+	{
+		if(online)
+		{
+			img_conn.getDrawable().setLevel(1);
+			//87CEEB
+			tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
+			cout_3s = 3;
+		}
+		else
+		{
+			img_conn.getDrawable().setLevel(0);
+			tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
+		}
+
+	}
 	private void updateState()
 	{
 
-		   if(!WorkService.hasConnected(address))
-		   {
-               img_conn.getDrawable().setLevel(0);
-			   tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
-		   }
-		   else
-		   {
-               img_conn.getDrawable().setLevel(1);
-			   //87CEEB
-			   tv_weight.setTextColor(Color.rgb(0xFF, 0xFF, 0xFF));
-		   }
-		
+		if(cout_3s > 0)
+		{
+			cout_3s--;
+		}
+		if(cout_3s == 0)
+		{
+			setOnline(false);
+		}
+
 	}
 	private Runnable watchdog = new Runnable()
 	{
@@ -86,25 +102,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		public void run() {
 			// TODO Auto-generated method stub
 
-
-//			   if(cont++ >= 1)
-//			   {
-//
-//				   WorkService.requestReadWgtV2(address);
-//				   cont = 0;
-//			   }
-//			   if(cout_2s++ > 10)
-//			   {
-//				   updateState();
-//				   WorkService.readPower(address);
-//				   cout_2s = 0;
-//			   }
-//			   if(cout_3s > 0)
-//			   {
-//				   cout_3s--;
-//			   }
-            updateState();
-			   mHandler.postDelayed(this, 1000);
+			updateState();
+			mHandler.postDelayed(this, 1000);
 		}
 
 	};
@@ -139,7 +138,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
         
 	    mHandler.sendMessageDelayed(msg, 5000);
 	}
-    
+	public void onPause()
+	{
+		super.onPause();
+		mHandler.removeCallbacks(watchdog);
+
+		WorkService.delHandler(mHandler);
+	}
 
 	@Override
 	public void onStop() {
@@ -177,6 +182,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		tv_unit = (TextView) root.findViewById(R.id.textView2);
 		txtTare = (TextView)root.findViewById(R.id.txtTare);
 		img_zero = (ImageView) root.findViewById(R.id.img_zero);
+		txtState = root.findViewById(R.id.id_state);
 		img_still = (ImageView) root.findViewById(R.id.img_still);
 		img_tare = (ImageView) root.findViewById(R.id.img_tare);
 		img_conn =  root.findViewById(R.id.img_conn_state);
@@ -185,7 +191,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		btn_history = root.findViewById(R.id.btn_history);
 		btn_unit.setOnClickListener(this);
 		
-
+		txtNG = root.findViewById(R.id.tv_oneweight_net_title);
 		btn_save.setOnClickListener(this);
 		btn_print.setOnClickListener(this);
 		btn_tare.setOnClickListener(this);
@@ -275,16 +281,16 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 		case R.id.btn_tare:
 			WorkService.discardTare(address);
 
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(!WorkService.setZero(address))
-			{
-				//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
-			}
+			//try {
+			//	Thread.sleep(100);
+			//} catch (InterruptedException e) {
+			//	// TODO Auto-generated catch block
+			//	e.printStackTrace();
+			//}
+			//if(!WorkService.setZero(address))
+			//{
+			//	//Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
+			//}
 			break;
 		case R.id.tv_weight:
 			popConnectProcessBar(this.getActivity());
@@ -292,9 +298,6 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_zero:
 			//清零
-			img_still.getDrawable().setLevel(0);
-            img_conn.getDrawable().setLevel(0);
-			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a));
 			if(!WorkService.setZero(address))
 			{
 				Utils.Msgbox(this.getActivity(), "清零失败，净重状态不允许清零");
@@ -302,8 +305,6 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 			break;
 		case R.id.btn_switch:
 			//净重和毛重切换
-			img_still.getDrawable().setLevel(1);
-			img_conn.getDrawable().setLevel(1);
 			//img_still.setImageDrawable(getResources().getDrawable(R.drawable.ico_a_click));
 			WorkService.common_msg(address,Global.REG_OPERATION,5);
 			break;
@@ -421,26 +422,34 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 					{
 						return;
 					}
-					theActivity.updateState();
+					theActivity.setOnline(true);
 
-					theActivity.tv_weight.setText(d.getDispalyWeight());
+
+					String dspwet = d.getDispalyWeight();
+					if(d.isGross_overflow())
+					{
+						dspwet = "-------";
+					}
+					theActivity.tv_weight.setText(dspwet);
 					theActivity.set_zero_state(d.isZero());
 					theActivity.set_still_state(d.isStandstill());
-					theActivity.set_tare_state(!d.isGross());
+					theActivity.set_tare_state(!d.isGross()); //皮重状态就是净重状态.
 					theActivity.tv_unit.setText(d.getUnit());
-					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()));
+					theActivity.txtState.setText("" + d.getState());
+					theActivity.txtNG.setText(d.isGross()? theActivity.getText(R.string.gross):theActivity.getText(R.string.net));
+					theActivity.txtTare.setText(Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
+
 					//theActivity.tv_weight.setText(Utils.FormatFloatValue(d.getDispalyWeight(), d.GetDotNum()));
 
 					break;
 				}
 				case Global.MSG_BLE_DISCONNECTRESULT:
 				{
-					String addr =(String)msg.obj;
-					Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
-					
-					//theActivity.tv_conn.setText("已断开");
-					//WorkService.connectAll();
-					//mHandler.postDelayed(r, delayMillis)
+					//String addr =(String)msg.obj;
+					//Utils.Msgbox(theActivity.getActivity(), addr + " has disconnect!!");
+
+					theActivity.setOnline(false);
+
 					break;
 				}
 				case Global.MSG_BLE_FAILERESULT:

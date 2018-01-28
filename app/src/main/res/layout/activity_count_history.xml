@@ -1,78 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@color/cinder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cinder"
+    android:orientation="vertical"
     >
   <!--顶部-->
 
   <LinearLayout
-      android:layout_weight="1"
-      android:orientation="horizontal"
-      android:background="@color/mirage"
       android:layout_width="match_parent"
       android:layout_height="0dp"
+      android:layout_weight="0.7"
+      android:background="@color/mirage"
+      android:orientation="horizontal"
       >
     <TextView
-        android:layout_marginLeft="@dimen/x30"
-        android:layout_gravity="center_vertical"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/x35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/x30"
+        android:text="@string/count_history"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x35"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-      <TextView
-          android:layout_weight="1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <TextView
-          android:textSize="@dimen/x30"
-          android:layout_gravity="center_vertical"
-          android:textColor="@color/white"
-          android:text="00001"
-          android:maxEms="10"
-          android:singleLine="true"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <ImageView
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/ico_connected"
-          android:layout_width="@dimen/x25"
-          android:layout_height="@dimen/x25"
-          />
-    </LinearLayout>
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="horizontal"-->
+    <!--&gt;-->
+    <!--<TextView-->
+    <!--android:layout_weight="1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--/>-->
+    <!--<TextView-->
+    <!--android:textSize="@dimen/x30"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:text="00001"-->
+    <!--android:maxEms="10"-->
+    <!--android:singleLine="true"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--/>-->
+    <!--<ImageView-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:src="@drawable/ico_connected"-->
+    <!--android:layout_width="@dimen/x25"-->
+    <!--android:layout_height="@dimen/x25"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
   </LinearLayout>
   <!--中部-->
   <LinearLayout
-      android:layout_weight="4"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      android:layout_marginTop="@dimen/y25"
+      android:layout_marginTop="@dimen/y1"
+      android:layout_weight="4"
       android:orientation="horizontal"
       >
     <!--侧滑按钮-->
-    <LinearLayout
-        android:layout_width="@dimen/x50"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
+    <!--<LinearLayout-->
+        <!--android:layout_width="@dimen/x50"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="horizontal"-->
+        <!--&gt;-->
 
-      <ImageButton
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:background="@drawable/ico_right_slide" />
-    </LinearLayout>
+      <!--<ImageButton-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:layout_gravity="center"-->
+          <!--android:background="@drawable/ico_right_slide"-->
+          <!--/>-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/mainlayout"
@@ -90,64 +92,73 @@
           android:layout_height="@dimen/y80"
           android:layout_gravity="center"
           android:orientation="horizontal"
+
           >
         <TextView
-            android:gravity="center"
-            android:layout_weight="1"
             android:id="@+id/tv_his_time"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
             android:text="@string/his_time"
             android:textColor="@color/white"
             android:textSize="@dimen/x45"
+
             />
         <TextView
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/total"
             android:textColor="@color/white"
             android:textSize="@dimen/x45"
             />
         <TextView
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/uw"
             android:textColor="@color/white"
+
             android:textSize="@dimen/x45"
             />
         <TextView
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/count"
             android:textColor="@color/white"
             android:textSize="@dimen/x45"
             />
 
       </LinearLayout>
+      <ImageView
+          android:layout_width="fill_parent"
+          android:layout_height="1dp"
+          android:background="#808080"
+          />
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:gravity="center"
           >
 
-          <ListView
-              android:id="@+id/listView"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              style="@style/style_common_listview"
-              android:overScrollMode="never"
-              tools:listitem="@android:layout/simple_list_item_2"
-              />
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:layout_marginTop="@dimen/x10"
+            tools:listitem="@android:layout/simple_list_item_2"
+            style="@style/style_common_listview"
+            />
       </LinearLayout>
     </LinearLayout>
 
@@ -164,6 +175,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:paddingLeft="@dimen/x50"
+        android:gravity="center_vertical"
         >
       <Button
           android:id="@+id/btn_previous_page"

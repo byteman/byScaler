@@ -15,11 +15,11 @@ public class Scaler {
 	private boolean discovered = false; //
 	private float weight; //显示重量
 	private String sWeight; //显示重量的字符串.
-
+	private short state;
 	public float getTare() {
 		return tare;
 	}
-
+	public short getState(){return state;}
 	public void setTare(float tare) {
 		this.tare = tare;
 	}
@@ -70,7 +70,7 @@ public class Scaler {
 	private boolean net_overflow = false; //Tare value too high
 	private boolean gross_overflow = false; //Scaling too sensitive
 	private boolean ad_overflow = false; //ADC overflow 
-	private boolean ng_state = false;
+	private boolean is_gross_state = false;
 	private boolean sleep_mode = false;
 	public boolean isSleep_mode() {
 		return sleep_mode;
@@ -83,7 +83,7 @@ public class Scaler {
 		return standstill;
 	}
 	public boolean isGross() {
-		return ng_state;
+		return is_gross_state;
 	}
 	public int GetDotNum()
 	{
@@ -217,10 +217,12 @@ public class Scaler {
 	}
 	private void parseState(short st)
 	{
-				
+
+		this.state = st;
 		this.standstill = ((st&0x1)!=0)?true:false;
 		this.zero = ((st&0x2)!=0)?true:false;
-		this.ng_state = ((st&0x4)!=0)?true:false;
+		this.is_gross_state = ((st&0x4)!=0)?false:true;
+		this.gross_overflow = ((st&0x8)!=0)?true:false;
 		if(((st>>8)&1)!=0)
 		{
 			this.sleep_mode=false;
@@ -229,7 +231,7 @@ public class Scaler {
 		}
 
 		//9-11 单位 kg=0 g=1 lb=2 pcs=3 oz=4
-		//11-13 小数点位数 0-7 bit
+		//12-14 小数点位数 0-7 bit
 		int u = (st>>9)&7;
 
 		switch (u){
@@ -249,7 +251,7 @@ public class Scaler {
 				this.unit = "kg";
 				break;
 		}
-		this.dot_num = (st>>11)&7;
+		this.dot_num = (st>>12)&7;
 	}
 //	class Message{
 //		int Addr;
@@ -386,8 +388,8 @@ public class Scaler {
 						return 0;
 					}
 					parseState(Utils.bytesToShort(val,17));
-					this.calcWeight = Utils.Int2Float(Utils.bytesToInt(val, 5), this.dot_num);
-
+					//this.calcWeight = Utils.Int2Float(Utils.bytesToInt(val, 5), this.dot_num);
+					this.calcWeight = Utils.ArrayToFloat(val, 5);
 					this.tare = Utils.Int2Float(Utils.bytesToInt(val, 13), this.dot_num);
 
 					int iWeight = Utils.bytesToInt(val, 9);

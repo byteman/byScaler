@@ -51,7 +51,31 @@ public class Config
 	
 		mEditor.commit();
 	}
-	
+	public void setUw(float wg)
+	{
+		mEditor.putFloat("uw", wg);
+		mEditor.commit();
+	}
+	public void clearUw()
+	{
+		mEditor.remove("uw");
+		mEditor.commit();
+	}
+	public boolean getUw(UwInfo uw)
+	{
+		if(uw ==null) return false;
+		if(!mSharedPre.contains("uw"))
+		{
+			 uw.isValid = false;
+			 uw.weight = 0;
+			 return true;
+		}
+
+		uw.weight = mSharedPre.getFloat("uw",0);
+		uw.isValid = true;
+		return true;
+	}
+
 	public String getDevName(int index) {
 		return mSharedPre.getString("name"+index,"unknown");
 	}

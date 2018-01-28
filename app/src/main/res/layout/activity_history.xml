@@ -9,7 +9,7 @@
   <!--顶部-->
 
   <LinearLayout
-      android:layout_weight="1"
+      android:layout_weight="0.7"
       android:orientation="horizontal"
       android:background="@color/mirage"
       android:layout_width="match_parent"
@@ -18,61 +18,23 @@
     <TextView
         android:layout_marginLeft="@dimen/x30"
         android:layout_gravity="center_vertical"
-        android:text="@string/app_name"
+        android:text="@string/weight_history"
         android:textColor="@color/white"
         android:textSize="@dimen/x35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-      <TextView
-          android:layout_weight="1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <TextView
-          android:textSize="@dimen/x30"
-          android:layout_gravity="center_vertical"
-          android:textColor="@color/white"
-          android:text="00001"
-          android:maxEms="10"
-          android:singleLine="true"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <ImageView
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/ico_connected"
-          android:layout_width="@dimen/x25"
-          android:layout_height="@dimen/x25"
-          />
-    </LinearLayout>
+
   </LinearLayout>
   <!--中部-->
   <LinearLayout
       android:layout_weight="4"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      android:layout_marginTop="@dimen/y25"
+      android:layout_marginTop="@dimen/y2"
       android:orientation="horizontal"
       >
-    <!--侧滑按钮-->
-    <LinearLayout
-        android:layout_width="@dimen/x50"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
 
-      <ImageButton
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:background="@drawable/ico_right_slide" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/mainlayout"
@@ -90,10 +52,11 @@
           android:layout_height="@dimen/y80"
           android:layout_gravity="center"
           android:orientation="horizontal"
+
           >
         <TextView
             android:gravity="center"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:id="@+id/tv_his_time"
             android:layout_gravity="center"
             android:layout_width="0dp"
@@ -134,6 +97,11 @@
             />
 
       </LinearLayout>
+      <ImageView
+          android:layout_width="fill_parent"
+          android:layout_height="1dp"
+          android:background="#808080"
+          />
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
@@ -145,6 +113,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               style="@style/style_common_listview"
+              android:layout_marginTop="@dimen/x10"
               android:overScrollMode="never"
               tools:listitem="@android:layout/simple_list_item_2"
               />
@@ -163,7 +132,9 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingLeft="@dimen/x50"
+        android:paddingLeft="@dimen/x20"
+        android:gravity="center_vertical"
+
         >
       <Button
           android:id="@+id/btn_previous_page"
@@ -193,13 +164,14 @@
           android:textSize="@dimen/x30"
           android:textStyle="bold"
           />
+
     </LinearLayout>
     <!--菜单按钮-->
     <LinearLayout
         android:layout_width="@dimen/x650"
         android:layout_height="match_parent"
         android:gravity="right|center_vertical"
-        android:paddingRight="@dimen/x50"
+        android:paddingRight="@dimen/x20"
         >
 
       <Button

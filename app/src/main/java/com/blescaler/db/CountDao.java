@@ -91,7 +91,7 @@ public class CountDao {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		List<CountRecord> items = new ArrayList<CountRecord>();
 		if (db.isOpen()) {
-			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " limit " +  page_size +  " offset " +  page*page_size, null);
+			Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " order by wt_time desc limit " +  page_size +  " offset " +  page*page_size  , null);
 			while (cursor.moveToNext()) {
 				String count = cursor.getString(cursor.getColumnIndex(COLUMN_COUNT));
 				String perw = cursor.getString(cursor.getColumnIndex(COLUMN_PER_WEIGHT));

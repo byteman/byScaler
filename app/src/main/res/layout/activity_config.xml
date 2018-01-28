@@ -17,42 +17,42 @@
     <TextView
         android:layout_marginLeft="@dimen/x30"
         android:layout_gravity="center_vertical"
-        android:text="@string/app_name"
+        android:text="@string/title_config"
         android:textColor="@color/white"
         android:textSize="@dimen/x35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-      <TextView
-          android:layout_weight="1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <TextView
-          android:textSize="@dimen/x30"
-          android:layout_gravity="center_vertical"
-          android:textColor="@color/white"
-          android:text="00001"
-          android:maxEms="10"
-          android:singleLine="true"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-      <ImageView
-          android:id="@+id/img_conn_state"
-          android:layout_marginLeft="@dimen/x20"
-          android:layout_marginRight="@dimen/x50"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/conn_state_list"
-          android:layout_width="@dimen/x32"
-          android:layout_height="@dimen/x32"
-          />
-    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--&gt;-->
+      <!--<TextView-->
+          <!--android:layout_weight="1"-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--/>-->
+      <!--<TextView-->
+          <!--android:textSize="@dimen/x30"-->
+          <!--android:layout_gravity="center_vertical"-->
+          <!--android:textColor="@color/white"-->
+          <!--android:text="00001"-->
+          <!--android:maxEms="10"-->
+          <!--android:singleLine="true"-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--/>-->
+      <!--<ImageView-->
+          <!--android:id="@+id/img_conn_state"-->
+          <!--android:layout_marginLeft="@dimen/x20"-->
+          <!--android:layout_marginRight="@dimen/x50"-->
+          <!--android:layout_gravity="center_vertical"-->
+          <!--android:src="@drawable/conn_state_list"-->
+          <!--android:layout_width="@dimen/x32"-->
+          <!--android:layout_height="@dimen/x32"-->
+          <!--/>-->
+    <!--</LinearLayout>-->
 
   </LinearLayout>
 
@@ -63,7 +63,7 @@
       android:layout_weight="4"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      android:layout_marginTop="@dimen/y25"
+      android:background="@drawable/fill_bitmap_black"
       android:orientation="horizontal"
       >
     <!--侧滑按钮-->
@@ -94,20 +94,23 @@
         <RadioGroup
             android:id="@+id/radioGroupID"
             android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/x20"
             android:layout_height="wrap_content" >
 
           <RadioButton
               android:id="@+id/zhGroupID"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:textColor="@color/aliceblue"
+              android:textColor="@color/white"
               android:text="@string/lang_zh"
+
               />
           <RadioButton
               android:id="@+id/enGroupID"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:textColor="@color/aliceblue"
+              android:textColor="@color/white"
+
               android:text="@string/lang_en"/>
         </RadioGroup>
 
@@ -115,7 +118,57 @@
 
   </LinearLayout>
   <!--底部-->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      >
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/x50"
+        >
+      <!--<ImageView-->
+          <!--android:id="@+id/btn_print"-->
+          <!--android:layout_width="@dimen/x60"-->
+          <!--android:layout_height="@dimen/x60"-->
+          <!--android:layout_gravity="center"-->
+          <!--android:src="@drawable/print"-->
+          <!--/>-->
+      <!--<ImageView-->
+      <!--android:id="@+id/btn_save"-->
+      <!--android:layout_width="@dimen/x60"-->
+      <!--android:layout_height="@dimen/x60"-->
+      <!--android:layout_gravity="center"-->
+      <!--android:layout_marginLeft="@dimen/x10"-->
+      <!--android:src="@drawable/printset"-->
+      <!--/>-->
+    </LinearLayout>
+    <!--菜单按钮-->
+    <LinearLayout
+        android:layout_width="@dimen/x850"
+        android:layout_height="match_parent"
+        android:gravity="right|center_vertical"
+        android:paddingRight="@dimen/x50"
+        >
 
+      <Button
+          android:id="@+id/btn_save"
+          android:layout_width="@dimen/x200"
+          android:layout_height="@dimen/y80"
+          android:background="@drawable/btn_gray_selector"
+          android:elevation="1dp"
+          android:singleLine="true"
+          android:text="@string/back"
+          android:textColor="@color/white"
+          android:textSize="@dimen/x36"
+          android:layout_marginLeft="@dimen/x5"
+          android:textStyle="bold"
+          />
+
+    </LinearLayout>
+  </LinearLayout>
 
 
 </LinearLayout>

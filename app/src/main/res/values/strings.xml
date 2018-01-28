@@ -105,11 +105,11 @@
 
     <string name="menu_title_weight">weight</string>
   <string name="menu_his">history</string>
-  <string name="menu_set">set</string>
+  <string name="menu_set">configure</string>
   <string name="menu_set_manager">device</string>
   <string name="menu_version">version</string>
   <string name="menu_more">more</string>
-
+  <string name="menu_printer">printer</string>
   <!--历史记录查询-->
     <string name="history">history</string>
     <string name="gross">gross</string>
@@ -125,5 +125,10 @@
     <string name="uw">u.w</string>
     <string name="count">count</string>
     <string name="start">start</string>
+  <string name="title_config">configure</string>
+  <string name="search_title">search device</string>
+  <string name="weight_history">weight history</string>
+  <string name="count_history">count history</string>
+  <string name="input_sample">input number of sample</string>
 
 </resources>

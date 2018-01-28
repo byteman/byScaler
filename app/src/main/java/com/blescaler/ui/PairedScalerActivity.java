@@ -181,8 +181,8 @@ public class PairedScalerActivity extends Activity {
 						.findViewById(R.id.device_address);
 				viewHolder.deviceName = (TextView) view
 						.findViewById(R.id.device_name);
-				viewHolder.cb = (CheckBox) view
-						.findViewById(R.id.device_cbx);
+				//viewHolder.cb = (CheckBox) view
+				//		.findViewById(R.id.device_cbx);
 				viewHolder.cb.setVisibility(View.GONE);
 				view.setTag(viewHolder);
 			} else {

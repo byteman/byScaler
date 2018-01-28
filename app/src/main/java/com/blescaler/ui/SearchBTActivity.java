@@ -294,7 +294,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 				viewHolder.deviceRssi = (TextView) view
 						.findViewById(R.id.device_rssi);
 
-				viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx);
+				//viewHolder.cb = (CheckBox) view.findViewById(R.id.device_cbx);
 
 				view.setTag(viewHolder);
 			} else {
@@ -308,20 +308,13 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 			else
 				viewHolder.deviceName.setText(R.string.unknown_device);
 			viewHolder.deviceAddress.setText(device.getAddress());
-			if(getIsSelected().get(i) == null)
-			{
-				viewHolder.cb.setChecked(false);
-			}
-			else {
-				{
-					viewHolder.cb.setChecked(getIsSelected().get(i));
-				}
-				if(mRSSI!=null && mRSSI.containsKey(device.getAddress()))
-				{
 
-					viewHolder.deviceRssi.setText("信号强度:" + mRSSI.get(device.getAddress())+"db");
-				}
+			if(mRSSI!=null && mRSSI.containsKey(device.getAddress()))
+			{
+
+				viewHolder.deviceRssi.setText("信号强度:" + mRSSI.get(device.getAddress())+"db");
 			}
+
 			return view;
 		}
 	}

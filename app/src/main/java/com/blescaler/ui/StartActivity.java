@@ -57,7 +57,8 @@ public class StartActivity extends Activity {
 		mHandler = new MHandler(this);
 		WorkService.addHandler(mHandler);
 		Utils.setDiscoverableTimeout(10);
-		
+		Config.getInstance(this).setDevAddress(0,"00:15:84:00:6E:91");
+		//Config.getInstance(this).setDevAddress(0,"94:E3:6D:9C:42:98");
 	}
 
 	/**

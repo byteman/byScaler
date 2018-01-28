@@ -36,6 +36,7 @@ public class ConfigActivity extends Activity implements OnClickListener {
 	private RadioGroup radioGroup;
 	private RadioButton enRadio;
 	private RadioButton zhRadio;
+	private Button btn_back;
 	private static Handler mHandler = null;
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onResume()
@@ -98,6 +99,8 @@ public class ConfigActivity extends Activity implements OnClickListener {
 		{
 			enRadio.setChecked(true);
 		}
+		btn_back = findViewById(R.id.btn_save);
+		btn_back.setOnClickListener(this);
 		//设置监听
 		radioGroup.setOnCheckedChangeListener(new RadioGroupListener());
 
@@ -138,14 +141,7 @@ public class ConfigActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.btn_read:
-
-
-			break;
 		case R.id.btn_save:
-
-			break;
-		case R.id.btn_eeprom:
 			
 			finish();
 			//WorkService.requestSaveParam(address);
