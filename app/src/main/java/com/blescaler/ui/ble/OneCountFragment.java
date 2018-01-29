@@ -295,14 +295,14 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
     set_still_state(d.isStandstill());
     set_tare_state(!d.isGross());
     tv_ng.setText(d.isGross()? getText(R.string.gross):getText(R.string.net));
-    tv_calc_weight.setText("" + d.getCalcWeight());
+    tv_calc_weight.setText(Utils.FormatFloatValue(d.getCalcWeight(),d.GetDotNum()));
 
     //皮重是传出来的
     txtTare.setText(
         Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
     //显示重量是传出来的.
     tv_weight.setText(dspwet);
-    tv_uw.setText(_counter.getUw() + d.getUnit());
+    tv_uw.setText(_counter.getUw(5) + d.getUnit());
     tv_quantity.setText("" + _counter.calcCount(d));
 
 

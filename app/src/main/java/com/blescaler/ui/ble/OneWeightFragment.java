@@ -49,7 +49,8 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
   TextView txtTare = null;
   TextView txtNG = null;
   TextView txtState = null;
-
+  public long lSaveWetTs = 0;
+  public boolean  bSaveWet = false;
   public boolean  bStop = false;
   public int  online_cout_3s = 0;
   private static String address;
@@ -73,6 +74,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
       img_conn.getDrawable().setLevel(0);
       tv_weight.setTextColor(Color.rgb(0x80, 0x80, 0x80));
     }
+
   }
 
   private void updateState() {
@@ -234,11 +236,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
         break;
       case R.id.btn_save:
-        if (saveWeight()) {
-          Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
-        } else {
-          Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
-        }
+        sendSaveCmd();
 
         break;
 
@@ -264,27 +262,54 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
     }
   }
-
-  private boolean saveWeight() {
+  private void sendSaveCmd()
+  {
+    bSaveWet = true;
+    lSaveWetTs = System.currentTimeMillis();
+  }
+  private boolean saveWeight(Scaler d) {
     // TODO Auto-generated method stub
     //净重的时候 毛重=显示重量+皮重
     //毛重的时候 毛重=显示重量
+    if(!bSaveWet)
+    {
+        return false;
+    }
+    bSaveWet = false;
+    if((System.currentTimeMillis() -  lSaveWetTs) > 1000)
+    {
+      Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
+
+      return  false;
+    }
 
     WeightRecord rec = new WeightRecord();
 
-    if (isGross) {
-      rec.setGross(tv_weight.getText().toString());
-      rec.setNet(tv_weight.getText().toString());
-      rec.setTare("0");
-    } else {
-      rec.setGross(tv_weight.getText().toString());
-      rec.setNet(tv_weight.getText().toString());
-      rec.setTare(txtTare.getText().toString());
+    String gross = Utils.FormatFloatValue(d.getGross(),d.GetDotNum());
+    String tare  = Utils.FormatFloatValue(d.getTare(),d.GetDotNum());
+    String net   = Utils.FormatFloatValue(d.getNet(),d.GetDotNum());
+
+
+    rec.setGross(gross);
+    rec.setNet(tare);
+    rec.setTare(net);
+
+
+    if (dao == null)
+    {
+      Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
+
+      return false;
     }
+    boolean ok = dao.saveWeight(rec);
+    if(ok)
+    {
+      Utils.Msgbox(this.getActivity(), getString(R.string.saveok));
+    }else {
+      Utils.Msgbox(this.getActivity(), getString(R.string.savefail));
 
-    if (dao == null) return false;
-
-    return dao.saveWeight(rec);
+    }
+    return ok;
   }
   public void SendCtrlMsg(String address, int code)
   {
@@ -343,10 +368,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
       OneWeightFragment theActivity = mActivity.get();
       switch (msg.what) {
         case Constant.MSG_TIMEOUT: {
-
-          if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss(); //关闭进度条
-            theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+          try {
+            if (progressDialog != null && progressDialog.isShowing()) {
+              progressDialog.dismiss(); //关闭进度条
+              theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+            }
+          }catch (Exception e)
+          {
+              e.printStackTrace();
           }
         }
         case Constant.MSG_SET_ZERO:
@@ -393,7 +422,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
               : theActivity.getText(R.string.net));
           theActivity.txtTare.setText(
               Utils.FormatFloatValue(d.getTare(), d.GetDotNum()) + d.getUnit());
-
+          theActivity.saveWeight(d);
           break;
         }
         case Global.MSG_BLE_DISCONNECTRESULT: {

@@ -34,6 +34,9 @@ import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -47,6 +50,7 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
 
 	private ListView history;
     WeightDao dao = null;
+	private RefreshLayout refreshLayout ;
     private Button btn_previous_page,btn_next_page,btn_back;
 	private WeightListAdapter mWeightListAdapter = null;
 	/* (non-Javadoc)
@@ -90,7 +94,26 @@ public class HistoryWeightActivity extends Activity implements OnClickListener {
         btn_next_page.setOnClickListener(this);
         btn_previous_page.setOnClickListener(this);
         btn_back.setOnClickListener(this);
+		refreshLayout = (RefreshLayout) findViewById(R.id.refreshLayout);
+		refreshLayout.setReboundDuration(10);
 
+		refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh(RefreshLayout refreshlayout) {
+				//在这里执行上拉刷新时的具体操作(网络请求、更新UI等)
+				mWeightListAdapter.prev();
+				refreshlayout.finishRefresh(100/*,false*/);
+				//不传时间则立即停止刷新    传入false表示刷新失败
+			}
+		});
+		refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+			@Override
+			public void onLoadmore(RefreshLayout refreshlayout) {
+				mWeightListAdapter.next();
+				refreshlayout.finishLoadmore(100/*,false*/);//不传时间则立即停止刷新
+			}
+
+		});
 
     }
 	private class WeightListAdapter extends BaseAdapter {

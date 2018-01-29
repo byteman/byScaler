@@ -107,7 +107,10 @@
           android:layout_height="match_parent"
           android:gravity="center"
           >
-
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
           <ListView
               android:id="@+id/listView"
               android:layout_width="match_parent"
@@ -117,6 +120,7 @@
               android:overScrollMode="never"
               tools:listitem="@android:layout/simple_list_item_2"
               />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
       </LinearLayout>
     </LinearLayout>
 

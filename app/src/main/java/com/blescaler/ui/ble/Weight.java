@@ -1,6 +1,7 @@
 package com.blescaler.ui.ble;
 
 import android.content.Context;
+
 import com.blescaler.db.Config;
 import com.blescaler.db.UwInfo;
 import com.blescaler.util.Utils;
@@ -11,8 +12,8 @@ import com.blescaler.worker.Scaler;
  */
 
 
-public class Counter {
-  public Counter(){}
+public class Weight {
+  public Weight(){}
   private int   _sample_count; //采样个数
   private float _sample_uw; //单位重量
   private float _avg_weight; //上一次收到的稳定重量.

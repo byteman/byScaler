@@ -40,6 +40,9 @@ import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
 import com.blescaler.worker.ScalerParam;
 import com.blescaler.worker.WorkService;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -52,7 +55,8 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 
 
 	private ListView history;
-    CountDao dao = null;
+	private RefreshLayout refreshLayout ;
+	CountDao dao = null;
 	private int mLastFirstPostion;
 	private int mLastFirstTop;
 	private int touchSlop;
@@ -89,62 +93,36 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_count_history);
 		history = findViewById(R.id.listView);
-        btn_previous_page = findViewById(R.id.btn_previous_page);
-        btn_next_page = findViewById(R.id.btn_next_page);
-        btn_back = findViewById(R.id.btn_back);
-        dao = new CountDao(this);
+		btn_previous_page = findViewById(R.id.btn_previous_page);
+		btn_next_page = findViewById(R.id.btn_next_page);
+		btn_back = findViewById(R.id.btn_back);
+		dao = new CountDao(this);
 		mWeightListAdapter = new WeightListAdapter(dao);
 		//lv_Devices.setListAdapter(mLeDeviceListAdapter);
 		history.setAdapter(mWeightListAdapter);
-        btn_next_page.setOnClickListener(this);
-        btn_previous_page.setOnClickListener(this);
-        btn_back.setOnClickListener(this);
-		touchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(ViewConfiguration.get(this));
-		history.setOnScrollListener(new AbsListView.OnScrollListener() {
-			@Override
-			public void onScrollStateChanged(AbsListView absListView, int i) {
-			}
+		btn_next_page.setOnClickListener(this);
+		btn_previous_page.setOnClickListener(this);
+		btn_back.setOnClickListener(this);
+		refreshLayout = (RefreshLayout) findViewById(R.id.refreshLayout);
+		refreshLayout.setReboundDuration(10);
 
+		refreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
-			public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				int currentTop;
-
-				View firstChildView = absListView.getChildAt(0);
-				if (firstChildView != null) {
-					currentTop = absListView.getChildAt(0).getTop();
-				} else {
-					//ListView初始化的时候会回调onScroll方法，此时getChildAt(0)仍是为空的
-					return;
-				}
-				//判断上次可见的第一个位置和这次可见的第一个位置
-				if (firstVisibleItem != mLastFirstPostion) {
-					//不是同一个位置
-					if (firstVisibleItem > mLastFirstPostion) {
-						//TODO do down
-						Log.i("cs", "--->down");
-					} else {
-						//TODO do up
-						Log.i("cs", "--->up");
-					}
-					mLastFirstTop = currentTop;
-				} else {
-					//是同一个位置
-					if(Math.abs(currentTop - mLastFirstTop) > touchSlop){
-						//避免动作执行太频繁或误触，加入touchSlop判断，具体值可进行调整
-						if (currentTop > mLastFirstTop) {
-							//TODO do up
-							Log.i("cs", "equals--->up");
-						} else if (currentTop < mLastFirstTop) {
-							//TODO do down
-							Log.i("cs", "equals--->down");
-						}
-						mLastFirstTop = currentTop;
-					}
-				}
-				mLastFirstPostion = firstVisibleItem;
+			public void onRefresh(RefreshLayout refreshlayout) {
+				//在这里执行上拉刷新时的具体操作(网络请求、更新UI等)
+				mWeightListAdapter.prev();
+				refreshlayout.finishRefresh(100/*,false*/);
+				//不传时间则立即停止刷新    传入false表示刷新失败
 			}
 		});
+		refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+												@Override
+			public void onLoadmore(RefreshLayout refreshlayout) {
+				mWeightListAdapter.next();
+				refreshlayout.finishLoadmore(100/*,false*/);//不传时间则立即停止刷新
+			}
 
+		});
 	}
 	private class WeightListAdapter extends BaseAdapter {
 		private ArrayList<CountRecord> items;
