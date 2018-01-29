@@ -20,6 +20,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.blescaler.db.Config;
 import com.blescaler.ui.CalibActivity;
 import com.blescaler.ui.ConfigActivity;
 import com.blescaler.ui.ConnectBTPairedActivity;
@@ -108,7 +110,8 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         return false;
       }
     });
-    goToFragment(7);
+    int page = Config.getInstance(this).getLastPage();
+    goToFragment(page);
   }
 
   private void initView() {
@@ -258,8 +261,10 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
       startActivity(intent);
       return;
     }
-    if (pos == 3) {
+    if (pos == 3)
+    {
       newFragment = OneCountFragment.newFragment();
+      Config.getInstance(this).setLastPage(3);
     }
     if (pos == 4) {
 
@@ -275,11 +280,12 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
       startActivity(intent);
       return;
     }
-    if (pos == 7) newFragment = OneWeightFragment.newFragment();
+    if (pos == 7)
+    {
+      newFragment = OneWeightFragment.newFragment();
+      Config.getInstance(this).setLastPage(7);
+    }
     if (pos == 8) {
-      //			 Intent intent = new Intent(this, PairedScalerActivity.class);
-      //			 intent.putExtra("act", "calib");
-      //			 startActivity(intent);
       Intent intent = new Intent(MainActivity.this, CalibActivity.class);
       intent.putExtra("address", "00");
       startActivity(intent);
@@ -287,9 +293,6 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
       return;
     }
     if (pos == 9) {
-      //			  Intent intent = new Intent(this, PairedScalerActivity.class);
-      //			  intent.putExtra("act", "debug");
-      //			  startActivity(intent);
       Intent intent = new Intent(MainActivity.this, SysParamActivity.class);
       intent.putExtra("address", "00");
       startActivity(intent);
@@ -314,7 +317,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
   @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
       if ((System.currentTimeMillis() - exitTime) > 2000) {
-        Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.exit_app, Toast.LENGTH_SHORT).show();
         exitTime = System.currentTimeMillis();
       } else {
 

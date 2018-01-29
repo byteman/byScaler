@@ -129,5 +129,7 @@
   <string name="weight_history">称重历史</string>
   <string name="count_history">计数历史</string>
   <string name="input_sample">请输入样本个数</string>
+    <string name="exit_app">再按一次退出程序</string>
+    <string name="title_welcome">欢迎使用蓝牙称</string>
 
 </resources>

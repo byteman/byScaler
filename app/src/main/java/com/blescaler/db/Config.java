@@ -7,13 +7,12 @@ import android.content.SharedPreferences.Editor;
 
 public class Config 
 {
-	//private String mDevAddress;
-	//private String mDevName;
+
 	private Context mContext;
 	private SharedPreferences mSharedPre;
 	private Editor mEditor;
-	private int ScalerCount = 0;
-	//private String mUser;
+
+
 	static private Config mConfig;
 	private Config(Context pContext) 
 	{
@@ -121,5 +120,14 @@ public class Config
 	public String getLanguage()
 	{
 		return mSharedPre.getString("lang","en");
+	}
+	public boolean setLastPage(int page)
+	{
+		mEditor.putInt("page", page);
+		return mEditor.commit();
+	}
+	public int getLastPage()
+	{
+		return mSharedPre.getInt("page",7);
 	}
 }

@@ -90,6 +90,7 @@
         <TextView android:text="@string/language"
             android:layout_width="wrap_content"
             android:textColor="@color/aliceblue"
+            android:textSize="24sp"
             android:layout_height="wrap_content" />
         <RadioGroup
             android:id="@+id/radioGroupID"
@@ -102,7 +103,10 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:textColor="@color/white"
+              android:button="@drawable/radio_button_style"
               android:text="@string/lang_zh"
+
+              android:textSize="20sp"
 
               />
           <RadioButton
@@ -110,6 +114,8 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:textColor="@color/white"
+              android:button="@drawable/radio_button_style"
+              android:textSize="20sp"
 
               android:text="@string/lang_en"/>
         </RadioGroup>

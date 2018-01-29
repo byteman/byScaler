@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,15 +29,15 @@
     <string name="unknown_device">Unknown device</string>
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
-	<string name="calibzero">calib zero</string>
-	<string name="calibwgt">calib span</string>
-	<string name="save">save</string>
+    <string name="calibzero">calib zero</string>
+    <string name="calibwgt">calib span</string>
+    <string name="save">save</string>
     <string name="save_wet">save</string>
-	<string name="ret">return</string>
-	<string name="connprt">connect printer</string>
-	<string name="connoldprt">match printer</string>
-	<string name="cancle">cancle</string>
-	<string name="fama">input calib value</string>
+    <string name="ret">return</string>
+    <string name="connprt">connect printer</string>
+    <string name="connoldprt">match printer</string>
+    <string name="cancle">cancle</string>
+    <string name="fama">input calib value</string>
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
@@ -46,11 +45,11 @@
     <string name="menu_stop">Stop</string>
     <string name="title_activity_characteristic">CharacteristicActivity</string>
     <string name="action_settings">Settings</string>
-    
+
     <string name="device_settings">param</string>
     <string name="user_settings">user</string>
     <string name="data_settings">data</string>
-    
+
     <string name="hello_world">Hello world!</string>
     <string name="select">选择设备</string>
     <string name="calibK">标定系数</string>
@@ -71,15 +70,15 @@
     <string name="dignum">小数点数</string>
     <string name="div">分度值    </string>
     <string name="nov">满量程  </string>
-	<string name="unit">Unit </string>
-	<string name="filter">滤波等级 </string>
-	<string name="write">Save</string>
-	<string name="read">Read</string>
-	<string name="zero">Zero</string>
-	<string name="tare">Tare</string>
-  <string name="discard_tare">Tare</string>
+    <string name="unit">Unit </string>
+    <string name="filter">滤波等级 </string>
+    <string name="write">Save</string>
+    <string name="read">Read</string>
+    <string name="zero">Zero</string>
+    <string name="tare">Tare</string>
+    <string name="discard_tare">Tare</string>
     <string name="net">Net</string>
-	<string name="switch_ng">N/G</string>
+    <string name="switch_ng">N/G</string>
     <string name="acc">ACC: </string>
     <string name="calibration_value">Calibration Value:</string>
     <string name="prompt_scan">You have not yet chosen the Bluetooth device, please search first</string>
@@ -87,10 +86,10 @@
     <string name="ok">OK</string>
     <string name="prompt_conn_timeout">Connection timeout, clicking weight display can be reconnected</string>
     <string name="connect_ble">Bluetooth scale is connectings</string>
-  <!--启动界面-->
-  <string name="welcome">Welcome to Bluetooth Scale</string>
-  <string name="start_copyright">©2015-2017</string>
-  <string name="start_company">WeiZhi Software Technology(Chongqing)Co.Ltd.)</string>
+    <!--启动界面-->
+    <string name="welcome">Welcome to Bluetooth Scale</string>
+    <string name="start_copyright">©2015-2017</string>
+    <string name="start_company">WeiZhi Software Technology(Chongqing)Co.Ltd.)</string>
     <string name="sample">sample</string>
     <string name="reset_count">U.W clear</string>
     <string name="one_weight">U.W</string>
@@ -104,19 +103,19 @@
     <string name="menu_count">count</string>
 
     <string name="menu_title_weight">weight</string>
-  <string name="menu_his">history</string>
-  <string name="menu_set">configure</string>
-  <string name="menu_set_manager">device</string>
-  <string name="menu_version">version</string>
-  <string name="menu_more">more</string>
-  <string name="menu_printer">printer</string>
-  <!--历史记录查询-->
+    <string name="menu_his">history</string>
+    <string name="menu_set">configure</string>
+    <string name="menu_set_manager">device</string>
+    <string name="menu_version">version</string>
+    <string name="menu_more">more</string>
+    <string name="menu_printer">printer</string>
+    <!--历史记录查询-->
     <string name="history">history</string>
     <string name="gross">gross</string>
-  <string name="his_filter">filter</string>
-  <string name="his_next_page">next</string>
-  <string name="his_previous_page">prev</string>
-  <string name="his_time">time</string>
+    <string name="his_filter">filter</string>
+    <string name="his_next_page">next</string>
+    <string name="his_previous_page">prev</string>
+    <string name="his_time">time</string>
     <string name="lang_zh">chinese</string>
     <string name="lang_en">english</string>
     <string name="language">language</string>
@@ -125,10 +124,12 @@
     <string name="uw">u.w</string>
     <string name="count">count</string>
     <string name="start">start</string>
-  <string name="title_config">configure</string>
-  <string name="search_title">search device</string>
-  <string name="weight_history">weight history</string>
-  <string name="count_history">count history</string>
-  <string name="input_sample">input number of sample</string>
+    <string name="title_config">configure</string>
+    <string name="search_title">search device</string>
+    <string name="weight_history">weight history</string>
+    <string name="count_history">count history</string>
+    <string name="input_sample">input number of sample</string>
+    <string name="exit_app">Press again to exit the program</string>
+    <string name="title_welcome">Welcome to use Bluetooth Scale</string>
 
 </resources>

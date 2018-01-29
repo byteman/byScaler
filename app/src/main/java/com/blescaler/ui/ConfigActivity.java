@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.blescaler.db.Config;
+import com.blescaler.ui.ble.MainActivity;
 import com.blescaler.util.Utils;
 import com.blescaler.worker.Global;
 import com.blescaler.worker.Scaler;
@@ -66,6 +68,7 @@ public class ConfigActivity extends Activity implements OnClickListener {
 				resources.updateConfiguration(config, dm);
 				break;
 		}
+
 	}
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onStop()
@@ -74,7 +77,7 @@ public class ConfigActivity extends Activity implements OnClickListener {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		WorkService.delHandler(mHandler);
+
 	}
 	/*
 	 * (non-Javadoc)
@@ -90,7 +93,7 @@ public class ConfigActivity extends Activity implements OnClickListener {
 		enRadio=findViewById(R.id.enGroupID);
 		zhRadio=findViewById(R.id.zhGroupID);
 		String lang = Config.getInstance(this).getLanguage();
-		if(lang == "zh")
+		if(lang.contentEquals("zh") )
 		{
 			zhRadio.setChecked(true);
 
@@ -142,8 +145,10 @@ public class ConfigActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_save:
-			
-			finish();
+
+			Intent intent = new Intent(this, MainActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(intent);
 			//WorkService.requestSaveParam(address);
 			break;
 		default:

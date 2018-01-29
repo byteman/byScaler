@@ -193,15 +193,6 @@ public class DeviceScanActivity extends Activity   {
 				String address = holder.deviceAddress.getText().toString();
 				WorkService.setDeviceAddress(DeviceScanActivity.this, 0,address);
 				finish();
-				//holder.cb.toggle();
-				//if(mLeDeviceListAdapter.getIsSelected().size() > position)
-				//	mLeDeviceListAdapter.getIsSelected().put(position, holder.cb.isChecked());
-				//
-				// if (holder.cb.isChecked() == true) {
-        //
-		     //    } else {
-        //
-		     //    }
 			}
 		});
 		
@@ -253,7 +244,7 @@ public class DeviceScanActivity extends Activity   {
 	protected void onResume() {
 		super.onResume();
 	
-		WorkService.requestDisConnectAll();
+		//WorkService.requestDisConnectAll();
 		// Ensures Bluetooth is enabled on the device. If Bluetooth is not
 		// currently enabled,
 		// fire an intent to display a dialog asking the user to grant

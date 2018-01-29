@@ -22,7 +22,7 @@
         android:layout_marginTop="@dimen/y10"
         android:textColor="@color/white"
         android:layout_gravity="center"
-        android:text="欢迎使用蓝牙称"
+        android:text="@string/title_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />

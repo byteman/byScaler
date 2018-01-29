@@ -11,11 +11,15 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewConfigurationCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,7 +53,10 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
 
 	private ListView history;
     CountDao dao = null;
-    private Button btn_previous_page,btn_next_page,btn_back;
+	private int mLastFirstPostion;
+	private int mLastFirstTop;
+	private int touchSlop;
+	private Button btn_previous_page,btn_next_page,btn_back;
 	private WeightListAdapter mWeightListAdapter = null;
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onResume()
@@ -92,9 +99,53 @@ public class HistoryCountActivity extends Activity implements OnClickListener {
         btn_next_page.setOnClickListener(this);
         btn_previous_page.setOnClickListener(this);
         btn_back.setOnClickListener(this);
+		touchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(ViewConfiguration.get(this));
+		history.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView absListView, int i) {
+			}
 
+			@Override
+			public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				int currentTop;
 
-    }
+				View firstChildView = absListView.getChildAt(0);
+				if (firstChildView != null) {
+					currentTop = absListView.getChildAt(0).getTop();
+				} else {
+					//ListView初始化的时候会回调onScroll方法，此时getChildAt(0)仍是为空的
+					return;
+				}
+				//判断上次可见的第一个位置和这次可见的第一个位置
+				if (firstVisibleItem != mLastFirstPostion) {
+					//不是同一个位置
+					if (firstVisibleItem > mLastFirstPostion) {
+						//TODO do down
+						Log.i("cs", "--->down");
+					} else {
+						//TODO do up
+						Log.i("cs", "--->up");
+					}
+					mLastFirstTop = currentTop;
+				} else {
+					//是同一个位置
+					if(Math.abs(currentTop - mLastFirstTop) > touchSlop){
+						//避免动作执行太频繁或误触，加入touchSlop判断，具体值可进行调整
+						if (currentTop > mLastFirstTop) {
+							//TODO do up
+							Log.i("cs", "equals--->up");
+						} else if (currentTop < mLastFirstTop) {
+							//TODO do down
+							Log.i("cs", "equals--->down");
+						}
+						mLastFirstTop = currentTop;
+					}
+				}
+				mLastFirstPostion = firstVisibleItem;
+			}
+		});
+
+	}
 	private class WeightListAdapter extends BaseAdapter {
 		private ArrayList<CountRecord> items;
 

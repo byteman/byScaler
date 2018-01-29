@@ -60,15 +60,26 @@ public class Counter {
   {
      return "" + _sample_uw;
   }
+  int floatToInt(float f){
+    int i = 0;
+    if(f>0) //正数
+      i = (int) ((f*10 + 5)/10);
+    else if(f<0) //负数
+      i = (int) ((f*10 - 5)/10);
+    else i = 0;
+
+    return i;
+
+  }
   public int _calc_count(Scaler d)
   {
     int quantity = 0;
     if (d.isGross()) {
       //毛重状态下的 物品个数 = (内部重量 )/单位重量
-      quantity = (int) (d.getCalcWeight() / _sample_uw);
+      quantity = floatToInt (d.getCalcWeight() / _sample_uw);
     } else {
       //净重状态下的 物品个数 = (内部重量 - 你发的皮重)/单位重量
-      quantity = (int) (d.getCalcWeight() - d.getTare() / _sample_uw);
+      quantity = floatToInt (d.getCalcWeight() - d.getTare() / _sample_uw);
     }
     return quantity;
   }
