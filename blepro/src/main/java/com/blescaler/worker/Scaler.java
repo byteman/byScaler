@@ -19,6 +19,9 @@ public class Scaler {
 	public float getTare() {
 		return tare;
 	}
+	public float getGross(){
+		return gross;
+	}
 	public short getState(){return state;}
 	public void setTare(float tare) {
 		this.tare = tare;
@@ -30,6 +33,7 @@ public class Scaler {
 	public void setNet(float net) {
 		this.net = net;
 	}
+	private float gross; //毛重
 	private float tare; //皮重
 	private float net; //净重
 	private float calcWeight; //内部重量.
@@ -395,7 +399,16 @@ public class Scaler {
 					int iWeight = Utils.bytesToInt(val, 9);
 					this.weight = Utils.Int2Float(iWeight, this.dot_num);
 					this.sWeight = Utils.FormatIntValue(iWeight, this.dot_num);
+					this.gross = this.weight;
+					if(this.isGross())
+					{
+						this.net = this.weight - this.tare;
 
+					}
+					else
+					{
+						this.net = this.weight;
+					}
 					msgType = Global.MSG_BLE_WGTRESULT_V2;
 
 				}

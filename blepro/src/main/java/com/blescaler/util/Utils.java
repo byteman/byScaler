@@ -232,7 +232,7 @@ public class Utils {
 
   public static int bytesToInt(byte[] bytes) {
     int number = bytes[0] & 0xFF;
-    // "|="鎸変綅鎴栬祴鍊笺��
+
     number |= ((bytes[1] << 8) & 0xFF00);
     number |= ((bytes[2] << 16) & 0xFF0000);
     number |= ((bytes[3] << 24) & 0xFF000000);
@@ -242,7 +242,7 @@ public class Utils {
 
   public static byte[] float2byte(float f) {
 
-    // 鎶奻loat杞崲涓篵yte[]
+
     int fbit = Float.floatToIntBits(f);
 
     byte[] b = new byte[4];
@@ -318,7 +318,7 @@ public class Utils {
   }
 
   public static String FormatFloatValue(float value, int dot) {
-    String weight = "------";
+    String weight ;
 
     switch (dot) {
       case 1:

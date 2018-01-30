@@ -61,7 +61,7 @@ public class Counter {
   {
     return Utils.FormatFloatValue(_sample_uw,dot);
   }
-  int floatToInt(float f){
+  private int floatToInt(float f){
     int i = 0;
     if(f>0) //正数
       i = (int) ((f*10 + 5)/10);
@@ -79,9 +79,10 @@ public class Counter {
       //毛重状态下的 物品个数 = (内部重量 )/单位重量
       quantity = floatToInt (d.getCalcWeight() / _sample_uw);
     } else {
-      //净重状态下的 物品个数 = (内部重量 - 你发的皮重)/单位重量
-      quantity = floatToInt (d.getCalcWeight() - d.getTare() / _sample_uw);
+      //净重状态下的 物品个数 = (内部重量 - 皮重)/单位重量
+      quantity = floatToInt ((d.getCalcWeight() - d.getTare()) / _sample_uw);
     }
+    if(quantity < 0) quantity = 0;
     return quantity;
   }
   //返回计算的个数.

@@ -156,10 +156,10 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 						name = "BT";
 					else if (name.equals(address))
 						name = "BT";
-//					if(device.getType() == DEVICE_TYPE_CLASSIC)
-//					{
-//
-//					}
+					if(device.getType() != DEVICE_TYPE_CLASSIC)
+					{
+
+					}
 					Button button = new Button(context);
 					button.setText(name + ": " + address);
 					button.setGravity(android.view.Gravity.CENTER_VERTICAL
@@ -227,6 +227,7 @@ public class SearchBTActivity extends Activity implements OnClickListener {
 		}
 
 		public void addDevice(BluetoothDevice device,int rssi) {
+
 			if (!mLeDevices.contains(device)) {
 				mLeDevices.add(device);
 

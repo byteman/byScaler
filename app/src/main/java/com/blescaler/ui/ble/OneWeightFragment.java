@@ -285,15 +285,14 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
     WeightRecord rec = new WeightRecord();
 
-    String gross = Utils.FormatFloatValue(d.getGross(),d.GetDotNum());
-    String tare  = Utils.FormatFloatValue(d.getTare(),d.GetDotNum());
-    String net   = Utils.FormatFloatValue(d.getNet(),d.GetDotNum());
+    String gross = Utils.FormatFloatValue(d.getGross(),d.GetDotNum()) + d.getUnit();
+    String tare  = Utils.FormatFloatValue(d.getTare(),d.GetDotNum())  + d.getUnit();
+    String net   = Utils.FormatFloatValue(d.getNet(),d.GetDotNum())   + d.getUnit();
 
 
     rec.setGross(gross);
-    rec.setNet(tare);
-    rec.setTare(net);
-
+    rec.setTare(tare);
+    rec.setNet(net);
 
     if (dao == null)
     {
