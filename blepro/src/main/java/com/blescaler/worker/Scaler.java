@@ -399,15 +399,17 @@ public class Scaler {
 					int iWeight = Utils.bytesToInt(val, 9);
 					this.weight = Utils.Int2Float(iWeight, this.dot_num);
 					this.sWeight = Utils.FormatIntValue(iWeight, this.dot_num);
-					this.gross = this.weight;
+
 					if(this.isGross())
 					{
 						this.net = this.weight - this.tare;
-
+						this.gross = this.weight;
 					}
 					else
 					{
-						this.net = this.weight;
+
+						this.net 		= this.weight;
+						this.gross  = this.net + this.tare;
 					}
 					msgType = Global.MSG_BLE_WGTRESULT_V2;
 
