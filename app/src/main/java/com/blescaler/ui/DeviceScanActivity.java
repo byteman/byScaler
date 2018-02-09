@@ -347,10 +347,11 @@ public class DeviceScanActivity extends Activity   {
 	    	 
 	    	 for (int i = 0; i < mLeDevices.size(); i++) {  
 	    		 HashMap<Integer, Boolean> sel = getIsSelected();
-	    		 
-		           if( sel.get(i))
+
+		           if(sel!=null && sel.get(i))
 		           {
-		        	   devs.add(mLeDevices.get(i).getAddress());
+		           		if(sel.get(i) != null)
+		        	   		devs.add(mLeDevices.get(i).getAddress());
 		           }
 		      }  
 	    	 return devs;

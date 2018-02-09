@@ -481,10 +481,15 @@ public class OneCountFragment extends BaseFragment implements View.OnClickListen
         }
         case MSG_TIMEOUT: {
 
-          if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss(); //关闭进度条
-            theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+          try{
+            if (progressDialog != null && progressDialog.isShowing()) {
+              progressDialog.dismiss(); //关闭进度条
+              theActivity.showFailBox(theActivity.getString(R.string.prompt_conn_timeout));
+            }
+          }catch(Exception e){
+
           }
+
         }
 
         case Global.MSG_SCALER_POWER_RESULT: {

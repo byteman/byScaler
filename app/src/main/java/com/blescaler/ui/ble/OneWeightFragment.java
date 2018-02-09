@@ -412,7 +412,7 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
             display = "-------";
           }
           theActivity.tv_weight.setText(display);
-          theActivity.set_zero_state(d.isZero());
+          //theActivity.set_zero_state(d.isZero());
           theActivity.set_still_state(d.isStandstill());
           theActivity.set_tare_state(!d.isGross()); //皮重状态就是净重状态.
           theActivity.tv_unit.setText(d.getUnit());
@@ -438,8 +438,13 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
 
         case Global.MSG_SCALER_CONNECT_OK: {
 
-          if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss(); //关闭进度条
+          try {
+            if (progressDialog != null && progressDialog.isShowing()) {
+
+              progressDialog.dismiss(); //关闭进度条
+            }
+          }
+          catch(Exception e) {
           }
           //Toast.makeText(theActivity.getActivity(),"all connect",Toast.LENGTH_SHORT).show();
 
