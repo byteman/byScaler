@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/linearLayout"
             android:layout_alignTop="@+id/linearLayout"
-            android:text="0kg"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="@dimen/x30"
             />

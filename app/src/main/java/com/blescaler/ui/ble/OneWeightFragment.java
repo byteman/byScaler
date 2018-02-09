@@ -412,11 +412,11 @@ public class OneWeightFragment extends BaseFragment implements View.OnClickListe
             display = "-------";
           }
           theActivity.tv_weight.setText(display);
-          //theActivity.set_zero_state(d.isZero());
+          theActivity.set_zero_state(d.isZero());
           theActivity.set_still_state(d.isStandstill());
           theActivity.set_tare_state(!d.isGross()); //皮重状态就是净重状态.
           theActivity.tv_unit.setText(d.getUnit());
-          theActivity.txtState.setText("" + d.getState());
+          //theActivity.txtState.setText("" + d.getState());
           theActivity.txtNG.setText(d.isGross() ? theActivity.getText(R.string.gross)
               : theActivity.getText(R.string.net));
           theActivity.txtTare.setText(
