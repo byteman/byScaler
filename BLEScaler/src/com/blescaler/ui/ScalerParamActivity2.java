@@ -29,7 +29,7 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 	
 	private EditText edit_ver;
 	private EditText edit_time;
-	private EditText edit_rain,edt_qx_addr;
+	private EditText edit_rain,edt_qx_addr,edit_uuid;
 	private EditText edit_write_index,edit_read_index;
 	private Button 	 btn_gprs_test;
 	private Spinner sp_net_mode,sp_send_mode = null;
@@ -77,6 +77,8 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 		edit_write_index = (EditText) findViewById(R.id.edit_write_index);
 		edit_read_index= (EditText) findViewById(R.id.edit_read_index);
 		edit_rain= (EditText) findViewById(R.id.edit_rain);
+		edit_uuid= (EditText) findViewById(R.id.edit_UUID);
+		//edit_uuid.setText(String.format("%08X", 0xF2CD89CA));
 		edt_qx_addr= (EditText) findViewById(R.id.edit_qx_addr);
 		btn_read = (Button) findViewById(R.id.btn_read);
 		btn_read.setOnClickListener(this);
@@ -189,13 +191,14 @@ public class ScalerParamActivity2 extends Activity implements OnClickListener {
 		{
 			sp_net_mode.setSelection(sp.net_mode);
 		}
-		if(sp.send_mode <0 || sp.send_mode > 1)
+		if(sp.send_mode <0 || sp.send_mode > 2)
 		{
 			Toast.makeText(this, sp.send_mode+"", Toast.LENGTH_LONG).show();
 		}else
 		{
 			 sp_send_mode.setSelection(sp.send_mode);
 		}
+		edit_uuid.setText(String.format("%08X", sp.uuid));
 	   
 	}
 	private void showTimeParam(ScalerParam sp)

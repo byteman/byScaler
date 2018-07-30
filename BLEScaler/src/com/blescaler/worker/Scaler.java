@@ -292,6 +292,7 @@ public class Scaler {
 					{
 						para.net_mode = Utils.bytesToShort(val,5);
 						para.send_mode = Utils.bytesToShort(val,7);
+						para.uuid = Utils.bytesToInt(val,9);
 						
 						msgType = Global.MSG_GET_PARAM6_RESULT;
 						

@@ -18,6 +18,7 @@ public class ScalerParam {
 	public short year_month,day_hour,min_second;
 	public short rain,qx_addr;
 	public short net_mode,send_mode;
+	public int   uuid;
 	public ScalerParam()
 	{
 		

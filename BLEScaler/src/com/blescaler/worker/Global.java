@@ -182,7 +182,7 @@ public class Global {
 	public static final int REG_TIME =40;
 	public static final int REG_NET_MODE =45;
 	public static final int REG_SEND_MODE =46;
-
+	public static final int REG_UUID =47; //uuid 4bytes
 	
 	
 	public static String toast_success = "Done";

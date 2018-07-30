@@ -6,9 +6,10 @@
         <item>UDP</item>
     </string-array>
     
-          <string-array name="sendmode">
-        <item>主动</item>
-        <item>被动</item>
+    <string-array name="sendmode">
+        <item>CCU查询</item>
+        <item>财贸查询</item>
+        <item>宏电被动</item>
     </string-array>
     <string-array name="zerotrack">
         <item>关闭</item>

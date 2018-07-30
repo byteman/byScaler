@@ -164,6 +164,29 @@
             android:prompt="@string/netmode" />
     </LinearLayout>
    
+  <LinearLayout
+        android:id="@+id/llUUID"
+        android:layout_below="@id/llsendmode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tvUUID"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="UUID" />
+
+        <EditText
+            android:id="@+id/edit_UUID"
+            android:maxLength="8"
+            android:hint=""
+            android:editable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    
    <LinearLayout
          android:id="@+id/ll333"
         android:layout_width="match_parent"
