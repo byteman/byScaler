@@ -121,10 +121,10 @@ public class CalibActivity extends Activity {
 			{
 				//start.
 				if(isStarted){
-					btnStart.setText("start");
+					btnStart.setText(CalibActivity.this.getResources().getString(R.string.start));
 					WorkService.auto_k(address,5);
 				}else{
-					btnStart.setText("stop");
+					btnStart.setText(CalibActivity.this.getResources().getString(R.string.stop));
 					WorkService.auto_k(address,0);
 				}
 				isStarted=!isStarted;
@@ -250,7 +250,7 @@ public class CalibActivity extends Activity {
 	}
 	private void showFailBox(String msg)
 	{
-		 new AlertDialog.Builder(this).setTitle("prompt")//设置对话框标题  
+		 new AlertDialog.Builder(this).setTitle(this.getResources().getString(R.string.prompt))//设置对话框标题  
 		  
 	     .setMessage(msg)//设置显示的内容  
 	  

@@ -74,7 +74,7 @@ public class SysParamActivity extends Activity implements OnClickListener {
 	}
 	private void showFailBox(String msg)
 	{
-		 new AlertDialog.Builder(this).setTitle("prompt")//设置对话框标题  
+		 new AlertDialog.Builder(this).setTitle(this.getResources().getString(R.string.prompt))//设置对话框标题  
 		  
 	     .setMessage(msg)//设置显示的内容  
 	  

@@ -16,7 +16,7 @@
         <item>+-20%</item>
     </string-array>
     <string-array name="mtd">
-        <item>disable</item>
+        <item>关闭</item>
         <item>+-0.25d</item>
         <item>+-0.5d</item>
         <item>+-1.0d</item>
@@ -24,11 +24,11 @@
         <item>+-3.0d</item>
     </string-array>
     <string-array name="dignum">
-        <item>NONE</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+        <item>无</item>
+        <item>1位</item>
+        <item>2位</item>
+        <item>3位</item>
+        <item>4位</item>
     </string-array>
  	<string-array name="div">
         <item>1</item>

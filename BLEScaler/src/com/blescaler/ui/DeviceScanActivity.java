@@ -311,11 +311,11 @@ public class DeviceScanActivity extends Activity   {
 		// TODO Auto-generated method stub
 		if(mScanning)
 		{
-			btn_serach.setText("stop");
+			btn_serach.setText(this.getResources().getString(R.string.stop));
 		}
 		else
 		{
-			btn_serach.setText("start");
+			btn_serach.setText(this.getResources().getString(R.string.start));
 		}
 	}
 

@@ -37,7 +37,7 @@
             android:layout_weight="0.12"
             android:gravity="center"
             android:paddingLeft="10dp"
-            android:text="calib value"
+            android:text="@string/fama"
             android:textSize="20sp" />
 
         <EditText
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="read" />
+            android:text="@string/read" />
 
         <Button
             android:id="@id/btn_save"
@@ -129,7 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="back" />
+            android:text="@string/back" />
     </LinearLayout>
 
     <Button
@@ -139,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/layWgt2"
-        android:text="Scaler1" />
+        android:text="@string/Scaler1" />
 
     <Button
         android:id="@+id/Button03"
@@ -148,7 +148,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/Button01"
-        android:text="Scaler2" />
+        android:text="@string/Scaler2" />
 
     <Button
         android:id="@+id/Button04"
@@ -157,7 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/Button02"
         android:layout_below="@+id/Button02"
-        android:text="Scaler4" />
+        android:text="@string/Scaler4" />
 
     <EditText
         android:id="@+id/EditText01"
@@ -199,7 +199,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/Button03"
-        android:text="Scaler3" />
+        android:text="@string/Scaler3" />
 
     <EditText
         android:id="@+id/editText1"
@@ -218,7 +218,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignRight="@+id/EditText05"
         android:layout_centerVertical="true"
-        android:text="start auto calibrate" />
+        android:text="@string/start_auto_calib" />
 
     <EditText
         android:id="@+id/EditText03"

@@ -75,7 +75,7 @@
             android:id="@+id/ed_nov"
             android:inputType="number"
             android:maxLength="7"
-            android:hint="不要超过1000000"
+            android:hint="@string/range100000"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -221,10 +221,10 @@
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/textView23"
+            android:id="@+id/textView223"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="休眠时间" />
+            android:text="@string/sleeptime" />
 
         <EditText
             android:id="@+id/edit_sleep"
@@ -245,7 +245,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             
-            android:text="传感器数" />
+            android:text="@string/sensornum" />
 
         <EditText
             android:id="@+id/edit_snr_num"
@@ -263,7 +263,7 @@
         android:orientation="horizontal" >
         <Button
             style="@style/bybutton"
-            android:text="read"
+            android:text="@string/read"
             android:layout_weight="1"
             android:id="@+id/btn_read"
             android:layout_width="wrap_content"
@@ -272,7 +272,7 @@
         </Button>
         <Button
             style="@style/bybutton"
-            android:text="write"
+            android:text="@string/write"
             android:id="@+id/btn_save"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
@@ -282,7 +282,7 @@
         </Button>
          <Button
             style="@style/bybutton"
-            android:text="back"
+            android:text="@string/back"
             android:id="@+id/btn_eeprom"
              android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
